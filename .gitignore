@@ -11,3 +11,8 @@
 **/dist/
 **/nbdist/
 **/.nb-gradle/
+
+#ImageSegmentation
+
+/ImageSegmentation/received/*
+
