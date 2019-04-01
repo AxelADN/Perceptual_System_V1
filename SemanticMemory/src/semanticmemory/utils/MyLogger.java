@@ -1,0 +1,31 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package semanticmemory.utils;
+
+/**
+ *
+ * @author Luis
+ */
+public class MyLogger {
+
+    public static boolean LOG_ENABLED = true;
+
+    public static void log(String text) {
+        if (LOG_ENABLED) {
+            System.out.println(text);
+        }
+    }
+
+    public static void log(Object object,String text) {
+        if (LOG_ENABLED) {
+            System.out.print(object.getClass().getSimpleName());
+            System.out.print(": ");
+            System.out.print(text);
+            System.out.println("");
+        }
+    }
+
+}
