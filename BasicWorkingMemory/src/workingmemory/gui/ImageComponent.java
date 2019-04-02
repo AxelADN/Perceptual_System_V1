@@ -27,8 +27,8 @@ public class ImageComponent extends JComponent {
     private Image bg;
     private float ratio = 1.0f;
     private boolean isTarget = false;
-    private int marginX = 10;
-    private int marginY = 10;
+    private int marginX = 50;
+    private int marginY = 50;
 
     //Metadata
     private boolean showInfo = false;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
+import workingmemory.core.tasks.ExperimentTask;
 import workingmemory.gui.FrameNodeInterface;
 import workingmemory.gui.ImageComponent;
 
@@ -24,8 +25,8 @@ public class MainFrame extends javax.swing.JFrame {
      * Creates new form MainFrame
      */
     private int totalObjects = 100;
-    private int rows = 5;
-    private int columns = 4;
+    private int rows = 1;
+    private int columns = 1;
     private int objects = 1;
 
     private Stack<Integer> imageList = new Stack();
@@ -44,6 +45,14 @@ public class MainFrame extends javax.swing.JFrame {
     private int targetID = 100;
     private boolean allowTransformation = false;
     private ArrayList<ImageComponent> sceneImages = new ArrayList<>();
+    
+    
+    /***
+     * Experiment control
+     */
+    
+    private ExperimentTask experimentTask;
+    
 
     public MainFrame(FrameNodeInterface smallNode) {
         this.smallNode = smallNode;
@@ -63,11 +72,13 @@ public class MainFrame extends javax.swing.JFrame {
 
         Collections.shuffle(positions);
 
-        objects = (rows * columns) / 2;
+        //objects = (rows * columns) / 2;
+        objects = 1;
 
         imageListTmp.addAll(imageList);
 
         setLocationRelativeTo(null);
+        
     }
 
     /**
@@ -83,8 +94,12 @@ public class MainFrame extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        testTxt = new javax.swing.JLabel();
+        timerTxt = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Working memory load");
+        setResizable(false);
 
         contentPanel.setBackground(new java.awt.Color(0, 0, 0));
         contentPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -105,28 +120,33 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel1.setText("Current cue");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Current Image");
+
+        testTxt.setText("Test No: 0");
+
+        timerTxt.setText("Timer:00");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 151, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addGap(138, 138, 138))
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(117, 117, 117)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(80, 80, 80)
-                                .addComponent(jButton1)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton2)))
-                        .addGap(0, 78, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(testTxt)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(timerTxt)
+                        .addGap(10, 10, 10)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -135,22 +155,47 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addComponent(testTxt)
+                    .addComponent(timerTxt))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        smallNode.actionPerformed(this, "yeah motherfucker!");
+        experimentTask = new ExperimentTask(this);
+        experimentTask.start();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        nextImage();
+
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    /**
+     * *
+     * Control methods for GUI
+     */
+    
+    public void nextSecond(int second){
+        timerTxt.setText("Timer:"+second);
+    }
+    
+    public void endLearningStage(){
+        contentPanel.removeAll();
+        contentPanel.repaint();
+    }
+    
+    public void nextImage() {
         if (imageListTmp.size() < objects) {
             System.out.println("Objetos insuficientes para la escena!");
             return;
@@ -194,12 +239,18 @@ public class MainFrame extends javax.swing.JFrame {
         positionsTmp.removeAllElements();
         currentScene++;
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+        testTxt.setText("Test No:" + currentScene);
+        
+        smallNode.actionPerformed(this, "Hey!");
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel testTxt;
+    private javax.swing.JLabel timerTxt;
     // End of variables declaration//GEN-END:variables
 }
