@@ -1,2 +1,4 @@
-taskkill /F /PID 9100
-taskkill /F /PID 1988
+taskkill /F /PID 12812
+taskkill /F /PID 16400
+taskkill /F /PID 12812
+taskkill /F /PID 10192

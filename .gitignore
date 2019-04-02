@@ -12,6 +12,10 @@
 **/nbdist/
 **/.nb-gradle/
 
+#BasicWorkingMemory
+
+BasicWorkingMemory/captures/*
+
 #ImageSegmentation
 
 /ImageSegmentation/received/*

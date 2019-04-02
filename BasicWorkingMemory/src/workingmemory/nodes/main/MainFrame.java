@@ -5,13 +5,18 @@
  */
 package workingmemory.nodes.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import workingmemory.core.tasks.ExperimentTask;
 import workingmemory.gui.FrameNodeInterface;
 import workingmemory.gui.ImageComponent;
+import workingmemory.gui.ImageDialog;
+import workingmemory.gui.UIUtils;
 
 /**
  *
@@ -45,14 +50,12 @@ public class MainFrame extends javax.swing.JFrame {
     private int targetID = 100;
     private boolean allowTransformation = false;
     private ArrayList<ImageComponent> sceneImages = new ArrayList<>();
-    
-    
-    /***
+
+    /**
+     * *
      * Experiment control
      */
-    
     private ExperimentTask experimentTask;
-    
 
     public MainFrame(FrameNodeInterface smallNode) {
         this.smallNode = smallNode;
@@ -78,7 +81,7 @@ public class MainFrame extends javax.swing.JFrame {
         imageListTmp.addAll(imageList);
 
         setLocationRelativeTo(null);
-        
+
     }
 
     /**
@@ -101,7 +104,7 @@ public class MainFrame extends javax.swing.JFrame {
         setTitle("Working memory load");
         setResizable(false);
 
-        contentPanel.setBackground(new java.awt.Color(0, 0, 0));
+        contentPanel.setBackground(new java.awt.Color(25, 25, 25));
         contentPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         contentPanel.setLayout(null);
 
@@ -178,23 +181,37 @@ public class MainFrame extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         nextImage();
-
+        captureAndSend();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * *
      * Control methods for GUI
      */
-    
-    public void nextSecond(int second){
-        timerTxt.setText("Timer:"+second);
+    public void captureAndSend() {
+        
+        String path = "captures";
+        String name = "scene" + currentScene + "_capture";
+        UIUtils.saveComponentToPNGImage(contentPanel, path, name);
+        
+        //ImageDialog imgDialog = new ImageDialog(path + "/" + name + ".png");
+        //imgDialog.setVisible(true);
+        
+        //ImageSender imgSndr = new ImageSender();
+        //imgSndr.sendImage(path + "/" + name + ".png");
+        
+        smallNode.actionPerformed(this, path + "/" + name + ".png");
     }
-    
-    public void endLearningStage(){
+
+    public void nextSecond(int second) {
+        timerTxt.setText("Timer:" + second);
+    }
+
+    public void endLearningStage() {
         contentPanel.removeAll();
         contentPanel.repaint();
     }
-    
+
     public void nextImage() {
         if (imageListTmp.size() < objects) {
             System.out.println("Objetos insuficientes para la escena!");
@@ -240,7 +257,7 @@ public class MainFrame extends javax.swing.JFrame {
         currentScene++;
 
         testTxt.setText("Test No:" + currentScene);
-        
+
         smallNode.actionPerformed(this, "Hey!");
     }
 

@@ -31,7 +31,7 @@ public class BasicWorkingMemory {
         
         MainBigNode main = new MainBigNode(AreaNames.MaingBigNode, conf);
         
-        //VentralVC vvc = new VentralVC(AreaNames.VentralVC, conf);
+        VentralVC vvc = new VentralVC(AreaNames.VentralVC, conf);
         
     }
     

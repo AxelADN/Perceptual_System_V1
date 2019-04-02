@@ -32,6 +32,7 @@ public class VentralVC extends BigNode{
     
     @Override
     public void afferents(int senderID, byte[] data) {
-        int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
+        
+        System.out.println("Received: "+data.length);
     }
 }
