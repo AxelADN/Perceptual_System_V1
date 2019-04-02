@@ -25,7 +25,7 @@ public class VentralVC extends BigNode{
     public void init() {
                 
         //Start the node
-        addNodeType(AreaNames.VentralVCP1, MainBigNodeP1.class);
+        addNodeType(AreaNames.VentralVCP1, VentralVCP1.class);
         byte initialData[] = new byte[1];
         sendToChild(AreaNames.VentralVCP1, getName(), initialData);
     }
