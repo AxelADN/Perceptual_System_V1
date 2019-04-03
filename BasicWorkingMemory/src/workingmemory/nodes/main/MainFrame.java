@@ -181,7 +181,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         nextImage();
-        captureAndSend();
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -193,14 +193,7 @@ public class MainFrame extends javax.swing.JFrame {
         String path = "captures";
         String name = "scene" + currentScene + "_capture";
         UIUtils.saveComponentToPNGImage(contentPanel, path, name);
-        
-        //ImageDialog imgDialog = new ImageDialog(path + "/" + name + ".png");
-        //imgDialog.setVisible(true);
-        
-        //ImageSender imgSndr = new ImageSender();
-        //imgSndr.sendImage(path + "/" + name + ".png");
-        
-        smallNode.actionPerformed(this, path + "/" + name + ".png");
+        smallNode.actionPerformed(this, path + "/" + name + ".png",currentScene);
     }
 
     public void nextSecond(int second) {
@@ -258,7 +251,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         testTxt.setText("Test No:" + currentScene);
 
-        smallNode.actionPerformed(this, "Hey!");
+        captureAndSend();
     }
 
 

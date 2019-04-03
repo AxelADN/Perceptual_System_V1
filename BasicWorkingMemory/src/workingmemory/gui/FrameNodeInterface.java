@@ -11,6 +11,6 @@ package workingmemory.gui;
  */
 public interface FrameNodeInterface {
     
-    public void actionPerformed(Object src, Object data);
+    public void actionPerformed(Object src, Object data, int time);
     
 }
