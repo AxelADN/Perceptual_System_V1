@@ -88,6 +88,7 @@ public class MainBigNodeP1 extends SmallNode implements FrameNodeInterface {
                 
                 for (int j = 0; j < retry; j++) {
                     efferents(AreaNames.VentralVC, orderedChunk);//chunks[i]);
+                    efferents(AreaNames.DorsalVC, orderedChunk);
                 }
                 
             }

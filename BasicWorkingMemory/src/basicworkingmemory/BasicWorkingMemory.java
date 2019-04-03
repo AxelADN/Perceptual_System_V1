@@ -8,6 +8,7 @@ package basicworkingmemory;
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
+import workingmemory.nodes.dorsalvc.DorsalVC;
 import workingmemory.nodes.main.MainBigNode;
 import workingmemory.nodes.ventralvc.VentralVC;
 import workingmemory.utils.ProcessHelper;
@@ -33,6 +34,7 @@ public class BasicWorkingMemory {
         
         VentralVC vvc = new VentralVC(AreaNames.VentralVC, conf);
         
+        DorsalVC dvc = new DorsalVC(AreaNames.DorsalVC, conf);
     }
     
 }
