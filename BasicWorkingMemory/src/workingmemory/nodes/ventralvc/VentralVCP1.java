@@ -6,12 +6,14 @@
 package workingmemory.nodes.ventralvc;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
 import workingmemory.config.AreaNames;
+import workingmemory.connections.ImageSender;
 import workingmemory.nodes.custom.SmallNode;
 import workingmemory.utils.ImageTransferUtils;
 
@@ -92,15 +94,29 @@ public class VentralVCP1 extends SmallNode {
         
         int total = imageParts.get(time);
         int current = imageTotal.get(time);
+        String imageName = "received/vvc_received_" + time + ".png";
         
         System.out.println("Time: "+time+" total "+total+" current "+current);
         
         if(total == current){
             System.out.println("Imagen recibida para tiempo: "+time);
-            ImageTransferUtils.saveImage(outputStream.toByteArray(), "received/vvc_received_" + time + ".png");
+            
+            ImageTransferUtils.saveImage(outputStream.toByteArray(), imageName);
             outputStream = new ByteArrayOutputStream();
+            sendImage(imageName);
+        }        
+    }
+    
+    private void sendImage(String name){
+                    
+        try {
+            
+            ImageSender imgSndr = new ImageSender("10.0.5.150",10000);
+            imgSndr.sendImage(name);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(VentralVCP1.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }
 
 }

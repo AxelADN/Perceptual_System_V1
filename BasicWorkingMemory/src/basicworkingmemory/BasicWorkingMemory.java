@@ -34,7 +34,7 @@ public class BasicWorkingMemory {
         
         VentralVC vvc = new VentralVC(AreaNames.VentralVC, conf);
         
-        DorsalVC dvc = new DorsalVC(AreaNames.DorsalVC, conf);
+        //DorsalVC dvc = new DorsalVC(AreaNames.DorsalVC, conf);
     }
     
 }
