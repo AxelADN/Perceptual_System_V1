@@ -12,8 +12,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
+import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.opencv_core;
+import org.bytedeco.javacpp.opencv_core.Mat;
+import org.bytedeco.javacpp.opencv_core.Size;
+import org.bytedeco.javacpp.opencv_imgcodecs;
 import workingmemory.config.AreaNames;
 import workingmemory.nodes.custom.SmallNode;
+import workingmemory.utils.ImageProcessingUtils;
 import workingmemory.utils.ImageTransferUtils;
 
 /**
@@ -40,13 +46,13 @@ public class DorsalVCP1 extends SmallNode {
         if (data.length == 1 && nodeName == AreaNames.DorsalVC) {
             System.out.println("Iniciando nodo");
         } else {
-            
+
             try {
 
                 //int pos = data[0];
                 int pos = data[5];
                 int parts = data[4];
-                
+
                 byte chunk[] = new byte[ImageTransferUtils.CHUNK_SIZE];
                 byte timeInBytes[] = new byte[4];
 
@@ -55,28 +61,28 @@ public class DorsalVCP1 extends SmallNode {
 
                 int time = ImageTransferUtils.toInt(timeInBytes);
 
-                if(indexControl.get(time) == null){
+                if (indexControl.get(time) == null) {
                     indexControl.put(time, new int[1024]);
                 }
-                
+
                 int index[] = indexControl.get(time);
-                
+
                 System.out.println("Chunk numero: " + pos + " parts " + parts);
                 System.out.println("Time: " + time);
-                
+
                 if (index[pos] == 0) {
-                    
+
                     outputStream.write(chunk);
                     index[pos] = 1;
-                    
+
                     imageParts.put(time, parts);
-                    
-                    if(imageTotal.get(time) == null){
+
+                    if (imageTotal.get(time) == null) {
                         imageTotal.put(time, 1);
-                    }else{
+                    } else {
                         imageTotal.put(time, imageTotal.get(time) + 1);
                     }
-                    
+
                     saveImage(time);
 
                 } else {
@@ -90,18 +96,41 @@ public class DorsalVCP1 extends SmallNode {
     }
 
     private void saveImage(int time) {
-        
+
         int total = imageParts.get(time);
         int current = imageTotal.get(time);
-        
-        System.out.println("Time: "+time+" total "+total+" current "+current);
-        
-        if(total == current){
-            System.out.println("Imagen recibida para tiempo: "+time);
-            ImageTransferUtils.saveImage(outputStream.toByteArray(), "received/dvc_received_" + time + ".png");
-            outputStream = new ByteArrayOutputStream();
+        String imageName = "received/dvc_received_" + time + ".png";
+
+        System.out.println("Time: " + time + " total " + total + " current " + current);
+
+        if (total == current) {
+            System.out.println("Imagen recibida para tiempo: " + time);
+            
+            try {
+                Mat m = ImageProcessingUtils.toMat(outputStream.toByteArray());
+                
+                
+
+                ImageTransferUtils.saveImage(outputStream.toByteArray(), imageName);
+
+                outputStream = new ByteArrayOutputStream();
+                
+               // m = opencv_imgcodecs.imread(imageName,opencv_imgcodecs.IMREAD_COLOR);
+                
+               // Mat bgrMat = opencv_imgcodecs.imdecode(m, opencv_imgcodecs.IMREAD_COLOR);
+                        
+                //Processing
+                
+                ImageProcessingUtils.objectSegmentation(m);
+
+                ImageProcessingUtils.imshow("Received", m);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
         }
-        
+
     }
 
 }
