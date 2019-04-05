@@ -5,38 +5,33 @@
  */
 package perception.nodes.bigNodes;
 
-import perception.nodes.smallNodes.Categorization;
-import perception.nodes.smallNodes.Identification;
-import perception.nodes.smallNodes.SceneComposition;
-
 import utils.SimpleLogger;
 
 import kmiddle2.nodes.areas.Area;
 import perception.config.AreaNames;
+import perception.nodes.smallNodes.MemoryProcess;
 
 /**
  *
  * @author axeladn
  */
-public class ITC extends Area {
+public class ITCM extends Area {
     
-    public ITC() {        
-        this.ID = AreaNames.ITC;
+    public ITCM() {
+        this.ID = AreaNames.ITCM;
         this.namer = AreaNames.class;
-        addProcess(Categorization.class);
-        addProcess(Identification.class);
-        addProcess(SceneComposition.class);
+        addProcess(MemoryProcess.class);
     }
     
     @Override
     public void init() {
         //send(AreaNames.AMY_GENHNEI)
-        SimpleLogger.log(this,"BIG_NODE_ITC");
+        SimpleLogger.log(this,"BIG_NODE_ITCM");
     }
 
     @Override
     public void receive(int nodeID, byte[] data) {
-        send(AreaNames.Categorization, data);
+        send(AreaNames.MemoryProcess, data);
     }
     
     
