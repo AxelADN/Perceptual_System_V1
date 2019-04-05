@@ -7,6 +7,7 @@ package workingmemory.nodes.dorsalvc;
 
 import workingmemory.nodes.ventralvc.*;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgcodecs;
 import workingmemory.config.AreaNames;
+import workingmemory.core.entities.PreObject;
 import workingmemory.nodes.custom.SmallNode;
 import workingmemory.utils.ImageProcessingUtils;
 import workingmemory.utils.ImageTransferUtils;
@@ -109,21 +111,19 @@ public class DorsalVCP1 extends SmallNode {
             try {
                 Mat m = ImageProcessingUtils.toMat(outputStream.toByteArray());
                 
-                
-
-                ImageTransferUtils.saveImage(outputStream.toByteArray(), imageName);
-
+                //Guardar es opcional
+                //ImageTransferUtils.saveImage(outputStream.toByteArray(), imageName);
+                // m = opencv_imgcodecs.imread(imageName,opencv_imgcodecs.IMREAD_COLOR);
+                    
                 outputStream = new ByteArrayOutputStream();
                 
-               // m = opencv_imgcodecs.imread(imageName,opencv_imgcodecs.IMREAD_COLOR);
-                
-               // Mat bgrMat = opencv_imgcodecs.imdecode(m, opencv_imgcodecs.IMREAD_COLOR);
-                        
                 //Processing
                 
-                ImageProcessingUtils.objectSegmentation(m);
+                ArrayList<PreObject> preObjects = ImageProcessingUtils.objectSegmentation(m, "Dorsal Visual Cortex");
 
-                ImageProcessingUtils.imshow("Received", m);
+                System.out.println("Segmented preobjects "+preObjects.size());
+                
+                //ImageProcessingUtils.imshow("Received", m);
 
             } catch (Exception ex) {
                 ex.printStackTrace();

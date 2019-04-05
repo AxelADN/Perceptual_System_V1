@@ -9,12 +9,14 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
+import org.bytedeco.javacpp.opencv_core.Point;
 import org.bytedeco.javacpp.opencv_imgcodecs;
 import org.bytedeco.javacpp.opencv_imgproc;
 import static org.bytedeco.javacpp.opencv_imgproc.CV_BGR2GRAY;
@@ -28,6 +30,7 @@ import static org.bytedeco.javacpp.opencv_imgproc.threshold;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameConverter;
+import workingmemory.core.entities.PreObject;
 
 /**
  *
@@ -35,8 +38,8 @@ import org.bytedeco.javacv.OpenCVFrameConverter;
  */
 public class ImageProcessingUtils {
 
-    private static final int NUM_COLUMNS = 1;
-    private static final int NUM_ROWS = 1;
+    private static final int NUM_COLUMNS = 4;
+    private static final int NUM_ROWS = 5;
     private static int imageMatrix[][] = new int[NUM_ROWS][NUM_COLUMNS];
 
     public static void imshow(String txt, opencv_core.Mat img) {
@@ -49,23 +52,15 @@ public class ImageProcessingUtils {
     }
 
     public static Mat toMat(byte[] bi) {
-        try {
-            InputStream in = new ByteArrayInputStream(bi);
-            BufferedImage bImageFromConvert = ImageIO.read(in);
-            System.out.println(bImageFromConvert.getWidth()+","+bImageFromConvert.getHeight());
-            
-            Mat m = new Mat(new opencv_core.Size(1,bi.length), opencv_core.CV_8UC1, new BytePointer(bi));
-                
-            
-            OpenCVFrameConverter.ToIplImage cv = new OpenCVFrameConverter.ToIplImage();
-            Java2DFrameConverter jcv = new Java2DFrameConverter();
-            
-            return opencv_imgcodecs.imdecode(m, opencv_imgcodecs.IMREAD_COLOR); //cv.convertToMat(jcv.convert(bImageFromConvert));
+        // InputStream in = new ByteArrayInputStream(bi);
+        // BufferedImage bImageFromConvert = ImageIO.read(in);
 
-        } catch (IOException ex) {
-            Logger.getLogger(ImageProcessingUtils.class.getName()).log(Level.SEVERE, null, ex);
-            return null;
-        }
+        Mat m = new Mat(new opencv_core.Size(1, bi.length), opencv_core.CV_8UC1, new BytePointer(bi));
+
+        //OpenCVFrameConverter.ToIplImage cv = new OpenCVFrameConverter.ToIplImage();
+        //Java2DFrameConverter jcv = new Java2DFrameConverter();
+        return opencv_imgcodecs.imdecode(m, opencv_imgcodecs.IMREAD_COLOR); //cv.convertToMat(jcv.convert(bImageFromConvert));
+
     }
 
     public static Mat resizeImage(Mat image, int width, int height) {
@@ -92,9 +87,15 @@ public class ImageProcessingUtils {
 
         return resizedImage;
     }
+    
+    public static Point getPositionInGrid(int centerX, int centerY, int imageWidth, int imageHeight){
+            int indexColumn = ((centerX * NUM_COLUMNS) / imageWidth);
+            int indexRow = ((centerY * NUM_ROWS) / imageHeight);
+            return new Point(indexColumn, indexRow);
+    }
 
-    public static void objectSegmentation(Mat src) {
-       // System.out.println("Segmentation...");
+    public static ArrayList<PreObject> objectSegmentation(Mat src, String nodeName) {
+        // System.out.println("Segmentation...");
         Mat originalImg = new Mat();
         src.copyTo(originalImg);
 
@@ -103,7 +104,7 @@ public class ImageProcessingUtils {
 
         // Check if everything was fine
         if (src.data().isNull()) {
-            return;
+            return null;
         }
         // Show source image
         //imshow("Source Image", src);
@@ -112,27 +113,31 @@ public class ImageProcessingUtils {
 
         cvtColor(src, gray, CV_BGR2GRAY);
 
-        imshow("Binary Image", gray);
+        //imshow("Binary Image", gray);
         Mat gBlurImage = new Mat();
 
         opencv_imgproc.GaussianBlur(gray, gBlurImage, new opencv_core.Size(5, 5), 0);
 
-        imshow("Gaussian Blur Image", gBlurImage);
+        //imshow("Gaussian Blur Image", gBlurImage);
         Mat th1 = new Mat();
 
         threshold(gBlurImage, th1, 29, 255, CV_THRESH_BINARY);
 
-        imshow("Threshold Image", th1);
+        //imshow("Threshold Image", th1);
         opencv_core.MatVector contours = new opencv_core.MatVector();
         findContours(th1, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
+        
+        //
+        ArrayList<PreObject> preObjects = new ArrayList<>();
+        int preObjectId = 0;
+        
         for (int i = 0; i < contours.size(); i++) {
 
             drawContours(src, contours, i, opencv_core.Scalar.all((i) + 1));
             Mat c = contours.get((long) i);
             opencv_core.Rect bounds = opencv_imgproc.boundingRect(c);
 
-            int contourID = (i + 1);
             int x = bounds.x();
             int y = bounds.y();
             int w = bounds.width();
@@ -140,24 +145,20 @@ public class ImageProcessingUtils {
 
             if (w >= 20 && h >= 20 && i < contours.size()) {
 
+                preObjectId++;
+                
                 int centerX = x + w / 2;
                 int centerY = y + h / 2;
 
-                int indexColumn = (((x + w / 2) * NUM_COLUMNS) / imgWidth);
-                int indexRow = (((y + h / 2) * NUM_ROWS) / imgHeight);
-
                 opencv_imgproc.rectangle(src, bounds, org.bytedeco.javacpp.helper.opencv_core.AbstractScalar.RED);
                 opencv_imgproc.circle(src, new opencv_core.Point(centerX, centerY), 5, org.bytedeco.javacpp.helper.opencv_core.AbstractScalar.RED);
-                opencv_imgproc.putText(src, "#{}" + contourID, bounds.tl(), opencv_imgproc.CV_FONT_HERSHEY_SIMPLEX, 0.5, org.bytedeco.javacpp.helper.opencv_core.AbstractScalar.CYAN);
-
-                imageMatrix[indexRow][indexColumn] = contourID;
+                opencv_imgproc.putText(src, "#{}" + preObjectId, bounds.tl(), opencv_imgproc.CV_FONT_HERSHEY_SIMPLEX, 0.5, org.bytedeco.javacpp.helper.opencv_core.AbstractScalar.CYAN);
 
                 //Resize the image
+                
                 Mat subImg = new Mat(originalImg, bounds);
-
                 Mat resizedImage = null;
-
-                System.out.println("Resize " + contourID);
+                
                 if (h >= w) {
                     resizedImage = resizeImage(subImg, 0, 128);
                 } else {
@@ -171,12 +172,21 @@ public class ImageProcessingUtils {
 
                 resizedImage.copyTo(bl.rowRange(marginY, marginY + resizedImage.rows()).colRange(marginX, marginX + resizedImage.cols()));
 
-                //imshow("Sub", subImg);
-                imshow("Sub2", bl);
+                PreObject preObject = new PreObject(preObjectId, bl, centerX, centerY);
+                preObjects.add(preObject);
+                
+                //Para 2D-String
+                
+                Point pxy = getPositionInGrid(centerX, centerY, imgWidth, imgHeight);
+                imageMatrix[pxy.y()][pxy.x()] = preObjectId;
+                
+                //
+                
+                imshow("Resized image", bl);
 
-                System.out.println(indexColumn + "," + indexRow + "<-- " + contourID);
+                System.out.println(pxy.x() + "," + pxy.y() + "<-- " + preObjectId);
             }
-
+            
         }
 
         for (int j = 0; j < imageMatrix.length; j++) {
@@ -185,7 +195,10 @@ public class ImageProcessingUtils {
             }
             System.out.println("");
         }
-        imshow("Contour", src);
+        
+        imshow(nodeName, src);
+        
+        return preObjects;
     }
 
 }
