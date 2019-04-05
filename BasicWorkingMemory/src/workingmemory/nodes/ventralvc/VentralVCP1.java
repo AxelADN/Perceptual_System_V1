@@ -12,9 +12,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
+import org.bytedeco.javacpp.opencv_core;
+import org.bytedeco.javacpp.opencv_core.Mat;
+import static org.bytedeco.javacpp.opencv_imgcodecs.imread;
 import workingmemory.config.AreaNames;
 import workingmemory.connections.ImageSender;
 import workingmemory.nodes.custom.SmallNode;
+import workingmemory.utils.ImageProcessingUtils;
 import workingmemory.utils.ImageTransferUtils;
 
 /**
@@ -41,13 +45,13 @@ public class VentralVCP1 extends SmallNode {
         if (data.length == 1 && nodeName == AreaNames.VentralVC) {
             System.out.println("Iniciando nodo");
         } else {
-            
+
             try {
 
                 //int pos = data[0];
                 int pos = data[5];
                 int parts = data[4];
-                
+
                 byte chunk[] = new byte[ImageTransferUtils.CHUNK_SIZE];
                 byte timeInBytes[] = new byte[4];
 
@@ -56,28 +60,28 @@ public class VentralVCP1 extends SmallNode {
 
                 int time = ImageTransferUtils.toInt(timeInBytes);
 
-                if(indexControl.get(time) == null){
+                if (indexControl.get(time) == null) {
                     indexControl.put(time, new int[1024]);
                 }
-                
+
                 int index[] = indexControl.get(time);
-                
+
                 System.out.println("Chunk numero: " + pos + " parts " + parts);
                 System.out.println("Time: " + time);
-                
+
                 if (index[pos] == 0) {
-                    
+
                     outputStream.write(chunk);
                     index[pos] = 1;
-                    
+
                     imageParts.put(time, parts);
-                    
-                    if(imageTotal.get(time) == null){
+
+                    if (imageTotal.get(time) == null) {
                         imageTotal.put(time, 1);
-                    }else{
+                    } else {
                         imageTotal.put(time, imageTotal.get(time) + 1);
                     }
-                    
+
                     saveImage(time);
 
                 } else {
@@ -91,22 +95,33 @@ public class VentralVCP1 extends SmallNode {
     }
 
     private void saveImage(int time) {
-        
+
         int total = imageParts.get(time);
         int current = imageTotal.get(time);
         String imageName = "received/vvc_received_" + time + ".png";
-        
-        System.out.println("Time: "+time+" total "+total+" current "+current);
-        
-        if(total == current){
-            System.out.println("Imagen recibida para tiempo: "+time);
+
+        System.out.println("Time: " + time + " total " + total + " current " + current);
+
+        if (total == current) {
+            System.out.println("Imagen recibida para tiempo: " + time);
+
+            try {
+                Mat m = ImageProcessingUtils.toMat(outputStream.toByteArray());
+                     
+                ImageTransferUtils.saveImage(outputStream.toByteArray(), imageName);
+                
+                outputStream = new ByteArrayOutputStream();
             
-            ImageTransferUtils.saveImage(outputStream.toByteArray(), imageName);
-            outputStream = new ByteArrayOutputStream();
-            sendImage(imageName);
-        }        
+                ImageProcessingUtils.imshow("Received", m);
+                
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            //sendImage(imageName);
+        }
     }
-    
+
+    /*
     private void sendImage(String name){
                     
         try {
@@ -118,5 +133,5 @@ public class VentralVCP1 extends SmallNode {
             Logger.getLogger(VentralVCP1.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+     */
 }

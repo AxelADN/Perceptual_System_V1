@@ -15,7 +15,7 @@
 #BasicWorkingMemory
 
 BasicWorkingMemory/captures/*
-
+BasicWorkingMemory/received/*
 #ImageSegmentation
 
 /ImageSegmentation/received/*
