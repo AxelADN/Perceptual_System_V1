@@ -5,9 +5,16 @@
  */
 package perception.nodes.smallNodes;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import utils.SimpleLogger;
 
 import perception.activities.FrameActivity;
+import perception.config.AreaNames;
+import perception.nodes.bigNodes.ITC;
+import spike.LongSpike;
+import spike.Modalities;
 
 /**
  *
@@ -17,7 +24,9 @@ public class Categorization extends FrameActivity {
     
     @Override
     public void init() {
+        
         SimpleLogger.log(this, "SMALL_NODE_CATEGORIZATION");
+        
     }
 
     @Override

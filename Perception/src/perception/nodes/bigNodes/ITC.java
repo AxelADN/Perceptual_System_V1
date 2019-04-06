@@ -5,6 +5,9 @@
  */
 package perception.nodes.bigNodes;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import perception.nodes.smallNodes.Categorization;
 import perception.nodes.smallNodes.Identification;
 import perception.nodes.smallNodes.SceneComposition;
@@ -13,6 +16,9 @@ import utils.SimpleLogger;
 
 import kmiddle2.nodes.areas.Area;
 import perception.config.AreaNames;
+import utils.Convertor;
+import spike.LongSpike;
+import spike.Modalities;
 
 /**
  *
@@ -32,6 +38,7 @@ public class ITC extends Area {
     public void init() {
         //send(AreaNames.AMY_GENHNEI)
         SimpleLogger.log(this,"BIG_NODE_ITC");
+        
     }
 
     @Override
