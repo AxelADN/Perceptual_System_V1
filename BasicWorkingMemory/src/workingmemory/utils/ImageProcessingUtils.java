@@ -94,7 +94,7 @@ public class ImageProcessingUtils {
             return new Point(indexColumn, indexRow);
     }
 
-    public static ArrayList<PreObject> objectSegmentation(Mat src, String nodeName) {
+    public static ArrayList<PreObject> objectSegmentation(Mat src, String nodeName, int time) {
         // System.out.println("Segmentation...");
         Mat originalImg = new Mat();
         src.copyTo(originalImg);
@@ -172,28 +172,26 @@ public class ImageProcessingUtils {
 
                 resizedImage.copyTo(bl.rowRange(marginY, marginY + resizedImage.rows()).colRange(marginX, marginX + resizedImage.cols()));
 
-                PreObject preObject = new PreObject(preObjectId, bl, centerX, centerY);
+                PreObject preObject = new PreObject(preObjectId, bl, centerX, centerY, time);
+                
                 preObjects.add(preObject);
                 
-                //Para 2D-String
+                //Dummy data, delete ir
+                preObjects.add(new PreObject(2, bl, 300, 300, time));
+                preObjects.add(new PreObject(3, bl, 100, 100, time));
                 
-                Point pxy = getPositionInGrid(centerX, centerY, imgWidth, imgHeight);
-                imageMatrix[pxy.y()][pxy.x()] = preObjectId;
+                //Para 2D-String
+                //System.out.println(centerX+","+centerY+","+imgWidth+","+imgHeight);
+                //Point pxy = getPositionInGrid(centerX, centerY, imgWidth, imgHeight);
+                //imageMatrix[pxy.y()][pxy.x()] = preObjectId;
                 
                 //
                 
                 imshow("Resized image", bl);
 
-                System.out.println(pxy.x() + "," + pxy.y() + "<-- " + preObjectId);
+                //System.out.println(pxy.x() + "," + pxy.y() + "<-- " + preObjectId);
             }
             
-        }
-
-        for (int j = 0; j < imageMatrix.length; j++) {
-            for (int k = 0; k < imageMatrix[0].length; k++) {
-                System.out.print("[" + imageMatrix[j][k] + "]");
-            }
-            System.out.println("");
         }
         
         imshow(nodeName, src);

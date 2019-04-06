@@ -5,24 +5,10 @@
  */
 package workingmemory.nodes.dorsalvc;
 
-import workingmemory.nodes.ventralvc.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
 import workingmemory.nodes.custom.BigNode;
-import workingmemory.nodes.main.MainBigNodeP1;
 
 /**
  *
@@ -39,12 +25,26 @@ public class DorsalVC extends BigNode {
 
         //Start the node
         addNodeType(AreaNames.DorsalVCP1, DorsalVCP1.class);
+        addNodeType(AreaNames.DorsalVCP2, DorsalVCP2.class);
+        
         byte initialData[] = new byte[1];
+        
         sendToChild(AreaNames.DorsalVCP1, getName(), initialData);
+        sendToChild(AreaNames.DorsalVCP2, getName(), initialData);
     }
 
     @Override
     public void afferents(int senderID, byte[] data) {
-        sendToChild(AreaNames.DorsalVCP1, senderID, data);
+        
+        int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
+        
+        if(nodeType == AreaNames.DorsalVCP1){
+            System.out.println("Send to get coordinates");
+            sendToChild(AreaNames.DorsalVCP2, getName(), data);
+        }else{
+            System.out.println("Send to first processing");
+            sendToChild(AreaNames.DorsalVCP1, getName(), data);
+        }        
+        
     }
 }

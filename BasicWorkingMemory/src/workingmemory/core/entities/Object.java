@@ -15,14 +15,14 @@ public class Object extends PreObject{
     
     private int objectClass;
     
-    public Object(int objectClass, int id, Mat image, int centerX, int centerY) {
-        super(id, image, centerX, centerY);
+    public Object(int objectClass, int id, Mat image, int centerX, int centerY, int time) {
+        super(id, image, centerX, centerY, time);
         
         this.objectClass = objectClass;
     }
     
     public Object(int objectClass, PreObject object){
-        super(object.getId(), object.getImage(), object.getCenterX(), object.getCenterY());
+        super(object.getId(), object.getImage(), object.getCenterX(), object.getCenterY(), object.getTime());
         
         this.objectClass = objectClass;
     }

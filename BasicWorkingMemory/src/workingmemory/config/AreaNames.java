@@ -31,5 +31,13 @@ public class AreaNames {
      */
     public static final int DorsalVC = NodeNameHelper.getNodeID(3, 0, 0);
     public static final int DorsalVCP1 = NodeNameHelper.getNodeID(3, 1, 0);
+    public static final int DorsalVCP2 = NodeNameHelper.getNodeID(3, 2, 0);
+    
+    /*
+    * Medial Temporal Lobe
+    */
+    public static final int MedialTemporalLobe = NodeNameHelper.getNodeID(4, 0, 0);
+    public static final int MTLP1 = NodeNameHelper.getNodeID(4, 1, 0);
+    public static final int MTLP2 = NodeNameHelper.getNodeID(4, 2, 0);
 
 }

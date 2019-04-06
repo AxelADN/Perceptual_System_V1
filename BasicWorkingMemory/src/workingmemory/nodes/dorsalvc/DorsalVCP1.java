@@ -20,6 +20,7 @@ import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgcodecs;
 import workingmemory.config.AreaNames;
 import workingmemory.core.entities.PreObject;
+import workingmemory.core.spikes.Spike;
 import workingmemory.nodes.custom.SmallNode;
 import workingmemory.utils.ImageProcessingUtils;
 import workingmemory.utils.ImageTransferUtils;
@@ -119,9 +120,11 @@ public class DorsalVCP1 extends SmallNode {
                 
                 //Processing
                 
-                ArrayList<PreObject> preObjects = ImageProcessingUtils.objectSegmentation(m, "Dorsal Visual Cortex");
-
-                System.out.println("Segmented preobjects "+preObjects.size());
+                ArrayList<PreObject> preObjects = ImageProcessingUtils.objectSegmentation(m, "Dorsal Visual Cortex", time);
+                Spike spike = preObjectsToSpike(preObjects);
+                
+                
+                efferents(AreaNames.DorsalVC, spike.toBytes());
                 
                 //ImageProcessingUtils.imshow("Received", m);
 
@@ -131,6 +134,30 @@ public class DorsalVCP1 extends SmallNode {
 
         }
 
+    }
+    
+    public Spike preObjectsToSpike(ArrayList<PreObject> preObjects){
+        
+        Spike<int[],Integer,int[][],int[]> spike;
+        
+        int ids[] = new int[preObjects.size()];
+        int locations[][] = new int[preObjects.size()][2];
+        int durations[] = new int[preObjects.size()];
+        
+        for (int i = 0; i < preObjects.size(); i++) {
+            
+            PreObject p = preObjects.get(i);
+            
+            ids[i] = p.getId();
+            locations[i][0] = p.getCenterX();
+            locations[i][1] = p.getCenterY();
+            durations[i] = p.getTime();
+            
+        }
+
+        spike = new Spike(0, "PreObjectSpike", ids, 0, locations, durations);
+        
+        return spike;
     }
 
 }
