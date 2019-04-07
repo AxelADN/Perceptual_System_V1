@@ -5,22 +5,15 @@
  */
 package perception.nodes.smallNodes;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import kmiddle2.nodes.activities.Activity;
+import perception.GUI.ProcessInterface;
 import utils.SimpleLogger;
-
-import perception.activities.FrameActivity;
-import perception.config.AreaNames;
-import perception.nodes.bigNodes.ITC;
-import spike.LongSpike;
-import spike.Modalities;
 
 /**
  *
  * @author axeladn
  */
-public class Categorization extends FrameActivity {
+public class Categorization extends Activity {
     
     @Override
     public void init() {
@@ -32,6 +25,6 @@ public class Categorization extends FrameActivity {
     @Override
     public void receive(int nodeID, byte[] data) {
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        System.out.println("recibi aLGO ALV");
+        SimpleLogger.log(this, "DATA_RECEIVED: "+ data);
     }
 }

@@ -4,6 +4,8 @@ import kmiddle2.nodes.service.Igniter;
 
 import perception.nodes.bigNodes.ITC;
 import perception.nodes.bigNodes.ITCM;
+import perception.GUI.GenericGuiActivity;
+import perception.activities.GenericActivity;
 
 import org.opencv.core.Core;
 import utils.SimpleLogger;
@@ -13,6 +15,8 @@ public class perception extends Igniter {
 
     private boolean DEBUG = true;
     private byte ENTITY_ID = 33;
+    private final GenericActivity initActivity;
+    private final GenericGuiActivity initGUI;
 
     public perception() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -30,8 +34,13 @@ public class perception extends Igniter {
         configuration.setTCP();
         configuration.setEntityID(ENTITY_ID);
 
-        layoutManager.initLayout();
+        //layoutManager.initLayout();
+        
+        
         setAreas(areaNames);
+        initActivity = new GenericActivity();
+        initGUI = new GenericGuiActivity(initActivity);
+        initGUI.setVisible(true);
         run();
     }
 
