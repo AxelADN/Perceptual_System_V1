@@ -6,6 +6,7 @@
 package perception.GUI;
 
 import kmiddle2.nodes.activities.Activity;
+import spike.LongSpike;
 
 /**
  *
@@ -13,5 +14,5 @@ import kmiddle2.nodes.activities.Activity;
  */
 public interface ProcessInterface {
     
-    public void executeProcess(Object src, byte[] data);
+    public void executeProcess(Object src, LongSpike spike);
 }

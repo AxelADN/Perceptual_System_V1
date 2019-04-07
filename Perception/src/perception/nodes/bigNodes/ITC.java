@@ -15,6 +15,7 @@ import perception.nodes.smallNodes.SceneComposition;
 import utils.SimpleLogger;
 
 import kmiddle2.nodes.areas.Area;
+import perception.activities.GenericActivity;
 import perception.config.AreaNames;
 import utils.Convertor;
 import spike.LongSpike;
@@ -26,12 +27,15 @@ import spike.Modalities;
  */
 public class ITC extends Area {
     
+    private LongSpike spike;
+    
     public ITC() {        
         this.ID = AreaNames.ITC;
         this.namer = AreaNames.class;
+        addProcess(GenericActivity.class);
         addProcess(Categorization.class);
-        addProcess(Identification.class);
-        addProcess(SceneComposition.class);
+        //addProcess(Identification.class);
+        //addProcess(SceneComposition.class);
     }
     
     @Override
@@ -43,7 +47,14 @@ public class ITC extends Area {
 
     @Override
     public void receive(int nodeID, byte[] data) {
-        send(AreaNames.Categorization, data);
+        try {
+            spike = new LongSpike(data);
+            System.out.println("....HOLAMUNDO2...."+spike.getIntensity());
+            send(AreaNames.Categorization, spike.getByteArray());
+        } catch (Exception ex) {
+            Logger.getLogger(ITC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
     }
     
     

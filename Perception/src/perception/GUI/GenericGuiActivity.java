@@ -7,6 +7,10 @@ package perception.GUI;
 
 import javax.swing.JFrame;
 import kmiddle2.nodes.activities.Activity;
+import perception.config.AreaNames;
+import spike.LongSpike;
+import spike.Modalities;
+import utils.Convertor;
 
 /**
  *
@@ -78,7 +82,9 @@ public class GenericGuiActivity <T extends ProcessInterface> extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        node.executeProcess(this,jTextField1.getText().getBytes());
+        System.out.println("....HOLAMUNDO0...."+jTextField1.getText());
+        LongSpike spike = new LongSpike(Modalities.VISUAL, AreaNames.GenericActivity, jTextField1.getText(), 0);
+        node.executeProcess(this,spike);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -16,6 +16,7 @@ public class AreaNames {
     public static int Categorization = IDHelper.generateID("ITC", 1, 0);
     public static int Identification = IDHelper.generateID("ITC", 2, 0);
     public static int SceneComposition = IDHelper.generateID("ITC", 3, 0);
+    public static int GenericActivity = IDHelper.generateID("ITC", 4, 0);
     
     public static int ITCM =   IDHelper.generateID("ITC_M", 0, 0);
     public static int MemoryProcess =   IDHelper.generateID("ITC_M", 1, 0);
