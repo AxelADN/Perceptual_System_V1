@@ -5,16 +5,23 @@
  */
 package workingmemory.nodes.ventralvc;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.opencv_core;
+import static org.bytedeco.javacpp.opencv_core.CV_8UC3;
+import org.bytedeco.javacpp.opencv_core.CvType;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import static org.bytedeco.javacpp.opencv_imgcodecs.CV_LOAD_IMAGE_UNCHANGED;
 import static org.bytedeco.javacpp.opencv_imgcodecs.imdecode;
@@ -113,24 +120,22 @@ public class VentralVCP1 extends SmallNode {
 
             try {
                 Mat m = ImageProcessingUtils.toMat(outputStream.toByteArray());
-                     
+
                 //ImageTransferUtils.saveImage(outputStream.toByteArray(), imageName);
-                
                 outputStream = new ByteArrayOutputStream();
-                
+
                 ArrayList<PreObject> preObjects = ImageProcessingUtils.objectSegmentation(m, "Ventral Visual Cortex", time);
-            
+
                 ArrayList<Spike> spikes = preObjectsToSpike(preObjects);
-                
-               // efferents(AreaNames.InferiorTemporalCortex, spikes.get(0).toBytes());
-                
-               Spike<Integer,byte[],int[],Integer> s = spikes.get(0);
-               Mat mm = new Mat(new opencv_core.Size(128, 128), opencv_core.CV_8UC3, new BytePointer(s.getIntensity()));
-               Mat r = imdecode(mm, CV_LOAD_IMAGE_UNCHANGED);//ImageProcessingUtils.toMat(s.getIntensity());
-               
-                    
-               ImageProcessingUtils.imshow("Received", r);
-                
+
+                efferents(AreaNames.InferiorTemporalCortex, spikes.get(0).toBytes());
+
+                //Spike<Integer, byte[], int[], Integer> s = spikes.get(0);
+
+                //Mat mm = new Mat(new opencv_core.Size(128, 128), opencv_core.CV_8UC3, new BytePointer(s.getIntensity()));
+
+                ImageProcessingUtils.imshow("Received", m);
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -138,30 +143,30 @@ public class VentralVCP1 extends SmallNode {
         }
     }
 
-    public ArrayList<Spike> preObjectsToSpike(ArrayList<PreObject> preObjects){
-        
+    public ArrayList<Spike> preObjectsToSpike(ArrayList<PreObject> preObjects) {
+
         ArrayList<Spike> spikes = new ArrayList<>();
-        
+
         for (int i = 0; i < preObjects.size(); i++) {
-            
-            Spike<Integer,byte[],int[],Integer> spike;
-            
+
+            Spike<Integer, byte[], int[], Integer> spike;
+
             PreObject p = preObjects.get(i);
+
             int size = p.getImage().channels() * p.getImage().cols() * p.getImage().rows();
             byte[] b = new byte[size];
+
             p.getImage().data().get(b);
-            
-            
-            System.out.println("send: "+b.length+" s "+size);
-            spike = new Spike(0, "PreObjectSpike", p.getId(),b, new int[]{p.getCenterX(),p.getCenterY()}, p.getTime());
-            
+
+            System.out.println("send: " + b.length + " s " + b.length);
+            spike = new Spike(0, "PreObjectSpike", p.getId(), b, new int[]{p.getCenterX(), p.getCenterY()}, p.getTime());
+
             spikes.add(spike);
         }
-        
-        
+
         return spikes;
     }
-    
+
     /*
     private void sendImage(String name){
                     

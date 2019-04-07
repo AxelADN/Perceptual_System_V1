@@ -43,7 +43,7 @@ public class ImageProcessingUtils {
     private static int imageMatrix[][] = new int[NUM_ROWS][NUM_COLUMNS];
 
     public static void imshow(String txt, opencv_core.Mat img) {
-
+        
         CanvasFrame canvasFrame = new CanvasFrame(txt);
         canvasFrame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         canvasFrame.setCanvasSize(img.cols(), img.rows());
@@ -186,7 +186,7 @@ public class ImageProcessingUtils {
                 //imageMatrix[pxy.y()][pxy.x()] = preObjectId;
                 
                 //
-                
+                System.out.println("el size "+((int)bl.total()*bl.channels())+" "+bl.type());
                 imshow("Resized image", bl);
 
                 //System.out.println(pxy.x() + "," + pxy.y() + "<-- " + preObjectId);

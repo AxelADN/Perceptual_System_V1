@@ -53,13 +53,11 @@ public class ITCP1 extends SmallNode {
             System.out.println("Ready for object recognition");
             
             Spike<Integer, byte[], int[], Integer> spike = Spike.fromBytes(data);
-            System.out.println("t "+spike.getIntensity().length);
-            Mat img = new Mat(spike.getIntensity());//ImageProcessingUtils.toMat(spike.getIntensity());
-            Mat img2 = opencv_imgcodecs.imdecode(img, opencv_imgcodecs.IMREAD_COLOR);
+            Mat img = new Mat(new opencv_core.Size(128, 128), opencv_core.CV_8UC3, new BytePointer(spike.getIntensity()));
             
             System.out.println("cxy: " + spike.getLocation()[0] + "," + spike.getLocation()[1]);
             
-            ImageProcessingUtils.imshow("Identified2", img2);
+            ImageProcessingUtils.imshow("To identify", img);
         }
     }
     
