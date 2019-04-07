@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package workingmemory.nodes.medialtl;
+package workingmemory.nodes.itc;
 
+import workingmemory.nodes.medialtl.*;
 import workingmemory.nodes.dorsalvc.*;
 import workingmemory.nodes.ventralvc.*;
 import java.io.ByteArrayOutputStream;
@@ -34,45 +35,32 @@ import workingmemory.utils.ImageTransferUtils;
  *
  * @author Luis Martin
  */
-public class MTLP1 extends SmallNode {
-
+public class ITCP1 extends SmallNode {
+    
     private int imageMatrix[][] = null;
-
-    public MTLP1(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
+    
+    public ITCP1(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
     }
-
+    
     @Override
     public void afferents(int nodeName, byte[] data) {
-
-        if (data.length == 1 && nodeName == AreaNames.MedialTemporalLobe) {
+        
+        if (data.length == 1 && nodeName == AreaNames.InferiorTemporalCortex) {
             System.out.println("Iniciando nodo");
         } else {
             
-            System.out.println("Create 2d string");
+            System.out.println("Ready for object recognition");
             
-            Spike<Integer, Integer, int[][], Integer> spike2DS = Spike.fromBytes(data);
+            Spike<Integer, byte[], int[], Integer> spike = Spike.fromBytes(data);
+            System.out.println("t "+spike.getIntensity().length);
+            Mat img = new Mat(spike.getIntensity());//ImageProcessingUtils.toMat(spike.getIntensity());
+            Mat img2 = opencv_imgcodecs.imdecode(img, opencv_imgcodecs.IMREAD_COLOR);
             
-            int imageMatrix[][] = spike2DS.getLocation();
+            System.out.println("cxy: " + spike.getLocation()[0] + "," + spike.getLocation()[1]);
             
-            //Debug
-            System.out.println("Image to convert");
-            for (int j = 0; j < imageMatrix.length; j++) {
-                for (int k = 0; k < imageMatrix[0].length; k++) {
-                    System.out.print("[" + imageMatrix[j][k] + "]");
-                }
-                System.out.println("");
-            }
-            
-            //
-            
-            String pattern2dString = Image2dRepresentation.create2DString(imageMatrix);
-            
-            System.out.println("Image converted in 2d-string");
-            System.out.println(pattern2dString);
-
-            Image2dRepresentation.decode2DString(pattern2dString);
+            ImageProcessingUtils.imshow("Identified2", img2);
         }
     }
-
+    
 }
