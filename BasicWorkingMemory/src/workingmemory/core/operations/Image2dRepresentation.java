@@ -5,11 +5,118 @@
  */
 package workingmemory.core.operations;
 
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
  * @author Luis Martin
  */
 public class Image2dRepresentation {
+
+    public static void decode2DString(String string) {
+
+        String sxy[] = string.split(",");
+
+        int columns = 1 + (sxy[0].length() - sxy[0].replace("<", "").length());
+        int rows = 1 + (sxy[1].length() - sxy[1].replace("<", "").length());
+
+        int imageMatrix[][] = new int[rows][columns];
+
+        ArrayList<String[]> tokens = new ArrayList<>();
+        ArrayList<ArrayList<String[]>> objectsXY = new ArrayList<>();
+
+        ConcurrentHashMap<Integer, int[]> objects = new ConcurrentHashMap<>();
+
+        int PARSING = 0;
+        char buffer[] = string.toCharArray();
+        int index = 0;
+
+        final int START_OID = 10;
+
+        int state = 0;
+        StringBuilder currentToken = new StringBuilder();
+
+        int currentColRow = 0;
+        boolean inRow = false;
+
+        while (PARSING < buffer.length) {
+            switch (buffer[index]) {
+                case '(':
+                    state = START_OID;
+                    break;
+                case ')':
+                    switch (state) {
+                        case START_OID:
+                            tokens.add(new String[]{currentToken.toString(), currentColRow + ""});
+
+                            if (!inRow) {
+                                objects.put(Integer.parseInt(currentToken.toString()), new int[]{currentColRow, 0});
+                            } else {
+                                int key = Integer.parseInt(currentToken.toString());
+                                int pos[] = objects.get(key);
+                                pos[1] = currentColRow;
+                                objects.put(key, pos);
+                            }
+
+                            currentToken = new StringBuilder();
+                            state = 0;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case ',':
+                    currentColRow = 0;
+                    inRow = true;
+                    objectsXY.add(tokens);
+                    tokens = new ArrayList<>();
+                    break;
+                case '<':
+
+                    currentColRow++;
+
+                    break;
+                default:
+
+                    switch (state) {
+                        case START_OID:
+                            currentToken.append(buffer[index]);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    break;
+            }
+            index++;
+            PARSING++;
+        }
+        objectsXY.add(tokens);
+
+        ArrayList<String[]> tokensInX = objectsXY.get(0);
+        ArrayList<String[]> tokensInY = objectsXY.get(1);
+
+        Set<Integer> keys = objects.keySet();
+        
+        for (Integer key : keys) {
+            int pos[] = objects.get(key);
+
+            imageMatrix[(rows - 1) - pos[1]][pos[0]] = key;
+
+        }
+
+        System.out.println("Assembled matrix");
+        
+        for (int i = 0; i < imageMatrix.length; i++) {
+            for (int j = 0; j < imageMatrix[0].length; j++) {
+                System.out.print("[" + imageMatrix[i][j] + "]");
+            }
+            System.out.println("");
+        }
+
+    }
 
     public static String create2DString(int[][] f) {
 

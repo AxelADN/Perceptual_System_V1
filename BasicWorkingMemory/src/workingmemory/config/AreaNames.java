@@ -39,5 +39,12 @@ public class AreaNames {
     public static final int MedialTemporalLobe = NodeNameHelper.getNodeID(4, 0, 0);
     public static final int MTLP1 = NodeNameHelper.getNodeID(4, 1, 0);
     public static final int MTLP2 = NodeNameHelper.getNodeID(4, 2, 0);
+    
+    /*
+    * Inferior Temporal Cortex
+    */
+    public static final int InferiorTemporalCortex = NodeNameHelper.getNodeID(5, 0, 0);
+    public static final int ITCP1 = NodeNameHelper.getNodeID(5, 1, 0);
+    public static final int ITCP2 = NodeNameHelper.getNodeID(5, 2, 0);
 
 }

@@ -143,7 +143,7 @@ public class ImageProcessingUtils {
             int w = bounds.width();
             int h = bounds.height();
 
-            if (w >= 20 && h >= 20 && i < contours.size()) {
+            if (w >= 50 && h >= 50 && i < contours.size()) {
 
                 preObjectId++;
                 
@@ -177,8 +177,8 @@ public class ImageProcessingUtils {
                 preObjects.add(preObject);
                 
                 //Dummy data, delete ir
-                preObjects.add(new PreObject(2, bl, 300, 300, time));
-                preObjects.add(new PreObject(3, bl, 100, 100, time));
+                //preObjects.add(new PreObject(2, bl, 300, 300, time));
+                //preObjects.add(new PreObject(3, bl, 100, 100, time));
                 
                 //Para 2D-String
                 //System.out.println(centerX+","+centerY+","+imgWidth+","+imgHeight);
