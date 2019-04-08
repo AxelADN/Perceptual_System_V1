@@ -46,5 +46,20 @@ public class AreaNames {
     public static final int InferiorTemporalCortex = NodeNameHelper.getNodeID(5, 0, 0);
     public static final int ITCP1 = NodeNameHelper.getNodeID(5, 1, 0);
     public static final int ITCP2 = NodeNameHelper.getNodeID(5, 2, 0);
+    
+    /*
+    * Hippocampus
+    */
+    public static final int Hippocampus = NodeNameHelper.getNodeID(6, 0, 0);
+    public static final int HippP1 = NodeNameHelper.getNodeID(6, 1, 0);
+    public static final int HippP2 = NodeNameHelper.getNodeID(6, 2, 0);
+    
+    
+    /*
+    * PFC
+    */
+    public static final int PrefrontalCortex = NodeNameHelper.getNodeID(7, 0, 0);
+    public static final int PFCP1 = NodeNameHelper.getNodeID(7, 1, 0);
+    public static final int PFCP2 = NodeNameHelper.getNodeID(7, 2, 0);
 
 }

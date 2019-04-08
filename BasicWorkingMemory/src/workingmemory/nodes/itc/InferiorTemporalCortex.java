@@ -10,6 +10,9 @@ import workingmemory.nodes.ventralvc.*;
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
+import workingmemory.core.spikes.Spike;
+import workingmemory.core.spikes.SpikeTypes;
+import workingmemory.core.spikes.SpikeUtils;
 import workingmemory.nodes.custom.BigNode;
 
 /**
@@ -38,7 +41,19 @@ public class InferiorTemporalCortex extends BigNode {
         if(nodeType == AreaNames.ITCP1){
             System.out.println("do somenthing");
         }else{
-            sendToChild(AreaNames.ITCP1, getName(), data);
+            
+            Spike spike = Spike.fromBytes(data);
+            
+            switch(spike.getId()){
+                case SpikeTypes.SCENE_OBJECTS:
+                    efferents(AreaNames.MedialTemporalLobe, data);
+                    break;
+                default:
+                    sendToChild(AreaNames.ITCP1, getName(), data);
+                    break;
+            }
+            
+            
         }     
     }
 }

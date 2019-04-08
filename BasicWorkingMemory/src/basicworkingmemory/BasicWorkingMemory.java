@@ -9,9 +9,11 @@ import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
 import workingmemory.nodes.dorsalvc.DorsalVC;
+import workingmemory.nodes.hipp.Hippocampus;
 import workingmemory.nodes.itc.InferiorTemporalCortex;
 import workingmemory.nodes.main.MainBigNode;
 import workingmemory.nodes.medialtl.MedialTemporalLobe;
+import workingmemory.nodes.pfc.PrefrontalCortex;
 import workingmemory.nodes.ventralvc.VentralVC;
 import workingmemory.utils.ProcessHelper;
 
@@ -36,11 +38,15 @@ public class BasicWorkingMemory {
         
         VentralVC vvc = new VentralVC(AreaNames.VentralVC, conf);
         
-        //DorsalVC dvc = new DorsalVC(AreaNames.DorsalVC, conf);
+        DorsalVC dvc = new DorsalVC(AreaNames.DorsalVC, conf);
         
-        //MedialTemporalLobe mtl = new MedialTemporalLobe(AreaNames.MedialTemporalLobe, conf);
+        MedialTemporalLobe mtl = new MedialTemporalLobe(AreaNames.MedialTemporalLobe, conf);
         
         InferiorTemporalCortex itc = new InferiorTemporalCortex(AreaNames.InferiorTemporalCortex, conf);
+        
+        Hippocampus hipp = new Hippocampus(AreaNames.Hippocampus, conf);
+        
+        PrefrontalCortex pfc = new PrefrontalCortex(AreaNames.PrefrontalCortex, conf);
     }
     
 }

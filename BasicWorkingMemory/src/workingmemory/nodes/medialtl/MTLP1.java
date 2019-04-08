@@ -25,6 +25,7 @@ import workingmemory.config.ProjectConfig;
 import workingmemory.core.entities.PreObject;
 import workingmemory.core.operations.Image2dRepresentation;
 import workingmemory.core.spikes.Spike;
+import workingmemory.core.spikes.SpikeTypes;
 import workingmemory.nodes.custom.SmallNode;
 import workingmemory.utils.ImageProcessingUtils;
 import static workingmemory.utils.ImageProcessingUtils.getPositionInGrid;
@@ -46,15 +47,15 @@ public class MTLP1 extends SmallNode {
     public void afferents(int nodeName, byte[] data) {
 
         if (data.length == 1 && nodeName == AreaNames.MedialTemporalLobe) {
-            System.out.println("Iniciando nodo");
+            System.out.println("Iniciando nodo " + getClass().getName());
         } else {
-            
+
             System.out.println("Create 2d string");
-            
+
             Spike<Integer, Integer, int[][], Integer> spike2DS = Spike.fromBytes(data);
-            
+
             int imageMatrix[][] = spike2DS.getLocation();
-            
+
             //Debug
             System.out.println("Image to convert");
             for (int j = 0; j < imageMatrix.length; j++) {
@@ -63,15 +64,20 @@ public class MTLP1 extends SmallNode {
                 }
                 System.out.println("");
             }
-            
+
             //
-            
             String pattern2dString = Image2dRepresentation.create2DString(imageMatrix);
-            
+
             System.out.println("Image converted in 2d-string");
             System.out.println(pattern2dString);
 
-            Image2dRepresentation.decode2DString(pattern2dString);
+            Spike<Integer, Integer, byte[], Integer> spike;
+
+            spike = new Spike(SpikeTypes.MTL_SPATIAL, "2DString", spike2DS.getModality(), 0, pattern2dString.getBytes(), spike2DS.getDuration());
+
+            efferents(AreaNames.Hippocampus, spike.toBytes());
+
+            //Image2dRepresentation.decode2DString(pattern2dString);
         }
     }
 

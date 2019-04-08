@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package workingmemory.nodes.medialtl;
+package workingmemory.nodes.pfc;
 
-import workingmemory.nodes.ventralvc.*;
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
@@ -17,9 +16,9 @@ import workingmemory.nodes.custom.BigNode;
  *
  * @author Luis Martin
  */
-public class MedialTemporalLobe extends BigNode {
+public class PrefrontalCortex extends BigNode {
 
-    public MedialTemporalLobe(int name, NodeConfiguration config) {
+    public PrefrontalCortex(int name, NodeConfiguration config) {
         super(name, config, AreaNames.class);
     }
 
@@ -27,9 +26,9 @@ public class MedialTemporalLobe extends BigNode {
     public void init() {
 
         //Start the node
-        addNodeType(AreaNames.MTLP1, MTLP1.class);
+        addNodeType(AreaNames.PFCP1, PFCP1.class);
         byte initialData[] = new byte[1];
-        sendToChild(AreaNames.MTLP1, getName(), initialData);
+        sendToChild(AreaNames.PFCP1, getName(), initialData);
     }
 
     @Override
@@ -37,24 +36,24 @@ public class MedialTemporalLobe extends BigNode {
 
         int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
 
-        if (nodeType == AreaNames.MTLP1) {
+        if (nodeType == AreaNames.PFCP1) {
             System.out.println("do somenthing");
         } else {
-
             Spike spike = Spike.fromBytes(data);
             
             switch (spike.getId()) {
-                case SpikeTypes.SCENE_OBJECTS:
-                    efferents(AreaNames.Hippocampus, data);
-                    break;
                 case SpikeTypes.ITC_CLASS:
-                    efferents(AreaNames.Hippocampus, data);
+                    System.out.println("Storing object in short-term");
+                    //sendToChild(AreaNames.PFCP1, getName(), data);
+                    break;
+                case SpikeTypes.ENCODED_SCENE:
+                    System.out.println("Storing scene in short-term");
+                    //sendToChild(AreaNames.PFCP1, getName(), data);
                     break;
                 default:
-                    sendToChild(AreaNames.MTLP1, getName(), data);
+                    //sendToChild(AreaNames.PFCP1, getName(), data);
                     break;
             }
-
         }
     }
 }

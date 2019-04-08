@@ -44,7 +44,7 @@ public class DorsalVCP2 extends SmallNode {
     public void afferents(int nodeName, byte[] data) {
 
         if (data.length == 1 && nodeName == AreaNames.DorsalVC) {
-            System.out.println("Iniciando nodo");
+            System.out.println("Iniciando nodo "+getClass().getName());
         } else {
 
             imageMatrix = new int[ProjectConfig.NUM_ROWS][ProjectConfig.NUM_COLUMNS];

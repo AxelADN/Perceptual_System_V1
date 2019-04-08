@@ -5,37 +5,26 @@
  */
 package workingmemory.nodes.itc;
 
-import workingmemory.nodes.medialtl.*;
-import workingmemory.nodes.dorsalvc.*;
-import workingmemory.nodes.ventralvc.*;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.ConcurrentHashMap;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Mat;
-import org.bytedeco.javacpp.opencv_core.Point;
-import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgcodecs;
 import workingmemory.config.AreaNames;
-import workingmemory.config.ProjectConfig;
-import workingmemory.core.entities.PreObject;
-import workingmemory.core.operations.Image2dRepresentation;
 import workingmemory.core.spikes.Spike;
 import workingmemory.nodes.custom.SmallNode;
 import workingmemory.utils.ImageProcessingUtils;
-import static workingmemory.utils.ImageProcessingUtils.getPositionInGrid;
-import workingmemory.utils.ImageTransferUtils;
 
 /**
  *
  * @author Luis Martin
  */
 public class ITCP1 extends SmallNode {
+    
+    private ConcurrentHashMap<Integer, Mat> imageClasses;
+    private ConcurrentHashMap<Integer,Integer> classesName;
     
     private int imageMatrix[][] = null;
     
@@ -47,7 +36,8 @@ public class ITCP1 extends SmallNode {
     public void afferents(int nodeName, byte[] data) {
         
         if (data.length == 1 && nodeName == AreaNames.InferiorTemporalCortex) {
-            System.out.println("Iniciando nodo");
+            System.out.println("Iniciando nodo " + getClass().getName());
+            loadTemplates();
         } else {
             
             System.out.println("Ready for object recognition");
@@ -58,7 +48,29 @@ public class ITCP1 extends SmallNode {
             System.out.println("cxy: " + spike.getLocation()[0] + "," + spike.getLocation()[1]);
             
             ImageProcessingUtils.imshow("To identify", img);
+            
+            new ClassificationProcess(this, imageClasses, classesName, img, spike.getModality(), spike.getDuration());
         }
+    }
+    
+    
+    //READ TEMPLATES
+    
+    public void loadTemplates(){
+        
+        imageClasses = new ConcurrentHashMap<>();
+        classesName = new ConcurrentHashMap<>();
+        
+        for (int i = 1; i <= 100; i++) {
+            
+            String basePath = "dataset/imgs/obj"+i+"__0.png";
+            Mat img  = opencv_imgcodecs.imread(basePath,opencv_imgcodecs.IMREAD_COLOR);
+            imageClasses.put(i, img);
+            classesName.put(i, i+1000);
+            
+            System.out.println("Image "+basePath+" loaded");
+        }
+        
     }
     
 }

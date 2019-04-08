@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package workingmemory.nodes.dorsalvc;
+package workingmemory.nodes.hipp;
 
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
@@ -14,9 +14,9 @@ import workingmemory.nodes.custom.BigNode;
  *
  * @author Luis Martin
  */
-public class DorsalVC extends BigNode {
+public class Hippocampus extends BigNode {
 
-    public DorsalVC(int name, NodeConfiguration config) {
+    public Hippocampus(int name, NodeConfiguration config) {
         super(name, config, AreaNames.class);
     }
 
@@ -24,25 +24,19 @@ public class DorsalVC extends BigNode {
     public void init() {
 
         //Start the node
-        addNodeType(AreaNames.DorsalVCP1, DorsalVCP1.class);
-        addNodeType(AreaNames.DorsalVCP2, DorsalVCP2.class);
-        
+        addNodeType(AreaNames.HippP1, HippP1.class);
         byte initialData[] = new byte[1];
-        
-        sendToChild(AreaNames.DorsalVCP1, getName(), initialData);
-        sendToChild(AreaNames.DorsalVCP2, getName(), initialData);
+        sendToChild(AreaNames.HippP1, getName(), initialData);
     }
 
     @Override
     public void afferents(int senderID, byte[] data) {
-        
         int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
         
-        if(nodeType == AreaNames.DorsalVCP1){
-            sendToChild(AreaNames.DorsalVCP2, getName(), data);
+        if(nodeType == AreaNames.HippP1){
+            System.out.println("do somenthing");
         }else{
-            sendToChild(AreaNames.DorsalVCP1, getName(), data);
-        }        
-        
+            sendToChild(AreaNames.HippP1, getName(), data);
+        }     
     }
 }
