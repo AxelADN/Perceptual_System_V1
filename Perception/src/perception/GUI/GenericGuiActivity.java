@@ -82,7 +82,7 @@ public class GenericGuiActivity <T extends ProcessInterface> extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        System.out.println("....HOLAMUNDO0...."+jTextField1.getText());
+       
         LongSpike spike = new LongSpike(Modalities.VISUAL, AreaNames.GenericActivity, jTextField1.getText(), 0);
         node.executeProcess(this,spike);
     }//GEN-LAST:event_jButton1ActionPerformed

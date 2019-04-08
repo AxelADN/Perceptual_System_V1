@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package perception.nodes.smallNodes;
+package perception.nodes.smallNodes.MemProc;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kmiddle2.nodes.activities.Activity;
-import perception.GUI.ProcessInterface;
 import perception.config.AreaNames;
 import spike.LongSpike;
 import utils.SimpleLogger;
@@ -17,29 +16,37 @@ import utils.SimpleLogger;
  *
  * @author axeladn
  */
-public class Categorization extends Activity {
+public class Mem_pQ1 extends Activity {
     
-    public Categorization() {
-        this.ID = AreaNames.Categorization;
+    private static final String userID = "Mem_pQ1";
+    
+    public Mem_pQ1() {
+        this.ID = AreaNames.Mem_pQ1;
         this.namer = AreaNames.class;
     }
     
     @Override
     public void init() {
         
-        SimpleLogger.log(this, "SMALL_NODE_CATEGORIZATION");
+        SimpleLogger.log(this, "SMALL_NODE: "+userID);
         
     }
 
     @Override
     public void receive(int nodeID, byte[] data) {
         try {
+            
             LongSpike spike = new LongSpike(data);
-            System.out.println("....HOLAMUNDO3...."+spike.getIntensity());
-            // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            SimpleLogger.log(this, "DATA_RECEIVED: "+ data);
+            SimpleLogger.log(this, "DATA_RECEIVED: "+ spike.getIntensity());
+            
         } catch (Exception ex) {
-            Logger.getLogger(Categorization.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Mem_pQ1.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    private void mainProc(LongSpike spike){
+        
+        
+           
     }
 }

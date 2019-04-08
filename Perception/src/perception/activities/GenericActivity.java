@@ -13,7 +13,6 @@ import perception.GUI.GenericGuiActivity;
 import perception.GUI.ProcessInterface;
 import perception.config.AreaNames;
 import spike.LongSpike;
-//import utils.Config;
 import utils.SimpleLogger;
 
 /**
@@ -35,7 +34,7 @@ public class GenericActivity extends Activity implements ProcessInterface {
     @Override
     public void init() {
         
-        SimpleLogger.log(this, "SMALL_NODE_GENERICACTIVITY");
+        SimpleLogger.log(this, "SMALL_NODE: GENERICACTIVITY");
         
     }
     
@@ -46,7 +45,7 @@ public class GenericActivity extends Activity implements ProcessInterface {
 
     @Override
     public void executeProcess(Object src, LongSpike spike) {
-        System.out.println("....HOLAMUNDO1...."+spike.getIntensity());
+        SimpleLogger.log(this, "DATA_RECEIVED: "+ spike.getIntensity());
         try {
             send(AreaNames.ITC,spike.getByteArray());
         } catch (IOException ex) {

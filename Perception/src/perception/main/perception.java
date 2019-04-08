@@ -2,12 +2,11 @@ package perception.main;
 
 import kmiddle2.nodes.service.Igniter;
 
-import perception.nodes.bigNodes.ITC;
-import perception.nodes.bigNodes.ITCM;
-import perception.GUI.GenericGuiActivity;
-import perception.activities.GenericActivity;
+import perception.nodes.bigNodes.gates.ITC;
 
 import org.opencv.core.Core;
+import perception.nodes.bigNodes.ITa.*;
+import perception.nodes.bigNodes.ITp.*;
 import utils.SimpleLogger;
 import utils.layoutManager;
 
@@ -22,7 +21,14 @@ public class perception extends Igniter {
         String[] areaNames = {
             
             ITC.class.getName(),
-            ITCM.class.getName()
+            ITp_fQ1.class.getName(),
+            ITp_fQ2.class.getName(),
+            ITp_fQ3.class.getName(),
+            ITp_fQ4.class.getName(),
+            ITa_fQ1.class.getName(),
+            ITa_fQ2.class.getName(),
+            ITa_fQ3.class.getName(),
+            ITa_fQ4.class.getName(),
         };
 
         SimpleLogger.setDebug(DEBUG);
