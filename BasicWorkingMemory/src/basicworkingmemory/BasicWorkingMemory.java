@@ -34,6 +34,7 @@ public class BasicWorkingMemory {
         conf.setDebug(false);
         conf.setLoadBalance(true);
         
+        /*
         MainBigNode main = new MainBigNode(AreaNames.MaingBigNode, conf);
         
         VentralVC vvc = new VentralVC(AreaNames.VentralVC, conf);
@@ -44,7 +45,7 @@ public class BasicWorkingMemory {
         
         InferiorTemporalCortex itc = new InferiorTemporalCortex(AreaNames.InferiorTemporalCortex, conf);
         
-        Hippocampus hipp = new Hippocampus(AreaNames.Hippocampus, conf);
+        Hippocampus hipp = new Hippocampus(AreaNames.Hippocampus, conf);*/
         
         PrefrontalCortex pfc = new PrefrontalCortex(AreaNames.PrefrontalCortex, conf);
     }

@@ -6,45 +6,53 @@
 package workingmemory.nodes.pfc;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.PriorityQueue;
-import workingmemory.core.entities.Percept;
+import workingmemory.core.entities.WMItem;
 
 /**
  *
  * @author Luis Martin
  */
+class PerceptComparator implements Comparator<WMItem> {
 
-class PerceptComparator implements Comparator<Percept>
-{
     @Override
-    public int compare(Percept x, Percept y)
-    {
-        // Assume neither string is null. Real code should
-        // probably be more robust
-        // You could also just return x.length() - y.length(),
-        // which would be more efficient.
-        if (x.getTime() < y.getTime())
-        {
-            return -1;
-        }
-        if (x.getTime() > y.getTime())
-        {
-            return 1;
-        }
-        return 0;
+    public int compare(WMItem x, WMItem y) {
+        return x.getStoredTime()- y.getStoredTime();
     }
 }
 
-public class WMPriorityQueue {
-    
-    private PriorityQueue<Percept> queue;
-    
-    public WMPriorityQueue(){
+public class WMPriorityQueue<T> {
+
+    private PriorityQueue<WMItem<T>> queue;
+    private int maxElements = 4;
+
+    public WMPriorityQueue() {
         PerceptComparator comparator = new PerceptComparator();
-        queue = new PriorityQueue<Percept>(10, comparator);
+        queue = new PriorityQueue(10, comparator);
     }
-    
-    public void add(Percept percept){
-        queue.add(percept);
+
+    public void add(WMItem percept) {
+        if (queue.size() < 4) {
+            queue.add(percept);
+        } else {
+            System.out.println("The memory is full capacity");
+        }
+    }
+
+    public int getMaxElements() {
+        return maxElements;
+    }
+
+    public void setMaxElements(int maxElements) {
+        this.maxElements = maxElements;
+    }
+
+    public void showItems() {
+        Iterator value = queue.iterator();
+        System.out.println("Items in memory");
+        while (value.hasNext()) {
+            System.out.println(value.next());
+        }
     }
 }

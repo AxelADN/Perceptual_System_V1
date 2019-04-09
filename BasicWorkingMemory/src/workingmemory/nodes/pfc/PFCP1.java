@@ -10,6 +10,7 @@ import kmiddle.nodes.NodeConfiguration;
 import org.bytedeco.javacpp.helper.opencv_core;
 import workingmemory.config.AreaNames;
 import workingmemory.core.entities.Percept;
+import workingmemory.core.entities.WMItem;
 import workingmemory.core.spikes.Spike;
 import workingmemory.nodes.custom.SmallNode;
 
@@ -32,6 +33,23 @@ public class PFCP1 extends SmallNode {
 
         if (data.length == 1 && nodeName == AreaNames.PrefrontalCortex) {
             System.out.println("Iniciando nodo " + getClass().getName());
+            
+            WMPriorityQueue queue = new WMPriorityQueue();
+            
+            WMItem<Integer> item1 = new WMItem(10, 2);
+            WMItem<Integer> item2 = new WMItem(11, 4);
+            WMItem<Integer> item3 = new WMItem(12, 1);
+            WMItem<Integer> item4 = new WMItem(13, 3);
+            
+            queue.add(item1);
+            queue.showItems();
+            queue.add(item2);
+            queue.showItems();
+            queue.add(item3);
+            queue.showItems();
+            queue.add(item4);            
+            queue.showItems();
+            
         } else {
             
             Spike<Integer, Integer, Integer, Integer> spike = (Spike<Integer, Integer, Integer, Integer>)Spike.fromBytes(data);
