@@ -14,6 +14,21 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 public class Percept extends PreObject{
     
     private int objectClass;
+
+    @Override
+    public String toString() {
+        
+        StringBuilder strb = new StringBuilder();
+        
+        strb.append("Percept [");
+        strb.append(" class = ").append(objectClass);
+        strb.append(" time = ").append(getTime());
+        strb.append("] ");
+        
+        return strb.toString();
+    }
+    
+    
     
     public Percept(int objectClass, int id, Mat image, int centerX, int centerY, int time) {
         super(id, image, centerX, centerY, time);

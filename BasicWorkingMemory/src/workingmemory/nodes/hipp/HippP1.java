@@ -55,7 +55,11 @@ public class HippP1 extends SmallNode {
                         
                         System.out.println("Object received: " + itcSpike.getModality() + " " + itcSpike.getIntensity() + " " + itcSpike.getLocation());
                         
-                        String rdString = scenesInTime.get(itcSpike.getDuration()).replace("(" + 1 + ")", "(" + itcSpike.getLocation() + ")");
+                        String sceneString = scenesInTime.get(itcSpike.getDuration());
+                        
+                        System.out.println("Original scene in time: "+itcSpike.getDuration()+" "+sceneString);
+                        
+                        String rdString = sceneString.replace("(" + 1 + ")", "(" + itcSpike.getLocation() + ")");
                         scenesInTime.put(itcSpike.getDuration(), rdString);
                         
                         //Decreases the number of expected objects

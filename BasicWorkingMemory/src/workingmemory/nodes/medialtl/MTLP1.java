@@ -5,31 +5,13 @@
  */
 package workingmemory.nodes.medialtl;
 
-import workingmemory.nodes.dorsalvc.*;
-import workingmemory.nodes.ventralvc.*;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.opencv_core;
-import org.bytedeco.javacpp.opencv_core.Mat;
-import org.bytedeco.javacpp.opencv_core.Point;
-import org.bytedeco.javacpp.opencv_core.Size;
-import org.bytedeco.javacpp.opencv_imgcodecs;
 import workingmemory.config.AreaNames;
-import workingmemory.config.ProjectConfig;
-import workingmemory.core.entities.PreObject;
 import workingmemory.core.operations.Image2dRepresentation;
 import workingmemory.core.spikes.Spike;
 import workingmemory.core.spikes.SpikeTypes;
 import workingmemory.nodes.custom.SmallNode;
-import workingmemory.utils.ImageProcessingUtils;
-import static workingmemory.utils.ImageProcessingUtils.getPositionInGrid;
-import workingmemory.utils.ImageTransferUtils;
 
 /**
  *
@@ -50,34 +32,39 @@ public class MTLP1 extends SmallNode {
             System.out.println("Iniciando nodo " + getClass().getName());
         } else {
 
-            System.out.println("Create 2d string");
+            try {
+                System.out.println("Create 2d string");
 
-            Spike<Integer, Integer, int[][], Integer> spike2DS = Spike.fromBytes(data);
+                Spike<Integer, Integer, int[][], Integer> spike2DS = Spike.fromBytes(data);
 
-            int imageMatrix[][] = spike2DS.getLocation();
+                int imageMatrix[][] = spike2DS.getLocation();
 
-            //Debug
-            System.out.println("Image to convert");
-            for (int j = 0; j < imageMatrix.length; j++) {
-                for (int k = 0; k < imageMatrix[0].length; k++) {
-                    System.out.print("[" + imageMatrix[j][k] + "]");
+                //Debug
+                System.out.println("Image to convert");
+                for (int j = 0; j < imageMatrix.length; j++) {
+                    for (int k = 0; k < imageMatrix[0].length; k++) {
+                        System.out.print("[" + imageMatrix[j][k] + "]");
+                    }
+                    System.out.println("");
                 }
-                System.out.println("");
+
+                //
+                String pattern2dString = Image2dRepresentation.create2DString(imageMatrix);
+
+                System.out.println("Image converted in 2d-string in time " + spike2DS.getDuration());
+                System.out.println(pattern2dString);
+
+                Spike<Integer, Integer, byte[], Integer> spike;
+
+                spike = new Spike(SpikeTypes.MTL_SPATIAL, "2DString", spike2DS.getModality(), 0, pattern2dString.getBytes(), spike2DS.getDuration());
+
+                efferents(AreaNames.Hippocampus, spike.toBytes());
+
+                //Image2dRepresentation.decode2DString(pattern2dString);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
-            //
-            String pattern2dString = Image2dRepresentation.create2DString(imageMatrix);
-
-            System.out.println("Image converted in 2d-string");
-            System.out.println(pattern2dString);
-
-            Spike<Integer, Integer, byte[], Integer> spike;
-
-            spike = new Spike(SpikeTypes.MTL_SPATIAL, "2DString", spike2DS.getModality(), 0, pattern2dString.getBytes(), spike2DS.getDuration());
-
-            efferents(AreaNames.Hippocampus, spike.toBytes());
-
-            //Image2dRepresentation.decode2DString(pattern2dString);
         }
     }
 

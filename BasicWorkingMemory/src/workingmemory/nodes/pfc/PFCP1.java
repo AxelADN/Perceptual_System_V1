@@ -19,10 +19,12 @@ import workingmemory.nodes.custom.SmallNode;
  * @author Luis Martin
  */
 public class PFCP1 extends SmallNode {
-    
-    /***
+
+    /**
+     * *
      * STORAGE OF SINGLE OBJECT INFORMATION
      */
+    private WMPriorityQueue queue = new WMPriorityQueue();
 
     public PFCP1(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
@@ -33,29 +35,25 @@ public class PFCP1 extends SmallNode {
 
         if (data.length == 1 && nodeName == AreaNames.PrefrontalCortex) {
             System.out.println("Iniciando nodo " + getClass().getName());
-            
-            WMPriorityQueue queue = new WMPriorityQueue();
-            
-            WMItem<Integer> item1 = new WMItem(10, 2);
-            WMItem<Integer> item2 = new WMItem(11, 4);
-            WMItem<Integer> item3 = new WMItem(12, 1);
-            WMItem<Integer> item4 = new WMItem(13, 3);
-            
-            queue.add(item1);
-            queue.showItems();
-            queue.add(item2);
-            queue.showItems();
-            queue.add(item3);
-            queue.showItems();
-            queue.add(item4);            
-            queue.showItems();
-            
+
         } else {
-            
-            Spike<Integer, Integer, Integer, Integer> spike = (Spike<Integer, Integer, Integer, Integer>)Spike.fromBytes(data);
-            
-            Percept per = new Percept(spike.getIntensity(), spike.getModality(), opencv_core.AbstractMat.EMPTY, 0, 0, spike.getDuration());
-    
+
+            try {
+                Spike<Integer, Integer, Integer, Integer> spike = (Spike<Integer, Integer, Integer, Integer>) Spike.fromBytes(data);
+
+                int preObjId = spike.getModality();
+                int classId = spike.getIntensity();
+                int time = spike.getDuration();
+
+                Percept percept = new Percept(classId, preObjId, opencv_core.AbstractMat.EMPTY, 0, 0, time);
+
+                WMItem<Percept> item = new WMItem(percept, time);
+
+                queue.add(item);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
         }
     }
 

@@ -5,39 +5,89 @@
  */
 package workingmemory.nodes.pfc;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.Timer;
+import java.util.TimerTask;
 import workingmemory.core.entities.WMItem;
 
 /**
  *
  * @author Luis Martin
  */
-class PerceptComparator implements Comparator<WMItem> {
+class WMItemComparator implements Comparator<WMItem> {
 
     @Override
     public int compare(WMItem x, WMItem y) {
-        return x.getStoredTime()- y.getStoredTime();
+        return x.getStoredTime() - y.getStoredTime();
     }
 }
 
 public class WMPriorityQueue<T> {
 
-    private PriorityQueue<WMItem<T>> queue;
-    private int maxElements = 4;
+    private final int MAX_TIME_IN_QUEUE = 20;
 
-    public WMPriorityQueue() {
-        PerceptComparator comparator = new PerceptComparator();
-        queue = new PriorityQueue(10, comparator);
+    class RemoveItemTask extends TimerTask {
+
+        private Timer timer;
+
+        public RemoveItemTask() {
+            this.timer = new Timer();
+        }
+
+        public void start() {
+            timer.scheduleAtFixedRate(this, 0, 1 * 1000);
+        }
+
+        @Override
+        public void run() {
+
+            Iterator itr = queue.iterator();
+
+            while (itr.hasNext()) {
+                WMItem<T> item = (WMItem<T>) itr.next();
+                item.setTimeInQueue(item.getTimeInQueue() + 1);
+                if (item.getTimeInQueue() == MAX_TIME_IN_QUEUE) {
+                    itr.remove();
+
+                    //ENVIAR A MID-TERM MEMORY PARA FACIL RECUPERACION
+                }
+            }
+
+            showItems();
+        }
     }
 
-    public void add(WMItem percept) {
+    //
+    private ArrayList<WMItem<T>> queue;
+    private int maxElements = 4;
+    private WMItemComparator comparator;
+    private RemoveItemTask removeItemTask;
+
+    public WMPriorityQueue() {
+        comparator = new WMItemComparator();
+        removeItemTask = new RemoveItemTask();
+        queue = new ArrayList(maxElements);
+
+        removeItemTask.start();
+    }
+
+    public void add(WMItem item) {
+
         if (queue.size() < 4) {
-            queue.add(percept);
+            queue.add(item);
+
         } else {
             System.out.println("The memory is full capacity");
+
+            //Remove the oldest
+            queue.remove(0);
+            queue.add(item);
         }
+
+        Collections.sort(queue, comparator);
     }
 
     public int getMaxElements() {
@@ -49,10 +99,11 @@ public class WMPriorityQueue<T> {
     }
 
     public void showItems() {
-        Iterator value = queue.iterator();
-        System.out.println("Items in memory");
-        while (value.hasNext()) {
-            System.out.println(value.next());
+        if (queue.size() > 0) {
+            System.out.println("Items in memory");
+            for (WMItem<T> item : queue) {
+                System.out.println(item + "time[" + item.getTimeInQueue() + "]");
+            }
         }
     }
 }

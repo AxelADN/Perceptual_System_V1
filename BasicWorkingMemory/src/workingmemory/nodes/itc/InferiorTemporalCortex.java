@@ -5,14 +5,11 @@
  */
 package workingmemory.nodes.itc;
 
-import workingmemory.nodes.medialtl.*;
-import workingmemory.nodes.ventralvc.*;
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
 import workingmemory.core.spikes.Spike;
 import workingmemory.core.spikes.SpikeTypes;
-import workingmemory.core.spikes.SpikeUtils;
 import workingmemory.nodes.custom.BigNode;
 
 /**

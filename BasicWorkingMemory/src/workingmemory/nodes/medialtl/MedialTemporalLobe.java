@@ -5,7 +5,6 @@
  */
 package workingmemory.nodes.medialtl;
 
-import workingmemory.nodes.ventralvc.*;
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
