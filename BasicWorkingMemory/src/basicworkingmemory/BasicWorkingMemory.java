@@ -32,7 +32,7 @@ public class BasicWorkingMemory {
         
         NodeConfiguration conf = new NodeConfiguration();
         conf.setDebug(false);
-        conf.setLoadBalance(false);
+        conf.setLoadBalance(true);
         
         MainBigNode main = new MainBigNode(AreaNames.MaingBigNode, conf);
         

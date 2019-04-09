@@ -7,23 +7,20 @@ package workingmemory.nodes.pfc;
 
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
-import org.bytedeco.javacpp.helper.opencv_core;
 import workingmemory.config.AreaNames;
-import workingmemory.core.entities.Percept;
-import workingmemory.core.spikes.Spike;
 import workingmemory.nodes.custom.SmallNode;
 
 /**
  *
  * @author Luis Martin
  */
-public class PFCP1 extends SmallNode {
+public class PFCP2 extends SmallNode {
     
     /***
-     * STORAGE OF SINGLE OBJECT INFORMATION
+     * STORAGE OF EPISODIC INFORMATION
      */
 
-    public PFCP1(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
+    public PFCP2(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
     }
 
@@ -33,10 +30,7 @@ public class PFCP1 extends SmallNode {
         if (data.length == 1 && nodeName == AreaNames.PrefrontalCortex) {
             System.out.println("Iniciando nodo " + getClass().getName());
         } else {
-            
-            Spike<Integer, Integer, Integer, Integer> spike = (Spike<Integer, Integer, Integer, Integer>)Spike.fromBytes(data);
-            
-            Percept per = new Percept(spike.getIntensity(), spike.getModality(), opencv_core.AbstractMat.EMPTY, 0, 0, spike.getDuration());
+
     
         }
     }
