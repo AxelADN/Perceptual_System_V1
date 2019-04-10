@@ -3,40 +3,33 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package perception.nodes.bigNodes.ITa;
+package perception.nodes.smallNodes;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import utils.SimpleLogger;
-
-import kmiddle2.nodes.areas.Area;
+import kmiddle2.nodes.activities.Activity;
 import perception.config.AreaNames;
-import perception.nodes.smallNodes.IdProc.Id_fQ1;
 import spike.LongSpike;
+import utils.SimpleLogger;
 
 /**
  *
  * @author axeladn
  */
-public class ITa_fQ1 extends Area {
+public class SceneComposition extends Activity {
     
-    private LongSpike spike;
-    private static final String userID = "ITa_fQ1";
+    private static final String userID = "SceneComposition";
     
-    public ITa_fQ1() {        
-        this.ID = AreaNames.ITa_fQ1;
+    public SceneComposition() {
+        this.ID = AreaNames.SceneCompositon;
         this.namer = AreaNames.class;
-        
-        addProcess(Id_fQ1.class);
-        
     }
     
     @Override
     public void init() {
         
-        SimpleLogger.log(this,"BIG_NODE: "+userID);
+        SimpleLogger.log(this, "SMALL_NODE: "+userID);
         
     }
 
@@ -44,25 +37,23 @@ public class ITa_fQ1 extends Area {
     public void receive(int nodeID, byte[] data) {
         try {
             
-            spike = new LongSpike(data);
+            LongSpike spike = new LongSpike(data);
+            SimpleLogger.log(this, "DATA_RECEIVED: "+ spike.getIntensity());
             mainProc(spike);
             
         } catch (Exception ex) {
-            Logger.getLogger(ITa_fQ1.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SceneComposition.class.getName()).log(Level.SEVERE, null, ex);
         }
-         
     }
     
     private void mainProc(LongSpike spike){
         
         try {
             
-            spike.setIntensity(spike.getIntensity()+"ITa_fQ1");
-            send(AreaNames.Id_fQ1,spike.getByteArray());
+            send(AreaNames.ITC,spike.getByteArray());
             
         } catch (IOException ex) {
-            Logger.getLogger(ITa_fQ1.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SceneComposition.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
-    
 }

@@ -11,6 +11,7 @@ package spike;
  */
 public class Modalities {
     
+    public static final int DEFAULT=0;
     public static final int VISUAL=1;
     public static final int MEMORY=2;
     public static final int PERCEPTION=3;

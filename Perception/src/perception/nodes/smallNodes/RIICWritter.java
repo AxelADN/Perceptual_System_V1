@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package perception.nodes.smallNodes.ClassProc;
+package perception.nodes.smallNodes;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -11,25 +11,27 @@ import java.util.logging.Logger;
 import kmiddle2.nodes.activities.Activity;
 import perception.config.AreaNames;
 import spike.LongSpike;
+import templates.ActivityTemplate;
 import utils.SimpleLogger;
 
 /**
  *
  * @author axeladn
  */
-public class Class_fQ4 extends Activity {
+public class RIICWritter extends ActivityTemplate {
     
-    private static final String userID = "Class_fQ4";
     
-    public Class_fQ4() {
-        this.ID = AreaNames.Class_fQ4;
-        this.namer = AreaNames.class;
+    
+    public RIICWritter() {
+        this.ID = AreaNames.Classify;
+        
+        userID = "Class_fQ1";
     }
     
     @Override
     public void init() {
         
-        SimpleLogger.log(this, "SMALL_NODE: "+userID);
+        _Template_init(userID);
         
     }
 
@@ -37,24 +39,24 @@ public class Class_fQ4 extends Activity {
     public void receive(int nodeID, byte[] data) {
         try {
             
-            LongSpike spike = new LongSpike(data);
-            SimpleLogger.log(this, "DATA_RECEIVED: "+ spike.getIntensity());
+            LongSpike spike = _Template_receive(nodeID, data);
             mainProc(spike);
             
         } catch (Exception ex) {
-            Logger.getLogger(Class_fQ4.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RIICWritter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     private void mainProc(LongSpike spike){
         
+        
         try {
-            
-            spike.setIntensity(spike.getIntensity()+"Class_fQ4");
-            send(AreaNames.ITa_fQ4,spike.getByteArray());
-            
-        } catch (IOException ex) {
-            Logger.getLogger(Class_fQ4.class.getName()).log(Level.SEVERE, null, ex);
+            for(int i=0; i<5; i++){
+                System.out.println(spike.getIntensity());
+                Thread.sleep(500);
+            }
+        } catch (InterruptedException ex) {
+            Logger.getLogger(RIICWritter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
     

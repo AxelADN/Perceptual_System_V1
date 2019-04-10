@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package perception.GUI;
+package templates;
 
 import kmiddle2.nodes.activities.Activity;
 import spike.LongSpike;

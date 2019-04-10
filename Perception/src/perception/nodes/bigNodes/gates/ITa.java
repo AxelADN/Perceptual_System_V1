@@ -3,33 +3,41 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package perception.nodes.smallNodes.ClassProc;
+package perception.nodes.bigNodes.gates;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kmiddle2.nodes.activities.Activity;
-import perception.config.AreaNames;
-import spike.LongSpike;
+
 import utils.SimpleLogger;
+
+import kmiddle2.nodes.areas.Area;
+import perception.config.AreaNames;
+import perception.nodes.smallNodes.Identify;
+import perception.nodes.smallNodes.SceneComposition;
+import spike.LongSpike;
+import templates.AreaTemplate;
 
 /**
  *
  * @author axeladn
  */
-public class Class_pQ4 extends Activity {
+public class ITa extends AreaTemplate {
     
-    private static final String userID = "Class_pQ4";
+    private LongSpike spike;
+    private static final String userID = "ITa";
     
-    public Class_pQ4() {
-        this.ID = AreaNames.Class_pQ4;
-        this.namer = AreaNames.class;
+    public ITa() {        
+        this.ID = AreaNames.ITa;
+        
+        addProcess(Identify.class);
+        addProcess(SceneComposition.class);
     }
     
     @Override
     public void init() {
         
-        SimpleLogger.log(this, "SMALL_NODE: "+userID);
+        SimpleLogger.log(this,"BIG_NODE: "+userID);
         
     }
 
@@ -37,24 +45,24 @@ public class Class_pQ4 extends Activity {
     public void receive(int nodeID, byte[] data) {
         try {
             
-            LongSpike spike = new LongSpike(data);
+            spike = new LongSpike(data);
             SimpleLogger.log(this, "DATA_RECEIVED: "+ spike.getIntensity());
             mainProc(spike);
             
         } catch (Exception ex) {
-            Logger.getLogger(Class_pQ4.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ITa.class.getName()).log(Level.SEVERE, null, ex);
         }
+         
     }
     
     private void mainProc(LongSpike spike){
         
         try {
             
-            spike.setIntensity(spike.getIntensity()+"Class_pQ4");
-            send(AreaNames.ITa_pQ4,spike.getByteArray());
+            send(AreaNames.Identify,spike.getByteArray());
             
         } catch (IOException ex) {
-            Logger.getLogger(Class_pQ4.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ITa.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
     

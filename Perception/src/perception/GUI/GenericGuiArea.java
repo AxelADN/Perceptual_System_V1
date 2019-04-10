@@ -5,6 +5,7 @@
  */
 package perception.GUI;
 
+import templates.ProcessInterface;
 import javax.swing.JFrame;
 import kmiddle2.nodes.activities.Activity;
 import perception.config.AreaNames;
@@ -16,14 +17,14 @@ import utils.Convertor;
  *
  * @author Luis Martin
  */
-public class GenericGuiActivity <T extends ProcessInterface> extends JFrame {
+public class GenericGuiArea <T extends ProcessInterface> extends JFrame {
 
     private final T node;
 
     /**
      * Creates new form DemoGuiActivity
      */
-    public GenericGuiActivity(T node) {
+    public GenericGuiArea(T node) {
         this.node = node;
         initComponents();
     }
