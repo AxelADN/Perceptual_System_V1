@@ -27,8 +27,12 @@ public class InferiorTemporalCortex extends BigNode {
 
         //Start the node
         addNodeType(AreaNames.ITCP1, ITCP1.class);
+        addNodeType(AreaNames.ITCP2, ITCP2.class);
+        
         byte initialData[] = new byte[1];
         sendToChild(AreaNames.ITCP1, getName(), initialData);
+        sendToChild(AreaNames.ITCP2, getName(), initialData);
+        
     }
 
     @Override
@@ -36,7 +40,8 @@ public class InferiorTemporalCortex extends BigNode {
         int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
         
         if(nodeType == AreaNames.ITCP1){
-            System.out.println("do somenthing");
+            System.out.println("Save in mid-term memory");
+            sendToChild(AreaNames.ITCP2, getName(), data);
         }else{
             
             Spike spike = Spike.fromBytes(data);

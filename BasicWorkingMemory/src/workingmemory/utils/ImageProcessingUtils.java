@@ -150,7 +150,7 @@ public class ImageProcessingUtils {
 
                 opencv_imgproc.rectangle(src, bounds, org.bytedeco.javacpp.helper.opencv_core.AbstractScalar.RED);
                 opencv_imgproc.circle(src, new opencv_core.Point(centerX, centerY), 5, org.bytedeco.javacpp.helper.opencv_core.AbstractScalar.RED);
-                opencv_imgproc.putText(src, "#{}" + preObjectId, bounds.tl(), opencv_imgproc.CV_FONT_HERSHEY_SIMPLEX, 0.5, org.bytedeco.javacpp.helper.opencv_core.AbstractScalar.CYAN);
+                opencv_imgproc.putText(src, "(id:" + preObjectId+" t:"+time+")", new opencv_core.Point(centerX, centerY), opencv_imgproc.CV_FONT_HERSHEY_SIMPLEX, 0.5, org.bytedeco.javacpp.helper.opencv_core.AbstractScalar.CYAN);
 
                 //Resize the image
                 

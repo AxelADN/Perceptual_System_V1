@@ -70,6 +70,7 @@ public class ClassificationProcess extends Thread{
         //Send to working memory
         
         parent.efferents(AreaNames.PrefrontalCortex, spike.toBytes());
+        parent.efferents(AreaNames.InferiorTemporalCortex, spike.toBytes());
         
         /***
          * PONER EL ENVIO A MID-TERM MEMORY

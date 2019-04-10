@@ -27,8 +27,12 @@ public class PrefrontalCortex extends BigNode {
 
         //Start the node
         addNodeType(AreaNames.PFCP1, PFCP1.class);
+        addNodeType(AreaNames.PFCP2, PFCP2.class);
+        
         byte initialData[] = new byte[1];
         sendToChild(AreaNames.PFCP1, getName(), initialData);
+        sendToChild(AreaNames.PFCP2, getName(), initialData);
+        
     }
 
     @Override
@@ -48,7 +52,7 @@ public class PrefrontalCortex extends BigNode {
                     break;
                 case SpikeTypes.ENCODED_SCENE:
                     System.out.println("Storing scene in short-term");
-                    //sendToChild(AreaNames.PFCP1, getName(), data);
+                    sendToChild(AreaNames.PFCP2, getName(), data);
                     break;
                 default:
                     //sendToChild(AreaNames.PFCP1, getName(), data);

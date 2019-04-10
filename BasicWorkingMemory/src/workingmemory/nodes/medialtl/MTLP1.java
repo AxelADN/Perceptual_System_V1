@@ -58,6 +58,9 @@ public class MTLP1 extends SmallNode {
 
                 spike = new Spike(SpikeTypes.MTL_SPATIAL, "2DString", spike2DS.getModality(), 0, pattern2dString.getBytes(), spike2DS.getDuration());
 
+                //Store in mid-term
+                efferents(AreaNames.MedialTemporalLobe, spike.toBytes());
+                
                 efferents(AreaNames.Hippocampus, spike.toBytes());
 
                 //Image2dRepresentation.decode2DString(pattern2dString);

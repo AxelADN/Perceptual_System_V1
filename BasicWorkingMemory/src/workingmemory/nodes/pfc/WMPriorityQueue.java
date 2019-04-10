@@ -27,7 +27,7 @@ class WMItemComparator implements Comparator<WMItem> {
 
 public class WMPriorityQueue<T> {
 
-    private final int MAX_TIME_IN_QUEUE = 20;
+    private int maxTimeInQueue = 20;
 
     class RemoveItemTask extends TimerTask {
 
@@ -49,7 +49,7 @@ public class WMPriorityQueue<T> {
             while (itr.hasNext()) {
                 WMItem<T> item = (WMItem<T>) itr.next();
                 item.setTimeInQueue(item.getTimeInQueue() + 1);
-                if (item.getTimeInQueue() == MAX_TIME_IN_QUEUE) {
+                if (item.getTimeInQueue() == getMaxTimeInQueue()) {
                     itr.remove();
 
                     //ENVIAR A MID-TERM MEMORY PARA FACIL RECUPERACION
@@ -67,6 +67,17 @@ public class WMPriorityQueue<T> {
     private RemoveItemTask removeItemTask;
 
     public WMPriorityQueue() {
+
+        comparator = new WMItemComparator();
+        removeItemTask = new RemoveItemTask();
+        queue = new ArrayList(maxElements);
+
+        removeItemTask.start();
+    }
+
+    public WMPriorityQueue(int maxTimeInQueue, int maxElements) {
+        this.maxTimeInQueue = maxTimeInQueue;
+        this.maxElements = maxElements;
         comparator = new WMItemComparator();
         removeItemTask = new RemoveItemTask();
         queue = new ArrayList(maxElements);
@@ -76,7 +87,7 @@ public class WMPriorityQueue<T> {
 
     public void add(WMItem item) {
 
-        if (queue.size() < 4) {
+        if (queue.size() < maxElements) {
             queue.add(item);
 
         } else {
@@ -96,6 +107,14 @@ public class WMPriorityQueue<T> {
 
     public void setMaxElements(int maxElements) {
         this.maxElements = maxElements;
+    }
+
+    public int getMaxTimeInQueue() {
+        return maxTimeInQueue;
+    }
+
+    public void setMaxTimeInQueue(int maxTimeInQueue) {
+        this.maxTimeInQueue = maxTimeInQueue;
     }
 
     public void showItems() {
