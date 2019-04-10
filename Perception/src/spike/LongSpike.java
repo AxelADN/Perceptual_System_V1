@@ -45,6 +45,16 @@ public class LongSpike<  L extends Serializable, I extends Serializable, T exten
 	 * @return
 	 * Requires a modality, the rest of the parameters are set to null.
      */
+    
+    public LongSpike(){
+        
+        this.modality = Modalities.DEFAULT;
+        this.location = null;
+        this.intensity = (I)"DEFAULT_SPIKE";
+        this.timing = null;
+        
+    }
+    
     public LongSpike(int modality) {
         this.modality = modality;
         this.location = null;
@@ -255,7 +265,12 @@ public class LongSpike<  L extends Serializable, I extends Serializable, T exten
 	 * Returns an exact copy of this Spike
      */
     public LongSpike<L, I, T> clone() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        LongSpike newSpike = new LongSpike();
+        newSpike.setModality(this.modality);
+        newSpike.setLocation(this.location);
+        newSpike.setIntensity(this.intensity);
+        newSpike.setTiming(this.timing);
+        return newSpike;
     }
 
     public boolean equals(LongSpike<L, I, T> spike) {

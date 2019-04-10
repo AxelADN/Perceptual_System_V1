@@ -21,16 +21,16 @@ import templates.AreaTemplate;
  *
  * @author axeladn
  */
-public class ITC extends AreaTemplate {
+public class RIICManager extends AreaTemplate {
     
     
-    public ITC() {
+    public RIICManager() {
         this.ID = AreaNames.ITC;
         userID = "ITC";
         
         addProcess(GenericActivity.class);
         addProcess(Segmentation.class,ActConf.TYPE_PARALLEL);
-        
+        //addProcess(MemoryGate.class);
     }
     
     @Override
@@ -43,7 +43,9 @@ public class ITC extends AreaTemplate {
     @Override
     public void receive(int nodeID, byte[] data) {
         
-        mainProc(_Template_receive(nodeID,data));
+        LongSpike spike;
+        spike = _Template_receive(nodeID,data);
+        mainProc(spike);
                  
     }
     
@@ -56,7 +58,7 @@ public class ITC extends AreaTemplate {
             send(AreaNames.Segmentation,spike.getByteArray());
             
         } catch (IOException ex) {
-            Logger.getLogger(ITC.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RIICManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }    
     

@@ -1,19 +1,18 @@
 package perception.main;
 
+import perception.nodes.bigNodes.gates.ITp;
 import kmiddle2.nodes.service.Igniter;
 
-import perception.nodes.bigNodes.gates.ITC;
-
 import org.opencv.core.Core;
-import perception.nodes.bigNodes.ITa.*;
 import perception.nodes.bigNodes.ITp.*;
+import perception.nodes.bigNodes.gates.*;
 import utils.SimpleLogger;
 import utils.layoutManager;
 
 public class perception extends Igniter {
 
     private boolean DEBUG = true;
-    private byte ENTITY_ID = 33;
+    private byte ENTITY_ID = 34;
 
     public perception() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -21,7 +20,8 @@ public class perception extends Igniter {
         String[] areaNames = {
             
             ITC.class.getName(),
-            ITp_fQ1.class.getName(),
+            ITp.class.getName(),
+            /*
             ITp_fQ2.class.getName(),
             ITp_fQ3.class.getName(),
             ITp_fQ4.class.getName(),
@@ -29,6 +29,9 @@ public class perception extends Igniter {
             ITa_fQ2.class.getName(),
             ITa_fQ3.class.getName(),
             ITa_fQ4.class.getName(),
+            ITa.class.getName(),
+            MEM.class.getName(),
+            */
         };
 
         SimpleLogger.setDebug(DEBUG);

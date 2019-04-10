@@ -6,62 +6,61 @@
 package perception.nodes.smallNodes;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kmiddle2.nodes.activities.Activity;
 import perception.config.AreaNames;
 import spike.LongSpike;
+import templates.ActivityTemplate;
 import utils.SimpleLogger;
 
 /**
  *
  * @author axeladn
  */
-public class Segmentation extends Activity {
-    
-    private static final String userID = "Segmentation";
+public class Segmentation extends ActivityTemplate {
     
     public Segmentation() {
         this.ID = AreaNames.Segmentation;
-        this.namer = AreaNames.class;
+        
+        userID = "Segmentation";
     }
     
     @Override
     public void init() {
         
-        SimpleLogger.log(this, "SMALL_NODE: "+userID);
+        _Template_init(userID);
         
     }
 
     @Override
     public void receive(int nodeID, byte[] data) {
-        try {
-            
-            LongSpike spike = new LongSpike(data);
-            SimpleLogger.log(this, "DATA_RECEIVED: "+ spike.getIntensity());
-            mainProc(spike);
-            
-        } catch (Exception ex) {
-            Logger.getLogger(Segmentation.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        mainProc(_Template_receive(nodeID, data));
+                
     }
     
     private void mainProc(LongSpike spike){
         
-        try {
-            spike.setIntensity(spike.getIntensity()+"Q1");
-            send(AreaNames.ITp_fQ1,spike.getByteArray());
-            
-            spike.setIntensity(spike.getIntensity()+"Q2");
-            send(AreaNames.ITp_fQ2,spike.getByteArray());
-            
-            spike.setIntensity(spike.getIntensity()+"Q3");
-            send(AreaNames.ITp_fQ3,spike.getByteArray());
-            
-            spike.setIntensity(spike.getIntensity()+"Q4");
-            send(AreaNames.ITp_fQ4,spike.getByteArray());
-        } catch (IOException ex) {
-            Logger.getLogger(Segmentation.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        _Template_mainProc(spike);
+        
+        sendSegmented(spike);
     }    
+    
+    private void sendSegmented(LongSpike spike){
+        
+        ArrayList<String> data = new ArrayList<>();
+        LongSpike storeSpike = spike.clone();
+        
+        for(int i=0; i<8; i++){
+            try {
+                spike.setIntensity(spike.getIntensity()+RETINOTOPIC_INSTANCE_NAMES.get(i));
+                send(AreaNames.ITp,spike.getByteArray());
+                spike = storeSpike.clone();
+            } catch (IOException ex) {
+                Logger.getLogger(Segmentation.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
 }
