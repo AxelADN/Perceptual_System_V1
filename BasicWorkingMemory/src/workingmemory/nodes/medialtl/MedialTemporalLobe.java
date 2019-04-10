@@ -5,10 +5,11 @@
  */
 package workingmemory.nodes.medialtl;
 
-import workingmemory.nodes.ventralvc.*;
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
+import workingmemory.core.spikes.Spike;
+import workingmemory.core.spikes.SpikeTypes;
 import workingmemory.nodes.custom.BigNode;
 
 /**
@@ -32,12 +33,27 @@ public class MedialTemporalLobe extends BigNode {
 
     @Override
     public void afferents(int senderID, byte[] data) {
+
         int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
-        
-        if(nodeType == AreaNames.MTLP1){
+
+        if (nodeType == AreaNames.MTLP1) {
             System.out.println("do somenthing");
-        }else{
-            sendToChild(AreaNames.MTLP1, getName(), data);
-        }     
+        } else {
+
+            Spike spike = Spike.fromBytes(data);
+            
+            switch (spike.getId()) {
+                case SpikeTypes.SCENE_OBJECTS:
+                    efferents(AreaNames.Hippocampus, data);
+                    break;
+                case SpikeTypes.ITC_CLASS:
+                    efferents(AreaNames.Hippocampus, data);
+                    break;
+                default:
+                    sendToChild(AreaNames.MTLP1, getName(), data);
+                    break;
+            }
+
+        }
     }
 }

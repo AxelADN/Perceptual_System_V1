@@ -11,17 +11,32 @@ import org.bytedeco.javacpp.opencv_core.Mat;
  *
  * @author Luis Martin
  */
-public class Object extends PreObject{
+public class Percept extends PreObject{
     
     private int objectClass;
+
+    @Override
+    public String toString() {
+        
+        StringBuilder strb = new StringBuilder();
+        
+        strb.append("Percept [");
+        strb.append(" class = ").append(objectClass);
+        strb.append(" time = ").append(getTime());
+        strb.append("] ");
+        
+        return strb.toString();
+    }
     
-    public Object(int objectClass, int id, Mat image, int centerX, int centerY, int time) {
+    
+    
+    public Percept(int objectClass, int id, Mat image, int centerX, int centerY, int time) {
         super(id, image, centerX, centerY, time);
         
         this.objectClass = objectClass;
     }
     
-    public Object(int objectClass, PreObject object){
+    public Percept(int objectClass, PreObject object){
         super(object.getId(), object.getImage(), object.getCenterX(), object.getCenterY(), object.getTime());
         
         this.objectClass = objectClass;

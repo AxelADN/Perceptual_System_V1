@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package workingmemory.nodes.itc;
+package workingmemory.nodes.pfc;
 
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
@@ -16,9 +16,9 @@ import workingmemory.nodes.custom.BigNode;
  *
  * @author Luis Martin
  */
-public class InferiorTemporalCortex extends BigNode {
+public class PrefrontalCortex extends BigNode {
 
-    public InferiorTemporalCortex(int name, NodeConfiguration config) {
+    public PrefrontalCortex(int name, NodeConfiguration config) {
         super(name, config, AreaNames.class);
     }
 
@@ -26,31 +26,34 @@ public class InferiorTemporalCortex extends BigNode {
     public void init() {
 
         //Start the node
-        addNodeType(AreaNames.ITCP1, ITCP1.class);
+        addNodeType(AreaNames.PFCP1, PFCP1.class);
         byte initialData[] = new byte[1];
-        sendToChild(AreaNames.ITCP1, getName(), initialData);
+        sendToChild(AreaNames.PFCP1, getName(), initialData);
     }
 
     @Override
     public void afferents(int senderID, byte[] data) {
+
         int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
-        
-        if(nodeType == AreaNames.ITCP1){
+
+        if (nodeType == AreaNames.PFCP1) {
             System.out.println("do somenthing");
-        }else{
-            
+        } else {
             Spike spike = Spike.fromBytes(data);
             
-            switch(spike.getId()){
-                case SpikeTypes.SCENE_OBJECTS:
-                    efferents(AreaNames.MedialTemporalLobe, data);
+            switch (spike.getId()) {
+                case SpikeTypes.ITC_CLASS:
+                    System.out.println("Storing object in short-term");
+                    sendToChild(AreaNames.PFCP1, getName(), data);
+                    break;
+                case SpikeTypes.ENCODED_SCENE:
+                    System.out.println("Storing scene in short-term");
+                    //sendToChild(AreaNames.PFCP1, getName(), data);
                     break;
                 default:
-                    sendToChild(AreaNames.ITCP1, getName(), data);
+                    //sendToChild(AreaNames.PFCP1, getName(), data);
                     break;
             }
-            
-            
-        }     
+        }
     }
 }

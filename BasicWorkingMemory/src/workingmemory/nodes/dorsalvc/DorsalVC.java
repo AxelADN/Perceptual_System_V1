@@ -39,10 +39,8 @@ public class DorsalVC extends BigNode {
         int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
         
         if(nodeType == AreaNames.DorsalVCP1){
-            System.out.println("Send to get coordinates");
             sendToChild(AreaNames.DorsalVCP2, getName(), data);
         }else{
-            System.out.println("Send to first processing");
             sendToChild(AreaNames.DorsalVCP1, getName(), data);
         }        
         

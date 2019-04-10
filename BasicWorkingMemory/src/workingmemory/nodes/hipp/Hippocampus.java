@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package workingmemory.nodes.ventralvc;
+package workingmemory.nodes.hipp;
 
 import kmiddle.nodes.NodeConfiguration;
+import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
 import workingmemory.nodes.custom.BigNode;
 
@@ -13,9 +14,9 @@ import workingmemory.nodes.custom.BigNode;
  *
  * @author Luis Martin
  */
-public class VentralVC extends BigNode {
+public class Hippocampus extends BigNode {
 
-    public VentralVC(int name, NodeConfiguration config) {
+    public Hippocampus(int name, NodeConfiguration config) {
         super(name, config, AreaNames.class);
     }
 
@@ -23,13 +24,19 @@ public class VentralVC extends BigNode {
     public void init() {
 
         //Start the node
-        addNodeType(AreaNames.VentralVCP1, VentralVCP1.class);
+        addNodeType(AreaNames.HippP1, HippP1.class);
         byte initialData[] = new byte[1];
-        sendToChild(AreaNames.VentralVCP1, getName(), initialData);
+        sendToChild(AreaNames.HippP1, getName(), initialData);
     }
 
     @Override
     public void afferents(int senderID, byte[] data) {
-        sendToChild(AreaNames.VentralVCP1, senderID, data);
+        int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
+        
+        if(nodeType == AreaNames.HippP1){
+            System.out.println("do somenthing");
+        }else{
+            sendToChild(AreaNames.HippP1, getName(), data);
+        }     
     }
 }
