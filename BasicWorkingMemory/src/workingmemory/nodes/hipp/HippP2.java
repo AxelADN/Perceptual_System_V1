@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package workingmemory.nodes.medialtl;
+package workingmemory.nodes.hipp;
 
-import workingmemory.nodes.pfc.*;
+import workingmemory.core.operations.WMPriorityQueue;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
 import workingmemory.config.AreaNames;
@@ -19,7 +19,7 @@ import workingmemory.nodes.custom.SmallNode;
  *
  * @author Luis Martin
  */
-public class MTLP2 extends SmallNode {
+public class HippP2 extends SmallNode {
 
     /**
      * *
@@ -30,14 +30,14 @@ public class MTLP2 extends SmallNode {
     
     private WMPriorityQueue<Percept> queue = new WMPriorityQueue(MAX_TIME_IN_QUEUE,MAX_ELEMENTS);
 
-    public MTLP2(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
+    public HippP2(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
     }
 
     @Override
     public void afferents(int nodeName, byte[] data) {
 
-        if (data.length == 1 && nodeName == AreaNames.MedialTemporalLobe) {
+        if (data.length == 1 && nodeName == AreaNames.Hippocampus) {
             System.out.println("Iniciando nodo " + getClass().getName());
 
         } else {

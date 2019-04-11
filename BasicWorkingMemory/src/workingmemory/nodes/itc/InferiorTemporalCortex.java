@@ -50,6 +50,10 @@ public class InferiorTemporalCortex extends BigNode {
                 case SpikeTypes.SCENE_OBJECTS:
                     efferents(AreaNames.MedialTemporalLobe, data);
                     break;
+                case SpikeTypes.ITC_CLASS:
+                    System.out.println("Save in mid-term memory");
+                    sendToChild(AreaNames.ITCP2, getName(), data);
+                    break;
                 default:
                     sendToChild(AreaNames.ITCP1, getName(), data);
                     break;

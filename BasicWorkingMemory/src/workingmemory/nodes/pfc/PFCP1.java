@@ -5,26 +5,29 @@
  */
 package workingmemory.nodes.pfc;
 
+import workingmemory.core.operations.WMPriorityQueue;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
 import org.bytedeco.javacpp.helper.opencv_core;
 import workingmemory.config.AreaNames;
 import workingmemory.core.entities.Percept;
 import workingmemory.core.entities.WMItem;
+import workingmemory.core.operations.WMQueueListener;
 import workingmemory.core.spikes.Spike;
+import workingmemory.core.spikes.SpikeTypes;
 import workingmemory.nodes.custom.SmallNode;
 
 /**
  *
  * @author Luis Martin
  */
-public class PFCP1 extends SmallNode {
+public class PFCP1 extends SmallNode implements WMQueueListener<Percept>{
 
     /**
      * *
      * STORAGE OF SINGLE OBJECT INFORMATION
      */
-    private WMPriorityQueue<Percept> queue = new WMPriorityQueue();
+    private WMPriorityQueue<Percept> queue = new WMPriorityQueue(this);
 
     public PFCP1(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
@@ -55,6 +58,17 @@ public class PFCP1 extends SmallNode {
             }
 
         }
+    }
+
+    @Override
+    public void itemRemoved(Percept item) {
+        System.out.println("[Send to mid-term] "+item);     
+        
+        Spike<Integer, Integer, Integer, Integer> spike;
+        
+        spike = new Spike(SpikeTypes.ITC_CLASS, "ObjectSpike", item.getId(), item.getObjectClass(),0,item.getTime());
+        
+        efferents(AreaNames.InferiorTemporalCortex, spike.toBytes());
     }
 
 }

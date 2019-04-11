@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package workingmemory.nodes.pfc;
+package workingmemory.core.operations;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,13 +50,21 @@ public class WMPriorityQueue<T> {
                 WMItem<T> item = (WMItem<T>) itr.next();
                 item.setTimeInQueue(item.getTimeInQueue() + 1);
                 if (item.getTimeInQueue() == getMaxTimeInQueue()) {
-                    itr.remove();
 
-                    //ENVIAR A MID-TERM MEMORY PARA FACIL RECUPERACION
+                    if (listener != null) {
+                        //ENVIAR A MID-TERM MEMORY PARA FACIL RECUPERACION
+                        System.out.println("[Removed] " + item);
+                        listener.itemRemoved(item.getItem());
+ 
+                    }
+
+                    itr.remove();
+                    showItems();
+                    
                 }
             }
 
-            showItems();
+            //showItems();
         }
     }
 
@@ -65,9 +73,11 @@ public class WMPriorityQueue<T> {
     private int maxElements = 4;
     private WMItemComparator comparator;
     private RemoveItemTask removeItemTask;
+    private WMQueueListener<T> listener;
 
-    public WMPriorityQueue() {
+    public WMPriorityQueue(WMQueueListener<T> listener) {
 
+        this.listener = listener;
         comparator = new WMItemComparator();
         removeItemTask = new RemoveItemTask();
         queue = new ArrayList(maxElements);
@@ -76,6 +86,19 @@ public class WMPriorityQueue<T> {
     }
 
     public WMPriorityQueue(int maxTimeInQueue, int maxElements) {
+
+        this.maxTimeInQueue = maxTimeInQueue;
+        this.maxElements = maxElements;
+        comparator = new WMItemComparator();
+        removeItemTask = new RemoveItemTask();
+        queue = new ArrayList(maxElements);
+
+        removeItemTask.start();
+    }
+
+    public WMPriorityQueue(WMQueueListener<T> listener, int maxTimeInQueue, int maxElements) {
+
+        this.listener = listener;
         this.maxTimeInQueue = maxTimeInQueue;
         this.maxElements = maxElements;
         comparator = new WMItemComparator();
@@ -91,14 +114,23 @@ public class WMPriorityQueue<T> {
             queue.add(item);
 
         } else {
-            System.out.println("The memory is full capacity");
+            System.out.println("\n === The memory is full capacity ===");
+
+            WMItem<T> oldItem = queue.get(0);
+
+            //ENVIAR A MID-TERM MEMORY PARA FACIL RECUPERACION
+            System.out.println("[Removed] " + item);
+            listener.itemRemoved(oldItem.getItem());
 
             //Remove the oldest
             queue.remove(0);
+
             queue.add(item);
         }
 
         Collections.sort(queue, comparator);
+        
+        showItems();
     }
 
     public int getMaxElements() {
@@ -119,7 +151,7 @@ public class WMPriorityQueue<T> {
 
     public void showItems() {
         if (queue.size() > 0) {
-            System.out.println("Items in memory");
+            System.out.println("\n === Items in memory ===");
             for (WMItem<T> item : queue) {
                 System.out.println(item + "time[" + item.getTimeInQueue() + "]");
             }

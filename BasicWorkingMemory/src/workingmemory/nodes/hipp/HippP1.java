@@ -74,7 +74,11 @@ public class HippP1 extends SmallNode {
 
                             efferents(AreaNames.PrefrontalCortex, sceneSpike.toBytes());
                             
-                            System.out.println("Its time to send to PFC mofos!");
+                            //Mid-term memory
+                            
+                            efferents(AreaNames.Hippocampus, sceneSpike.toBytes());
+                            
+                            System.out.println("All objects received, send to PFC");
                         
                         }
                         

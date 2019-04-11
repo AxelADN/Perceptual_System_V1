@@ -5,6 +5,7 @@
  */
 package workingmemory.nodes.medialtl;
 
+import workingmemory.nodes.hipp.HippP2;
 import kmiddle.nodes.NodeConfiguration;
 import kmiddle.utils.NodeNameHelper;
 import workingmemory.config.AreaNames;
@@ -27,10 +28,8 @@ public class MedialTemporalLobe extends BigNode {
 
         //Start the node
         addNodeType(AreaNames.MTLP1, MTLP1.class);
-        addNodeType(AreaNames.MTLP2, MTLP2.class);
         byte initialData[] = new byte[1];
         sendToChild(AreaNames.MTLP1, getName(), initialData);
-        sendToChild(AreaNames.MTLP2, getName(), initialData);
     }
 
     @Override
@@ -39,8 +38,8 @@ public class MedialTemporalLobe extends BigNode {
         int nodeType = NodeNameHelper.getBigNodeProcessID(senderID);
 
         if (nodeType == AreaNames.MTLP1) {
-            System.out.println("store in mid-term episodic");
-            sendToChild(AreaNames.MTLP2, getName(), data);
+            //System.out.println("store in mid-term episodic");
+            //sendToChild(AreaNames.MTLP2, getName(), data);
         } else {
 
             Spike spike = Spike.fromBytes(data);

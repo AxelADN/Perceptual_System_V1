@@ -5,6 +5,7 @@
  */
 package workingmemory.nodes.itc;
 
+import workingmemory.core.operations.WMPriorityQueue;
 import workingmemory.nodes.pfc.*;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
