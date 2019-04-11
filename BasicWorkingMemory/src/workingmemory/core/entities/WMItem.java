@@ -5,6 +5,8 @@
  */
 package workingmemory.core.entities;
 
+import java.util.Objects;
+
 /**
  *
  * @author Luis Martin
@@ -60,5 +62,27 @@ public class WMItem<T> {
         return item.toString();
     }
 
-    
+    @Override
+    public boolean equals(Object obj) {
+
+        boolean result = false;
+        if (obj == null || obj.getClass() != getClass()) {
+            result = false;
+        } else {
+            WMItem<T> cItem = (WMItem<T>) obj;
+            if (this.item.equals(cItem.getItem())) {
+                result = true;
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 19 * hash + Objects.hashCode(this.item);
+        return hash;
+    }
+
 }

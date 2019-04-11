@@ -5,6 +5,8 @@
  */
 package workingmemory.core.entities;
 
+import java.util.Objects;
+
 /**
  *
  * @author Luis Martin
@@ -46,6 +48,28 @@ public class EncodedScene {
 
     public void setPattern2dString(String pattern2dString) {
         this.pattern2dString = pattern2dString;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
+        if (obj == null || obj.getClass() != getClass()) {
+            result = false;
+        } else {
+            EncodedScene scene = (EncodedScene) obj;
+            if (this.pattern2dString.equals(scene.getPattern2dString()) && this.time == scene.getTime()) {
+                result = true;
+            }
+        }
+        
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.pattern2dString);
+        return hash;
     }
 
 }

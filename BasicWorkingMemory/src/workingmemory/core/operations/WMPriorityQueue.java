@@ -109,8 +109,14 @@ public class WMPriorityQueue<T> {
     }
 
     public void add(WMItem item) {
+        
 
         if (queue.size() < maxElements) {
+            
+            if(queue.contains(item)){
+                System.out.println("[Exists] Increment use");
+            }
+            
             queue.add(item);
 
         } else {

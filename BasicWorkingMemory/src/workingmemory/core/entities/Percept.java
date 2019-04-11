@@ -49,5 +49,28 @@ public class Percept extends PreObject{
     public void setObjectClass(int objectClass) {
         this.objectClass = objectClass;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
+        if (obj == null || obj.getClass() != getClass()) {
+            result = false;
+        } else {
+            Percept percept = (Percept) obj;
+            if (this.objectClass == percept.getObjectClass() && this.getTime() == percept.getTime()) {
+                result = true;
+            }
+        }
+        
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + this.objectClass;
+        return hash;
+    }
+    
     
 }
