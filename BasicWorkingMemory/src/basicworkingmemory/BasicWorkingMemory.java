@@ -48,6 +48,7 @@ public class BasicWorkingMemory {
         Hippocampus hipp = new Hippocampus(AreaNames.Hippocampus, conf);
         
         PrefrontalCortex pfc = new PrefrontalCortex(AreaNames.PrefrontalCortex, conf);
+        
     }
     
 }

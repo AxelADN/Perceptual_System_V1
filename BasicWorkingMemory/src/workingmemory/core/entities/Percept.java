@@ -57,7 +57,7 @@ public class Percept extends PreObject{
             result = false;
         } else {
             Percept percept = (Percept) obj;
-            if (this.objectClass == percept.getObjectClass() && this.getTime() == percept.getTime()) {
+            if (this.objectClass == percept.getObjectClass() /*&& this.getTime() == percept.getTime()*/) {
                 result = true;
             }
         }

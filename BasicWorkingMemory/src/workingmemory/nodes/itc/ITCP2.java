@@ -13,6 +13,7 @@ import org.bytedeco.javacpp.helper.opencv_core;
 import workingmemory.config.AreaNames;
 import workingmemory.core.entities.Percept;
 import workingmemory.core.entities.WMItem;
+import workingmemory.core.operations.WMQueueListener;
 import workingmemory.core.spikes.Spike;
 import workingmemory.nodes.custom.SmallNode;
 
@@ -20,7 +21,7 @@ import workingmemory.nodes.custom.SmallNode;
  *
  * @author Luis Martin
  */
-public class ITCP2 extends SmallNode {
+public class ITCP2 extends SmallNode implements WMQueueListener<Percept>{
 
     /**
      * *
@@ -28,7 +29,7 @@ public class ITCP2 extends SmallNode {
      */
     private final int MAX_TIME_IN_QUEUE = 40;
     private final int MAX_ELEMENTS = 20;
-    private WMPriorityQueue<Percept> queue = new WMPriorityQueue(MAX_TIME_IN_QUEUE,MAX_ELEMENTS);
+    private WMPriorityQueue<Percept> queue = new WMPriorityQueue(this,MAX_TIME_IN_QUEUE,MAX_ELEMENTS);
 
     public ITCP2(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
@@ -62,6 +63,11 @@ public class ITCP2 extends SmallNode {
             }
 
         }
+    }
+
+    @Override
+    public void itemRemoved(Percept item) {
+        System.out.println("[Removed] Not implemented");
     }
 
 }

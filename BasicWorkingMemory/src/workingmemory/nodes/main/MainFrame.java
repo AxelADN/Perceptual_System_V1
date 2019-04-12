@@ -5,17 +5,13 @@
  */
 package workingmemory.nodes.main;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import workingmemory.core.tasks.ExperimentTask;
 import workingmemory.gui.FrameNodeInterface;
 import workingmemory.gui.ImageComponent;
-import workingmemory.gui.ImageDialog;
 import workingmemory.gui.UIUtils;
 
 /**
@@ -99,6 +95,8 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         testTxt = new javax.swing.JLabel();
         timerTxt = new javax.swing.JLabel();
+        classNumTxt = new javax.swing.JTextField();
+        setBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Working memory load");
@@ -126,20 +124,25 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Current Image");
 
+        testTxt.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         testTxt.setText("Test No: 0");
 
+        timerTxt.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         timerTxt.setText("Timer:00");
+
+        classNumTxt.setToolTipText("");
+
+        setBtn.setText("Set");
+        setBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                setBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 151, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(138, 138, 138))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,9 +150,17 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(testTxt)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 274, Short.MAX_VALUE)
                         .addComponent(timerTxt)
-                        .addGap(10, 10, 10)))
+                        .addGap(10, 10, 10))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(setBtn)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -163,10 +174,13 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(testTxt)
                     .addComponent(timerTxt))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
+                    .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(setBtn)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton2)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
 
@@ -181,28 +195,60 @@ public class MainFrame extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         nextImage();
-        
+
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void setBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBtnActionPerformed
+        loadImage(classNumTxt.getText());
+        currentScene++;
+        captureAndSend();
+    }//GEN-LAST:event_setBtnActionPerformed
 
     /**
      * *
      * Control methods for GUI
      */
     public void captureAndSend() {
-        
+
         String path = "captures";
         String name = "scene" + currentScene + "_capture";
         UIUtils.saveComponentToPNGImage(contentPanel, path, name);
-        smallNode.actionPerformed(this, path + "/" + name + ".png",currentScene);
+        smallNode.actionPerformed(this, path + "/" + name + ".png", currentScene);
     }
 
     public void nextSecond(int second) {
-        timerTxt.setText("Timer:" + second);
+        timerTxt.setText("Timer: 0" + second);
     }
 
     public void endLearningStage() {
         contentPanel.removeAll();
         contentPanel.repaint();
+        timerTxt.setText("Timer: 0" + 0);
+        testTxt.setText("Test No: 0" + 0);
+    }
+
+    public void loadImage(String idLabel) {
+        
+        int cpW = contentPanel.getSize().width;
+        int cpH = contentPanel.getSize().height;
+
+        int imgW = cpW / columns;
+        int imgH = cpH / rows;
+        
+        int posX = 0;
+        int posY = 0;
+        
+        int id = Integer.parseInt(idLabel);
+        
+        ImageComponent imgp = new ImageComponent("dataset/imgs/obj" + id + "__" + 0 + ".png", imgW, imgH);
+        imgp.setId(id);
+        imgp.setDegrees(0);
+        imgp.setCol(posX);
+        imgp.setRow(posY);
+
+        contentPanel.add(imgp);
+        
+        imgp.setBounds(imgW * posX, imgH * posY, imgW, imgH);
     }
 
     public void nextImage() {
@@ -236,10 +282,10 @@ public class MainFrame extends javax.swing.JFrame {
             imgp.setCol(position[1]);
             imgp.setRow(position[0]);
 
+            /*
             if (imageIndex == targetID) {
                 imgp.setIsTarget(true);
-            }
-
+            }*/
             sceneImages.add(imgp);
             contentPanel.add(imgp);
 
@@ -249,17 +295,19 @@ public class MainFrame extends javax.swing.JFrame {
         positionsTmp.removeAllElements();
         currentScene++;
 
-        testTxt.setText("Test No:" + currentScene);
+        testTxt.setText("Test No: 0" + currentScene);
 
         captureAndSend();
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField classNumTxt;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton setBtn;
     private javax.swing.JLabel testTxt;
     private javax.swing.JLabel timerTxt;
     // End of variables declaration//GEN-END:variables

@@ -24,6 +24,10 @@ public class WMItem<T> {
         this.item = item;
         this.storedTime = time;
     }
+    
+    public void use(){
+        timesUsed++;
+    }
 
     public int getTimeInQueue() {
         return timeInQueue;
@@ -59,7 +63,7 @@ public class WMItem<T> {
 
     @Override
     public String toString() {
-        return item.toString();
+        return item.toString()+" [used = "+timesUsed+"]";
     }
 
     @Override

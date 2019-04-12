@@ -57,7 +57,7 @@ public class EncodedScene {
             result = false;
         } else {
             EncodedScene scene = (EncodedScene) obj;
-            if (this.pattern2dString.equals(scene.getPattern2dString()) && this.time == scene.getTime()) {
+            if (this.pattern2dString.equals(scene.getPattern2dString()) /*&& this.time == scene.getTime()*/) {
                 result = true;
             }
         }

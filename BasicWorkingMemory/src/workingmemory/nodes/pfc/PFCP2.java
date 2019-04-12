@@ -14,6 +14,7 @@ import workingmemory.core.entities.WMItem;
 import workingmemory.core.operations.WMQueueListener;
 import workingmemory.core.spikes.Spike;
 import workingmemory.core.spikes.SpikeTypes;
+import workingmemory.gui.MemoryFrame;
 import workingmemory.nodes.custom.SmallNode;
 
 /**
@@ -30,6 +31,7 @@ public class PFCP2 extends SmallNode implements WMQueueListener<EncodedScene> {
 
     public PFCP2(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
+        
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import workingmemory.core.entities.WMItem;
+import workingmemory.gui.MemoryFrame;
 
 /**
  *
@@ -55,12 +56,18 @@ public class WMPriorityQueue<T> {
                         //ENVIAR A MID-TERM MEMORY PARA FACIL RECUPERACION
                         System.out.println("[Removed] " + item);
                         listener.itemRemoved(item.getItem());
- 
+
                     }
 
+                    //GUI
+                    if (contentFrame != null) {
+                        contentFrame.remove(item);
+                    }
+
+                    //
                     itr.remove();
                     showItems();
-                    
+
                 }
             }
 
@@ -75,25 +82,21 @@ public class WMPriorityQueue<T> {
     private RemoveItemTask removeItemTask;
     private WMQueueListener<T> listener;
 
+    private MemoryFrame contentFrame;
+
     public WMPriorityQueue(WMQueueListener<T> listener) {
 
         this.listener = listener;
-        comparator = new WMItemComparator();
-        removeItemTask = new RemoveItemTask();
-        queue = new ArrayList(maxElements);
 
-        removeItemTask.start();
+        init();
     }
 
     public WMPriorityQueue(int maxTimeInQueue, int maxElements) {
 
         this.maxTimeInQueue = maxTimeInQueue;
         this.maxElements = maxElements;
-        comparator = new WMItemComparator();
-        removeItemTask = new RemoveItemTask();
-        queue = new ArrayList(maxElements);
 
-        removeItemTask.start();
+        init();
     }
 
     public WMPriorityQueue(WMQueueListener<T> listener, int maxTimeInQueue, int maxElements) {
@@ -101,41 +104,87 @@ public class WMPriorityQueue<T> {
         this.listener = listener;
         this.maxTimeInQueue = maxTimeInQueue;
         this.maxElements = maxElements;
+
+        init();
+    }
+
+    private void init() {
+
         comparator = new WMItemComparator();
         removeItemTask = new RemoveItemTask();
         queue = new ArrayList(maxElements);
 
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                contentFrame = new MemoryFrame(listener.getClass().getName());
+                contentFrame.setVisible(true);
+            }
+        });
+
         removeItemTask.start();
     }
 
+    private void updateTime(WMItem item) {
+        int itemIndex = queue.indexOf(item);
+        WMItem itemOrg = queue.get(itemIndex);
+
+        itemOrg.setTimeInQueue(0);
+        itemOrg.use();
+
+        if (contentFrame != null) {
+            contentFrame.update(itemOrg);
+        }
+    }
+
     public void add(WMItem item) {
-        
 
         if (queue.size() < maxElements) {
-            
-            if(queue.contains(item)){
+
+            if (!queue.contains(item)) {
+                queue.add(item);
+
+                if (contentFrame != null) {
+                    contentFrame.addItem(item);
+                }
+
+            } else {
+
                 System.out.println("[Exists] Increment use");
+
+                updateTime(item);
             }
-            
-            queue.add(item);
 
         } else {
             System.out.println("\n === The memory is full capacity ===");
 
-            WMItem<T> oldItem = queue.get(0);
+            if (!queue.contains(item)) {
+                WMItem<T> oldItem = queue.get(0);
 
-            //ENVIAR A MID-TERM MEMORY PARA FACIL RECUPERACION
-            System.out.println("[Removed] " + item);
-            listener.itemRemoved(oldItem.getItem());
+                //ENVIAR A MID-TERM MEMORY PARA FACIL RECUPERACION
+                System.out.println("[Removed] " + item);
+                listener.itemRemoved(oldItem.getItem());
 
-            //Remove the oldest
-            queue.remove(0);
+                //
+                if (contentFrame != null) {
+                    contentFrame.remove(queue.get(0));
+                    contentFrame.addItem(item);
+                }
 
-            queue.add(item);
+                //Remove the oldest
+                queue.remove(0);
+                queue.add(item);
+
+            } else {
+                System.out.println("[Exists] Increment use");
+
+                updateTime(item);
+
+            }
+
         }
 
         Collections.sort(queue, comparator);
-        
+
         showItems();
     }
 

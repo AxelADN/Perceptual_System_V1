@@ -32,16 +32,15 @@ public class ExperimentTask extends TimerTask {
     }
 
     public void start() {
-        timer.scheduleAtFixedRate(this, 0, 1 * 1000);
-        mainFrame.nextImage();
-
+        timer.scheduleAtFixedRate(this, 1000, 1 * 1000);
+        //mainFrame.nextImage();
     }
 
     @Override
     public void run() {
 
         if (currentLearnCue < MAX_LEARN_CUES) {
-            
+
             if (currentSecond < maxSeconds) {
                 currentSecond++;
                 mainFrame.nextSecond(currentSecond);
@@ -51,9 +50,15 @@ public class ExperimentTask extends TimerTask {
                 currentSecond = 0;
                 currentLearnCue++;
             }
-        }else{
-            this.cancel();
-            mainFrame.endLearningStage();
+        } else {
+
+            if (currentSecond < maxSeconds) {
+                currentSecond++;
+                mainFrame.nextSecond(currentSecond);
+            }else{
+                this.cancel();
+                mainFrame.endLearningStage();
+            }
         }
 
     }
