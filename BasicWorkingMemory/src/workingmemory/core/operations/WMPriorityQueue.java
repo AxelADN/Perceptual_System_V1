@@ -136,6 +136,10 @@ public class WMPriorityQueue<T> {
         }
     }
 
+    public ArrayList<WMItem<T>> getItems() {
+        return queue;
+    }
+
     public void add(WMItem item) {
 
         if (queue.size() < maxElements) {

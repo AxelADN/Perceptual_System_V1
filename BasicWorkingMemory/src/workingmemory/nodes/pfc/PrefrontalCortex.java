@@ -49,11 +49,23 @@ public class PrefrontalCortex extends BigNode {
                 case SpikeTypes.ITC_CLASS:
                     System.out.println("Storing object in short-term");
                     sendToChild(AreaNames.PFCP1, getName(), data);
+                    
+                    efferents(AreaNames.PlanningDM, data);
+                    
                     break;
                 case SpikeTypes.ENCODED_SCENE:
                     System.out.println("Storing scene in short-term");
                     sendToChild(AreaNames.PFCP2, getName(), data);
+                    
+                    efferents(AreaNames.PlanningDM, data);
+                    
                     break;
+                
+                case SpikeTypes.GET_WM_CLASSES:
+                    System.out.println("Retrieving classes for PDM");
+                    sendToChild(AreaNames.PFCP1, getName(), data);
+                    break;
+                
                 default:
                     //sendToChild(AreaNames.PFCP1, getName(), data);
                     break;

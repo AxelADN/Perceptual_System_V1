@@ -15,5 +15,7 @@ public class SpikeTypes {
     public static final int MTL_SPATIAL = 2;
     public static final int SCENE_OBJECTS = 3;
     public static final int ENCODED_SCENE = 4;
+    public static final int GET_WM_CLASSES = 5;
+    public static final int WM_CLASS_SET = 6;
     
 }

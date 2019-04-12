@@ -65,7 +65,7 @@ public class ITCP1 extends SmallNode {
         imageClasses = new ConcurrentHashMap<>();
         classesName = new ConcurrentHashMap<>();
 
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 101; i++) {
 
             String basePath = "dataset/imgs/obj" + i + "__0.png";
             Mat img = opencv_imgcodecs.imread(basePath, opencv_imgcodecs.IMREAD_COLOR);

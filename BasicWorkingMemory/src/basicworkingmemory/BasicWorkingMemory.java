@@ -13,6 +13,7 @@ import workingmemory.nodes.hipp.Hippocampus;
 import workingmemory.nodes.itc.InferiorTemporalCortex;
 import workingmemory.nodes.main.MainBigNode;
 import workingmemory.nodes.medialtl.MedialTemporalLobe;
+import workingmemory.nodes.pdm.PDM;
 import workingmemory.nodes.pfc.PrefrontalCortex;
 import workingmemory.nodes.ventralvc.VentralVC;
 import workingmemory.utils.ProcessHelper;
@@ -48,6 +49,8 @@ public class BasicWorkingMemory {
         Hippocampus hipp = new Hippocampus(AreaNames.Hippocampus, conf);
         
         PrefrontalCortex pfc = new PrefrontalCortex(AreaNames.PrefrontalCortex, conf);
+        
+        PDM pdm = new PDM(AreaNames.PlanningDM, conf);
         
     }
     

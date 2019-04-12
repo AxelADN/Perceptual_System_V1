@@ -64,4 +64,9 @@ public class AreaNames {
     public static final int PFCP1 = NodeNameHelper.getNodeID(7, 1, 0);
     public static final int PFCP2 = NodeNameHelper.getNodeID(7, 2, 0);
 
+    /*
+    * PFC
+    */
+    public static final int PlanningDM = NodeNameHelper.getNodeID(8, 0, 0);
+    public static final int PDMP1 = NodeNameHelper.getNodeID(8, 1, 0);
 }
