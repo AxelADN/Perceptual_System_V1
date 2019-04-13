@@ -104,6 +104,8 @@ public class PDMP1 extends SmallNode {
                 
                 efferents(AreaNames.PrefrontalCortex, searchSpike.toBytes());
                 
+                //REHEARSAL
+                
             }
             
         } else if (currentMode == RESPONSE_MODE) {

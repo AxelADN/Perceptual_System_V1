@@ -15,6 +15,16 @@ import workingmemory.nodes.main.MainFrame;
  */
 public class ExperimentTask extends TimerTask {
 
+    private final int LEARN_MODE = 1;
+    private final int REHEARSE_MODE = 2;
+    private final int PROBE_MODE = 3;
+
+    private final int DELAY_BEFORE = 3;
+    private final int ITEMS_TO_LEARN = 6;
+    private final int PROBE_ITEMS = 4;
+    private final int TIME_TO_LEARN = 3;
+    private final int REHEARSE_TIME = 4;
+
     private final int MAX_LEARN_CUES = 5;
     private final int MAX_TEST_CUES = 5;
 
@@ -22,7 +32,11 @@ public class ExperimentTask extends TimerTask {
 
     private Timer timer;
     private int currentSecond = 0;
+    private int currentRehearseSecond = 0;
+    private int currentProbe = 0;
+
     private int currentLearnCue = 0;
+    private int currentMode = LEARN_MODE;
 
     private MainFrame mainFrame = null;
 
@@ -32,13 +46,64 @@ public class ExperimentTask extends TimerTask {
     }
 
     public void start() {
-        timer.scheduleAtFixedRate(this, 1000, 1 * 1000);
+        timer.scheduleAtFixedRate(this, DELAY_BEFORE * 1000, 1 * 1000);
         //mainFrame.nextImage();
     }
 
     @Override
     public void run() {
 
+        if (currentMode == LEARN_MODE) {
+
+            if ((currentSecond % TIME_TO_LEARN) == 0) {
+
+                if (currentLearnCue == ITEMS_TO_LEARN) {
+                    System.out.println("Start waiting");
+
+                    currentMode = REHEARSE_MODE;
+                    mainFrame.nextStep();
+                    //showDashCue
+                } else {
+                    currentLearnCue++;
+                    mainFrame.nextStep();
+                    System.out.println("Change " + currentLearnCue);
+                    //nextImage
+                }
+
+            }
+
+        } else if (currentMode == REHEARSE_MODE) {
+
+            if (currentRehearseSecond == REHEARSE_TIME) {
+                currentMode = PROBE_MODE;
+                System.out.println("Start probes");
+                //showProbeCue
+                mainFrame.nextStep();
+                currentSecond = 0;
+            } else {
+                System.out.println("Waiting...");
+                currentRehearseSecond++;
+            }
+
+        } else if (currentMode == PROBE_MODE) {
+            if ((currentSecond % 2) == 0) {
+                if (currentProbe == PROBE_ITEMS) {
+                    System.out.println("End probe");
+                    timer.cancel();
+                    mainFrame.endLearningStage();
+                } else {
+                    System.out.println("Probe item");
+                    currentProbe++;
+                    mainFrame.nextStep();
+                }
+            }
+
+        }
+
+        currentSecond++;
+
+
+        /*
         if (currentLearnCue < MAX_LEARN_CUES) {
 
             if (currentSecond < maxSeconds) {
@@ -59,8 +124,7 @@ public class ExperimentTask extends TimerTask {
                 this.cancel();
                 mainFrame.endLearningStage();
             }
-        }
-
+        }*/
     }
 
 }
