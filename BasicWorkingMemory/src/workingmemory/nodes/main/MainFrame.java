@@ -6,6 +6,7 @@
 package workingmemory.nodes.main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
@@ -20,6 +21,9 @@ import workingmemory.gui.UIUtils;
  */
 public class MainFrame extends javax.swing.JFrame {
 
+    private final int ITEMS_TO_LEARN = 6;
+    private final int PROBE_ITEMS = 4;
+
     private FrameNodeInterface smallNode;
 
     /**
@@ -32,6 +36,8 @@ public class MainFrame extends javax.swing.JFrame {
 
     private Stack<Integer> imageList = new Stack();
     private Stack<int[]> positions = new Stack();
+    private ArrayList<Integer> randomImageID = new ArrayList<Integer>();
+    private int stepImages[];
 
     //Avoid reload on reset
     private Stack<Integer> imageListTmp = new Stack();
@@ -42,6 +48,7 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Control
      */
+    private int currentTime = 0;
     private int currentScene = 0;
     private int targetID = 100;
     private boolean allowTransformation = false;
@@ -59,6 +66,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         for (int i = 1; i <= 100; i++) {
             imageList.add(i);
+            randomImageID.add(i);
         }
 
         Collections.shuffle(imageList);
@@ -75,6 +83,11 @@ public class MainFrame extends javax.swing.JFrame {
         objects = 1;
 
         imageListTmp.addAll(imageList);
+
+        Collections.shuffle(randomImageID);
+
+        randomImageID.set(ITEMS_TO_LEARN, 101);
+        //randomImageID.set(ITEMS_TO_LEARN + 1, 101);
 
         setLocationRelativeTo(null);
 
@@ -99,7 +112,7 @@ public class MainFrame extends javax.swing.JFrame {
         setBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Working memory load");
+        setTitle("Sternberg Working Memory Task");
         setResizable(false);
 
         contentPanel.setBackground(new java.awt.Color(25, 25, 25));
@@ -122,7 +135,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Current Image");
+        jLabel1.setText("Sternberg Working Memory Task");
 
         testTxt.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         testTxt.setText("Test No: 0");
@@ -175,12 +188,13 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(testTxt)
                     .addComponent(timerTxt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(setBtn)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton2)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(setBtn)))
                 .addContainerGap())
         );
 
@@ -228,18 +242,18 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void loadImage(String idLabel) {
-        
+
         int cpW = contentPanel.getSize().width;
         int cpH = contentPanel.getSize().height;
 
         int imgW = cpW / columns;
         int imgH = cpH / rows;
-        
+
         int posX = 0;
         int posY = 0;
-        
+
         int id = Integer.parseInt(idLabel);
-        
+
         ImageComponent imgp = new ImageComponent("dataset/imgs/obj" + id + "__" + 0 + ".png", imgW, imgH);
         imgp.setId(id);
         imgp.setDegrees(0);
@@ -247,11 +261,47 @@ public class MainFrame extends javax.swing.JFrame {
         imgp.setRow(posY);
 
         contentPanel.add(imgp);
-        
+
         imgp.setBounds(imgW * posX, imgH * posY, imgW, imgH);
     }
 
+    public void nextStep() {
+
+        contentPanel.removeAll();
+        contentPanel.repaint();
+
+        int cpW = contentPanel.getSize().width;
+        int cpH = contentPanel.getSize().height;
+
+        int imgW = cpW / columns;
+        int imgH = cpH / rows;
+
+        int posX = 0;
+        int posY = 0;
+
+        int id = randomImageID.get(currentScene);
+
+        ImageComponent imgp = new ImageComponent("dataset/imgs/obj" + id + "__" + 0 + ".png", imgW, imgH);
+        imgp.setId(id);
+        imgp.setDegrees(0);
+        imgp.setCol(posX);
+        imgp.setRow(posY);
+
+        contentPanel.add(imgp);
+
+        imgp.setBounds(imgW * posX, imgH * posY, imgW, imgH);
+
+        currentScene++;
+
+        testTxt.setText("Test No: " + currentScene);
+        timerTxt.setText("Timer: 0" + currentTime+1);
+
+        captureAndSend();
+    }
+
     public void nextImage() {
+
+        /*
         if (imageListTmp.size() < objects) {
             System.out.println("Objetos insuficientes para la escena!");
             return;
@@ -282,10 +332,6 @@ public class MainFrame extends javax.swing.JFrame {
             imgp.setCol(position[1]);
             imgp.setRow(position[0]);
 
-            /*
-            if (imageIndex == targetID) {
-                imgp.setIsTarget(true);
-            }*/
             sceneImages.add(imgp);
             contentPanel.add(imgp);
 
@@ -298,6 +344,7 @@ public class MainFrame extends javax.swing.JFrame {
         testTxt.setText("Test No: 0" + currentScene);
 
         captureAndSend();
+         */
     }
 
 

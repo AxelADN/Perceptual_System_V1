@@ -20,7 +20,7 @@ import workingmemory.nodes.custom.SmallNode;
 import workingmemory.utils.ImageTransferUtils;
 
 /**
- *
+ *https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3945934/
  * @author Luis Martin
  */
 public class MainBigNodeP1 extends SmallNode implements FrameNodeInterface {
@@ -42,7 +42,6 @@ public class MainBigNodeP1 extends SmallNode implements FrameNodeInterface {
     @Override
     public void afferents(int nodeName, byte[] data) {
         System.out.println("Data from: " + nodeName);
-
     }
 
     @Override
