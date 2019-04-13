@@ -19,10 +19,10 @@
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GenericGroupNode configuration="PanelNode">
-              <y:Geometry height="171.1015625" width="220.0" x="987.75" y="-33.1015625"/>
+              <y:Geometry height="280.1015625" width="135.0" x="1081.0" y="-33.1015625"/>
               <y:Fill color="#68B0E3" transparent="false"/>
               <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="right" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#FFFFFF" verticalTextPosition="bottom" visible="true" width="220.0" x="0.0" xml:space="preserve" y="0.0">ITC (Gate)</y:NodeLabel>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#FFFFFF" verticalTextPosition="bottom" visible="true" width="135.0" x="0.0" xml:space="preserve" y="0.0">ITC (Gate)</y:NodeLabel>
               <y:StyleProperties>
                 <y:Property class="java.awt.Color" name="headerBackground" value="#68b0e3"/>
               </y:StyleProperties>
@@ -49,7 +49,7 @@
         <node id="n0::n0">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="35.0" width="79.0" x="1112.75" y="5.5"/>
+              <y:Geometry height="35.0" width="79.0" x="1109.0" y="82.5"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="44.0078125" x="17.49609375" xml:space="preserve" y="0.798828125">Visual 
@@ -61,7 +61,7 @@ System<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mod
         <node id="n0::n1">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="35.0" width="79.0" x="1003.75" y="5.5"/>
+              <y:Geometry height="35.0" width="79.0" x="1109.0" y="5.5"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="52.69140625" x="13.154296875" xml:space="preserve" y="0.798828125">Episodic 
@@ -73,7 +73,7 @@ Memory<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mod
         <node id="n0::n2">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="103.0" x="1088.75" y="77.0"/>
+              <y:Geometry height="46.0" width="103.0" x="1097.0" y="186.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="78.05078125" x="12.474609375" xml:space="preserve" y="13.6494140625">Segmentation<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
@@ -88,16 +88,16 @@ Memory<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mod
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GenericGroupNode configuration="PanelNode">
-              <y:Geometry height="317.6015625" width="444.0" x="0.0" y="-38.6015625"/>
+              <y:Geometry height="285.6015625" width="312.25" x="0.0" y="-38.6015625"/>
               <y:Fill color="#68B0E3" transparent="false"/>
               <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="right" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#FFFFFF" verticalTextPosition="bottom" visible="true" width="444.0" x="0.0" xml:space="preserve" y="0.0">RIIC Manager</y:NodeLabel>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#FFFFFF" verticalTextPosition="bottom" visible="true" width="312.25" x="0.0" xml:space="preserve" y="0.0">RIIC Manager</y:NodeLabel>
               <y:StyleProperties>
                 <y:Property class="java.awt.Color" name="headerBackground" value="#68b0e3"/>
               </y:StyleProperties>
               <y:State autoResize="true" closed="false" closedHeight="50.0" closedWidth="50.0"/>
               <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
-              <y:BorderInsets bottom="16" bottomF="16.0" left="1" leftF="1.0" right="36" rightF="36.0" top="0" topF="0.0"/>
+              <y:BorderInsets bottom="0" bottomF="0.0" left="1" leftF="1.0" right="36" rightF="36.0" top="0" topF="0.0"/>
             </y:GenericGroupNode>
             <y:GenericGroupNode configuration="PanelNode">
               <y:Geometry height="50.0" width="50.0" x="-25.0" y="-25.0"/>
@@ -118,19 +118,7 @@ Memory<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mod
         <node id="n1::n0">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="97.0" x="276.0" y="202.0"/>
-              <y:Fill color="#FFCC00" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="70.6796875" x="13.16015625" xml:space="preserve" y="6.298828125">RIIC Holistic
-Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-              <y:Shape type="ellipse"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n1::n1">
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="46.0" width="90.0" x="136.0" y="202.0"/>
+              <y:Geometry height="46.0" width="90.0" x="16.0" y="0.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="70.005859375" x="9.9970703125" xml:space="preserve" y="6.298828125">RIIC Holistic
@@ -139,10 +127,10 @@ Sync x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mo
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n1::n2">
+        <node id="n1::n1">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="90.0" x="16.0" y="202.0"/>
+              <y:Geometry height="46.0" width="90.0" x="171.25" y="186.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="44.0078125" x="22.99609375" xml:space="preserve" y="13.6494140625">RIIC x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
@@ -150,38 +138,14 @@ Sync x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mo
             </y:ShapeNode>
           </data>
         </node>
-        <node id="n1::n3">
+        <node id="n1::n2">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="125.25" x="92.5" y="77.0"/>
-              <y:Fill color="#FFCC00" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="93.373046875" x="15.9384765625" xml:space="preserve" y="6.298828125">RIIC Component
-Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-              <y:Shape type="ellipse"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n1::n4">
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="46.0" width="125.25" x="267.75" y="77.0"/>
+              <y:Geometry height="46.0" width="125.25" x="136.0" y="0.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="93.373046875" x="15.9384765625" xml:space="preserve" y="6.298828125">RIIC Component
 Sync x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
-              <y:Shape type="ellipse"/>
-            </y:ShapeNode>
-          </data>
-        </node>
-        <node id="n1::n5">
-          <data key="d6">
-            <y:ShapeNode>
-              <y:Geometry height="46.0" width="90.0" x="46.0" y="0.0"/>
-              <y:Fill color="#FFCC00" transparent="false"/>
-              <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="70.6796875" x="9.66015625" xml:space="preserve" y="6.298828125">RIIC Type
-Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
               <y:Shape type="ellipse"/>
             </y:ShapeNode>
           </data>
@@ -193,16 +157,16 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
         <y:ProxyAutoBoundsNode>
           <y:Realizers active="0">
             <y:GenericGroupNode configuration="PanelNode">
-              <y:Geometry height="364.6015625" width="483.75" x="474.0" y="38.3984375"/>
+              <y:Geometry height="285.6015625" width="708.75" x="342.25" y="-38.6015625"/>
               <y:Fill color="#68B0E3" transparent="false"/>
               <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-              <y:NodeLabel alignment="right" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#FFFFFF" verticalTextPosition="bottom" visible="true" width="483.75" x="0.0" xml:space="preserve" y="0.0">ITp</y:NodeLabel>
+              <y:NodeLabel alignment="right" autoSizePolicy="node_width" borderDistance="0.0" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#FFFFFF" verticalTextPosition="bottom" visible="true" width="708.75" x="0.0" xml:space="preserve" y="0.0">ITp</y:NodeLabel>
               <y:StyleProperties>
                 <y:Property class="java.awt.Color" name="headerBackground" value="#68b0e3"/>
               </y:StyleProperties>
               <y:State autoResize="true" closed="false" closedHeight="50.0" closedWidth="50.0"/>
               <y:Insets bottom="15" bottomF="15.0" left="15" leftF="15.0" right="15" rightF="15.0" top="15" topF="15.0"/>
-              <y:BorderInsets bottom="0" bottomF="0.0" left="1" leftF="1.0" right="1" rightF="1.0" top="0" topF="0.0"/>
+              <y:BorderInsets bottom="0" bottomF="0.0" left="1" leftF="1.0" right="36" rightF="36.0" top="0" topF="0.0"/>
             </y:GenericGroupNode>
             <y:GenericGroupNode configuration="PanelNode">
               <y:Geometry height="50.0" width="50.0" x="-25.0" y="-25.0"/>
@@ -223,7 +187,7 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
         <node id="n2::n0">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="67.0" x="782.0" y="202.0"/>
+              <y:Geometry height="46.0" width="67.0" x="650.25" y="77.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="56.67578125" x="5.162109375" xml:space="preserve" y="6.298828125">Classifier 
@@ -235,7 +199,7 @@ Holistic<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:M
         <node id="n2::n1">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="103.0" x="629.0" y="202.0"/>
+              <y:Geometry height="46.0" width="103.0" x="767.25" y="77.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="58.029296875" x="22.4853515625" xml:space="preserve" y="6.298828125">Preobject 
@@ -247,7 +211,7 @@ Buffer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:
         <node id="n2::n2">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="35.0" width="61.0" x="845.75" y="82.5"/>
+              <y:Geometry height="35.0" width="61.0" x="939.0" y="191.5"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="39.349609375" x="10.8251953125" xml:space="preserve" y="0.798828125">Buffer 
@@ -259,7 +223,7 @@ Switch<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:Mod
         <node id="n2::n3">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="83.0" x="732.75" y="77.0"/>
+              <y:Geometry height="46.0" width="83.0" x="368.25" y="0.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="66.0390625" x="8.48046875" xml:space="preserve" y="6.298828125">Classifier 
@@ -271,7 +235,7 @@ Component<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:
         <node id="n2::n4">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="89.0" x="490.0" y="202.0"/>
+              <y:Geometry height="46.0" width="89.0" x="800.0" y="186.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="70.6796875" x="9.16015625" xml:space="preserve" y="6.298828125">Preobject 
@@ -283,7 +247,7 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
         <node id="n2::n5">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="103.0" x="838.75" y="342.0"/>
+              <y:Geometry height="46.0" width="103.0" x="358.25" y="77.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="68.04296875" x="17.478515625" xml:space="preserve" y="6.298828125">Candidates 
@@ -295,7 +259,7 @@ Buffer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:
         <node id="n2::n6">
           <data key="d6">
             <y:ShapeNode>
-              <y:Geometry height="46.0" width="89.0" x="699.75" y="342.0"/>
+              <y:Geometry height="46.0" width="89.0" x="511.25" y="77.0"/>
               <y:Fill color="#FFCC00" transparent="false"/>
               <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
               <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="70.6796875" x="9.16015625" xml:space="preserve" y="6.298828125">Candidates 
@@ -309,22 +273,9 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
     <edge id="n0::e0" source="n0::n0" target="n0::n2">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="17.5" tx="0.0" ty="-23.0">
-            <y:Point x="1152.25" y="56.0"/>
-            <y:Point x="1140.25" y="56.0"/>
-          </y:Path>
+          <y:Path sx="0.0" sy="17.5" tx="0.0" ty="-23.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="none" target="standard"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="n1::e0" source="n1::n1" target="n1::n0">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="45.0" sy="0.0" tx="-48.5" ty="0.0"/>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="white_diamond" target="white_delta_bar"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
@@ -332,7 +283,7 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
     <edge id="n2::e0" source="n2::n1" target="n2::n0">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="51.5" sy="0.0" tx="-33.5" ty="0.0"/>
+          <y:Path sx="-51.5" sy="0.0" tx="33.5" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="standard"/>
           <y:BendStyle smoothed="false"/>
@@ -342,10 +293,7 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
     <edge id="n2::e1" source="n2::n2" target="n2::n4">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="17.5" tx="0.0" ty="-23.0">
-            <y:Point x="876.25" y="138.5"/>
-            <y:Point x="534.5" y="138.5"/>
-          </y:Path>
+          <y:Path sx="-30.5" sy="0.0" tx="44.5" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta"/>
           <y:BendStyle smoothed="false"/>
@@ -355,7 +303,7 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
     <edge id="n2::e2" source="n2::n4" target="n2::n1">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="44.5" sy="0.0" tx="-51.5" ty="0.0"/>
+          <y:Path sx="0.0" sy="-23.0" tx="25.75" ty="19.90625"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta_bar"/>
           <y:BendStyle smoothed="false"/>
@@ -372,25 +320,12 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e1" source="n2::n1" target="n1::n0">
+    <edge id="e1" source="n2::n0" target="n1::n0">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="23.0" tx="0.0" ty="23.0">
-            <y:Point x="680.5" y="263.5"/>
-            <y:Point x="324.5" y="263.5"/>
-          </y:Path>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="white_diamond" target="white_delta_bar"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
-    <edge id="e2" source="n2::n0" target="n1::n1">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="-16.75" sy="21.03125" tx="0.0" ty="23.0">
-            <y:Point x="798.75" y="310.5"/>
-            <y:Point x="181.0" y="310.5"/>
+          <y:Path sx="0.0" sy="-23.0" tx="22.5" ty="19.90625">
+            <y:Point x="683.75" y="61.5"/>
+            <y:Point x="83.5" y="61.5"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta"/>
@@ -398,26 +333,10 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e3" source="n2::n5" target="n1::n3">
-      <data key="d10">
-        <y:PolyLineEdge>
-          <y:Path sx="-25.75" sy="-19.90625" tx="0.0" ty="23.0">
-            <y:Point x="864.5" y="170.5"/>
-            <y:Point x="155.125" y="170.5"/>
-          </y:Path>
-          <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="white_diamond" target="white_delta_bar"/>
-          <y:BendStyle smoothed="false"/>
-        </y:PolyLineEdge>
-      </data>
-    </edge>
     <edge id="n2::e3" source="n2::n0" target="n2::n6">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="16.75" sy="21.03125" tx="22.25" ty="-19.90625">
-            <y:Point x="832.25" y="326.5"/>
-            <y:Point x="766.5" y="326.5"/>
-          </y:Path>
+          <y:Path sx="-33.5" sy="0.0" tx="44.5" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta"/>
           <y:BendStyle smoothed="false"/>
@@ -427,19 +346,19 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
     <edge id="n2::e4" source="n2::n6" target="n2::n5">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="44.5" sy="0.0" tx="-51.5" ty="0.0"/>
+          <y:Path sx="-44.5" sy="0.0" tx="51.5" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta_bar"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e4" source="n1::n2" target="n2::n6">
+    <edge id="e2" source="n1::n1" target="n2::n6">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="-22.5" sy="19.90625" tx="-22.25" ty="-19.90625">
-            <y:Point x="38.5" y="326.5"/>
-            <y:Point x="722.0" y="326.5"/>
+          <y:Path sx="18.0" sy="-21.09375" tx="0.0" ty="23.0">
+            <y:Point x="234.25" y="154.5"/>
+            <y:Point x="555.75" y="154.5"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta_bar"/>
@@ -450,17 +369,14 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
     <edge id="n2::e5" source="n2::n5" target="n2::n3">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="25.75" sy="-19.90625" tx="0.0" ty="23.0">
-            <y:Point x="916.0" y="154.5"/>
-            <y:Point x="774.25" y="154.5"/>
-          </y:Path>
+          <y:Path sx="0.0" sy="-23.0" tx="0.0" ty="23.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="standard"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e5" source="n2::n3" target="n1::n4">
+    <edge id="e3" source="n2::n3" target="n1::n2">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="-41.5" sy="0.0" tx="62.625" ty="0.0"/>
@@ -470,22 +386,23 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e1" source="n1::n4" target="n1::n3">
+    <edge id="e4" source="n1::n1" target="n2::n4">
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="-62.625" sy="0.0" tx="62.625" ty="0.0"/>
+          <y:Path sx="45.0" sy="0.0" tx="-44.5" ty="0.0"/>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta_bar"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e6" source="n1::n2" target="n2::n4">
+    <edge id="e5" source="n2::n1" target="n1::n1">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="22.5" sy="19.90625" tx="0.0" ty="23.0">
-            <y:Point x="83.5" y="294.5"/>
-            <y:Point x="534.5" y="294.5"/>
+          <y:Path sx="-25.75" sy="19.90625" tx="36.0" ty="-13.78125">
+            <y:Point x="793.0" y="170.5"/>
+            <y:Point x="252.25" y="170.5"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta_bar"/>
@@ -493,12 +410,13 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e2" source="n1::n3" target="n1::n5">
+    <edge id="n1::e0" source="n1::n0" target="n1::n1">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="-23.0" tx="30.0" ty="17.15625">
-            <y:Point x="155.125" y="61.5"/>
-            <y:Point x="121.0" y="61.5"/>
+          <y:Path sx="-22.5" sy="19.90625" tx="-36.0" ty="-13.78125">
+            <y:Point x="38.5" y="115.5"/>
+            <y:Point x="180.25" y="115.5"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta_bar"/>
@@ -506,24 +424,27 @@ Prioritizer x8<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelMode
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e3" source="n1::n5" target="n1::n2">
+    <edge id="n1::e1" source="n1::n2" target="n1::n1">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="-30.0" sy="17.15625" tx="0.0" ty="-23.0"/>
+          <y:Path sx="0.0" sy="23.0" tx="-18.0" ty="-21.09375">
+            <y:Point x="198.625" y="115.5"/>
+            <y:Point x="198.25" y="115.5"/>
+          </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
-          <y:Arrows source="none" target="white_delta"/>
+          <y:Arrows source="white_diamond" target="white_delta_bar"/>
           <y:BendStyle smoothed="false"/>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="n1::e4" source="n1::n0" target="n1::n5">
+    <edge id="e6" source="n2::n5" target="n1::n1">
+      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
-          <y:Path sx="0.0" sy="-23.0" tx="0.0" ty="23.0">
-            <y:Point x="324.5" y="186.5"/>
-            <y:Point x="77.0" y="186.5"/>
-            <y:Point x="77.0" y="61.5"/>
-            <y:Point x="91.0" y="61.5"/>
+          <y:Path sx="0.0" sy="23.0" tx="0.0" ty="-23.0">
+            <y:Point x="409.75" y="138.5"/>
+            <y:Point x="216.25" y="138.5"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="1.0"/>
           <y:Arrows source="white_diamond" target="white_delta_bar"/>
