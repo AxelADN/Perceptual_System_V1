@@ -5,12 +5,14 @@
  */
 package workingmemory.gui;
 
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author Luis Martin
  */
 public interface FrameNodeInterface {
     
-    public void actionPerformed(Object src, Object data, int time);
+    public void actionPerformed(BufferedImage bufferedImage, Object src, Object data, int time);
     
 }

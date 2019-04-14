@@ -6,7 +6,6 @@
 package workingmemory.nodes.itc;
 
 import workingmemory.core.operations.WMPriorityQueue;
-import workingmemory.nodes.pfc.*;
 import kmiddle.net.Node;
 import kmiddle.nodes.NodeConfiguration;
 import org.bytedeco.javacpp.helper.opencv_core;
@@ -15,21 +14,22 @@ import workingmemory.core.entities.Percept;
 import workingmemory.core.entities.WMItem;
 import workingmemory.core.operations.WMQueueListener;
 import workingmemory.core.spikes.Spike;
+import workingmemory.core.spikes.SpikeTypes;
 import workingmemory.nodes.custom.SmallNode;
 
 /**
  *
  * @author Luis Martin
  */
-public class ITCP2 extends SmallNode implements WMQueueListener<Percept>{
+public class ITCP2 extends SmallNode implements WMQueueListener<Percept> {
 
     /**
      * *
      * STORAGE OF SINGLE OBJECT INFORMATION
      */
-    private final int MAX_TIME_IN_QUEUE = 40;
+    private final int MAX_TIME_IN_QUEUE = 140;
     private final int MAX_ELEMENTS = 20;
-    private WMPriorityQueue<Percept> queue = new WMPriorityQueue(this,MAX_TIME_IN_QUEUE,MAX_ELEMENTS);
+    private WMPriorityQueue<Percept> queue = new WMPriorityQueue(this, MAX_TIME_IN_QUEUE, MAX_ELEMENTS);
 
     public ITCP2(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
@@ -45,19 +45,42 @@ public class ITCP2 extends SmallNode implements WMQueueListener<Percept>{
 
             try {
                 System.out.println("Using mid-term memory for storage");
-                
+
                 Spike<Integer, Integer, Integer, Integer> spike = (Spike<Integer, Integer, Integer, Integer>) Spike.fromBytes(data);
 
-                int preObjId = spike.getModality();
-                int classId = spike.getIntensity();
-                int time = spike.getDuration();
+                if (spike.getId() == SpikeTypes.ITC_CLASS) {
+                    
+                    int preObjId = spike.getModality();
+                    int classId = spike.getIntensity();
+                    int time = spike.getDuration();
 
-                Percept percept = new Percept(classId, preObjId, opencv_core.AbstractMat.EMPTY, 0, 0, time);
+                    Percept percept = new Percept(classId, preObjId, opencv_core.AbstractMat.EMPTY, 0, 0, time);
 
-                WMItem<Percept> item = new WMItem(percept, time);
+                    WMItem<Percept> item = new WMItem(percept, time);
 
-                queue.add(item);
-            
+                    queue.add(item);
+                    
+                } else if (spike.getId() == SpikeTypes.SEARCH_IN_MTM) {
+
+                                        
+                    int preObjId = spike.getModality();
+                    int classId = spike.getIntensity();
+                    int time = spike.getDuration();
+
+                    Percept percept = new Percept(classId, preObjId, opencv_core.AbstractMat.EMPTY, 0, 0, time);
+
+                    WMItem<Percept> item = new WMItem(percept, time);
+                    
+                    boolean contains = queue.existsBeforeTime(item, time);
+                    
+                    Spike<Integer, Integer, Integer, Integer> searchSpike = new Spike(SpikeTypes.MTM_RESPONSE, "MTMResponse", 0, contains?1:0, 0, 0);
+                    
+                    efferents(AreaNames.PrefrontalCortex, searchSpike.toBytes());
+                    
+                    System.out.println("Exist the item: "+contains);
+                    
+                }
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

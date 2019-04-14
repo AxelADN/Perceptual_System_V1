@@ -33,6 +33,10 @@ public class PDMP1 extends SmallNode {
 
     private int currentMode = STORING_MODE;
 
+    private int retrievedClasses[];
+    private int currentProbeId = 0;
+    private int PROBING_TIME = 0;
+
     public PDMP1(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
     }
@@ -55,14 +59,21 @@ public class PDMP1 extends SmallNode {
                     action(spike);
 
                 } else if (spike.getId() == SpikeTypes.ENCODED_SCENE) {
-                
+
                     System.out.println("Requires parse the scene");
-                
-                }else if(spike.getId() == SpikeTypes.WM_CLASS_SET){
-                    
+
+                } else if (spike.getId() == SpikeTypes.WM_CLASS_SET) {
+
                     System.out.println("Retrieved items from WM");
                     retrieved(spike);
+
+                } else if (spike.getId() == SpikeTypes.MTM_RESPONSE) {
                     
+                    Spike<Integer, Integer, Integer, Integer> searchSpike = (Spike<Integer, Integer, Integer, Integer>)spike;
+                    
+                    Spike<Integer, Integer, Integer, Integer> responseSpike = new Spike(SpikeTypes.PDM_RESPONSE, "Response", 0, searchSpike.getIntensity(), 0, 0);
+
+                    efferents(AreaNames.MaingBigNode, responseSpike.toBytes());
                 }
 
                 System.out.println("Received " + data);
@@ -73,43 +84,67 @@ public class PDMP1 extends SmallNode {
 
         }
     }
-    
-    private void retrieved(Spike s){
-        
-        Spike<int[], Integer, Integer, Integer> spike = (Spike<int[], Integer, Integer, Integer>)s;
-        
-        int classes[] = spike.getModality();
-        
-        for (int i = 0; i < classes.length; i++) {
-            System.out.println("[Item class = "+classes[i]+" ]");
+
+    private void retrieved(Spike s) {
+
+        Spike<int[], Integer, Integer, Integer> spike = (Spike<int[], Integer, Integer, Integer>) s;
+
+        retrievedClasses = spike.getModality();
+
+        for (int i = 0; i < retrievedClasses.length; i++) {
+            System.out.println("[Item class = " + retrievedClasses[i] + " ]");
         }
-        
-        
-                
+
     }
 
     private void action(Spike spike) {
 
         Spike<Integer, Integer, Integer, Integer> itcSpike = (Spike<Integer, Integer, Integer, Integer>) spike;
 
-        int classId = itcSpike.getIntensity();   
+        int classId = itcSpike.getIntensity();
 
         if (currentMode == STORING_MODE) {
-            
+
             if (classId == CUE_CLASS) {
                 System.out.println("[Retrieve from WM]");
                 currentMode = RESPONSE_MODE;
-                
-                Spike<Integer, Integer, Integer, Integer> searchSpike = new Spike(SpikeTypes.GET_WM_CLASSES, "RetrieveWMClasses", 0, 0,0, 0);
-                
+                PROBING_TIME = itcSpike.getDuration();
+
+                Spike<Integer, Integer, Integer, Integer> searchSpike = new Spike(SpikeTypes.GET_WM_CLASSES, "RetrieveWMClasses", 0, 0, 0, 0);
+
                 efferents(AreaNames.PrefrontalCortex, searchSpike.toBytes());
-                
+
                 //REHEARSAL
-                
             }
-            
+
         } else if (currentMode == RESPONSE_MODE) {
-            System.out.println("[Search] Searching id = "+classId +" in retrieved wm set");
+
+            System.out.println("[Probe Class] " + classId);
+
+            boolean exists = false;
+
+            for (int i = 0; i < retrievedClasses.length; i++) {
+                if (retrievedClasses[i] == classId) {
+                    exists = true;
+                    break;
+                }
+                System.out.println("[Comparisson] item = " + retrievedClasses[i] + " probe = " + classId);
+            }
+
+            if (exists) {
+                System.out.println("Exists");
+
+                Spike<Integer, Integer, Integer, Integer> searchSpike = new Spike(SpikeTypes.PDM_RESPONSE, "Response", 0, 1, 0, 0);
+
+                efferents(AreaNames.MaingBigNode, searchSpike.toBytes());
+            } else {
+                System.out.println("Search in mid-term");
+
+                Spike<Integer, Integer, Integer, Integer> searchSpike = new Spike(SpikeTypes.SEARCH_IN_MTM, "SearchInMTM", 0, classId, 0, PROBING_TIME);
+
+                efferents(AreaNames.PrefrontalCortex, searchSpike.toBytes());
+            }
+
         }
 
     }

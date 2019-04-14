@@ -17,5 +17,8 @@ public class SpikeTypes {
     public static final int ENCODED_SCENE = 4;
     public static final int GET_WM_CLASSES = 5;
     public static final int WM_CLASS_SET = 6;
+    public static final int PDM_RESPONSE = 7;
+    public static final int SEARCH_IN_MTM = 8; //Obtener de memoria a mediano plazo
+    public static final int MTM_RESPONSE = 9;
     
 }

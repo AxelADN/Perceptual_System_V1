@@ -28,7 +28,20 @@ public class ImageDialog extends JDialog {
         pack();
         setVisible(true);
         setTitle("Target");
-        
+
+        setLocationRelativeTo(null);
+    }
+
+    public ImageDialog(ImageComponent image) {
+
+        ImageComponent imagePanel = image;
+        JScrollPane jsp = new JScrollPane(imagePanel);
+        setLayout(new BorderLayout());
+        add(jsp);
+        pack();
+        setVisible(true);
+        setTitle("Target");
+
         setLocationRelativeTo(null);
     }
 

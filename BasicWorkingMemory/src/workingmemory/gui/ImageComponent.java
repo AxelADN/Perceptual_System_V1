@@ -33,6 +33,10 @@ public class ImageComponent extends JComponent {
     //Metadata
     private boolean showInfo = false;
     private int id, degrees;
+    
+    //
+    private int originalWidth = 0;
+    private int originalHeight = 0;
 
     public ImageComponent(String imagePath) {
         loadImage(imagePath);
@@ -41,6 +45,9 @@ public class ImageComponent extends JComponent {
     public ImageComponent(String imagePath, int width, int height) {
         loadImage(imagePath);
 
+        originalWidth = width;
+        originalHeight = height;
+        
         width -= marginX;
         height -= marginY;
 
@@ -125,7 +132,7 @@ public class ImageComponent extends JComponent {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(width, height);
+        return new Dimension(originalWidth, originalHeight);
     }
 
     @Override
@@ -134,21 +141,25 @@ public class ImageComponent extends JComponent {
 
         int offsetX = (getWidth() - this.width) / 2;
         int offsetY = (getHeight() - this.height) / 2;
+        
+        grphcs.setColor(new Color(25, 25, 25));
+        grphcs.fillRect(0, 0, getWidth(), getHeight());
+        
         grphcs.drawImage(bg, offsetX, offsetY, this.width, this.height, this);
         
-        if (isTarget) {
-            grphcs.setColor(Color.WHITE);
-            grphcs.drawRect(offsetX, offsetY, this.width, this.height - 1);
-        }
-
-        if (isShowInfo()) {
-            if(isTarget){
-                grphcs.setColor(Color.green);
-            }else{
-                grphcs.setColor(Color.red);
-            }
-            grphcs.drawString("ID: " + id, 5, grphcs.getFontMetrics().getHeight());
-            grphcs.drawString("DG: " + degrees, 5, grphcs.getFontMetrics().getHeight() * 2);
-        }
+//        if (isTarget) {
+//            grphcs.setColor(Color.WHITE);
+//            grphcs.drawRect(offsetX, offsetY, this.width, this.height - 1);
+//        }
+//
+//        if (isShowInfo()) {
+//            if(isTarget){
+//                grphcs.setColor(Color.green);
+//            }else{
+//                grphcs.setColor(Color.red);
+//            }
+//            grphcs.drawString("ID: " + id, 5, grphcs.getFontMetrics().getHeight());
+//            grphcs.drawString("DG: " + degrees, 5, grphcs.getFontMetrics().getHeight() * 2);
+//        }
     }
 }

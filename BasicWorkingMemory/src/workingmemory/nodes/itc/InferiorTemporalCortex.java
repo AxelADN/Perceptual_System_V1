@@ -54,6 +54,10 @@ public class InferiorTemporalCortex extends BigNode {
                     System.out.println("Save in mid-term memory");
                     sendToChild(AreaNames.ITCP2, getName(), data);
                     break;
+                case SpikeTypes.SEARCH_IN_MTM:
+                     System.out.println("Search in mid-term memory");
+                    sendToChild(AreaNames.ITCP2, getName(), data);                  
+                    break;
                 default:
                     sendToChild(AreaNames.ITCP1, getName(), data);
                     break;

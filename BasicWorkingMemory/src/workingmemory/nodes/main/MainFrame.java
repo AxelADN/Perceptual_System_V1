@@ -5,6 +5,7 @@
  */
 package workingmemory.nodes.main;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.Stack;
 import workingmemory.core.tasks.ExperimentTask;
 import workingmemory.gui.FrameNodeInterface;
 import workingmemory.gui.ImageComponent;
+import workingmemory.gui.ImageDialog;
 import workingmemory.gui.UIUtils;
 
 /**
@@ -34,62 +36,106 @@ public class MainFrame extends javax.swing.JFrame {
     private int columns = 1;
     private int objects = 1;
 
-    private Stack<Integer> imageList = new Stack();
-    private Stack<int[]> positions = new Stack();
     private ArrayList<Integer> randomImageID = new ArrayList<Integer>();
     private int stepImages[];
-
-    //Avoid reload on reset
-    private Stack<Integer> imageListTmp = new Stack();
-    private Stack<int[]> positionsTmp = new Stack();
-
-    private Random rand = new Random();
 
     /**
      * Control
      */
     private int currentTime = 0;
     private int currentScene = 0;
-    private int targetID = 100;
-    private boolean allowTransformation = false;
-    private ArrayList<ImageComponent> sceneImages = new ArrayList<>();
+    private ArrayList<ImageComponent> storedImages = new ArrayList<>();
+    private ArrayList<ImageComponent> storedImagesTmp = new ArrayList<>();
+    private ArrayList<BufferedImage> bufferedImages = new ArrayList<>();
+    private ArrayList<ImageComponent> probeImages = new ArrayList<>();
 
     /**
      * *
      * Experiment control
      */
     private ExperimentTask experimentTask;
+    private long previousTimestamp;
+    private long currentTimestamp;
+    
 
     public MainFrame(FrameNodeInterface smallNode) {
         this.smallNode = smallNode;
         initComponents();
 
         for (int i = 1; i <= 100; i++) {
-            imageList.add(i);
             randomImageID.add(i);
         }
 
-        Collections.shuffle(imageList);
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                positions.add(new int[]{i, j});
-            }
-        }
-
-        Collections.shuffle(positions);
-
-        //objects = (rows * columns) / 2;
         objects = 1;
-
-        imageListTmp.addAll(imageList);
 
         Collections.shuffle(randomImageID);
 
         randomImageID.set(ITEMS_TO_LEARN, 101);
-        //randomImageID.set(ITEMS_TO_LEARN + 1, 101);
+
+        preLoadExperimentImages();
 
         setLocationRelativeTo(null);
+
+    }
+
+    private void preLoadExperimentImages() {
+
+        int cpW = contentPanel.getSize().width;
+        int cpH = contentPanel.getSize().height;
+
+        int posX = 0;
+        int posY = 0;
+
+        for (int i = 0; i < ITEMS_TO_LEARN + 1; i++) {
+
+            int id = randomImageID.get(i);
+            System.out.println(id);
+            ImageComponent imgp = new ImageComponent("dataset/imgs/obj" + id + "__" + 0 + ".png", cpW, cpH);
+            imgp.setId(id);
+            imgp.setDegrees(0);
+            imgp.setCol(posX);
+            imgp.setRow(posY);
+            //new ImageDialog(imgp);
+            imgp.setBounds(0, 0, cpW, cpH);
+
+            BufferedImage bufferedImage = UIUtils.getComponentImage(imgp);
+
+            storedImages.add(imgp);
+            storedImagesTmp.add(imgp);
+            bufferedImages.add(bufferedImage);
+
+        }
+
+        Collections.shuffle(storedImagesTmp);
+
+        for (int i = ITEMS_TO_LEARN + 1; i < ITEMS_TO_LEARN + 1 + PROBE_ITEMS; i++) {
+            if (Math.random() > 0.5) {
+
+                ImageComponent img = storedImagesTmp.get(0);
+                BufferedImage bufferedImage = UIUtils.getComponentImage(img);
+
+                System.out.println(img.getHeight());
+
+                storedImages.add(img);
+                bufferedImages.add(bufferedImage);
+                storedImagesTmp.remove(0);
+
+            } else {
+                int id = randomImageID.get(i);
+                ImageComponent imgp = new ImageComponent("dataset/imgs/obj" + id + "__" + 0 + ".png", cpW, cpH);
+                imgp.setId(id);
+                imgp.setDegrees(0);
+                imgp.setCol(posX);
+                imgp.setRow(posY);
+                imgp.setBounds(0, 0, cpW, cpH);
+
+                BufferedImage bufferedImage = UIUtils.getComponentImage(imgp);
+
+                storedImages.add(imgp);
+                bufferedImages.add(bufferedImage);
+
+            }
+        }
 
     }
 
@@ -102,6 +148,7 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        answerTxt = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -110,10 +157,16 @@ public class MainFrame extends javax.swing.JFrame {
         timerTxt = new javax.swing.JLabel();
         classNumTxt = new javax.swing.JTextField();
         setBtn = new javax.swing.JButton();
+        yesBtn = new javax.swing.JButton();
+        noBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sternberg Working Memory Task");
         setResizable(false);
+
+        answerTxt.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
+        answerTxt.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        answerTxt.setText("REPONSE");
 
         contentPanel.setBackground(new java.awt.Color(25, 25, 25));
         contentPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -152,6 +205,20 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
+        yesBtn.setText("Y");
+        yesBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                yesBtnActionPerformed(evt);
+            }
+        });
+
+        noBtn.setText("N");
+        noBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                noBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -163,14 +230,20 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(testTxt)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 274, Short.MAX_VALUE)
+                        .addGap(44, 44, 44)
+                        .addComponent(answerTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(timerTxt)
                         .addGap(10, 10, 10))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                        .addComponent(yesBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(noBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(setBtn)))
@@ -186,15 +259,18 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(testTxt)
-                    .addComponent(timerTxt))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                    .addComponent(timerTxt)
+                    .addComponent(answerTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton2)
                         .addComponent(jButton1))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(setBtn)))
+                        .addComponent(setBtn)
+                        .addComponent(yesBtn)
+                        .addComponent(noBtn)))
                 .addContainerGap())
         );
 
@@ -207,16 +283,45 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        nextImage();
-
+        System.out.println(contentPanel.getWidth() + "," + contentPanel.getHeight());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void setBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBtnActionPerformed
-        loadImage(classNumTxt.getText());
+        nextStep();
+        /*loadImage(classNumTxt.getText());
         currentScene++;
-        captureAndSend();
+        captureAndSend();*/
     }//GEN-LAST:event_setBtnActionPerformed
+
+    public void setAnswer(int response) {
+        System.out.println("ANSWER");
+        if (response == 1) {
+            answerTxt.setText("PRESENT");
+        } else {
+            answerTxt.setText("ABSENT");
+        }
+
+        System.out.println("[Response] value = " + (response == 1 ? "Yes" : "No"));
+        
+        previousTimestamp = currentTimestamp;
+        currentTimestamp = System.currentTimeMillis();
+        
+        long dur = currentTimestamp - previousTimestamp;
+
+        System.out.println("Start: "+previousTimestamp);
+        System.out.println("Finish: "+currentTimestamp);
+        System.out.println("Duration: "+dur);
+        
+        nextStep();
+    }
+
+    private void yesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yesBtnActionPerformed
+        setAnswer(1);
+    }//GEN-LAST:event_yesBtnActionPerformed
+
+    private void noBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noBtnActionPerformed
+        setAnswer(0);
+    }//GEN-LAST:event_noBtnActionPerformed
 
     /**
      * *
@@ -226,8 +331,11 @@ public class MainFrame extends javax.swing.JFrame {
 
         String path = "captures";
         String name = "scene" + currentScene + "_capture";
-        UIUtils.saveComponentToPNGImage(contentPanel, path, name);
-        smallNode.actionPerformed(this, path + "/" + name + ".png", currentScene);
+        //UIUtils.saveComponentToPNGImage(contentPanel, path, name);
+
+        BufferedImage bufferedImage = UIUtils.getComponentImage(contentPanel);
+
+        smallNode.actionPerformed(bufferedImage, this, path + "/" + name + ".png", currentScene);
     }
 
     public void nextSecond(int second) {
@@ -266,96 +374,40 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void nextStep() {
+        
+        previousTimestamp = currentTimestamp;
+        currentTimestamp = System.currentTimeMillis();
+        
+        if (currentScene < storedImages.size()) {
 
-        contentPanel.removeAll();
-        contentPanel.repaint();
+            contentPanel.removeAll();
+            contentPanel.repaint();
 
-        int cpW = contentPanel.getSize().width;
-        int cpH = contentPanel.getSize().height;
+            ImageComponent img = storedImages.get(currentScene);
+            contentPanel.add(img);
 
-        int imgW = cpW / columns;
-        int imgH = cpH / rows;
+            smallNode.actionPerformed(bufferedImages.get(currentScene), this, "", currentScene);
 
-        int posX = 0;
-        int posY = 0;
+            currentScene++;
 
-        int id = randomImageID.get(currentScene);
-
-        ImageComponent imgp = new ImageComponent("dataset/imgs/obj" + id + "__" + 0 + ".png", imgW, imgH);
-        imgp.setId(id);
-        imgp.setDegrees(0);
-        imgp.setCol(posX);
-        imgp.setRow(posY);
-
-        contentPanel.add(imgp);
-
-        imgp.setBounds(imgW * posX, imgH * posY, imgW, imgH);
-
-        currentScene++;
-
-        testTxt.setText("Test No: " + currentScene);
-        timerTxt.setText("Timer: 0" + currentTime+1);
-
-        captureAndSend();
-    }
-
-    public void nextImage() {
-
-        /*
-        if (imageListTmp.size() < objects) {
-            System.out.println("Objetos insuficientes para la escena!");
-            return;
+            testTxt.setText("Test No: " + currentScene);
+            timerTxt.setText("Timer: 0" + currentTime + 1);
         }
 
-        contentPanel.removeAll();
-        contentPanel.repaint();
-
-        positionsTmp.addAll(positions);
-
-        Collections.shuffle(positionsTmp);
-
-        int cpW = contentPanel.getSize().width;
-        int cpH = contentPanel.getSize().height;
-
-        int imgW = cpW / columns;
-        int imgH = cpH / rows;
-
-        for (int i = 0; i < objects; i++) {
-            int imageIndex = imageListTmp.pop();
-            int position[] = positionsTmp.pop();
-
-            int angle = 0;
-
-            ImageComponent imgp = new ImageComponent("dataset/imgs/obj" + imageIndex + "__" + angle + ".png", imgW, imgH);
-            imgp.setId(imageIndex);
-            imgp.setDegrees(angle);
-            imgp.setCol(position[1]);
-            imgp.setRow(position[0]);
-
-            sceneImages.add(imgp);
-            contentPanel.add(imgp);
-
-            imgp.setBounds(imgW * position[1], imgH * position[0], imgW, imgH);
-        }
-
-        positionsTmp.removeAllElements();
-        currentScene++;
-
-        testTxt.setText("Test No: 0" + currentScene);
-
-        captureAndSend();
-         */
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel answerTxt;
     private javax.swing.JTextField classNumTxt;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton noBtn;
     private javax.swing.JButton setBtn;
     private javax.swing.JLabel testTxt;
     private javax.swing.JLabel timerTxt;
+    private javax.swing.JButton yesBtn;
     // End of variables declaration//GEN-END:variables
 }

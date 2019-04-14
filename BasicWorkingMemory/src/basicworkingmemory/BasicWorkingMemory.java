@@ -38,6 +38,7 @@ public class BasicWorkingMemory {
         
         MainBigNode main = new MainBigNode(AreaNames.MaingBigNode, conf);
         
+        
         VentralVC vvc = new VentralVC(AreaNames.VentralVC, conf);
         
         DorsalVC dvc = new DorsalVC(AreaNames.DorsalVC, conf);
@@ -51,6 +52,7 @@ public class BasicWorkingMemory {
         PrefrontalCortex pfc = new PrefrontalCortex(AreaNames.PrefrontalCortex, conf);
         
         PDM pdm = new PDM(AreaNames.PlanningDM, conf);
+        
         
     }
     

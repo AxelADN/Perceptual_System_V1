@@ -28,7 +28,7 @@ class WMItemComparator implements Comparator<WMItem> {
 
 public class WMPriorityQueue<T> {
 
-    private int maxTimeInQueue = 20;
+    private int maxTimeInQueue = 100;
 
     class RemoveItemTask extends TimerTask {
 
@@ -192,6 +192,24 @@ public class WMPriorityQueue<T> {
         showItems();
     }
 
+    public boolean existsBeforeTime(WMItem item, int time){
+        
+       int itemIndex = queue.indexOf(item);
+       boolean exists = false;
+       
+       if(itemIndex >= 0){
+           
+           WMItem itemOrg = queue.get(itemIndex);
+           
+           if(itemOrg.getStoredTime() < time){
+               exists = true;
+           }
+           
+       }
+        
+       return exists;
+    }
+    
     public int getMaxElements() {
         return maxElements;
     }

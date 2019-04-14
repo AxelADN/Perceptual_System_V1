@@ -66,6 +66,16 @@ public class PrefrontalCortex extends BigNode {
                     sendToChild(AreaNames.PFCP1, getName(), data);
                     break;
                 
+                case SpikeTypes.SEARCH_IN_MTM:
+                    System.out.println("Search item in MTM");
+                    efferents(AreaNames.InferiorTemporalCortex, data);
+                    break;
+                
+                case SpikeTypes.MTM_RESPONSE:
+                    System.out.println("Response from MTM");
+                    efferents(AreaNames.PlanningDM, data);
+                    break;                            
+                    
                 default:
                     //sendToChild(AreaNames.PFCP1, getName(), data);
                     break;

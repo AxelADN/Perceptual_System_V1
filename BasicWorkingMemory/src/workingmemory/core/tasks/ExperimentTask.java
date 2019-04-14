@@ -80,13 +80,17 @@ public class ExperimentTask extends TimerTask {
                 //showProbeCue
                 mainFrame.nextStep();
                 currentSecond = 0;
+
+                timer.cancel();
+                mainFrame.endLearningStage();
+
             } else {
                 System.out.println("Waiting...");
                 currentRehearseSecond++;
             }
 
         } else if (currentMode == PROBE_MODE) {
-            if ((currentSecond % 2) == 0) {
+            /*if ((currentSecond % 4) == 0) {
                 if (currentProbe == PROBE_ITEMS) {
                     System.out.println("End probe");
                     timer.cancel();
@@ -96,35 +100,11 @@ public class ExperimentTask extends TimerTask {
                     currentProbe++;
                     mainFrame.nextStep();
                 }
-            }
+            }*/
 
         }
 
         currentSecond++;
-
-
-        /*
-        if (currentLearnCue < MAX_LEARN_CUES) {
-
-            if (currentSecond < maxSeconds) {
-                currentSecond++;
-                mainFrame.nextSecond(currentSecond);
-            } else {
-                mainFrame.nextSecond(0);
-                mainFrame.nextImage();
-                currentSecond = 0;
-                currentLearnCue++;
-            }
-        } else {
-
-            if (currentSecond < maxSeconds) {
-                currentSecond++;
-                mainFrame.nextSecond(currentSecond);
-            }else{
-                this.cancel();
-                mainFrame.endLearningStage();
-            }
-        }*/
     }
 
 }
