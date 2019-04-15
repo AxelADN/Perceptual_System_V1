@@ -26,6 +26,15 @@ public class AreaNames {
     public static final int Identify  =   IDHelper.generateID("ITa", 2, 0);
     
     public static final int ITp   =   IDHelper.generateID("ITp", 0, 0);
+    public static final int BufferSwitch    =   IDHelper.generateID("ITp", 1, 0);
+    public static final int PreObjectPrioritizer_fQ1    =   IDHelper.generateID("ITp", 2, 0);
+    public static final int PreObjectPrioritizer_fQ2    =   IDHelper.generateID("ITp", 3, 0);
+    public static final int PreObjectPrioritizer_fQ3    =   IDHelper.generateID("ITp", 4, 0);
+    public static final int PreObjectPrioritizer_fQ4    =   IDHelper.generateID("ITp", 5, 0);
+    public static final int PreObjectPrioritizer_pQ1    =   IDHelper.generateID("ITp", 6, 0);
+    public static final int PreObjectPrioritizer_pQ2    =   IDHelper.generateID("ITp", 7, 0);
+    public static final int PreObjectPrioritizer_pQ3    =   IDHelper.generateID("ITp", 8, 0);
+    public static final int PreObjectPrioritizer_pQ4    =   IDHelper.generateID("ITp", 9, 0);
     public static final int Classify  =   IDHelper.generateID("ITp", 1, 0);
     
     public static final int RIICManager  =   IDHelper.generateID("RIICManager", 0, 0);

@@ -5,72 +5,64 @@
  */
 package templates;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kmiddle2.nodes.activities.Activity;
-import kmiddle2.nodes.activities.ActivityAndType;
-import kmiddle2.util.IDHelper;
 import perception.config.AreaNames;
+import perception.structures.Sendable;
 import spike.LongSpike;
+import spike.Modalities;
 import utils.SimpleLogger;
 
 /**
  *
  * @author axeladn
  */
-public abstract class ActivityTemplate extends Activity{
+public abstract class ActivityTemplate extends Activity {
 
     protected String userID;
-    public static final ArrayList<String> RETINOTOPIC_INSTANCE_NAMES = new ArrayList<>();
-    
-    public ActivityTemplate()
-    {
+    public static final String[] RETINOTOPIC_ID = {"fQ1", "fQ2", "fQ3", "fQ4", "pQ1", "pQ2", "pQ3", "pQ4"};
+
+    public ActivityTemplate() {
         this.namer = AreaNames.class;
-        
-        RETINOTOPIC_INSTANCE_NAMES.add("_fQ1");
-        RETINOTOPIC_INSTANCE_NAMES.add("_fQ2");
-        RETINOTOPIC_INSTANCE_NAMES.add("_fQ3");
-        RETINOTOPIC_INSTANCE_NAMES.add("_fQ4");
-        RETINOTOPIC_INSTANCE_NAMES.add("_pQ1");
-        RETINOTOPIC_INSTANCE_NAMES.add("_pQ2");
-        RETINOTOPIC_INSTANCE_NAMES.add("_pQ3");
-        RETINOTOPIC_INSTANCE_NAMES.add("_pQ4");
     }
-    
-    public String getUserID(){
-        return userID;
-    }    
-    
-    protected void _Template_init(String userID)
-    {
-        SimpleLogger.log(this, "SMALL_NODE: "+userID);
-    }
-    
-    protected LongSpike _Template_receive(int nodeID, byte[] data) {
-        
-        LongSpike spike = new LongSpike();
-        
+
+    protected void sendTo(Sendable sendable) {
         try {
-            
-            spike = new LongSpike(data);
-            SimpleLogger.log(this,  "DATA_RECEIVED: "+spike.getIntensity()+
-                    " FROM: "+IDHelper.getAreaName(AreaNames.class, (int)spike.getLocation()));
-            
-        } catch (Exception ex) {
+            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, sendable.getSender(), sendable, 0).getByteArray());
+        } catch (IOException ex) {
             Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        return spike;
-         
     }
-    
-    public void _Template_mainProc(LongSpike spike)
-    {
-        spike.setLocation(ID);
+
+    protected void sendToLostData(Object node, LongSpike spike) {
+        try {
+            send(AreaNames.LostData, spike.getByteArray());
+            SimpleLogger.log(node, "Data lost...");
+        } catch (IOException ex) {
+            Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
-    protected abstract int routerSwitch(int location);
-    
+
+    protected boolean correctDataType(Object data, Class klass) {
+        if (data.getClass() == Sendable.class) {
+            Sendable checkData = (Sendable) data;
+            if (checkData.getData().getClass() == ArrayList.class) {
+                ArrayList array = (ArrayList) data;
+                if (array.get(0).getClass() == klass) {
+                    return true;
+                }
+            } else {
+                return checkData.getData().getClass() == klass;
+            }
+        } else {
+            return false;
+        }
+        return false;
+    }
+
+    protected abstract void routeMap();
+
 }

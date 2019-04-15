@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package perception.nodes.bigNodes.gates;
+package perception.nodes.bigNodes;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -13,25 +13,20 @@ import utils.SimpleLogger;
 
 import kmiddle2.nodes.areas.Area;
 import perception.config.AreaNames;
-import perception.nodes.smallNodes.Identify;
-import perception.nodes.smallNodes.SceneComposition;
 import spike.LongSpike;
-import templates.AreaTemplate;
 
 /**
  *
  * @author axeladn
  */
-public class ITa extends AreaTemplate {
+public class MEM extends Area {
     
     private LongSpike spike;
-    private static final String userID = "ITa";
+    private static final String userID = "MEM";
     
-    public ITa() {        
-        this.ID = AreaNames.ITa;
-        
-        addProcess(Identify.class);
-        addProcess(SceneComposition.class);
+    public MEM() {        
+        this.ID = AreaNames.MEM;
+        this.namer = AreaNames.class;
     }
     
     @Override
@@ -50,20 +45,14 @@ public class ITa extends AreaTemplate {
             mainProc(spike);
             
         } catch (Exception ex) {
-            Logger.getLogger(ITa.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MEM.class.getName()).log(Level.SEVERE, null, ex);
         }
          
     }
     
     private void mainProc(LongSpike spike){
         
-        try {
-            
-            send(AreaNames.Identify,spike.getByteArray());
-            
-        } catch (IOException ex) {
-            Logger.getLogger(ITa.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }    
+    }       
+        
     
 }

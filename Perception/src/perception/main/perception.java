@@ -1,11 +1,11 @@
 package perception.main;
 
-import perception.nodes.bigNodes.gates.ITp;
+import perception.nodes.bigNodes.ITC;
+import perception.nodes.bigNodes.ITp;
 import kmiddle2.nodes.service.Igniter;
 
 import org.opencv.core.Core;
 import perception.nodes.bigNodes.ITp.*;
-import perception.nodes.bigNodes.gates.*;
 import utils.SimpleLogger;
 import utils.layoutManager;
 
