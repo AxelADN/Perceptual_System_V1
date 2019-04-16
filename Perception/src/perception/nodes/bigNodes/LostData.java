@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package perception.nodes.bigNodes.gates;
+package perception.nodes.bigNodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ public class LostData extends AreaTemplate {
     
     public LostData() {
         this.ID = AreaNames.LostData;
-        userID = "LostData";
         
         systemData = new HashMap<>();
         
@@ -35,21 +34,15 @@ public class LostData extends AreaTemplate {
     @Override
     public void init() {
         
-        _Template_init(userID);
-        
     }
 
     @Override
     public void receive(int nodeID, byte[] data) {
-        
-        mainProc(_Template_receive(nodeID,data));
                  
     }
     
     
     private void mainProc(LongSpike spike){
-        
-        _Template_mainProc(spike);
         
         try {
             
@@ -74,11 +67,6 @@ public class LostData extends AreaTemplate {
             internalData.add(data);
             systemData.put(NodeID, internalData);
         }
-    }
-
-    @Override
-    protected int routerSwitch(int location) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
