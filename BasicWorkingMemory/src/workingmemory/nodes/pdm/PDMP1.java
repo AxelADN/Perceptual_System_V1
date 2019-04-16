@@ -36,6 +36,11 @@ public class PDMP1 extends SmallNode {
     private int retrievedClasses[];
     private int currentProbeId = 0;
     private int PROBING_TIME = 0;
+    
+    private final int EXISTS_IN_STM = 1;
+    private final int EXISTS_IN_MTM = 2;
+    private final int NOT_EXISTS_IN_STM = 3;
+    private final int NOT_EXISTS_IN_MTM = 4;
 
     public PDMP1(int myName, Node father, NodeConfiguration options, Class<?> BigNodeNamesClass) {
         super(myName, father, options, BigNodeNamesClass);
@@ -71,7 +76,7 @@ public class PDMP1 extends SmallNode {
                     
                     Spike<Integer, Integer, Integer, Integer> searchSpike = (Spike<Integer, Integer, Integer, Integer>)spike;
                     
-                    Spike<Integer, Integer, Integer, Integer> responseSpike = new Spike(SpikeTypes.PDM_RESPONSE, "Response", 0, searchSpike.getIntensity(), 0, 0);
+                    Spike<Integer, Integer, Integer, Integer> responseSpike = new Spike(SpikeTypes.PDM_RESPONSE, "Response", EXISTS_IN_MTM, searchSpike.getIntensity(), 0, 0);
 
                     efferents(AreaNames.MaingBigNode, responseSpike.toBytes());
                 }
@@ -134,7 +139,7 @@ public class PDMP1 extends SmallNode {
             if (exists) {
                 System.out.println("Exists");
 
-                Spike<Integer, Integer, Integer, Integer> searchSpike = new Spike(SpikeTypes.PDM_RESPONSE, "Response", 0, 1, 0, 0);
+                Spike<Integer, Integer, Integer, Integer> searchSpike = new Spike(SpikeTypes.PDM_RESPONSE, "Response", EXISTS_IN_STM, 1, 0, 0);
 
                 efferents(AreaNames.MaingBigNode, searchSpike.toBytes());
             } else {

@@ -46,15 +46,15 @@ public class MainBigNodeP1 extends SmallNode implements FrameNodeInterface {
     @Override
     public void afferents(int nodeName, byte[] data) {
 
-        System.out.println("Data from: " + nodeName);
+       // System.out.println("Data from: " + nodeName);
 
         if (data.length == 1 && nodeName == AreaNames.MaingBigNode) {
-            System.out.println("Iniciando nodo " + getClass().getName());
+            System.out.println("Starting SmallNode " + getClass().getName());
         } else {
 
             Spike<Integer, Integer, Integer, Integer> searchSpike = Spike.fromBytes(data);
 
-            frame.setAnswer(searchSpike.getIntensity());
+            frame.setAnswer(searchSpike.getIntensity(), searchSpike.getModality());
 
         }
     }
@@ -63,7 +63,7 @@ public class MainBigNodeP1 extends SmallNode implements FrameNodeInterface {
     public void actionPerformed(BufferedImage bufferedImage, Object src, Object data, int time) {
         try {
 
-            System.out.println(data.toString());
+            //System.out.println(data.toString());
 
             BufferedImage img = bufferedImage;// ImageIO.read(new File(data.toString()));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -72,7 +72,7 @@ public class MainBigNodeP1 extends SmallNode implements FrameNodeInterface {
             byte[] imageInBytes = baos.toByteArray();
             baos.close();
 
-            System.out.println(imageInBytes.length);
+            //System.out.println(imageInBytes.length);
 
             int chunkSize = ImageTransferUtils.CHUNK_SIZE;
             byte chunks[][] = divideArray(imageInBytes, chunkSize);

@@ -6,11 +6,17 @@
 package workingmemory.nodes.main;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import workingmemory.core.tasks.ExperimentTask;
 import workingmemory.gui.FrameNodeInterface;
 import workingmemory.gui.ImageComponent;
@@ -54,9 +60,17 @@ public class MainFrame extends javax.swing.JFrame {
      * Experiment control
      */
     private ExperimentTask experimentTask;
+    private int currentResponse = 0;
     private long previousTimestamp;
     private long currentTimestamp;
-    
+    private String RUN_ID = "RUN_" + System.currentTimeMillis();
+    private StringBuilder responses = new StringBuilder();
+
+    /**
+     * *
+     * LOG RESULTS
+     */
+    private PrintWriter pw;
 
     public MainFrame(FrameNodeInterface smallNode) {
         this.smallNode = smallNode;
@@ -76,6 +90,18 @@ public class MainFrame extends javax.swing.JFrame {
 
         setLocationRelativeTo(null);
 
+        yesBtn.setVisible(false);
+        noBtn.setVisible(false);
+        setBtn.setVisible(false);
+        timerTxt.setVisible(false);
+        classNumTxt.setVisible(false);
+
+        try {
+            pw = new PrintWriter(new FileOutputStream(new File("results/results.txt"),true));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private void preLoadExperimentImages() {
@@ -89,7 +115,7 @@ public class MainFrame extends javax.swing.JFrame {
         for (int i = 0; i < ITEMS_TO_LEARN + 1; i++) {
 
             int id = randomImageID.get(i);
-            System.out.println(id);
+            // System.out.println(id);
             ImageComponent imgp = new ImageComponent("dataset/imgs/obj" + id + "__" + 0 + ".png", cpW, cpH);
             imgp.setId(id);
             imgp.setDegrees(0);
@@ -114,8 +140,7 @@ public class MainFrame extends javax.swing.JFrame {
                 ImageComponent img = storedImagesTmp.get(0);
                 BufferedImage bufferedImage = UIUtils.getComponentImage(img);
 
-                System.out.println(img.getHeight());
-
+                //System.out.println(img.getHeight());
                 storedImages.add(img);
                 bufferedImages.add(bufferedImage);
                 storedImagesTmp.remove(0);
@@ -162,7 +187,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sternberg Working Memory Task");
-        setResizable(false);
 
         answerTxt.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
         answerTxt.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -227,27 +251,29 @@ public class MainFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(testTxt)
-                        .addGap(44, 44, 44)
-                        .addComponent(answerTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(274, 274, 274)
                         .addComponent(timerTxt)
-                        .addGap(10, 10, 10))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                        .addComponent(yesBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(noBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(setBtn)))
-                .addContainerGap())
+                        .addGap(0, 20, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(answerTxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(contentPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(yesBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(noBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(setBtn)
+                                .addGap(10, 10, 10)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -257,20 +283,19 @@ public class MainFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(answerTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(testTxt)
-                    .addComponent(timerTxt)
-                    .addComponent(answerTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton2)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(setBtn)
-                        .addComponent(yesBtn)
-                        .addComponent(noBtn)))
+                    .addComponent(timerTxt))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1)
+                    .addComponent(classNumTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(setBtn)
+                    .addComponent(yesBtn)
+                    .addComponent(noBtn))
                 .addContainerGap())
         );
 
@@ -293,34 +318,51 @@ public class MainFrame extends javax.swing.JFrame {
         captureAndSend();*/
     }//GEN-LAST:event_setBtnActionPerformed
 
-    public void setAnswer(int response) {
-        System.out.println("ANSWER");
+    public void setAnswer(int response, int from) {
+
         if (response == 1) {
             answerTxt.setText("PRESENT");
         } else {
             answerTxt.setText("ABSENT");
         }
 
-        System.out.println("[Response] value = " + (response == 1 ? "Yes" : "No"));
-        
+        System.out.println("#############################################################");
+        System.out.println("[Response] value = " + (response == 1 ? "Present" : "Absent"));
+
+        currentResponse++;
+
         previousTimestamp = currentTimestamp;
         currentTimestamp = System.currentTimeMillis();
-        
+
         long dur = currentTimestamp - previousTimestamp;
 
-        System.out.println("Start: "+previousTimestamp);
-        System.out.println("Finish: "+currentTimestamp);
-        System.out.println("Duration: "+dur);
+        String fromMemory = from == 1 ? "Short-term memory" : "Mid-term memory";
+
+        System.out.println("Searched in: " + fromMemory);
+        System.out.println("Start: " + previousTimestamp);
+        System.out.println("Finish: " + currentTimestamp);
+        System.out.println("Duration: " + dur);
         
+        String data = "(" + RUN_ID + "," +currentResponse+","+ response + "," + from + "," + dur + ")\n";
+        System.out.println(data);
+
+        responses.append(data);
+        
+        if (currentResponse == PROBE_ITEMS) {
+            pw.write(responses.toString());
+            pw.flush();
+            pw.close();
+        }
+
         nextStep();
     }
 
     private void yesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yesBtnActionPerformed
-        setAnswer(1);
+        setAnswer(1, 1);
     }//GEN-LAST:event_yesBtnActionPerformed
 
     private void noBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noBtnActionPerformed
-        setAnswer(0);
+        setAnswer(0, 1);
     }//GEN-LAST:event_noBtnActionPerformed
 
     /**
@@ -374,10 +416,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void nextStep() {
-        
+
         previousTimestamp = currentTimestamp;
         currentTimestamp = System.currentTimeMillis();
-        
+
         if (currentScene < storedImages.size()) {
 
             contentPanel.removeAll();

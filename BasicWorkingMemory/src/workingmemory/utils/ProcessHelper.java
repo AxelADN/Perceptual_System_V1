@@ -47,7 +47,7 @@ public class ProcessHelper {
             pw.flush();
             pw.close();
             
-            System.out.println("PID "+pid+" added to close_all file");
+           // System.out.println("PID "+pid+" added to close_all file");
                     
         } catch (IOException ex) {
             Logger.getLogger(MainBigNode.class.getName()).log(Level.SEVERE, null, ex);

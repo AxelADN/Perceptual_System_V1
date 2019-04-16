@@ -58,7 +58,7 @@ public class ExperimentTask extends TimerTask {
             if ((currentSecond % TIME_TO_LEARN) == 0) {
 
                 if (currentLearnCue == ITEMS_TO_LEARN) {
-                    System.out.println("Start waiting");
+                    //System.out.println("Start waiting");
 
                     currentMode = REHEARSE_MODE;
                     mainFrame.nextStep();
@@ -66,7 +66,7 @@ public class ExperimentTask extends TimerTask {
                 } else {
                     currentLearnCue++;
                     mainFrame.nextStep();
-                    System.out.println("Change " + currentLearnCue);
+                    //System.out.println("Change " + currentLearnCue);
                     //nextImage
                 }
 
@@ -76,7 +76,7 @@ public class ExperimentTask extends TimerTask {
 
             if (currentRehearseSecond == REHEARSE_TIME) {
                 currentMode = PROBE_MODE;
-                System.out.println("Start probes");
+                //System.out.println("Start probes");
                 //showProbeCue
                 mainFrame.nextStep();
                 currentSecond = 0;
@@ -85,7 +85,7 @@ public class ExperimentTask extends TimerTask {
                 mainFrame.endLearningStage();
 
             } else {
-                System.out.println("Waiting...");
+                //System.out.println("Waiting...");
                 currentRehearseSecond++;
             }
 
