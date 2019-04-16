@@ -5,7 +5,7 @@
  */
 package perception.GUI;
 
-import templates.ProcessInterface;
+import perception.templates.ProcessInterface;
 import javax.swing.JFrame;
 import kmiddle2.nodes.activities.Activity;
 import perception.config.AreaNames;

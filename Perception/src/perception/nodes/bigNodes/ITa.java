@@ -8,7 +8,7 @@ package perception.nodes.bigNodes;
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.Identify;
 import perception.nodes.smallNodes.SceneComposition;
-import templates.AreaTemplate;
+import perception.templates.AreaTemplate;
 
 /**
  *

@@ -10,7 +10,7 @@ import kmiddle2.nodes.activities.ActConf;
 import perception.activities.GenericActivity;
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.Segmentation;
-import templates.AreaTemplate;
+import perception.templates.AreaTemplate;
 
 /**
  *

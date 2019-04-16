@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import kmiddle2.nodes.activities.Activity;
 import perception.config.AreaNames;
 import spike.LongSpike;
-import templates.ActivityTemplate;
+import perception.templates.ActivityTemplate;
 import utils.SimpleLogger;
 
 /**

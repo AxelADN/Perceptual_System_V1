@@ -8,7 +8,7 @@ package perception.nodes.bigNodes;
 import kmiddle2.nodes.activities.ActConf;
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.Classify;
-import templates.AreaTemplate;
+import perception.templates.AreaTemplate;
 
 /**
  *

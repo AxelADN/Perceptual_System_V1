@@ -7,7 +7,7 @@ package perception.nodes.bigNodes;
 
 
 import perception.config.AreaNames;
-import templates.AreaTemplate;
+import perception.templates.AreaTemplate;
 
 /**
  *

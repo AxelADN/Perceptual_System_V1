@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package templates;
-
-import kmiddle2.nodes.activities.Activity;
-import spike.LongSpike;
+package perception.structures;
 
 /**
  *
  * @author AxelADN
  */
-public interface ProcessInterface {
+public class RIIC_h {
     
-    public void executeProcess(Object src, LongSpike spike);
 }

@@ -10,21 +10,34 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
 import perception.structures.PreObjectSegment;
-import perception.structures.PreObjectSet;
 import perception.structures.Sendable;
 import spike.LongSpike;
-import spike.Modalities;
-import templates.ActivityTemplate;
+import perception.templates.ActivityTemplate;
 import utils.SimpleLogger;
 
 /**
+ * Node for distribute chunks (segments) among PreObjectPrioritizer class group.
+ * Data comming from the Segmentation class is divided into its own segments and
+ * then sent individually to each node in the PreObjectPrioritizer class group.
  *
  * @author axeladn
+ * @version 1.0
+ *
+ * @see perception.nodes.smallNodes.Segmentation Segmentation class
+ * @see perception.nodes.smallNodes.PreObjectPrioritizerTemplate
+ * PreObjectPrioritizer Template
+ * @see perception.nodes.smallNodes.PreObjectPrioritizer PreObjectPrioritizer
+ * class group
  */
 public class BufferSwitch extends ActivityTemplate {
 
     private static final ArrayList<Integer> RECEIVERS = new ArrayList<>();
 
+    /**
+     * Constructor: Defines node identifiers and variables. The
+     * <code>RECEIVERS</code> constant is defined with all node receivers linked
+     * from this node.
+     */
     public BufferSwitch() {
         this.ID = AreaNames.BufferSwitch;
         RECEIVERS.add(AreaNames.PreObjectPrioritizer_fQ1);
@@ -37,11 +50,26 @@ public class BufferSwitch extends ActivityTemplate {
         RECEIVERS.add(AreaNames.PreObjectPrioritizer_pQ4);
     }
 
+    /**
+     * Initializer: Initialize node.
+     */
     @Override
     public void init() {
         SimpleLogger.log(this, "BUFFER_SWITCH: init()");
     }
 
+    /**
+     * Receiver: Receives data from other nodes and runs the main procedure.
+     * Distributes the received data to the PreObjectPrioritizer class group.
+     *
+     * @param nodeID Sender node identifier.
+     * @param data Incoming data.
+     *
+     * @see perception.smallNodes.PreObjectPrioritizerTemplate
+     * PreObjectPrioritizer Template
+     * @see perception.smallNodes.PreObjectPrioritizer PreObjectPrioritizer
+     * class group
+     */
     @Override
     public void receive(int nodeID, byte[] data) {
         try {
@@ -52,22 +80,39 @@ public class BufferSwitch extends ActivityTemplate {
                 sendToLostData(this, spike);
             }
         } catch (Exception ex) {
-            Logger.getLogger(BufferSwitch.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(
+                    BufferSwitch.class.getName()
+            ).log(Level.SEVERE, null, ex);
         }
     }
 
+    /**
+     * Distributor: Distributes chunks (segments) from data. Incoming data is
+     * divided in new PreObjectSegment objects and then sent to the
+     * corresponding retinotopic route, which most be maintained across nodes.
+     *
+     * @param data
+     *
+     * @see perception.structures.PreObjectSegment PreObjectSegment structure
+     */
     private void distributeSegments(Sendable data) {
-        ArrayList<PreObjectSegment> preObjectSegments = (ArrayList<PreObjectSegment>) data.getData();
+        //Get ArrayList from data.
+        ArrayList<PreObjectSegment> preObjectSegments
+                = (ArrayList<PreObjectSegment>) data.getData();
         int i = 0;
+        //For each segment:
         for (PreObjectSegment obj : preObjectSegments) {
-            sendTo(new Sendable(obj, this.ID, data.getTrace(), RECEIVERS.get(i)));
+            //Send segment in its corresponding retinotopic route.
+            sendTo(
+                    new Sendable(
+                            obj,
+                            this.ID,
+                            data.getTrace(),
+                            RECEIVERS.get(i)),
+                    RETINOTOPIC_ID.get(i)
+            );
             i++;
         }
-    }
-
-    @Override
-    protected void routeMap() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

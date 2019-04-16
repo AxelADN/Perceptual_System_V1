@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 import perception.config.AreaNames;
 import spike.LongSpike;
-import templates.AreaTemplate;
+import perception.templates.AreaTemplate;
 
 /**
  *

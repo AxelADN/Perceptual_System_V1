@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package templates;
+package perception.templates;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,15 +24,32 @@ import utils.SimpleLogger;
 public abstract class ActivityTemplate extends Activity {
 
     protected String userID;
-    public static final String[] RETINOTOPIC_ID = {"fQ1", "fQ2", "fQ3", "fQ4", "pQ1", "pQ2", "pQ3", "pQ4"};
+    public static final ArrayList<String> RETINOTOPIC_ID = new ArrayList<>();
+    protected String LOCAL_RETINOTOPIC_ID;
 
     public ActivityTemplate() {
         this.namer = AreaNames.class;
+        RETINOTOPIC_ID.add("fQ1");
+        RETINOTOPIC_ID.add("fQ2");
+        RETINOTOPIC_ID.add("fQ3");
+        RETINOTOPIC_ID.add("fQ4");
+        RETINOTOPIC_ID.add("pQ1");
+        RETINOTOPIC_ID.add("pQ2");
+        RETINOTOPIC_ID.add("pQ3");
+        RETINOTOPIC_ID.add("pQ4");
     }
 
     protected void sendTo(Sendable sendable) {
         try {
-            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, sendable.getSender(), sendable, 0).getByteArray());
+            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, 0, sendable, 0).getByteArray());
+        } catch (IOException ex) {
+            Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    protected <T extends Serializable> void sendTo(Sendable sendable,T location) {
+        try {
+            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, location, sendable, 0).getByteArray());
         } catch (IOException ex) {
             Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -62,7 +80,5 @@ public abstract class ActivityTemplate extends Activity {
         }
         return false;
     }
-
-    protected abstract void routeMap();
 
 }

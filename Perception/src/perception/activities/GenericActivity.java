@@ -5,12 +5,12 @@
  */
 package perception.activities;
 
-import templates.ActivityTemplate;
+import perception.templates.ActivityTemplate;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.GUI.GenericGuiArea;
-import templates.ProcessInterface;
+import perception.templates.ProcessInterface;
 import perception.config.AreaNames;
 import spike.LongSpike;
 import utils.SimpleLogger;
