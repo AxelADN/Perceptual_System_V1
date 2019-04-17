@@ -38,6 +38,15 @@ public abstract class ActivityTemplate extends Activity {
         RETINOTOPIC_ID.add("pQ3");
         RETINOTOPIC_ID.add("pQ4");
     }
+    
+    @Override
+    public void init(){
+        
+    }
+    
+    public static void log(Object Node, String data){
+        SimpleLogger.log(Node,"DATA_RECEIVED: "+data);
+    }
 
     protected void sendTo(Sendable sendable) {
         try {
@@ -68,7 +77,7 @@ public abstract class ActivityTemplate extends Activity {
         if (data.getClass() == Sendable.class) {
             Sendable checkData = (Sendable) data;
             if (checkData.getData().getClass() == ArrayList.class) {
-                ArrayList array = (ArrayList) data;
+                ArrayList array = (ArrayList) checkData.getData();
                 if (array.get(0).getClass() == klass) {
                     return true;
                 }
@@ -79,6 +88,10 @@ public abstract class ActivityTemplate extends Activity {
             return false;
         }
         return false;
+    }
+    
+    protected boolean correctRoute(String route){
+        return route.contentEquals(this.LOCAL_RETINOTOPIC_ID);
     }
 
 }

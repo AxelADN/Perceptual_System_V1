@@ -11,7 +11,7 @@ import perception.templates.ActivityTemplate;
 import utils.SimpleLogger;
 
 /**
- * PreObjectBuffer for route <code>fQ1</code>.
+ * PreObjectBuffer for route <code>pQ1</code>.
  *
  * @author axeladn
  * @version 1.0
@@ -19,16 +19,16 @@ import utils.SimpleLogger;
  * @see perception.nodes.smallNodes.PreObjectBufferTemplate PreObjectBuffer
  * Template
  */
-public class PreObjectBuffer_fQ1 extends PreObjectBufferTemplate {
+public class PreObjectBuffer_pQ1 extends PreObjectBufferTemplate {
 
     /**
      * Constructor: Defines node identifiers.
      *
      * @see perception.templates.ActivityTemplate ActivityTemplate ID constants
      */
-    public PreObjectBuffer_fQ1() {
-        this.ID = AreaNames.PreObjectBuffer_fQ1;
-        this.LOCAL_RETINOTOPIC_ID = ActivityTemplate.RETINOTOPIC_ID.get(0);
+    public PreObjectBuffer_pQ1() {
+        this.ID = AreaNames.PreObjectBuffer_pQ1;
+        this.LOCAL_RETINOTOPIC_ID = ActivityTemplate.RETINOTOPIC_ID.get(4);
     }
 
     /**

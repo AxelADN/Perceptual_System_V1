@@ -29,7 +29,7 @@ import utils.SimpleLogger;
  * @see perception.nodes.smallNodes.PreObjectPrioritizer PreObjectPrioritizer
  * class group
  */
-public class BufferSwitch extends ActivityTemplate {
+public class HolisticClassifier extends ActivityTemplate {
 
     private static final ArrayList<Integer> RECEIVERS = new ArrayList<>();
 
@@ -38,8 +38,8 @@ public class BufferSwitch extends ActivityTemplate {
      * <code>RECEIVERS</code> constant is defined with all node receivers linked
      * from this node.
      */
-    public BufferSwitch() {
-        this.ID = AreaNames.BufferSwitch;
+    public HolisticClassifier() {
+        this.ID = AreaNames.HolisticClassifier;
         RECEIVERS.add(AreaNames.PreObjectPrioritizer_fQ1);
         RECEIVERS.add(AreaNames.PreObjectPrioritizer_fQ2);
         RECEIVERS.add(AreaNames.PreObjectPrioritizer_fQ3);
@@ -55,7 +55,7 @@ public class BufferSwitch extends ActivityTemplate {
      */
     @Override
     public void init() {
-        SimpleLogger.log(this, "BUFFER_SWITCH: init()");
+        SimpleLogger.log(this, "HOLISTIC_CLASSIFIER: init()");
     }
 
     /**
@@ -72,49 +72,9 @@ public class BufferSwitch extends ActivityTemplate {
      */
     @Override
     public void receive(int nodeID, byte[] data) {
-        try {
-            LongSpike spike = new LongSpike(data);
-            if (correctDataType(spike.getIntensity(), PreObjectSegment.class)) {
-                distributeSegments((Sendable) spike.getIntensity());
-            } else {
-                sendToLostData(this, spike);
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(
-                    BufferSwitch.class.getName()
-            ).log(Level.SEVERE, null, ex);
-        }
+       
     }
 
-    /**
-     * Distributor: Distributes chunks (segments) from data. Incoming data is
-     * divided in new PreObjectSegment objects and then sent to the
-     * corresponding retinotopic route, which most be maintained across nodes.
-     *
-     * @param data
-     *
-     * @see perception.structures.PreObjectSegment PreObjectSegment structure
-     */
-    private void distributeSegments(Sendable data) {
-        //Get ArrayList from data.
-        ArrayList<PreObjectSegment> preObjectSegments
-                = (ArrayList<PreObjectSegment>) data.getData();
-        ActivityTemplate.log(this, "BUFFER_SWITCH");
-        int i = 0;
-        //For each segment:
-        for (PreObjectSegment obj : preObjectSegments) {
-            //Send segment in its corresponding retinotopic route.
-            sendTo(
-                    new Sendable(
-                            obj,
-                            this.ID,
-                            data.getTrace(),
-                            RECEIVERS.get(i)
-                    ),
-                    RETINOTOPIC_ID.get(i)
-            );
-            i++;
-        }
-    }
+    
 
 }

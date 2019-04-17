@@ -11,6 +11,7 @@ import perception.activities.GenericActivity;
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.Segmentation;
 import perception.templates.AreaTemplate;
+import utils.SimpleLogger;
 
 /**
  *
@@ -25,11 +26,12 @@ public class ITC extends AreaTemplate {
         addProcess(GenericActivity.class);
         addProcess(Segmentation.class,ActConf.TYPE_PARALLEL);
         
+        
     }
     
     @Override
     public void init() {
-        
+        SimpleLogger.log(this, "ITC: init()");
     }
 
     @Override

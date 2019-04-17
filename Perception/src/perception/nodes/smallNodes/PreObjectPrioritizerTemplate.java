@@ -43,7 +43,7 @@ public class PreObjectPrioritizerTemplate extends ActivityTemplate {
      * Constructor: Defines node identifier and variables. The
      * <code>prioritized</code> variable is defined with eight false booleans.
      * The <code>RECEIVERS</code> constant is defined with all node receivers
-     * linked from this node.
+     * belonging to a class group linked from this node.
      */
     public PreObjectPrioritizerTemplate() {
         this.ID = AreaNames.PreObjectPrioritizerTemplate;
@@ -86,6 +86,10 @@ public class PreObjectPrioritizerTemplate extends ActivityTemplate {
         try {
             LongSpike spike = new LongSpike(data);
             Sendable received = (Sendable) spike.getIntensity();
+            ActivityTemplate.log(
+                    this,
+                    ((PreObjectSegment) received.getData()).getLoggable()
+            );
             //Get index of current retinotopic route [0,7].
             int retinotopicIndex
                     = RETINOTOPIC_ID.indexOf(

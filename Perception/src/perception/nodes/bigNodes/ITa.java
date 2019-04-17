@@ -6,8 +6,6 @@
 package perception.nodes.bigNodes;
 
 import perception.config.AreaNames;
-import perception.nodes.smallNodes.Identify;
-import perception.nodes.smallNodes.SceneComposition;
 import perception.templates.AreaTemplate;
 
 /**
@@ -18,9 +16,7 @@ public class ITa extends AreaTemplate {
     
     public ITa() {        
         this.ID = AreaNames.ITa;
-        
-        addProcess(Identify.class);
-        addProcess(SceneComposition.class);
+       
     }
     
     @Override

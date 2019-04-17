@@ -5,15 +5,11 @@
  */
 package perception.nodes.smallNodes.RIICs;
 
-import perception.nodes.smallNodes.*;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import kmiddle2.nodes.activities.Activity;
 import perception.config.AreaNames;
 import spike.LongSpike;
 import perception.templates.ActivityTemplate;
-import utils.SimpleLogger;
 
 /**
  *
@@ -24,7 +20,7 @@ public class RIIC_fQ1 extends ActivityTemplate {
     
     
     public RIIC_fQ1() {
-        this.ID = AreaNames.Classify;
+        this.ID = AreaNames.RIIC_fQ1;
         
         userID = "Class_fQ1";
     }
@@ -32,7 +28,7 @@ public class RIIC_fQ1 extends ActivityTemplate {
     @Override
     public void init() {
         
-        _Template_init(userID);
+        
         
     }
 
@@ -40,7 +36,7 @@ public class RIIC_fQ1 extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             
-            LongSpike spike = _Template_receive(nodeID, data);
+            LongSpike spike = new LongSpike(data);
             mainProc(spike);
             
         } catch (Exception ex) {

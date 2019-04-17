@@ -45,6 +45,7 @@ public class AreaNames {
     public static final int PreObjectBuffer_pQ2    =   IDHelper.generateID("ITp", 17, 0);
     public static final int PreObjectBuffer_pQ3    =   IDHelper.generateID("ITp", 18, 0);
     public static final int PreObjectBuffer_pQ4    =   IDHelper.generateID("ITp", 19, 0);
+    public static final int HolisticClassifier    =   IDHelper.generateID("ITp", 20, 0);
     
     public static final int RIICManager  =   IDHelper.generateID("RIICManager", 0, 0);
     public static final int RIIC_fQ1  =   IDHelper.generateID("RIICManager", 1, 0);

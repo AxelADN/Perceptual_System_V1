@@ -5,10 +5,16 @@
  */
 package perception.structures;
 
+import java.io.Serializable;
+
 /**
  *
  * @author AxelADN
  */
-public class RIIC_h {
+public class RIIC_h extends StructureTemplate implements Serializable{
+    
+    public RIIC_h(String loggableObject){
+        super(loggableObject);
+    }
     
 }

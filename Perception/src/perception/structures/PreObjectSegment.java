@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author AxelADN
  */
-public class PreObjectSegment<T> implements Serializable {
+public class PreObjectSegment<T> extends StructureTemplate implements Serializable {
 
     private final T segment;
 
@@ -19,7 +19,13 @@ public class PreObjectSegment<T> implements Serializable {
         this.segment = segment;
     }
 
+    public PreObjectSegment(T segment, String loggableObject) {
+        super(loggableObject);
+        this.segment = segment;
+    }
+
     public T getSegment() {
         return segment;
     }
+
 }

@@ -11,11 +11,16 @@ import java.io.Serializable;
  *
  * @author AxelADN
  */
-public class PreObjectSet<T> implements Serializable {
+public class PreObjectSet<T> extends StructureTemplate implements Serializable{
 
     private final T data;
 
     public PreObjectSet(T data) {
+        this.data = data;
+    }
+    
+    public PreObjectSet(T data, String loggableObject) {
+        super(loggableObject);
         this.data = data;
     }
 

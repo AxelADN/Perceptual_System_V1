@@ -12,7 +12,11 @@ import java.util.logging.Logger;
 import perception.GUI.GenericGuiArea;
 import perception.templates.ProcessInterface;
 import perception.config.AreaNames;
+import perception.structures.InternalRequest;
+import perception.structures.PreObjectSet;
+import perception.structures.Sendable;
 import spike.LongSpike;
+import spike.Modalities;
 import utils.SimpleLogger;
 
 /**
@@ -22,33 +26,34 @@ import utils.SimpleLogger;
 public class GenericActivity extends ActivityTemplate implements ProcessInterface {
 
     private final GenericGuiArea initGUI;
-    
-    public GenericActivity(){
+
+    public GenericActivity() {
         this.ID = AreaNames.GenericActivity;
-        
+
         initGUI = new GenericGuiArea(this);
         initGUI.setVisible(true);
     }
-    
+
     @Override
     public void init() {
-        
-        _Template_init("GenericActivity");
-        
+
+        SimpleLogger.log(this, "GENERIC_ACTIVITY: init()");
+
     }
 
     @Override
     public void executeProcess(Object src, LongSpike spike) {
-        SimpleLogger.log(this, "DATA_RECEIVED: "+ spike.getIntensity());
+        SimpleLogger.log(this, "DATA_RECEIVED: " + spike.getIntensity());
         try {
-            
-            spike.setLocation(this.ID);
-            send(AreaNames.ITC,spike.getByteArray());
-            spike.setIntensity(spike.getIntensity()+"Val1");
-            send(AreaNames.ITC,spike.getByteArray());
-            spike.setIntensity(spike.getIntensity()+"Val222");
-            send(AreaNames.ITC,spike.getByteArray());
-            
+
+            PreObjectSet preObjectSet = new PreObjectSet(spike.getIntensity(),"PREOBJECT_SET");
+            Sendable sendable = new Sendable(preObjectSet,this.ID,AreaNames.Segmentation);
+            spike.setIntensity(sendable);
+            spike.setLocation(0);
+            spike.setModality(Modalities.PERCEPTION);
+            spike.setTiming(0);
+            send(sendable.getReceiver(),spike.getByteArray());
+
         } catch (IOException ex) {
             Logger.getLogger(GenericActivity.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -58,5 +63,5 @@ public class GenericActivity extends ActivityTemplate implements ProcessInterfac
     public void receive(int nodeID, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

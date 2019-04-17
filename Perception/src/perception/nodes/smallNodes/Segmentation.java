@@ -64,6 +64,10 @@ public class Segmentation extends ActivityTemplate {
                 Sendable receivedData;
                 ArrayList<PreObjectSegment> preObjectSegments;
                 receivedData = (Sendable) spike.getIntensity();
+                ActivityTemplate.log(
+                        this,
+                        ((PreObjectSet) receivedData.getData()).getLoggable()
+                );
                 //Segments received data.
                 preObjectSegments
                         = segmentScene(
@@ -108,9 +112,16 @@ public class Segmentation extends ActivityTemplate {
         array = string.split(",");
         ArrayList<PreObjectSegment> preObjectSegments;
         preObjectSegments = new ArrayList<>();
+        int i = 0;
         //Wraps segments.
         for (String str : array) {
-            preObjectSegments.add(new PreObjectSegment(str));
+            preObjectSegments.add(
+                    new PreObjectSegment(
+                            str,
+                            "PREOBJECT_SEGMENT_" + RETINOTOPIC_ID.get(i)
+                    )
+            );
+            i++;
         }
         return preObjectSegments;
     }
