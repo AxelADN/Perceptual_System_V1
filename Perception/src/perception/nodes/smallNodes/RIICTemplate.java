@@ -40,7 +40,7 @@ public class RIICTemplate extends ActivityTemplate {
 
     private static final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
     private static final ArrayList<Integer> RECEIVERS_C = new ArrayList<>();
-    private RIIC riic;
+    private final RIIC riic;
 
     /**
      * Constructor: Defines node identifier and constants. The
@@ -61,13 +61,13 @@ public class RIICTemplate extends ActivityTemplate {
         RECEIVERS_H.add(AreaNames.PreObjectPrioritizer_pQ3);
         RECEIVERS_H.add(AreaNames.PreObjectPrioritizer_pQ4);
         RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ1);
-        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ1);
-        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ1);
-        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ1);
-        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ1);
-        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ1);
-        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ1);
-        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ1);
+        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ2);
+        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ3);
+        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_fQ4);
+        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_pQ1);
+        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_pQ2);
+        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_pQ3);
+        RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_pQ4);
     }
 
     /**
@@ -101,7 +101,8 @@ public class RIICTemplate extends ActivityTemplate {
                     InternalRequest request
                             = (InternalRequest) ((Sendable) spike.getIntensity()).getData();
                     if (null == (String) request.type()) {
-                        sendToLostData(this, spike);
+                        sendToLostData(this, spike, "NEITHER 'H' NOR 'C' TYPE RECOGNIZED: "
+                                + ((Sendable) spike.getIntensity()).getData().getClass().getName());
                     } else {
                         switch ((String) request.type()) {
                             case "H":
@@ -133,7 +134,12 @@ public class RIICTemplate extends ActivityTemplate {
                                 );
                                 break;
                             default:
-                                sendToLostData(this, spike);
+                                sendToLostData(
+                                        this,
+                                        spike,
+                                        "NEITHER 'H' NOR 'C' TYPE RECOGNIZED: "
+                                        + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                                );
                                 break;
                         }
                     }
@@ -154,10 +160,15 @@ public class RIICTemplate extends ActivityTemplate {
                             (RIIC_c) ((Sendable) spike.getIntensity()).getData()
                     );
                 } else {
-                    sendToLostData(this, spike);
+                    sendToLostData(
+                            this,
+                            spike,
+                            "NEITHER INTERNAL REQUEST NOR RIIC_X RECOGNIZED: "
+                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                    );
                 }
             } else {
-                sendToLostData(this, spike);
+                sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + (String) spike.getLocation());
             }
         } catch (Exception ex) {
             Logger.getLogger(RIICTemplate.class.getName()).log(Level.SEVERE, null, ex);

@@ -8,6 +8,7 @@ package perception.nodes.bigNodes;
 import kmiddle2.nodes.activities.ActConf;
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.BufferSwitch;
+import perception.nodes.smallNodes.CandidatesBuffer.*;
 import perception.nodes.smallNodes.CandidatesPrioritazer.*;
 import perception.nodes.smallNodes.HolisticClassifier;
 import perception.nodes.smallNodes.PreObjectBuffer.*;
@@ -50,6 +51,14 @@ public class ITp extends AreaTemplate {
         addProcess(CandidatesPrioritizer_pQ2.class);
         addProcess(CandidatesPrioritizer_pQ3.class);
         addProcess(CandidatesPrioritizer_pQ4.class);
+        addProcess(CandidatesBuffer_fQ1.class);
+        addProcess(CandidatesBuffer_fQ2.class);
+        addProcess(CandidatesBuffer_fQ3.class);
+        addProcess(CandidatesBuffer_fQ4.class);
+        addProcess(CandidatesBuffer_pQ1.class);
+        addProcess(CandidatesBuffer_pQ2.class);
+        addProcess(CandidatesBuffer_pQ3.class);
+        addProcess(CandidatesBuffer_pQ4.class);
         
         
         

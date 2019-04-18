@@ -77,7 +77,12 @@ public class BufferSwitch extends ActivityTemplate {
             if (isCorrectDataType(spike.getIntensity(), PreObjectSegment.class)) {
                 distributeSegments((Sendable) spike.getIntensity());
             } else {
-                sendToLostData(this, spike);
+                sendToLostData(
+                        this,
+                        spike,
+                        "PREOBJECT SEGMENT NOT RECOGNIZED: "
+                        + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                );
             }
         } catch (Exception ex) {
             Logger.getLogger(
@@ -108,7 +113,7 @@ public class BufferSwitch extends ActivityTemplate {
                     new Sendable(
                             new PreObjectSegment(
                                     obj.getSegment(),
-                                    obj.getLoggable()+(String)obj.getSegment()
+                                    obj.getLoggable() + (String) obj.getSegment()
                             ),
                             this.ID,
                             data.getTrace(),

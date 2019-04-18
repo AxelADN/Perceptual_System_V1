@@ -7,6 +7,7 @@ package perception.templates;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,36 +39,53 @@ public abstract class ActivityTemplate extends Activity {
         RETINOTOPIC_ID.add("pQ3");
         RETINOTOPIC_ID.add("pQ4");
     }
-    
+
     @Override
-    public void init(){
-        
+    public void init() {
+
     }
-    
-    public static void log(Object Node, String data){
-        SimpleLogger.log(Node,"DATA_RECEIVED: "+data);
+
+    private String searchIDName(int NodeID) {
+
+        try {
+            for (Field field : AreaNames.class.getFields()) {
+                if ((int) field.get(null) == NodeID) {
+                    return field.getName();
+                }
+            }
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "DEFAULT";
+
+    }
+
+    public static void log(Object Node, String data) {
+        //SimpleLogger.log(Node, "DATA_RECEIVED: " + data);
     }
 
     protected void sendTo(Sendable sendable) {
         try {
             send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, 0, sendable, 0).getByteArray());
-        } catch (IOException ex) {
-            Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    protected <T extends Serializable> void sendTo(Sendable sendable,T location) {
-        try {
-            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, location, sendable, 0).getByteArray());
+            SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
         } catch (IOException ex) {
             Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    protected void sendToLostData(Object node, LongSpike spike) {
+    protected <T extends Serializable> void sendTo(Sendable sendable, T location) {
+        try {
+            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, location, sendable, 0).getByteArray());
+            SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
+        } catch (IOException ex) {
+            Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    protected void sendToLostData(Object node, LongSpike spike, String motive) {
         try {
             send(AreaNames.LostData, spike.getByteArray());
-            SimpleLogger.log(node, "Data lost...");
+            SimpleLogger.log(node, "Data lost... | " + motive);
         } catch (IOException ex) {
             Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -89,8 +107,8 @@ public abstract class ActivityTemplate extends Activity {
         }
         return false;
     }
-    
-    protected boolean isCorrectRoute(String route){
+
+    protected boolean isCorrectRoute(String route) {
         return route.contentEquals(this.LOCAL_RETINOTOPIC_ID);
     }
 

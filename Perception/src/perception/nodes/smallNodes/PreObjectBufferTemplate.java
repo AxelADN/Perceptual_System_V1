@@ -115,10 +115,15 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
                             spike.getLocation()
                     );
                 } else {
-                    sendToLostData(this, spike);
+                    sendToLostData(
+                            this,
+                            spike,
+                            "NEITHER PREOBJECT SEGMENT NOR RIIC_H RECOGNIZED: "
+                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                    );
                 }
             } else {
-                sendToLostData(this, spike);
+                sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + (String) spike.getLocation());
             }
         } catch (Exception ex) {
             Logger.getLogger(
@@ -145,7 +150,7 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
      * @return A <code>RIIC_hAndPreObjectSegmentPair</code> object
      */
     protected RIIC_hAndPreObjectSegmentPair makePair(RIIC_h riic_h, PreObjectSegment preObjectSegment) {
-        return new RIIC_hAndPreObjectSegmentPair(riic_h, preObjectSegment,"PAIR_"+LOCAL_RETINOTOPIC_ID);
+        return new RIIC_hAndPreObjectSegmentPair(riic_h, preObjectSegment, "PAIR_" + LOCAL_RETINOTOPIC_ID);
     }
 
     /**

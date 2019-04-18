@@ -116,7 +116,7 @@ public class PreObjectPrioritizerTemplate extends ActivityTemplate {
                     prioritized[retinotopicIndex] = true;
                 } else {
                     //Lost data is sent.
-                    sendToLostData(this, spike);
+                    sendToLostData(this, spike, "ALREADY PRIORITIZED");
                 }
             } else if (isRIIC_h(spike.getIntensity())) {    //If it's RIIC_h type: 
                 ActivityTemplate.log(
@@ -142,11 +142,16 @@ public class PreObjectPrioritizerTemplate extends ActivityTemplate {
                     prioritized[retinotopicIndex] = false;
                 } else {
                     //Lost data is sent.
-                    sendToLostData(this, spike);
+                    sendToLostData(this, spike, "NOT PRIORITIZED YET");
                 }
             } else {    //If data type is not recognize, this data is lost.
                 //Lost data is sent.
-                sendToLostData(this, spike);
+                sendToLostData(
+                        this,
+                        spike,
+                        "NEITHER PREOBJECT SEGMENT NOR RIIC_H RECOGNIZED: "
+                        + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                );
             }
         } catch (Exception ex) {
             Logger.getLogger(

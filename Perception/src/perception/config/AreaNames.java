@@ -62,6 +62,9 @@ public class AreaNames {
     public static final int CandidatesBuffer_pQ2 = IDHelper.generateID("ITp", 34, 0);
     public static final int CandidatesBuffer_pQ3 = IDHelper.generateID("ITp", 35, 0);
     public static final int CandidatesBuffer_pQ4 = IDHelper.generateID("ITp", 36, 0);
+    public static final int CandidatesPrioritizerTemplate = IDHelper.generateID("ITp", 37, 0);
+    public static final int CandidatesBufferTemplate = IDHelper.generateID("ITp", 38, 0);
+    public static final int ComponentClassifier = IDHelper.generateID("ITp", 39, 0);
 
     public static final int RIICManager = IDHelper.generateID("RIICManager", 0, 0);
     public static final int RIIC_fQ1 = IDHelper.generateID("RIICManager", 1, 0);

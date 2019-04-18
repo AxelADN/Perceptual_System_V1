@@ -83,7 +83,12 @@ public class Segmentation extends ActivityTemplate {
                 );
             } else {    //If data type is not recognize, this data is lost.
                 //Lost data sent.
-                sendToLostData(this, spike);
+                sendToLostData(
+                        this, 
+                        spike, 
+                        "PREOBJECT SET NOT RECOGNIZED: "+
+                                ((Sendable)spike.getIntensity()).getData().getClass().getName()
+                );
             }
         } catch (Exception ex) {
             Logger.getLogger(
