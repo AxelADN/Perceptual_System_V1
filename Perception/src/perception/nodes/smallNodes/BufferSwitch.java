@@ -74,7 +74,7 @@ public class BufferSwitch extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
-            if (correctDataType(spike.getIntensity(), PreObjectSegment.class)) {
+            if (isCorrectDataType(spike.getIntensity(), PreObjectSegment.class)) {
                 distributeSegments((Sendable) spike.getIntensity());
             } else {
                 sendToLostData(this, spike);
@@ -106,7 +106,10 @@ public class BufferSwitch extends ActivityTemplate {
             //Send segment in its corresponding retinotopic route.
             sendTo(
                     new Sendable(
-                            obj,
+                            new PreObjectSegment(
+                                    obj.getSegment(),
+                                    obj.getLoggable()+(String)obj.getSegment()
+                            ),
                             this.ID,
                             data.getTrace(),
                             RECEIVERS.get(i)

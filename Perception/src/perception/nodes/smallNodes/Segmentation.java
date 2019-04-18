@@ -60,7 +60,7 @@ public class Segmentation extends ActivityTemplate {
         try {
             LongSpike spike = new LongSpike(data);
             //Checks data type.
-            if (correctDataType(spike.getIntensity(), PreObjectSet.class)) {
+            if (isCorrectDataType(spike.getIntensity(), PreObjectSet.class)) {
                 Sendable receivedData;
                 ArrayList<PreObjectSegment> preObjectSegments;
                 receivedData = (Sendable) spike.getIntensity();

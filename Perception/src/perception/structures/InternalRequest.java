@@ -11,17 +11,31 @@ import java.io.Serializable;
  *
  * @author AxelADN
  */
-public class InternalRequest extends StructureTemplate implements Serializable{
+public class InternalRequest <T> extends StructureTemplate implements Serializable{
     
     private boolean requested;
+    private T requestType;
     
     public InternalRequest(){
         requested = false;
+        requestType = (T)"NULL_REQUEST_TYPE";
     }
     
     public InternalRequest(String loggableObject){
         super(loggableObject);
         requested = false;
+        requestType = (T)"NULL_REQUEST_TYPE";
+    }
+    
+    public InternalRequest(T requestType){
+        requested = false;
+        this.requestType = requestType;
+    }
+    
+    public InternalRequest(T requestType, String loggableObject){
+        super(loggableObject);
+        requested = false;
+        this.requestType = requestType;
     }
     
     public void accept(){
@@ -34,5 +48,9 @@ public class InternalRequest extends StructureTemplate implements Serializable{
     
     public boolean isRequestAccepted(){
         return requested;
+    }
+    
+    public T type(){
+        return requestType;
     }
 }

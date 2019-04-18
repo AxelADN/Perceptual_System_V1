@@ -5,6 +5,7 @@ import perception.nodes.bigNodes.ITp;
 import kmiddle2.nodes.service.Igniter;
 
 import org.opencv.core.Core;
+import perception.nodes.bigNodes.RIICManager;
 import utils.SimpleLogger;
 
 public class perception extends Igniter {
@@ -19,6 +20,7 @@ public class perception extends Igniter {
             
             ITC.class.getName(),
             ITp.class.getName(),
+            RIICManager.class.getName(),
             
         };
 

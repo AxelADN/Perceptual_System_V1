@@ -73,7 +73,7 @@ public abstract class ActivityTemplate extends Activity {
         }
     }
 
-    protected boolean correctDataType(Object data, Class klass) {
+    protected boolean isCorrectDataType(Object data, Class klass) {
         if (data.getClass() == Sendable.class) {
             Sendable checkData = (Sendable) data;
             if (checkData.getData().getClass() == ArrayList.class) {
@@ -90,7 +90,7 @@ public abstract class ActivityTemplate extends Activity {
         return false;
     }
     
-    protected boolean correctRoute(String route){
+    protected boolean isCorrectRoute(String route){
         return route.contentEquals(this.LOCAL_RETINOTOPIC_ID);
     }
 

@@ -88,8 +88,8 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
-            if (correctRoute((String) spike.getLocation())) {
-                if (correctDataType(spike.getIntensity(), PreObjectSegment.class)) {
+            if (isCorrectRoute((String) spike.getLocation())) {
+                if (isCorrectDataType(spike.getIntensity(), PreObjectSegment.class)) {
                     ActivityTemplate.log(
                             this,
                             ((PreObjectSegment) ((Sendable) spike.getIntensity()).getData()).getLoggable()
@@ -101,7 +101,7 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
                             (Sendable) spike.getIntensity(),
                             (String) spike.getLocation()
                     );
-                } else if (correctDataType(spike.getIntensity(), RIIC_h.class)) {
+                } else if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
                     Sendable received = (Sendable) spike.getIntensity();
                     sendTo(
                             new Sendable(
@@ -111,7 +111,8 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
                                     this.ID,
                                     received.getTrace(),
                                     AreaNames.HolisticClassifier
-                            )
+                            ),
+                            spike.getLocation()
                     );
                 } else {
                     sendToLostData(this, spike);
@@ -144,7 +145,7 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
      * @return A <code>RIIC_hAndPreObjectSegmentPair</code> object
      */
     protected RIIC_hAndPreObjectSegmentPair makePair(RIIC_h riic_h, PreObjectSegment preObjectSegment) {
-        return new RIIC_hAndPreObjectSegmentPair(riic_h, preObjectSegment);
+        return new RIIC_hAndPreObjectSegmentPair(riic_h, preObjectSegment,"PAIR_"+LOCAL_RETINOTOPIC_ID);
     }
 
     /**
@@ -157,6 +158,7 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
         sendTo(
                 new Sendable(
                         new InternalRequest(
+                                "H",
                                 "REQUEST_FROM: PREOBJECT_BUFFER_" + RetinotopicID
                         ),
                         this.ID,

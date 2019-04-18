@@ -10,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
 import perception.structures.PreObjectSegment;
+import perception.structures.RIIC_h;
+import perception.structures.RIIC_hAndPreObjectSegmentPair;
 import perception.structures.Sendable;
 import spike.LongSpike;
 import perception.templates.ActivityTemplate;
@@ -31,7 +33,8 @@ import utils.SimpleLogger;
  */
 public class HolisticClassifier extends ActivityTemplate {
 
-    private static final ArrayList<Integer> RECEIVERS = new ArrayList<>();
+    private static final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
+    private static final ArrayList<Integer> cRECEIVERS = new ArrayList<>();
 
     /**
      * Constructor: Defines node identifiers and variables. The
@@ -40,14 +43,22 @@ public class HolisticClassifier extends ActivityTemplate {
      */
     public HolisticClassifier() {
         this.ID = AreaNames.HolisticClassifier;
-        RECEIVERS.add(AreaNames.PreObjectPrioritizer_fQ1);
-        RECEIVERS.add(AreaNames.PreObjectPrioritizer_fQ2);
-        RECEIVERS.add(AreaNames.PreObjectPrioritizer_fQ3);
-        RECEIVERS.add(AreaNames.PreObjectPrioritizer_fQ4);
-        RECEIVERS.add(AreaNames.PreObjectPrioritizer_pQ1);
-        RECEIVERS.add(AreaNames.PreObjectPrioritizer_pQ2);
-        RECEIVERS.add(AreaNames.PreObjectPrioritizer_pQ3);
-        RECEIVERS.add(AreaNames.PreObjectPrioritizer_pQ4);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_fQ1);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_fQ2);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_fQ3);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_fQ4);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ1);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ2);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ3);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ4);
+        cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ1);
+        cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ2);
+        cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ3);
+        cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ4);
+        cRECEIVERS.add(AreaNames.CandidatesPrioritizer_pQ1);
+        cRECEIVERS.add(AreaNames.CandidatesPrioritizer_pQ2);
+        cRECEIVERS.add(AreaNames.CandidatesPrioritizer_pQ3);
+        cRECEIVERS.add(AreaNames.CandidatesPrioritizer_pQ4);
     }
 
     /**
@@ -72,9 +83,48 @@ public class HolisticClassifier extends ActivityTemplate {
      */
     @Override
     public void receive(int nodeID, byte[] data) {
-       
+        try {
+            LongSpike spike = new LongSpike(data);
+            Sendable received = (Sendable) spike.getIntensity();
+            RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
+            RIIC_h riic_h = pair.getRIIC_h();
+            PreObjectSegment preObjectSegment = pair.getPreObjectSegment();
+            riic_h.write(preObjectSegment.getSegment());
+            ActivityTemplate.log(this, (String) pair.getLoggable());
+            sendTo(
+                    new Sendable(
+                            riic_h,
+                            this.ID,
+                            received.getTrace(),
+                            RECEIVERS_H.get(
+                                    RETINOTOPIC_ID.indexOf(
+                                            (String) spike.getLocation()
+                                    )
+                            )
+                    ),
+                    spike.getLocation()
+            );
+            sendTo(
+                    new Sendable(
+                            new RIIC_hAndPreObjectSegmentPair(
+                                    riic_h, preObjectSegment,
+                                    "NEW_CANDIDATES: " + riic_h.read(
+                                            preObjectSegment.getSegment()
+                                    ).toString() + " | " + (String) spike.getLocation()
+                            ),
+                            this.ID,
+                            received.getTrace(),
+                            cRECEIVERS.get(
+                                    RETINOTOPIC_ID.indexOf(
+                                            (String) spike.getLocation()
+                                    )
+                            )
+                    ),
+                    spike.getLocation()
+            );
+        } catch (Exception ex) {
+            Logger.getLogger(HolisticClassifier.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-
-    
 
 }
