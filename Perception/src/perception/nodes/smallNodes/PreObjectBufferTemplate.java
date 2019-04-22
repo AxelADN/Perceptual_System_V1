@@ -39,9 +39,9 @@ import utils.SimpleLogger;
  * @see perception.nodes.smallNodes.RIIC RIIC class group
  * @see perception.structures.RIIC_h Riic_h structure
  */
-public class PreObjectBufferTemplate extends ActivityTemplate {
+public abstract class PreObjectBufferTemplate extends ActivityTemplate {
 
-    private static final ArrayList<Integer> RECEIVERS = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
     private PreObjectSegment bufferedPreObjectSegment;
 
     /**
@@ -50,7 +50,7 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
      * belonging to a class group linked from this node.
      */
     public PreObjectBufferTemplate() {
-        this.ID = AreaNames.PreObjectBufferTemplate;
+        //this.ID = AreaNames.PreObjectBufferTemplate;
         RECEIVERS.add(AreaNames.RIIC_fQ1);
         RECEIVERS.add(AreaNames.RIIC_fQ2);
         RECEIVERS.add(AreaNames.RIIC_fQ3);
@@ -103,6 +103,10 @@ public class PreObjectBufferTemplate extends ActivityTemplate {
                     );
                 } else if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
                     Sendable received = (Sendable) spike.getIntensity();
+                    ActivityTemplate.log(
+                            this,
+                            ((RIIC_h) received.getData()).getLoggable()
+                    );
                     sendTo(
                             new Sendable(
                                     makePair(

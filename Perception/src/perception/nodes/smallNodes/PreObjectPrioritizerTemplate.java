@@ -34,10 +34,10 @@ import utils.SimpleLogger;
  * @see perception.nodes.smallNodes.BufferSwitch BufferSwitch class
  * @see perception.structures Data objects used
  */
-public class PreObjectPrioritizerTemplate extends ActivityTemplate {
+public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
 
     protected boolean[] prioritized;
-    private static final ArrayList<Integer> RECEIVERS = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
 
     /**
      * Constructor: Defines node identifier and variables. The
@@ -46,7 +46,7 @@ public class PreObjectPrioritizerTemplate extends ActivityTemplate {
      * belonging to a class group linked from this node.
      */
     public PreObjectPrioritizerTemplate() {
-        this.ID = AreaNames.PreObjectPrioritizerTemplate;
+        //this.ID = AreaNames.PreObjectPrioritizerTemplate;
         prioritized = new boolean[8];
         for (int i = 0; i < prioritized.length; i++) {
             prioritized[i] = false;

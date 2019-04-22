@@ -5,13 +5,23 @@
  */
 package perception.templates;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import kmiddle2.nodes.activities.Activity;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
+import org.opencv.imgcodecs.Imgcodecs;
 import perception.config.AreaNames;
 import perception.structures.Sendable;
 import spike.LongSpike;
@@ -45,7 +55,7 @@ public abstract class ActivityTemplate extends Activity {
 
     }
 
-    private String searchIDName(int NodeID) {
+    protected String searchIDName(int NodeID) {
 
         try {
             for (Field field : AreaNames.class.getFields()) {
@@ -61,13 +71,13 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     public static void log(Object Node, String data) {
-        //SimpleLogger.log(Node, "DATA_RECEIVED: " + data);
+        SimpleLogger.log(Node, "DATA_RECEIVED: " + data);
     }
 
     protected void sendTo(Sendable sendable) {
         try {
             send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, 0, sendable, 0).getByteArray());
-            SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
+            //SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
         } catch (IOException ex) {
             Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -76,7 +86,7 @@ public abstract class ActivityTemplate extends Activity {
     protected <T extends Serializable> void sendTo(Sendable sendable, T location) {
         try {
             send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, location, sendable, 0).getByteArray());
-            SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
+            //SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
         } catch (IOException ex) {
             Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -110,6 +120,28 @@ public abstract class ActivityTemplate extends Activity {
 
     protected boolean isCorrectRoute(String route) {
         return route.contentEquals(this.LOCAL_RETINOTOPIC_ID);
+    }
+    
+    protected void show(Mat image,String title) throws IOException{
+        //Encoding the image 
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".png", image, matOfByte);
+
+        //Storing the encoded Mat in a byte array 
+        byte[] byteArray = matOfByte.toArray();
+
+        //Preparing the Buffered Image 
+        InputStream in = new ByteArrayInputStream(byteArray);
+        BufferedImage bufImage = ImageIO.read(in);
+
+        //Instantiate JFrame 
+        JFrame frame = new JFrame();
+
+        //Set Content to the JFrame 
+        frame.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
+        frame.pack();
+        frame.setTitle(title);
+        frame.setVisible(true);
     }
 
 }

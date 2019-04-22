@@ -33,8 +33,8 @@ import utils.SimpleLogger;
  */
 public class HolisticClassifier extends ActivityTemplate {
 
-    private static final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
-    private static final ArrayList<Integer> cRECEIVERS = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
+    private final ArrayList<Integer> cRECEIVERS = new ArrayList<>();
 
     /**
      * Constructor: Defines node identifiers and variables. The

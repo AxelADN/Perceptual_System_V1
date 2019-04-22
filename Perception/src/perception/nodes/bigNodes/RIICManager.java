@@ -8,6 +8,8 @@ package perception.nodes.bigNodes;
 
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.RIIC.*;
+import perception.nodes.smallNodes.RIIC_cSync.*;
+import perception.nodes.smallNodes.RIIC_hSync.*;
 import perception.templates.AreaTemplate;
 import utils.SimpleLogger;
 
@@ -28,6 +30,22 @@ public class RIICManager extends AreaTemplate {
         addProcess(RIIC_pQ2.class);
         addProcess(RIIC_pQ3.class);
         addProcess(RIIC_pQ4.class);
+        addProcess(RIIC_hSync_fQ1.class);
+        addProcess(RIIC_hSync_fQ2.class);
+        addProcess(RIIC_hSync_fQ3.class);
+        addProcess(RIIC_hSync_fQ4.class);
+        addProcess(RIIC_hSync_pQ1.class);
+        addProcess(RIIC_hSync_pQ2.class);
+        addProcess(RIIC_hSync_pQ3.class);
+        addProcess(RIIC_hSync_pQ4.class);
+        addProcess(RIIC_cSync_fQ1.class);
+        addProcess(RIIC_cSync_fQ2.class);
+        addProcess(RIIC_cSync_fQ3.class);
+        addProcess(RIIC_cSync_fQ4.class);
+        addProcess(RIIC_cSync_pQ1.class);
+        addProcess(RIIC_cSync_pQ2.class);
+        addProcess(RIIC_cSync_pQ3.class);
+        addProcess(RIIC_cSync_pQ4.class);
     }
     
     @Override

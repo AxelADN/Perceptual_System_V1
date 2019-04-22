@@ -18,7 +18,12 @@ public class RIIC_h<T> extends StructureTemplate implements Serializable {
 
     public RIIC_h(String loggableObject) {
         super(loggableObject);
-        templates = new ArrayList<>();
+        this.templates = new ArrayList<>();
+    }
+    
+    public RIIC_h(ArrayList<T> templates, String loggableObject) {
+        super(loggableObject);
+        this.templates = templates;
     }
 
     public void write(T object) {
@@ -39,6 +44,12 @@ public class RIIC_h<T> extends StructureTemplate implements Serializable {
             array.add(templates.get(index + 1));
         }
         return array;
+    }
+    
+    public ArrayList<T> getTemplates(){
+        if(templates == null)
+            return new ArrayList<T>();
+        return templates;
     }
 
 }

@@ -6,6 +6,7 @@
 package perception.structures;
 
 import java.io.Serializable;
+import org.opencv.core.Mat;
 
 /**
  *
@@ -15,6 +16,15 @@ public class PreObjectSet<T> extends StructureTemplate implements Serializable{
 
     private final T data;
 
+    public PreObjectSet(Mat data) {
+        this.data = (T)Mat2Bytes(data);
+    }
+    
+    public PreObjectSet(Mat data, String loggableObject) {
+        super(loggableObject);
+        this.data = (T)Mat2Bytes(data);
+    }
+    
     public PreObjectSet(T data) {
         this.data = data;
     }
@@ -26,5 +36,9 @@ public class PreObjectSet<T> extends StructureTemplate implements Serializable{
 
     public T getData() {
         return data;
+    }
+    
+    public Mat getMat(){
+        return Bytes2Mat((byte[])data);
     }
 }

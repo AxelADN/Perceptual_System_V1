@@ -5,9 +5,12 @@
  */
 package perception.nodes.smallNodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
 import perception.config.AreaNames;
 import perception.structures.PreObjectSegment;
 import perception.structures.PreObjectSet;
@@ -84,10 +87,10 @@ public class Segmentation extends ActivityTemplate {
             } else {    //If data type is not recognize, this data is lost.
                 //Lost data sent.
                 sendToLostData(
-                        this, 
-                        spike, 
-                        "PREOBJECT SET NOT RECOGNIZED: "+
-                                ((Sendable)spike.getIntensity()).getData().getClass().getName()
+                        this,
+                        spike,
+                        "PREOBJECT SET NOT RECOGNIZED: "
+                        + ((Sendable) spike.getIntensity()).getData().getClass().getName()
                 );
             }
         } catch (Exception ex) {
@@ -110,24 +113,38 @@ public class Segmentation extends ActivityTemplate {
      * @see perception.structures.PreObjectSegment PreObjectSegment structure
      */
     private ArrayList<PreObjectSegment> segmentScene(PreObjectSet preObjectSet) {
-        String string;
-        string = (String) preObjectSet.getData();
-        String[] array;
-        //Splits data.
-        array = string.split(",");
-        ArrayList<PreObjectSegment> preObjectSegments;
-        preObjectSegments = new ArrayList<>();
-        int i = 0;
-        //Wraps segments.
-        for (String str : array) {
-            preObjectSegments.add(
-                    new PreObjectSegment(
-                            str,
-                            "PREOBJECT_SEGMENT_" + RETINOTOPIC_ID.get(i)
-                    )
-            );
-            i++;
+        try {
+            Mat cropped = 
+                    new Mat(
+                            PreObjectSet.Bytes2Mat(
+                                    (byte[]) preObjectSet.getData()
+                            ),
+                            new Rect(0, 0, 100, 100)
+                    );
+            show(cropped,"Segmented");
+//        String string;
+//        string = (String) preObjectSet.getData();
+//        String[] array;
+//        //Splits data.
+//        array = string.split(",");
+//        ArrayList<PreObjectSegment> preObjectSegments;
+//        preObjectSegments = new ArrayList<>();
+//        int i = 0;
+//        //Wraps segments.
+//        for (String str : array) {
+//            preObjectSegments.add(
+//                    new PreObjectSegment(
+//                            str,
+//                            "PREOBJECT_SEGMENT_" + RETINOTOPIC_ID.get(i)
+//                    )
+//            );
+//            i++;
+//        }
+//        return preObjectSegments;
+           
+        } catch (IOException ex) {
+            Logger.getLogger(Segmentation.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return preObjectSegments;
+         return new ArrayList();
     }
 }

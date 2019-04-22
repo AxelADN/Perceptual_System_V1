@@ -35,10 +35,10 @@ import utils.SimpleLogger;
  * @see perception.nodes.smallNodes.HolisticClassifier HolisticClassifier class
  * @see perception.structures Data objects used
  */
-public class CandidatesPrioritizerTemplate extends ActivityTemplate {
+public abstract class CandidatesPrioritizerTemplate extends ActivityTemplate {
 
     protected boolean[] prioritized;
-    private static final ArrayList<Integer> RECEIVERS = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
 
     /**
      * Constructor: Defines node identifier and variables. The
@@ -47,7 +47,7 @@ public class CandidatesPrioritizerTemplate extends ActivityTemplate {
      * belonging to a class group linked from this node.
      */
     public CandidatesPrioritizerTemplate() {
-        this.ID = AreaNames.CandidatesPrioritizerTemplate;
+        //this.ID = AreaNames.CandidatesPrioritizerTemplate;
         prioritized = new boolean[8];
         for (int i = 0; i < prioritized.length; i++) {
             prioritized[i] = false;

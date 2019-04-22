@@ -31,7 +31,7 @@ import utils.SimpleLogger;
  */
 public class BufferSwitch extends ActivityTemplate {
 
-    private static final ArrayList<Integer> RECEIVERS = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
 
     /**
      * Constructor: Defines node identifiers and variables. The

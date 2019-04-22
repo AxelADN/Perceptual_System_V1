@@ -40,9 +40,9 @@ import utils.SimpleLogger;
  * @see perception.nodes.smallNodes.RIIC RIIC class group
  * @see perception.structures.RIIC_c Riic_c structure
  */
-public class CandidatesBufferTemplate extends ActivityTemplate {
+public abstract class CandidatesBufferTemplate extends ActivityTemplate {
 
-    private static final ArrayList<Integer> RECEIVERS = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
     private RIIC_hAndPreObjectSegmentPair bufferedRIIC_hAndPreObjectSegmentPair;
 
     /**
@@ -51,7 +51,7 @@ public class CandidatesBufferTemplate extends ActivityTemplate {
      * belonging to a class group linked from this node.
      */
     public CandidatesBufferTemplate() {
-        this.ID = AreaNames.CandidatesBufferTemplate;
+        //this.ID = AreaNames.CandidatesBufferTemplate;
         RECEIVERS.add(AreaNames.RIIC_fQ1);
         RECEIVERS.add(AreaNames.RIIC_fQ2);
         RECEIVERS.add(AreaNames.RIIC_fQ3);
@@ -111,6 +111,10 @@ public class CandidatesBufferTemplate extends ActivityTemplate {
                         RIIC_c.class
                 )) {
                     Sendable received = (Sendable) spike.getIntensity();
+                    ActivityTemplate.log(
+                            this,
+                            ((RIIC_c) received.getData()).getLoggable()
+                    );
                     sendTo(new Sendable(
                             makePair((RIIC_c) received.getData(),
                                     bufferedRIIC_hAndPreObjectSegmentPair),
@@ -129,7 +133,14 @@ public class CandidatesBufferTemplate extends ActivityTemplate {
                     );
                 }
             } else {
-                sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + (String) spike.getLocation());
+                sendToLostData(
+                        this, 
+                        spike, 
+                        "MISTAKEN RETINOTOPIC ROUTE: " + 
+                                (String) spike.getLocation()+
+                                " | FROM " +
+                                searchIDName(((Sendable)spike.getIntensity()).getSender())
+                );
             }
         } catch (Exception ex) {
             Logger.getLogger(CandidatesBufferTemplate.class.getName()

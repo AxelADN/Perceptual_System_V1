@@ -36,10 +36,10 @@ import utils.SimpleLogger;
  * @see perception.nodes.smallNodes.PreObjectPrioritizerTemplate
  * PreObjectPrioritizer Template
  */
-public class RIICTemplate extends ActivityTemplate {
+public abstract class RIICTemplate extends ActivityTemplate {
 
-    private static final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
-    private static final ArrayList<Integer> RECEIVERS_C = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS_C = new ArrayList<>();
     private final RIIC riic;
 
     /**
@@ -50,7 +50,7 @@ public class RIICTemplate extends ActivityTemplate {
      * linked from this node.
      */
     public RIICTemplate() {
-        this.ID = AreaNames.PreObjectBufferTemplate;
+        //this.ID = AreaNames.RIICTemplate;
         this.riic = new RIIC("DEFAULT_RIIC_STRUCTURE");
         RECEIVERS_H.add(AreaNames.PreObjectPrioritizer_fQ1);
         RECEIVERS_H.add(AreaNames.PreObjectPrioritizer_fQ2);
