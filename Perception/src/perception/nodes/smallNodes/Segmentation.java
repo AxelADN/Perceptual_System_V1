@@ -366,7 +366,8 @@ public class Segmentation extends ActivityTemplate {
             Imgproc.resize(croppedSections.get(6), croppedSections.get(6), (croppedSections.get(2)).size());
             Imgproc.resize(croppedSections.get(7), croppedSections.get(7), (croppedSections.get(3)).size());
             ArrayList<ArrayList<MatOfPoint>> contourLists = findContourList(croppedSections);
-            ArrayList<Mat> boundingMats = drawContours(croppedSections,contourLists);
+            ArrayList<ArrayList<Mat>> preObjectLists = maskContours(croppedSections,contourLists); 
+            //ArrayList<Mat> boundingMats = drawContours(croppedSections, contourLists);
             int i = 0;
             for (Mat section : boundingMats) {
                 show(section, "Section: " + i);
@@ -400,36 +401,54 @@ public class Segmentation extends ActivityTemplate {
     }
 
     private ArrayList<ArrayList<MatOfPoint>> findContourList(ArrayList<Mat> mats) {
+        ArrayList<Mat> thresholds = new ArrayList<>();
         ArrayList<ArrayList<MatOfPoint>> contourLists = new ArrayList<>();
         for (Mat mat : mats) {
             contourLists.add(new ArrayList<>());
+            thresholds.add(new Mat());
+        }
+        for (int i = 0; i < 8; i++) {
+            Imgproc.threshold(mats.get(i), thresholds.get(i), 100, 255, Imgproc.THRESH_BINARY_INV);
         }
         int i = 0;
-        for (Mat mat : mats) {
+        for (Mat mat : thresholds) {
             Imgproc.findContours(
                     mat,
                     contourLists.get(i),
                     new Mat(),
-                    Imgproc.RETR_TREE,
-                    Imgproc.CHAIN_APPROX_NONE
+                    Imgproc.RETR_LIST,
+                    Imgproc.CHAIN_APPROX_SIMPLE
             );
             i++;
         }
         return contourLists;
     }
-    
-    private ArrayList<Mat> drawContours(ArrayList<Mat> mats, ArrayList<ArrayList<MatOfPoint>> contourLists){
+
+    private ArrayList<Mat> drawContours(ArrayList<Mat> mats, ArrayList<ArrayList<MatOfPoint>> contourLists) {
         ArrayList<Mat> newMats = new ArrayList<>();
-        for(int i=0; i<8;i++){
+        for (int i = 0; i < 8; i++) {
             newMats.add(new Mat());
         }
-        for(int i=0;i<8;i++){
-            for(MatOfPoint points:contourLists.get(i)){
+        for (int i = 0; i < 8; i++) {
+            //Imgproc.polylines(mats.get(i), contourLists.get(i), true, new Scalar(0, 0, 255), 2);
+
+            for (MatOfPoint points : contourLists.get(i)) {
                 List<Point> pointList = points.toList();
+
                 Rect rect = Imgproc.boundingRect(points);
                 Imgproc.rectangle(mats.get(i), rect, new Scalar(0,0,255));
             }
         }
         return mats;
+    }
+
+    private ArrayList<ArrayList<Mat>> maskContours(ArrayList<Mat> croppedSections, ArrayList<ArrayList<MatOfPoint>> contourLists) {
+        ArrayList<ArrayList<Mat>> masks = new ArrayList<>();
+        for(int i=0;i<8;i++){
+            masks.add(new ArrayList<>());
+        }
+        for(ArrayList<Mat> maskMats:masks){
+            maskMats.add(Mat.zeros(croppedSections.get(0).size(), CvType.CV_8SC1));
+        }
     }
 }

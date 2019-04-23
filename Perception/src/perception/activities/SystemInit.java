@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import perception.config.AreaNames;
+import perception.config.GlobalConfig;
 import perception.structures.PreObjectSet;
 import perception.structures.Sendable;
 import perception.templates.ActivityTemplate;
@@ -40,8 +41,8 @@ public class SystemInit extends ActivityTemplate {
 
     private void start() throws IOException {
         //Reading the Image from the file and storing it in to a Matrix object 
-        String file = "C:\\Users\\AxelADN\\Git\\cuayollotol\\Perception\\src\\resources\\Sample_01.png";
-        Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_GRAYSCALE);
+        String file = GlobalConfig.linuxFile;
+        Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
         show(image,"System Init");
         sendTo(
                 new Sendable(

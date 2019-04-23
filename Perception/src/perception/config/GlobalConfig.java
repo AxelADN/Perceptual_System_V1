@@ -13,10 +13,13 @@ import org.opencv.core.Size;
  */
 public class GlobalConfig {
     
+    public static final String windowsFile = "C:\\Users\\AxelADN\\Git\\cuayollotol\\Perception\\src\\resources\\Sample_01.png";
+    public static final String linuxFile = "/home/axeladn/Git/cuayollotol/Perception/src/resources/Sample_01.png";
+    
     public static final int WINDOW_WIDTH = 480;
     public static final int WINDOW_HEIGHT = 360;
     
     public static final Size WINDOW_SIZE = new Size(WINDOW_WIDTH,WINDOW_HEIGHT);
     
-    public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;
+    public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
 }
