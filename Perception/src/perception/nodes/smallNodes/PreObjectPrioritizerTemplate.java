@@ -5,11 +5,12 @@
  */
 package perception.nodes.smallNodes;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
-import perception.structures.PreObjectSegment;
+import perception.structures.PreObjectSection;
 import perception.structures.RIIC_h;
 import perception.structures.Sendable;
 import spike.LongSpike;
@@ -36,7 +37,8 @@ import utils.SimpleLogger;
  */
 public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
 
-    protected boolean[] prioritized;
+    private boolean[] prioritized;
+    private ArrayDeque<LongSpike> sendableBuffer;
     private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
 
     /**
@@ -48,6 +50,7 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
     public PreObjectPrioritizerTemplate() {
         //this.ID = AreaNames.PreObjectPrioritizerTemplate;
         prioritized = new boolean[8];
+        sendableBuffer = new ArrayDeque<>();
         for (int i = 0; i < prioritized.length; i++) {
             prioritized[i] = false;
         }
@@ -85,6 +88,10 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
+            if (!isCorrectRoute((String) spike.getLocation())) {
+                sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + spike.getLocation());
+                return;
+            }
             Sendable received = (Sendable) spike.getIntensity();
             //Get index of current retinotopic route [0,7].
             int retinotopicIndex
@@ -92,10 +99,9 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                             (String) spike.getLocation()
                     );
             //Checks data type.
-            if (isPreObjectSegment(spike.getIntensity())) { //If it's PreObjectSegment type:
-                ActivityTemplate.log(
-                        this,
-                        ((PreObjectSegment) received.getData()).getLoggable()
+            if (isPreObjectSegment(spike.getIntensity())) { //If it's PreObjectSection type:
+                ActivityTemplate.log(this,
+                        ((PreObjectSection) received.getData()).getLoggable()
                 );
                 //Checks if data comes from correct retinotopic route.
                 //Checks if node is not prioritized in current route, if it is, then data is lost.
@@ -103,6 +109,14 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                         && LOCAL_RETINOTOPIC_ID.contentEquals(
                                 (String) spike.getLocation()
                         )) {
+                    if(sendableBuffer.isEmpty()){
+                        currentSyncID = (int) spike.getTiming();
+                    }else if((int) spike.getTiming() == currentSyncID){
+                        sendableBuffer.add(spike);
+                    }
+                    
+                    LongSpike currentReceived = sendableBuffer.remove();
+                    received = (Sendable) currentReceived.getIntensity();
                     //Send data to defined node.
                     sendTo(
                             new Sendable(
@@ -114,44 +128,51 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                     );
                     //Node becomes prioritized in current route.
                     prioritized[retinotopicIndex] = true;
+
                 } else {
-                    //Lost data is sent.
-                    sendToLostData(this, spike, "ALREADY PRIORITIZED");
+                    if ((int) spike.getTiming() == currentSyncID) {
+                        sendableBuffer.add(spike);
+                    } else {
+                        //Lost data is sent.
+                        sendToLostData(this, spike, "ALREADY PRIORITIZED");
+                    }
                 }
-            } else if (isRIIC_h(spike.getIntensity())) {    //If it's RIIC_h type: 
-                ActivityTemplate.log(
-                        this,
-                        ((RIIC_h) received.getData()).getLoggable()
-                );
-                //Checks if data comes from correct retinotopic route.
-                //Checks if node is not prioritized in current route, if it is, then data is lost.
-                if (prioritized[retinotopicIndex]
-                        && LOCAL_RETINOTOPIC_ID.contentEquals(
-                                (String) spike.getLocation()
-                        )) {
-                    //Send data to defined node.
-                    sendTo(
-                            new Sendable(
-                                    received.getData(),
-                                    this.ID,
-                                    received.getTrace(),
-                                    RECEIVERS.get(retinotopicIndex)),
-                            spike.getLocation()
+            } else {
+                if (isRIIC_h(spike.getIntensity())) {    //If it's RIIC_h type: 
+                    ActivityTemplate.log(
+                            this,
+                            ((RIIC_h) received.getData()).getLoggable()
                     );
-                    //Node becomes not prioritized in current route.
-                    prioritized[retinotopicIndex] = false;
-                } else {
+                    //Checks if data comes from correct retinotopic route.
+                    //Checks if node is not prioritized in current route, if it is, then data is lost.
+                    if (prioritized[retinotopicIndex]
+                            && LOCAL_RETINOTOPIC_ID.contentEquals(
+                                    (String) spike.getLocation()
+                            )) {
+                        //Send data to defined node.
+                        sendTo(
+                                new Sendable(
+                                        received.getData(),
+                                        this.ID,
+                                        received.getTrace(),
+                                        RECEIVERS.get(retinotopicIndex)),
+                                spike.getLocation()
+                        );
+                        //Node becomes not prioritized in current route.
+                        prioritized[retinotopicIndex] = false;
+                    } else {
+                        //Lost data is sent.
+                        sendToLostData(this, spike, "NOT PRIORITIZED YET");
+                    }
+                } else {    //If data type is not recognize, this data is lost.
                     //Lost data is sent.
-                    sendToLostData(this, spike, "NOT PRIORITIZED YET");
+                    sendToLostData(
+                            this,
+                            spike,
+                            "NEITHER PREOBJECT SEGMENT NOR RIIC_H RECOGNIZED: "
+                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                    );
                 }
-            } else {    //If data type is not recognize, this data is lost.
-                //Lost data is sent.
-                sendToLostData(
-                        this,
-                        spike,
-                        "NEITHER PREOBJECT SEGMENT NOR RIIC_H RECOGNIZED: "
-                        + ((Sendable) spike.getIntensity()).getData().getClass().getName()
-                );
             }
         } catch (Exception ex) {
             Logger.getLogger(
@@ -161,15 +182,15 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
     }
 
     /**
-     * Checker: Checks if object is of type PreObjectSegment.
+     * Checker: Checks if object is of type PreObjectSection.
      *
      * @param obj Object to check
-     * @return      <code>true</code> if <code>obj</code> is of type PreObjectSegment
+     * @return      <code>true</code> if <code>obj</code> is of type PreObjectSection
      *
-     * @see perception.structures.PreObjectSegment PreObjectSegment structure
+     * @see perception.structures.PreObjectSectionPreObjectSection structure
      */
-    protected boolean isPreObjectSegment(Object obj) {
-        return isCorrectDataType(obj, PreObjectSegment.class);
+    private boolean isPreObjectSegment(Object obj) {
+        return isCorrectDataType(obj, PreObjectSection.class);
     }
 
     /**
@@ -180,7 +201,7 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
      *
      * @see perception.structures.RIIC_h RIIC_h structure
      */
-    protected boolean isRIIC_h(Object obj) {
+    private boolean isRIIC_h(Object obj) {
         return isCorrectDataType(obj, RIIC_h.class);
     }
 }

@@ -23,6 +23,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import perception.config.AreaNames;
+import perception.config.GlobalConfig;
 import perception.structures.Sendable;
 import spike.LongSpike;
 import spike.Modalities;
@@ -35,6 +36,7 @@ import utils.SimpleLogger;
 public abstract class ActivityTemplate extends Activity {
 
     protected String userID;
+    protected int currentSyncID;
     public static final ArrayList<String> RETINOTOPIC_ID = new ArrayList<>();
     protected String LOCAL_RETINOTOPIC_ID;
 
@@ -48,6 +50,7 @@ public abstract class ActivityTemplate extends Activity {
         RETINOTOPIC_ID.add("pQ2");
         RETINOTOPIC_ID.add("pQ3");
         RETINOTOPIC_ID.add("pQ4");
+        currentSyncID = 0;
     }
 
     @Override
@@ -86,6 +89,15 @@ public abstract class ActivityTemplate extends Activity {
     protected <T extends Serializable> void sendTo(Sendable sendable, T location) {
         try {
             send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, location, sendable, 0).getByteArray());
+            //SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
+        } catch (IOException ex) {
+            Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    protected <T extends Serializable> void sendTo(Sendable sendable, T location, T syncID) {
+        try {
+            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, location, sendable, syncID).getByteArray());
             //SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
         } catch (IOException ex) {
             Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
@@ -142,6 +154,41 @@ public abstract class ActivityTemplate extends Activity {
         frame.pack();
         frame.setTitle(title);
         frame.setVisible(true);
+    }
+    
+    protected void show(Mat image,int x, int y, String title) throws IOException{
+        //Encoding the image 
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".png", image, matOfByte);
+
+        //Storing the encoded Mat in a byte array 
+        byte[] byteArray = matOfByte.toArray();
+
+        //Preparing the Buffered Image 
+        InputStream in = new ByteArrayInputStream(byteArray);
+        BufferedImage bufImage = ImageIO.read(in);
+
+        //Instantiate JFrame 
+        JFrame frame = new JFrame();
+
+        //Set Content to the JFrame 
+        frame.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
+        frame.pack();
+        frame.setTitle(title);
+        frame.setLocation(x,y);
+        frame.setVisible(true);
+    }
+    
+    protected void showList(ArrayList<ArrayList<Mat>> imageList,String title) throws IOException{
+        int i=0;
+        for(ArrayList<Mat> row: imageList){
+            int j=0;
+            for(Mat image: row){
+                show(image,(int)image.size().width*j*2,(int)image.size().height*i*2,title+" | ("+i+","+j+")");
+                j++;
+            }
+            i++;
+        }
     }
 
 }

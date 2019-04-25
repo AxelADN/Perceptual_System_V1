@@ -13,15 +13,15 @@ import java.io.Serializable;
  */
 public class RIIC_hAndPreObjectSegmentPair extends StructureTemplate implements Serializable{
     
-    private final PreObjectSegment preObjectSegment;
+    private final PreObjectSection preObjectSegment;
     private final RIIC_h riic_h;
 
-    public RIIC_hAndPreObjectSegmentPair(RIIC_h riic_h,PreObjectSegment preObjectSegment){
+    public RIIC_hAndPreObjectSegmentPair(RIIC_h riic_h,PreObjectSection preObjectSegment){
         this.riic_h = riic_h;
         this.preObjectSegment = preObjectSegment;
     }
     
-    public RIIC_hAndPreObjectSegmentPair(RIIC_h riic_h,PreObjectSegment preObjectSegment, String loggableObject){
+    public RIIC_hAndPreObjectSegmentPair(RIIC_h riic_h,PreObjectSection preObjectSegment, String loggableObject){
         super(loggableObject);
         this.riic_h = riic_h;
         this.preObjectSegment = preObjectSegment;
@@ -31,7 +31,7 @@ public class RIIC_hAndPreObjectSegmentPair extends StructureTemplate implements 
         return this.riic_h;
     }
     
-    public PreObjectSegment getPreObjectSegment(){
+    public PreObjectSection getPreObjectSegment(){
         return this.preObjectSegment;
     }
 }

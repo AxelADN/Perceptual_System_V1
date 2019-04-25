@@ -5,11 +5,14 @@
  */
 package perception.nodes.smallNodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opencv.core.Mat;
 import perception.config.AreaNames;
-import perception.structures.PreObjectSegment;
+import perception.config.GlobalConfig;
+import perception.structures.PreObjectSection;
 import perception.structures.Sendable;
 import spike.LongSpike;
 import perception.templates.ActivityTemplate;
@@ -32,6 +35,7 @@ import utils.SimpleLogger;
 public class BufferSwitch extends ActivityTemplate {
 
     private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
+    private static int syncID = 0;
 
     /**
      * Constructor: Defines node identifiers and variables. The
@@ -74,7 +78,7 @@ public class BufferSwitch extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
-            if (isCorrectDataType(spike.getIntensity(), PreObjectSegment.class)) {
+            if (isCorrectDataType(spike.getIntensity(), PreObjectSection.class)) {
                 distributeSegments((Sendable) spike.getIntensity());
             } else {
                 sendToLostData(
@@ -98,31 +102,47 @@ public class BufferSwitch extends ActivityTemplate {
      *
      * @param data
      *
-     * @see perception.structures.PreObjectSegment PreObjectSegment structure
+     * @see perception.structures.PreObjectSectionPreObjectSection structure
      */
-    private void distributeSegments(Sendable data) {
+    private void distributeSegments(Sendable data) throws IOException {
         //Get ArrayList from data.
-        ArrayList<PreObjectSegment> preObjectSegments
-                = (ArrayList<PreObjectSegment>) data.getData();
+        ArrayList<ArrayList<Mat>> showMats = new ArrayList<>();
+        ArrayList<PreObjectSection> preObjectSection
+                = (ArrayList<PreObjectSection>) data.getData();
         ActivityTemplate.log(this, "BUFFER_SWITCH");
         int i = 0;
         //For each segment:
-        for (PreObjectSegment obj : preObjectSegments) {
+        for (PreObjectSection obj : preObjectSection) {
+            showMats.add(obj.getSegments());
+            int j = 0;
             //Send segment in its corresponding retinotopic route.
-            sendTo(
-                    new Sendable(
-                            new PreObjectSegment(
-                                    obj.getSegment(),
-                                    obj.getLoggable() + (String) obj.getSegment()
-                            ),
-                            this.ID,
-                            data.getTrace(),
-                            RECEIVERS.get(i)
-                    ),
-                    RETINOTOPIC_ID.get(i)
-            );
+            ArrayList<Mat> mats = obj.getSegments();
+            for (Mat mat : mats) {
+                j++;
+                sendTo(
+                        new Sendable(
+                                new PreObjectSection(
+                                        mat,
+                                        "NEW PREOBJECT SEGMENT: "
+                                        + RETINOTOPIC_ID.get(i)
+                                        + " | SEG_ID: "
+                                        + j
+                                ),
+                                this.ID,
+                                data.getTrace(),
+                                RECEIVERS.get(i)
+                        ),
+                        RETINOTOPIC_ID.get(i),
+                        syncID
+                );
+            }
+            syncID++;
             i++;
         }
+        if (GlobalConfig.showEnablerID == ID) {
+            showList(showMats, "Mats");
+        }
+
     }
 
 }

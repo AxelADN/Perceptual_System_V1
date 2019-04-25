@@ -6,6 +6,7 @@
 package perception.structures;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -15,6 +16,8 @@ import org.opencv.imgcodecs.Imgcodecs;
  * @author AxelADN
  */
 public abstract class StructureTemplate implements Serializable{
+    
+    protected static final class SerializedArrayList<T> extends ArrayList<T> implements Serializable{}
 
     private String loggableObject;
     

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
-import perception.structures.PreObjectSegment;
+import perception.structures.PreObjectSection;
 import perception.structures.RIIC_h;
 import perception.structures.RIIC_hAndPreObjectSegmentPair;
 import perception.structures.Sendable;
@@ -88,7 +88,7 @@ public class HolisticClassifier extends ActivityTemplate {
             Sendable received = (Sendable) spike.getIntensity();
             RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
             RIIC_h riic_h = pair.getRIIC_h();
-            PreObjectSegment preObjectSegment = pair.getPreObjectSegment();
+            PreObjectSection preObjectSegment = pair.getPreObjectSegment();
             riic_h.write(preObjectSegment.getSegment());
             ActivityTemplate.log(this, (String) pair.getLoggable());
             sendTo(

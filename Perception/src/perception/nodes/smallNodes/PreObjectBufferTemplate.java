@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
 import perception.structures.InternalRequest;
-import perception.structures.PreObjectSegment;
+import perception.structures.PreObjectSection;
 import perception.structures.RIIC_h;
 import perception.structures.RIIC_hAndPreObjectSegmentPair;
 import perception.structures.Sendable;
@@ -42,7 +42,7 @@ import utils.SimpleLogger;
 public abstract class PreObjectBufferTemplate extends ActivityTemplate {
 
     private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
-    private PreObjectSegment bufferedPreObjectSegment;
+    private PreObjectSection bufferedPreObjectSegment;
 
     /**
      * Constructor: Defines node identifier and constants. The
@@ -89,13 +89,11 @@ public abstract class PreObjectBufferTemplate extends ActivityTemplate {
         try {
             LongSpike spike = new LongSpike(data);
             if (isCorrectRoute((String) spike.getLocation())) {
-                if (isCorrectDataType(spike.getIntensity(), PreObjectSegment.class)) {
-                    ActivityTemplate.log(
-                            this,
-                            ((PreObjectSegment) ((Sendable) spike.getIntensity()).getData()).getLoggable()
+                if (isCorrectDataType(spike.getIntensity(), PreObjectSection.class)) {
+                    ActivityTemplate.log(this,
+                            ((PreObjectSection) ((Sendable) spike.getIntensity()).getData()).getLoggable()
                     );
-                    storeInBuffer(
-                            (PreObjectSegment) ((Sendable) spike.getIntensity()).getData()
+                    storeInBuffer((PreObjectSection) ((Sendable) spike.getIntensity()).getData()
                     );
                     requestCopyRIIC_h(
                             (Sendable) spike.getIntensity(),
@@ -137,11 +135,11 @@ public abstract class PreObjectBufferTemplate extends ActivityTemplate {
     }
 
     /**
-     * Storage: Stores a PreObjectSegment type data.
+     * Storage: Stores a PreObjectSection type data.
      *
      * @param preObjectSegment Object to store
      */
-    protected void storeInBuffer(PreObjectSegment preObjectSegment) {
+    protected void storeInBuffer(PreObjectSection preObjectSegment) {
         bufferedPreObjectSegment = preObjectSegment;
     }
 
@@ -150,10 +148,10 @@ public abstract class PreObjectBufferTemplate extends ActivityTemplate {
      * RIIC_hAdnPreObjectSegmentPair constructor.
      *
      * @param riic_h            <code>RIIC_h</code> object to pair with
-     * @param preObjectSegment  <code>PreObjectSegment</code> object to pair with
+     * @param preObjectSegment  <code>PreObjectSection</code> object to pair with
      * @return A <code>RIIC_hAndPreObjectSegmentPair</code> object
      */
-    protected RIIC_hAndPreObjectSegmentPair makePair(RIIC_h riic_h, PreObjectSegment preObjectSegment) {
+    protected RIIC_hAndPreObjectSegmentPair makePair(RIIC_h riic_h, PreObjectSection preObjectSegment) {
         return new RIIC_hAndPreObjectSegmentPair(riic_h, preObjectSegment, "PAIR_" + LOCAL_RETINOTOPIC_ID);
     }
 

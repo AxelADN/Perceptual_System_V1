@@ -41,7 +41,7 @@ public class SystemInit extends ActivityTemplate {
 
     private void start() throws IOException {
         //Reading the Image from the file and storing it in to a Matrix object 
-        String file = GlobalConfig.linuxFile;
+        String file = GlobalConfig.windowsFile;
         Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
         show(image,"System Init");
         sendTo(
