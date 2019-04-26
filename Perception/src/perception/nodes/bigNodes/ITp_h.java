@@ -11,6 +11,7 @@ import perception.nodes.smallNodes.BufferSwitch;
 import perception.nodes.smallNodes.HolisticClassifier;
 import perception.nodes.smallNodes.PreObjectBuffer.*;
 import perception.nodes.smallNodes.PreObjectPrioritizer.*;
+import perception.nodes.smallNodes.RetroReactiveQueuer;
 
 import perception.templates.AreaTemplate;
 import utils.SimpleLogger;
@@ -41,6 +42,7 @@ public class ITp_h extends AreaTemplate {
         addProcess(PreObjectBuffer_pQ3.class);
         addProcess(PreObjectBuffer_pQ4.class);
         addProcess(HolisticClassifier.class);
+        addProcess(RetroReactiveQueuer.class,ActConf.TYPE_PARALLEL);
 
     }
 

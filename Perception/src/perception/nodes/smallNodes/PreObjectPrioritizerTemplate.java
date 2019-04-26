@@ -38,7 +38,6 @@ import utils.SimpleLogger;
 public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
 
     private boolean[] prioritized;
-    private ArrayDeque<LongSpike> sendableBuffer;
     private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
 
     /**
@@ -50,7 +49,6 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
     public PreObjectPrioritizerTemplate() {
         //this.ID = AreaNames.PreObjectPrioritizerTemplate;
         prioritized = new boolean[8];
-        sendableBuffer = new ArrayDeque<>();
         for (int i = 0; i < prioritized.length; i++) {
             prioritized[i] = false;
         }
@@ -109,14 +107,6 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                         && LOCAL_RETINOTOPIC_ID.contentEquals(
                                 (String) spike.getLocation()
                         )) {
-                    if(sendableBuffer.isEmpty()){
-                        currentSyncID = (int) spike.getTiming();
-                    }else if((int) spike.getTiming() == currentSyncID){
-                        sendableBuffer.add(spike);
-                    }
-                    
-                    LongSpike currentReceived = sendableBuffer.remove();
-                    received = (Sendable) currentReceived.getIntensity();
                     //Send data to defined node.
                     sendTo(
                             new Sendable(
@@ -130,12 +120,7 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                     prioritized[retinotopicIndex] = true;
 
                 } else {
-                    if ((int) spike.getTiming() == currentSyncID) {
-                        sendableBuffer.add(spike);
-                    } else {
-                        //Lost data is sent.
-                        sendToLostData(this, spike, "ALREADY PRIORITIZED");
-                    }
+                    sendToRetroReactiveQueuer(spike);
                 }
             } else {
                 if (isRIIC_h(spike.getIntensity())) {    //If it's RIIC_h type: 

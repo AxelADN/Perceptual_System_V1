@@ -5,10 +5,12 @@
  */
 package perception.nodes.smallNodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
+import perception.config.GlobalConfig;
 import perception.structures.InternalRequest;
 import perception.structures.PreObjectSection;
 import perception.structures.RIIC_h;
@@ -99,30 +101,32 @@ public abstract class PreObjectBufferTemplate extends ActivityTemplate {
                             (Sendable) spike.getIntensity(),
                             (String) spike.getLocation()
                     );
-                } else if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
-                    Sendable received = (Sendable) spike.getIntensity();
-                    ActivityTemplate.log(
-                            this,
-                            ((RIIC_h) received.getData()).getLoggable()
-                    );
-                    sendTo(
-                            new Sendable(
-                                    makePair(
-                                            (RIIC_h) received.getData(),
-                                            bufferedPreObjectSegment),
-                                    this.ID,
-                                    received.getTrace(),
-                                    AreaNames.HolisticClassifier
-                            ),
-                            spike.getLocation()
-                    );
                 } else {
-                    sendToLostData(
-                            this,
-                            spike,
-                            "NEITHER PREOBJECT SEGMENT NOR RIIC_H RECOGNIZED: "
-                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
-                    );
+                    if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
+                        Sendable received = (Sendable) spike.getIntensity();
+                        ActivityTemplate.log(
+                                this,
+                                ((RIIC_h) received.getData()).getLoggable()
+                        );
+                        sendTo(
+                                new Sendable(
+                                        makePair(
+                                                (RIIC_h) received.getData(),
+                                                bufferedPreObjectSegment),
+                                        this.ID,
+                                        received.getTrace(),
+                                        AreaNames.HolisticClassifier
+                                ),
+                                spike.getLocation()
+                        );
+                    } else {
+                        sendToLostData(
+                                this,
+                                spike,
+                                "NEITHER PREOBJECT SEGMENT NOR RIIC_H RECOGNIZED: "
+                                + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                        );
+                    }
                 }
             } else {
                 sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + (String) spike.getLocation());
@@ -139,7 +143,10 @@ public abstract class PreObjectBufferTemplate extends ActivityTemplate {
      *
      * @param preObjectSegment Object to store
      */
-    protected void storeInBuffer(PreObjectSection preObjectSegment) {
+    protected void storeInBuffer(PreObjectSection preObjectSegment) throws IOException {
+        if (GlobalConfig.showEnablerIDs == this.getClass().getSuperclass()) {
+            show(preObjectSegment.getSegment(), "Segment: " + LOCAL_RETINOTOPIC_ID);
+        }
         bufferedPreObjectSegment = preObjectSegment;
     }
 

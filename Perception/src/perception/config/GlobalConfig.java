@@ -6,6 +6,7 @@
 package perception.config;
 
 import org.opencv.core.Size;
+import perception.nodes.smallNodes.PreObjectBufferTemplate;
 
 /**
  *
@@ -23,5 +24,6 @@ public class GlobalConfig {
     
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
-    public static final int showEnablerID = AreaNames.BufferSwitch;
+    public static final int showEnablerID = 0;
+    public static  final Class showEnablerIDs = PreObjectBufferTemplate.class;
 }

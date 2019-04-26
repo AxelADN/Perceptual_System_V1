@@ -78,30 +78,41 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected void sendTo(Sendable sendable) {
+        sendTo(sendable, 0, 0);
+    }
+
+    protected <T extends Serializable> void sendTo(Sendable sendable, T location) {
+        sendTo(sendable, location, 0);
+    }
+
+    protected <T extends Serializable> void sendTo(Sendable sendable, T location, T syncID) {
         try {
-            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, 0, sendable, 0).getByteArray());
-            //SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
+            send(
+                    sendable.getReceiver(),
+                    new LongSpike(
+                            Modalities.PERCEPTION,
+                            location,
+                            sendable,
+                            syncID
+                    ).getByteArray()
+            );
         } catch (IOException ex) {
             Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    protected <T extends Serializable> void sendTo(Sendable sendable, T location) {
-        try {
-            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, location, sendable, 0).getByteArray());
-            //SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
-        } catch (IOException ex) {
-            Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    protected <T extends Serializable> void sendTo(Sendable sendable, T location, T syncID) {
-        try {
-            send(sendable.getReceiver(), new LongSpike(Modalities.PERCEPTION, location, sendable, syncID).getByteArray());
-            //SimpleLogger.log("SENT: " + searchIDName(sendable.getSender()) + "-->" + searchIDName(sendable.getReceiver()));
-        } catch (IOException ex) {
-            Logger.getLogger(ActivityTemplate.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    protected <T extends Serializable> void sendToRetroReactiveQueuer(LongSpike spike) {
+        Sendable toSend = (Sendable) spike.getIntensity();
+        sendTo(
+                new Sendable(
+                        toSend.getData(),
+                        toSend.getReceiver(),
+                        toSend.getTrace(),
+                        AreaNames.RetroReactiveQueuer
+                ),
+                spike.getLocation(),
+                spike.getTiming()
+        );
     }
 
     protected void sendToLostData(Object node, LongSpike spike, String motive) {
@@ -133,8 +144,8 @@ public abstract class ActivityTemplate extends Activity {
     protected boolean isCorrectRoute(String route) {
         return route.contentEquals(this.LOCAL_RETINOTOPIC_ID);
     }
-    
-    protected void show(Mat image,String title) throws IOException{
+
+    protected void show(Mat image, String title) throws IOException {
         //Encoding the image 
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", image, matOfByte);
@@ -155,8 +166,8 @@ public abstract class ActivityTemplate extends Activity {
         frame.setTitle(title);
         frame.setVisible(true);
     }
-    
-    protected void show(Mat image,int x, int y, String title) throws IOException{
+
+    protected void show(Mat image, int x, int y, String title) throws IOException {
         //Encoding the image 
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", image, matOfByte);
@@ -175,16 +186,16 @@ public abstract class ActivityTemplate extends Activity {
         frame.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
         frame.pack();
         frame.setTitle(title);
-        frame.setLocation(x,y);
+        frame.setLocation(x, y);
         frame.setVisible(true);
     }
-    
-    protected void showList(ArrayList<ArrayList<Mat>> imageList,String title) throws IOException{
-        int i=0;
-        for(ArrayList<Mat> row: imageList){
-            int j=0;
-            for(Mat image: row){
-                show(image,(int)image.size().width*j*2,(int)image.size().height*i*2,title+" | ("+i+","+j+")");
+
+    protected void showList(ArrayList<ArrayList<Mat>> imageList, String title) throws IOException {
+        int i = 0;
+        for (ArrayList<Mat> row : imageList) {
+            int j = 0;
+            for (Mat image : row) {
+                show(image, (int) image.size().width * j * 2, (int) image.size().height * i * 2, title + " | (" + i + "," + j + ")");
                 j++;
             }
             i++;
