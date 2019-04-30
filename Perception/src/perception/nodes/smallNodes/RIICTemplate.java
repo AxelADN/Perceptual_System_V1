@@ -102,7 +102,8 @@ public abstract class RIICTemplate extends ActivityTemplate {
                             = (InternalRequest) ((Sendable) spike.getIntensity()).getData();
                     if (null == (String) request.type()) {
                         sendToLostData(this, spike, "NEITHER 'H' NOR 'C' TYPE RECOGNIZED: "
-                                + ((Sendable) spike.getIntensity()).getData().getClass().getName());
+                                + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                        );
                     } else {
                         switch ((String) request.type()) {
                             case "H":

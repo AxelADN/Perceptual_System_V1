@@ -95,7 +95,8 @@ public abstract class PreObjectBufferTemplate extends ActivityTemplate {
                     ActivityTemplate.log(this,
                             ((PreObjectSection) ((Sendable) spike.getIntensity()).getData()).getLoggable()
                     );
-                    storeInBuffer((PreObjectSection) ((Sendable) spike.getIntensity()).getData()
+                    storeInBuffer(
+                            (PreObjectSection) ((Sendable) spike.getIntensity()).getData()
                     );
                     requestCopyRIIC_h(
                             (Sendable) spike.getIntensity(),
