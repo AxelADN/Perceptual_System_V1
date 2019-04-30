@@ -26,4 +26,8 @@ public class GlobalConfig {
     
     public static final int showEnablerID = 0;
     public static  final Class showEnablerIDs = PreObjectBufferTemplate.class;
+    
+    public static double ACTIVATION_THRESHOLD = 30;
+    public static int CANDIDATES_MAX_QUANTITY = 5;
+    public static int MAX_DOUBLE_TO_INT_FACTOR = 1000000;
 }

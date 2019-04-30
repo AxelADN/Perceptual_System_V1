@@ -8,7 +8,13 @@ package perception.nodes.smallNodes;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opencv.core.Mat;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Scalar;
 import perception.config.AreaNames;
+import perception.config.GlobalConfig;
+import perception.structures.PreObject;
 import perception.structures.PreObjectSection;
 import perception.structures.RIIC_h;
 import perception.structures.RIIC_hAndPreObjectSegmentPair;
@@ -85,10 +91,25 @@ public class HolisticClassifier extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
-            Sendable received = (Sendable) spike.getIntensity();
-            RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
-            RIIC_h riic_h = pair.getRIIC_h();
-            PreObjectSection preObjectSegment = pair.getPreObjectSegment();
+            if(isCorrectRoute((String)spike.getLocation())){
+                if(isCorrectDataType(spike,RIIC_hAndPreObjectSegmentPair.class)){
+                    Sendable received = (Sendable) spike.getIntensity();
+                    RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
+                    RIIC_h riic_h = pair.getRIIC_h();
+                    PreObjectSection preObjectSegment = pair.getPreObjectSegment();
+                    RIIC_h candidates = getCandidates(riic_h,preObjectSegment);
+                }else {
+                    sendToLostData(
+                            this,
+                            spike,
+                            "NO PAIR RECOGNIZED: "
+                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                    );
+                }
+            }else {
+                sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + (String) spike.getLocation());
+            }
+            
             riic_h.write(preObjectSegment.getSegment());
             ActivityTemplate.log(this, (String) pair.getLoggable());
             sendTo(
@@ -124,6 +145,38 @@ public class HolisticClassifier extends ActivityTemplate {
             );
         } catch (Exception ex) {
             Logger.getLogger(HolisticClassifier.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private RIIC_h getCandidates(RIIC_h riic_h, PreObjectSection preObjectSegment) {
+        Mat preObject = extractHolisticFeatures(preObjectSegment.getSegment());
+        int i=0;
+        while(riic_h.isNotEmpty()&&i<=GlobalConfig.CANDIDATES_MAX_QUANTITY){
+            PreObject currentTemplate = riic_h.next();
+            double activationLevel = getPSNR(preObject,currentTemplate.getData());
+            if(activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD){
+                                
+            }
+        }
+    }
+    
+    private Mat extractHolisticFeatures(Mat preObject){
+        return preObject;
+    }
+
+    private double getPSNR(Mat preObject, Mat currentTemplate) {
+        Mat diff = new Mat();
+        Core.absdiff(preObject, currentTemplate, diff);
+        diff.convertTo(diff, CvType.CV_32F);
+        diff = diff.mul(diff);
+        Scalar sumMat = Core.sumElems(diff);
+        double totalSum = sumMat.val[0]+sumMat.val[1]+sumMat.val[2];
+        if( totalSum <= 1e-10){
+            return 0;
+        }else{
+            double mse = totalSum /(double)(preObject.channels() * preObject.total());
+            double psnr = 10.0*Math.log10((255*255)/mse);
+            return psnr;
         }
     }
 
