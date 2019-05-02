@@ -6,6 +6,7 @@
 package perception.nodes.smallNodes;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
@@ -37,7 +38,7 @@ import utils.SimpleLogger;
  * PreObjectPrioritizer Template
  */
 public abstract class RIICTemplate extends ActivityTemplate {
-
+    
     private final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
     private final ArrayList<Integer> RECEIVERS_C = new ArrayList<>();
     private final RIIC riic;

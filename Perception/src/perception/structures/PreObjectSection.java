@@ -15,10 +15,10 @@ import org.opencv.core.Mat;
  */
 public class PreObjectSection extends StructureTemplate implements Serializable {
     
-    private final SerializedArrayList<byte[]> segments;
+    private final ArrayList<byte[]> segments;
 
     public PreObjectSection(ArrayList<Mat> segments) {
-        this.segments = new SerializedArrayList<>();
+        this.segments = new ArrayList<>();
         for(Mat mat:segments){
             this.segments.add(Mat2Bytes(mat));
         }
@@ -26,20 +26,20 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
 
     public PreObjectSection(ArrayList<Mat> segments, String loggableObject) {
         super(loggableObject);
-        this.segments = new SerializedArrayList<>();
+        this.segments = new ArrayList<>();
         for(Mat mat:segments){
             this.segments.add(Mat2Bytes(mat));
         }
     }
     
     public PreObjectSection(Mat segment) {
-        this.segments = new SerializedArrayList<>();
+        this.segments = new ArrayList<>();
         this.segments.add(Mat2Bytes(segment));
     }
 
     public PreObjectSection(Mat segment, String loggableObject) {
         super(loggableObject);
-        this.segments = new SerializedArrayList<>();
+        this.segments = new ArrayList<>();
         this.segments.add(Mat2Bytes(segment));
     }
 

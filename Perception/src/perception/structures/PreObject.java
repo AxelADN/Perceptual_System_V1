@@ -17,10 +17,22 @@ public class PreObject extends StructureTemplate implements Serializable{
     
     private String UID;
     private final byte[] data;
+    private double priority;
     
     public PreObject(Mat mat){
         this.data = Mat2Bytes(mat);
         this.UID = "NULL";
+        this.priority = 1.0;
+    }
+    
+    public PreObject(String UID, double priority){
+        this.UID = UID;
+        this.priority = priority;
+        this.data = null;
+    }
+    
+    public PreObject getPreObjectEssentials(){
+        return new PreObject(this.UID,this.priority);
     }
     
     public void setLabel(String UID){
@@ -31,7 +43,11 @@ public class PreObject extends StructureTemplate implements Serializable{
         return Bytes2Mat(this.data);
     }
 
-    int getPriority() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public double getPriority() {
+        return this.priority;
+    }
+
+    public String getLabel() {
+        return this.UID;
     }
 }

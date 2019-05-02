@@ -5,6 +5,7 @@
  */
 package perception.nodes.smallNodes;
 
+import static java.lang.Integer.min;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,14 +92,35 @@ public class HolisticClassifier extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
-            if(isCorrectRoute((String)spike.getLocation())){
-                if(isCorrectDataType(spike,RIIC_hAndPreObjectSegmentPair.class)){
+            if (isCorrectRoute((String) spike.getLocation())) {
+                if (isCorrectDataType(spike, RIIC_hAndPreObjectSegmentPair.class)) {
                     Sendable received = (Sendable) spike.getIntensity();
                     RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
                     RIIC_h riic_h = pair.getRIIC_h();
                     PreObjectSection preObjectSegment = pair.getPreObjectSegment();
-                    RIIC_h candidates = getCandidates(riic_h,preObjectSegment);
-                }else {
+                    RIIC_h candidates = getCandidates(riic_h, preObjectSegment);
+                    sendTo(
+                            new Sendable(
+                                    new RIIC_hAndPreObjectSegmentPair(
+                                            candidates,
+                                            preObjectSegment,
+                                            "NEW_CANDIDATES: "
+                                            + spike.getTiming()
+                                            + (String) spike.getLocation()
+                                    ),
+                                    this.ID,
+                                    received.getTrace(),
+                                    RECEIVERS_H.get(
+                                            RETINOTOPIC_ID.indexOf(
+                                                    (String) spike.getLocation()
+                                            )
+                                    )
+                            ),
+                            spike.getLocation(),
+                            spike.getTiming()
+                    );
+                    updateRIIC_h(riic_h, candidates, preObjectSegment.getSegment());
+                } else {
                     sendToLostData(
                             this,
                             spike,
@@ -106,10 +128,10 @@ public class HolisticClassifier extends ActivityTemplate {
                             + ((Sendable) spike.getIntensity()).getData().getClass().getName()
                     );
                 }
-            }else {
+            } else {
                 sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + (String) spike.getLocation());
             }
-            
+
             riic_h.write(preObjectSegment.getSegment());
             ActivityTemplate.log(this, (String) pair.getLoggable());
             sendTo(
@@ -150,18 +172,54 @@ public class HolisticClassifier extends ActivityTemplate {
 
     private RIIC_h getCandidates(RIIC_h riic_h, PreObjectSection preObjectSegment) {
         Mat preObject = extractHolisticFeatures(preObjectSegment.getSegment());
-        int i=0;
-        while(riic_h.isNotEmpty()&&i<=GlobalConfig.CANDIDATES_MAX_QUANTITY){
+        RIIC_h riic_hTemplates = new RIIC_h("EMPTY ACTIVATED TEMPLATES");
+        int i = 0;
+        while (riic_h.isNotEmpty() && i <= GlobalConfig.CANDIDATES_MAX_QUANTITY) {
             PreObject currentTemplate = riic_h.next();
-            double activationLevel = getPSNR(preObject,currentTemplate.getData());
-            if(activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD){
-                                
+            double activationLevel = getDistance(preObject, currentTemplate.getData());
+            if (activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD) {
+                riic_hTemplates.addPreObject(currentTemplate, activationLevel);
+                i++;
             }
         }
+        riic_h.retrieveAll();
+        return riic_hTemplates;
     }
-    
-    private Mat extractHolisticFeatures(Mat preObject){
+
+    private Mat extractHolisticFeatures(Mat preObject) {
         return preObject;
+    }
+
+    private double getDistance(Mat preObject, Mat currentTemplate) {
+        return getPSNR(preObject, currentTemplate);
+    }
+
+    private double getExtendedHammingDistance(Mat preObject, Mat currentTemplate) {
+        int cols = min(preObject.cols(), currentTemplate.cols());
+        int rows = min(preObject.rows(), currentTemplate.rows());
+        ArrayList<Mat> extendedPreObject = extendDimensions(rows,cols,preObject);
+        ArrayList<Mat> extendedCurrentTemplate = extendDimensions(rows,cols,currentTemplate);
+
+    }
+
+    private ArrayList<Mat> extendDimensions(int rows, int cols, Mat mat) {
+        ArrayList<Mat> extendedMats = new ArrayList<>();
+        byte[][] extendedMatVectors = new byte[256][rows*cols];
+        for (int i = 0; i < 256; i++) {
+            extendedMats.add(Mat.zeros(rows, cols, CvType.CV_8UC1));
+            for(int j=0;j<rows*cols;j++){
+                extendedMatVectors[i][j] = 0;
+            }
+        }
+        byte[] matVector = new byte[cols*rows];
+        mat.get(0, 0, matVector);
+        for(int i=0;i<cols*rows;i++){
+            extendedMatVectors[matVector[i]][i] = 1;
+        }
+        for(int i=0;i<256;i++){
+            extendedMats.get(i).put(0, 0, extendedMatVectors[i]);
+        }
+        return extendedMats;
     }
 
     private double getPSNR(Mat preObject, Mat currentTemplate) {
@@ -170,13 +228,25 @@ public class HolisticClassifier extends ActivityTemplate {
         diff.convertTo(diff, CvType.CV_32F);
         diff = diff.mul(diff);
         Scalar sumMat = Core.sumElems(diff);
-        double totalSum = sumMat.val[0]+sumMat.val[1]+sumMat.val[2];
-        if( totalSum <= 1e-10){
+        double totalSum = sumMat.val[0] + sumMat.val[1] + sumMat.val[2];
+        if (totalSum <= 1e-10) {
             return 0;
-        }else{
-            double mse = totalSum /(double)(preObject.channels() * preObject.total());
-            double psnr = 10.0*Math.log10((255*255)/mse);
+        } else {
+            double mse = totalSum / (double) (preObject.channels() * preObject.total());
+            double psnr = 10.0 * Math.log10((255 * 255) / mse);
             return psnr;
+        }
+    }
+
+    private void updateRIIC_h(RIIC_h riic_h, RIIC_h candidates, Mat segment) {
+        if (candidates.isEmpty()) {
+            Mat mat = extractHolisticFeatures(segment);
+            riic_h.addMat(segment);
+        } else {
+            while (candidates.isNotEmpty()) {
+                PreObject currentTemplate = candidates.next();
+                riic_h.add(currentTemplate);
+            }
         }
     }
 

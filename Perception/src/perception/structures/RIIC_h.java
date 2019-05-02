@@ -8,6 +8,8 @@ package perception.structures;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.UUID;
 import org.opencv.core.Mat;
 
 /**
@@ -15,48 +17,78 @@ import org.opencv.core.Mat;
  * @author AxelADN
  */
 public class RIIC_h extends StructureTemplate implements Serializable {
-    
-    private final SerializedPriorityQueue<PreObject> templatesID;
-    private final SerializedHashMap<String,PreObject> templates;
+
+    private final PriorityQueue<PreObject> templatesID;
+    private final HashMap<String, PreObject> templates;
+    private ArrayList<PreObject> templatesAux;
     private boolean empty;
 
     public RIIC_h(String loggableObject) {
         super(loggableObject);
-        this.templatesID = new SerializedPriorityQueue<>();
+        this.templatesID = new PriorityQueue<PreObject>(new PreObjectComparator());
         this.templates = new HashMap<>();
+        this.templatesAux = new ArrayList<>();
         empty = true;
     }
 
-    public void write(Mat mat) {
-        if(templates)
-        setLoggable("UPDATED_RIIC_H: " + templates.toString());
-    }
-
-    public ArrayList<T> read(T object) {
-        ArrayList<T> array = new ArrayList<>();
-        int index = templates.indexOf(object);
-        if (index - 1 >= 0) {
-            array.add(templates.get(index - 1));
-        }
-        array.add(templates.get(index));
-        if (index + 1 < array.size()) {
-            array.add(templates.get(index + 1));
-        }
-        return array;
+    public void addPreObject(PreObject preObject) {
+        this.templates.put(preObject.getLabel(), preObject);
+        this.templatesID.add(preObject.getPreObjectEssentials());
+        empty = false;
     }
     
-    public ArrayList<T> getTemplates(){
-        if(templates == null)
+    public void addPreObject(PreObject preObject, double activationLevel) {
+        
+        this.templates.put(preObject.getLabel(), preObject);
+        this.templatesID.add(preObject.getPreObjectEssentials());
+        empty = false;
+    }
+
+    public ArrayList<T> getTemplates() {
+        if (templates == null) {
             return new ArrayList<T>();
+        }
         return templates;
     }
 
     public boolean isNotEmpty() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return !empty;
     }
 
     public PreObject next() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (templatesID.size() <= 1) {
+            empty = true;
+        }
+        templatesAux.add(templatesID.poll());
+        return this.templates.get(
+                templatesAux.get(
+                        templatesAux.size() - 1
+                ).getLabel()
+        );
+    }
+
+    public void retrieveAll() {
+        for (PreObject preObject : templatesAux) {
+            templatesID.add(preObject);
+        }
+        templatesAux = new ArrayList<>();
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void addMat(Mat segment) {
+        PreObject newPreObject = new PreObject(segment);
+        newPreObject.setLabel(
+                UUID.nameUUIDFromBytes(
+                        Mat2Bytes(segment)
+                ).toString()
+        );
+    }
+
+    public void add(PreObject currentTemplate) {
+        
     }
 
 }

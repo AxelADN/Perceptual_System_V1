@@ -21,16 +21,16 @@ import perception.config.GlobalConfig;
  */
 public abstract class StructureTemplate implements Serializable{
     
-    protected static final class SerializedArrayList<T> extends ArrayList<T> implements Serializable{}
-    protected static final class SerializedPriorityQueue<T> extends PriorityQueue<T> implements Serializable{}
-    protected static final class SerializedHashMap<S,T> extends HashMap<S,T> implements Serializable{}
+//    protected static final class SerializedArrayList<T> extends ArrayList<T> implements Serializable{}
+//    protected static final class SerializedPriorityQueue<T> extends PriorityQueue<T> implements Serializable{}
+//    protected static final class SerializedHashMap<S,T> extends HashMap<S,T> implements Serializable{}
     protected static final class PreObjectComparator implements Serializable, Comparator<PreObject>{
 
         @Override
         public int compare(PreObject o1, PreObject o2) {
-            int objInt1 = o1.getPriority()*GlobalConfig.MAX_DOUBLE_TO_INT_FACTOR;
-            int objInt2 = o2.getPriority()*GlobalConfig.MAX_DOUBLE_TO_INT_FACTOR;
-            return objInt1 - objInt2;
+            double objInt1 = o1.getPriority()*GlobalConfig.MAX_DOUBLE_TO_INT_FACTOR;
+            double objInt2 = o2.getPriority()*GlobalConfig.MAX_DOUBLE_TO_INT_FACTOR;
+            return (int)objInt1 - (int)objInt2;
         }
         
     }
