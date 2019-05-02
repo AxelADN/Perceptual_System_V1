@@ -20,14 +20,14 @@ public class RIIC_h extends StructureTemplate implements Serializable {
 
     private final PriorityQueue<PreObject> templatesID;
     private final HashMap<String, PreObject> templates;
-    private ArrayList<PreObject> templatesAux;
+    private HashMap<String,PreObject> templatesAux;
     private boolean empty;
 
     public RIIC_h(String loggableObject) {
         super(loggableObject);
-        this.templatesID = new PriorityQueue<PreObject>(new PreObjectComparator());
+        this.templatesID = new PriorityQueue<>(new PreObjectComparator());
         this.templates = new HashMap<>();
-        this.templatesAux = new ArrayList<>();
+        this.templatesAux = new HashMap<>();
         empty = true;
     }
 
@@ -35,20 +35,6 @@ public class RIIC_h extends StructureTemplate implements Serializable {
         this.templates.put(preObject.getLabel(), preObject);
         this.templatesID.add(preObject.getPreObjectEssentials());
         empty = false;
-    }
-    
-    public void addPreObject(PreObject preObject, double activationLevel) {
-        
-        this.templates.put(preObject.getLabel(), preObject);
-        this.templatesID.add(preObject.getPreObjectEssentials());
-        empty = false;
-    }
-
-    public ArrayList<T> getTemplates() {
-        if (templates == null) {
-            return new ArrayList<T>();
-        }
-        return templates;
     }
 
     public boolean isNotEmpty() {
@@ -59,19 +45,16 @@ public class RIIC_h extends StructureTemplate implements Serializable {
         if (templatesID.size() <= 1) {
             empty = true;
         }
-        templatesAux.add(templatesID.poll());
-        return this.templates.get(
-                templatesAux.get(
-                        templatesAux.size() - 1
-                ).getLabel()
-        );
+        PreObject aux = templatesID.poll();
+        templatesAux.put(aux.getLabel(),aux);
+        return aux;
     }
 
     public void retrieveAll() {
-        for (PreObject preObject : templatesAux) {
-            templatesID.add(preObject);
+        for (String UID : templatesAux.keySet()) {
+            templatesID.add(templatesAux.get(UID));
         }
-        templatesAux = new ArrayList<>();
+        templatesAux = new HashMap<>();
     }
 
     public boolean isEmpty() {
@@ -87,8 +70,14 @@ public class RIIC_h extends StructureTemplate implements Serializable {
         );
     }
 
-    public void add(PreObject currentTemplate) {
+    public void addOp(PreObject currentTemplate) {
         
+    }
+
+    public void addActivated(ArrayList<PreObject> activated) {
+        for(PreObject activatedPreObject: activated){
+            templates.get(activatedPreObject.getLabel()).setPriority(activatedPreObject.getPriority());
+        }
     }
 
 }

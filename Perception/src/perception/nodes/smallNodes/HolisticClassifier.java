@@ -178,7 +178,8 @@ public class HolisticClassifier extends ActivityTemplate {
             PreObject currentTemplate = riic_h.next();
             double activationLevel = getDistance(preObject, currentTemplate.getData());
             if (activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD) {
-                riic_hTemplates.addPreObject(currentTemplate, activationLevel);
+                currentTemplate.addPriority(activationLevel);
+                riic_hTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                 i++;
             }
         }
@@ -191,7 +192,23 @@ public class HolisticClassifier extends ActivityTemplate {
     }
 
     private double getDistance(Mat preObject, Mat currentTemplate) {
-        return getPSNR(preObject, currentTemplate);
+        //return getPSNR(preObject, currentTemplate);
+        return getManhattan(preObject,currentTemplate);
+    }
+    
+    private double getManhattan(Mat preObject, Mat currentTemplate){
+        byte[] extendedPreObject = new byte[(int)preObject.total()*preObject.channels()];
+        byte[] extendedCurrentTemplate = new byte[(int)currentTemplate.total()*currentTemplate.channels()];
+        return getManhattan(extendedPreObject,extendedCurrentTemplate);        
+    }
+    
+    private double getManhattan(byte[] extendedPreObject, byte[] extendedCurrentTemplate) {
+        int size = min(extendedPreObject.length,extendedCurrentTemplate.length); 
+        byte sum = 0;
+        for(int i=0; i<size;i++){
+            sum += Math.abs(extendedPreObject[i]-extendedCurrentTemplate[i]);
+        }
+        return sum/(size*255);
     }
 
     private double getExtendedHammingDistance(Mat preObject, Mat currentTemplate) {
@@ -199,6 +216,7 @@ public class HolisticClassifier extends ActivityTemplate {
         int rows = min(preObject.rows(), currentTemplate.rows());
         ArrayList<Mat> extendedPreObject = extendDimensions(rows,cols,preObject);
         ArrayList<Mat> extendedCurrentTemplate = extendDimensions(rows,cols,currentTemplate);
+        return 0;
 
     }
 
@@ -245,9 +263,11 @@ public class HolisticClassifier extends ActivityTemplate {
         } else {
             while (candidates.isNotEmpty()) {
                 PreObject currentTemplate = candidates.next();
-                riic_h.add(currentTemplate);
+                riic_h.addOp(currentTemplate);
             }
         }
     }
+
+    
 
 }

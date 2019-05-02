@@ -22,7 +22,7 @@ public class PreObject extends StructureTemplate implements Serializable{
     public PreObject(Mat mat){
         this.data = Mat2Bytes(mat);
         this.UID = "NULL";
-        this.priority = 1.0;
+        this.priority = 0.0;
     }
     
     public PreObject(String UID, double priority){
@@ -46,8 +46,16 @@ public class PreObject extends StructureTemplate implements Serializable{
     public double getPriority() {
         return this.priority;
     }
+    
+    public void addPriority(double newPriority){
+        this.priority += newPriority;
+    }
 
     public String getLabel() {
         return this.UID;
+    }
+
+    void setPriority(double priority) {
+        this.priority = priority;
     }
 }
