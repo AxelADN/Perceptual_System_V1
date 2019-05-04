@@ -6,7 +6,6 @@
 package perception.structures;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import org.opencv.core.Mat;
 
 /**
@@ -18,25 +17,43 @@ public class PreObject extends StructureTemplate implements Serializable{
     private String UID;
     private final byte[] data;
     private double priority;
+    private int modifyValue;
     
     public PreObject(Mat mat){
         this.data = Mat2Bytes(mat);
         this.UID = "NULL";
         this.priority = 0.0;
+        this. modifyValue = 0;
     }
     
-    public PreObject(String UID, double priority){
+    public PreObject(Mat mat, int modifyValue){
+        this.data = Mat2Bytes(mat);
+        this.UID = "NULL";
+        this.priority = 0.0;
+        this. modifyValue = modifyValue;
+    }
+    
+    public PreObject(String UID, double priority, int modifyValue){
         this.UID = UID;
         this.priority = priority;
+        this.modifyValue = modifyValue;
         this.data = null;
     }
     
     public PreObject getPreObjectEssentials(){
-        return new PreObject(this.UID,this.priority);
+        return new PreObject(this.UID,this.priority, this.modifyValue);
+    }
+    
+    public PreObject copyEssentials(PreObject preObject){
+        PreObject newPreObject = new PreObject(this.getData(),this.modifyValue);
+        newPreObject.setPriority(preObject.getPriority());
+        newPreObject.setLabel(preObject.getLabel());
+        return newPreObject;
     }
     
     public void setLabel(String UID){
         this.UID = UID;
+        this.modifyValue++;
     }
 
     public Mat getData() {
@@ -49,6 +66,7 @@ public class PreObject extends StructureTemplate implements Serializable{
     
     public void addPriority(double newPriority){
         this.priority += newPriority;
+        this.modifyValue++;
     }
 
     public String getLabel() {
@@ -57,5 +75,10 @@ public class PreObject extends StructureTemplate implements Serializable{
 
     void setPriority(double priority) {
         this.priority = priority;
+        this.modifyValue++;
+    }
+
+    int getModifyValue() {
+        return this.modifyValue;
     }
 }

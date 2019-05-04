@@ -20,7 +20,7 @@ public class RIIC_h extends StructureTemplate implements Serializable {
 
     private final PriorityQueue<PreObject> templatesID;
     private final HashMap<String, PreObject> templates;
-    private HashMap<String,PreObject> templatesAux;
+    private HashMap<String, PreObject> templatesAux;
     private boolean empty;
 
     public RIIC_h(String loggableObject) {
@@ -32,9 +32,24 @@ public class RIIC_h extends StructureTemplate implements Serializable {
     }
 
     public void addPreObject(PreObject preObject) {
-        this.templates.put(preObject.getLabel(), preObject);
-        this.templatesID.add(preObject.getPreObjectEssentials());
+        PreObject existingPreObject = this.templates.put(preObject.getLabel(), preObject);
+        if (existingPreObject == null) {
+            this.templatesID.add(preObject.getPreObjectEssentials());
+        } else {
+            if (this.templatesID.contains(existingPreObject)) {
+                this.templatesID.remove(existingPreObject);
+            }
+        }
         empty = false;
+    }
+
+    public RIIC_h getLabels() {
+        RIIC_h riic_h = new RIIC_h("RIIC_H ACTIVATED TEMPLATES");
+        for (int i = 0; i < this.templatesID.size(); i++) {
+            riic_h.addPreObject(next());
+        }
+        retrieveAll();
+        return riic_h;
     }
 
     public boolean isNotEmpty() {
@@ -46,13 +61,16 @@ public class RIIC_h extends StructureTemplate implements Serializable {
             empty = true;
         }
         PreObject aux = templatesID.poll();
-        templatesAux.put(aux.getLabel(),aux);
+        templatesAux.put(aux.getLabel(), aux);
         return aux;
     }
 
     public void retrieveAll() {
         for (String UID : templatesAux.keySet()) {
             templatesID.add(templatesAux.get(UID));
+        }
+        if (this.templatesID.size() >= 1) {
+            empty = false;
         }
         templatesAux = new HashMap<>();
     }
@@ -70,12 +88,24 @@ public class RIIC_h extends StructureTemplate implements Serializable {
         );
     }
 
-    public void addOp(PreObject currentTemplate) {
-        
+    public void addOp(PreObject currentTemplate, Mat currentMat) {
+        addPreObject(
+                new PreObject(
+                        sumMat(
+                                templates.get(
+                                        currentTemplate.getLabel()
+                                ).getData(),
+                                currentMat
+                        ),
+                        currentTemplate.getModifyValue()
+                ).copyEssentials(
+                        currentTemplate
+                )
+        );
     }
 
     public void addActivated(ArrayList<PreObject> activated) {
-        for(PreObject activatedPreObject: activated){
+        for (PreObject activatedPreObject : activated) {
             templates.get(activatedPreObject.getLabel()).setPriority(activatedPreObject.getPriority());
         }
     }

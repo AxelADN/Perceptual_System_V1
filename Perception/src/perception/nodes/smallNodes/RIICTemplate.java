@@ -6,7 +6,6 @@
 package perception.nodes.smallNodes;
 
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;

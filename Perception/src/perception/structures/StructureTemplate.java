@@ -6,10 +6,9 @@
 package perception.structures;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import static java.lang.Integer.min;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.PriorityQueue;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -63,6 +62,27 @@ public abstract class StructureTemplate implements Serializable{
         MatOfByte bMat = new MatOfByte(b);
         Mat mat = Imgcodecs.imdecode(bMat, 0);
         return mat;
+    }
+    
+    protected Mat sumMat(Mat mat1, Mat mat2){
+        return averageMat(mat1,mat2);
+    }
+    
+    private Mat averageMat(Mat mat1, Mat mat2){
+        int cols = min(mat1.cols(),mat2.cols());
+        int rows = min(mat1.rows(),mat2.rows());
+        Mat newMat = Mat.zeros(rows, cols, CvType.CV_8UC1);
+        byte[] extendedNewMat = new byte[cols*rows];
+        byte[] extendedMat1 = new byte[cols*rows];
+        byte[] extendedMat2 = new byte[cols*rows];
+        newMat.get(0, 0, extendedNewMat);
+        mat1.get(0, 0, extendedMat1);
+        mat2.get(0, 0, extendedMat2);
+        for(int i=0; i<cols*rows;i++){
+            extendedNewMat[i] = (byte)((extendedMat1[i]+extendedMat2[i])/2);
+        }
+        newMat.put(0, 0, extendedNewMat);
+        return newMat;
     }
     
 }

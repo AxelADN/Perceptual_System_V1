@@ -13,6 +13,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.PreObject;
@@ -92,79 +93,56 @@ public class HolisticClassifier extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
-            if (isCorrectRoute((String) spike.getLocation())) {
-                if (isCorrectDataType(spike, RIIC_hAndPreObjectSegmentPair.class)) {
-                    Sendable received = (Sendable) spike.getIntensity();
-                    RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
-                    RIIC_h riic_h = pair.getRIIC_h();
-                    PreObjectSection preObjectSegment = pair.getPreObjectSegment();
-                    RIIC_h candidates = getCandidates(riic_h, preObjectSegment);
-                    sendTo(
-                            new Sendable(
-                                    new RIIC_hAndPreObjectSegmentPair(
-                                            candidates,
-                                            preObjectSegment,
-                                            "NEW_CANDIDATES: "
-                                            + spike.getTiming()
-                                            + (String) spike.getLocation()
-                                    ),
-                                    this.ID,
-                                    received.getTrace(),
-                                    RECEIVERS_H.get(
-                                            RETINOTOPIC_ID.indexOf(
-                                                    (String) spike.getLocation()
-                                            )
-                                    )
-                            ),
-                            spike.getLocation(),
-                            spike.getTiming()
-                    );
-                    updateRIIC_h(riic_h, candidates, preObjectSegment.getSegment());
-                } else {
-                    sendToLostData(
-                            this,
-                            spike,
-                            "NO PAIR RECOGNIZED: "
-                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
-                    );
-                }
+            if (isCorrectDataType(spike.getIntensity(), RIIC_hAndPreObjectSegmentPair.class)) {
+                Sendable received = (Sendable) spike.getIntensity();
+                RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
+                ActivityTemplate.log(this, (String) pair.getLoggable());
+                RIIC_h riic_h = pair.getRIIC_h();
+                PreObjectSection preObjectSegment = pair.getPreObjectSegment();
+                RIIC_h candidates = getCandidates(riic_h, preObjectSegment);
+                sendTo(
+                        new Sendable(
+                                new RIIC_hAndPreObjectSegmentPair(
+                                        candidates,
+                                        preObjectSegment,
+                                        "NEW_CANDIDATES: "
+                                        + spike.getTiming()
+                                        + (String) spike.getLocation()
+                                ),
+                                this.ID,
+                                received.getTrace(),
+                                RECEIVERS_H.get(
+                                        RETINOTOPIC_ID.indexOf(
+                                                (String) spike.getLocation()
+                                        )
+                                )
+                        ),
+                        spike.getLocation(),
+                        spike.getTiming()
+                );
+                updateRIIC_h(riic_h, candidates, preObjectSegment.getSegment());
+                sendTo(
+                        new Sendable(
+                                riic_h,
+                                this.ID,
+                                received.getTrace(),
+                                RECEIVERS_H.get(
+                                        RETINOTOPIC_ID.indexOf(
+                                                (String) spike.getLocation()
+                                        )
+                                )
+                        ),
+                        spike.getLocation(),
+                        spike.getTiming()
+                );
             } else {
-                sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + (String) spike.getLocation());
+                sendToLostData(
+                        this,
+                        spike,
+                        "NO PAIR RECOGNIZED: "
+                        + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                );
             }
-
-            riic_h.write(preObjectSegment.getSegment());
-            ActivityTemplate.log(this, (String) pair.getLoggable());
-            sendTo(
-                    new Sendable(
-                            riic_h,
-                            this.ID,
-                            received.getTrace(),
-                            RECEIVERS_H.get(
-                                    RETINOTOPIC_ID.indexOf(
-                                            (String) spike.getLocation()
-                                    )
-                            )
-                    ),
-                    spike.getLocation()
-            );
-            sendTo(
-                    new Sendable(
-                            new RIIC_hAndPreObjectSegmentPair(
-                                    riic_h, preObjectSegment,
-                                    "NEW_CANDIDATES: " + riic_h.read(
-                                            preObjectSegment.getSegment()
-                                    ).toString() + " | " + (String) spike.getLocation()
-                            ),
-                            this.ID,
-                            received.getTrace(),
-                            cRECEIVERS.get(
-                                    RETINOTOPIC_ID.indexOf(
-                                            (String) spike.getLocation()
-                                    )
-                            )
-                    ),
-                    spike.getLocation()
-            );
         } catch (Exception ex) {
             Logger.getLogger(HolisticClassifier.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -187,54 +165,57 @@ public class HolisticClassifier extends ActivityTemplate {
         return riic_hTemplates;
     }
 
-    private Mat extractHolisticFeatures(Mat preObject) {
+    private Mat extractHolisticFeatures(Mat mat) {
+        Mat newMat = Mat.zeros(mat.size(), CvType.CV_8UC1);
+        Imgproc.threshold(mat, newMat, 50, 255, Imgproc.THRESH_BINARY_INV);
+        
         return preObject;
     }
 
     private double getDistance(Mat preObject, Mat currentTemplate) {
         //return getPSNR(preObject, currentTemplate);
-        return getManhattan(preObject,currentTemplate);
+        return getManhattan(preObject, currentTemplate);
     }
-    
-    private double getManhattan(Mat preObject, Mat currentTemplate){
-        byte[] extendedPreObject = new byte[(int)preObject.total()*preObject.channels()];
-        byte[] extendedCurrentTemplate = new byte[(int)currentTemplate.total()*currentTemplate.channels()];
-        return getManhattan(extendedPreObject,extendedCurrentTemplate);        
+
+    private double getManhattan(Mat preObject, Mat currentTemplate) {
+        byte[] extendedPreObject = new byte[(int) preObject.total() * preObject.channels()];
+        byte[] extendedCurrentTemplate = new byte[(int) currentTemplate.total() * currentTemplate.channels()];
+        return getManhattan(extendedPreObject, extendedCurrentTemplate);
     }
-    
+
     private double getManhattan(byte[] extendedPreObject, byte[] extendedCurrentTemplate) {
-        int size = min(extendedPreObject.length,extendedCurrentTemplate.length); 
+        int size = min(extendedPreObject.length, extendedCurrentTemplate.length);
         byte sum = 0;
-        for(int i=0; i<size;i++){
-            sum += Math.abs(extendedPreObject[i]-extendedCurrentTemplate[i]);
+        for (int i = 0; i < size; i++) {
+            sum += Math.abs(extendedPreObject[i] - extendedCurrentTemplate[i]);
         }
-        return sum/(size*255);
+        return sum / (size * 255);
     }
 
     private double getExtendedHammingDistance(Mat preObject, Mat currentTemplate) {
         int cols = min(preObject.cols(), currentTemplate.cols());
         int rows = min(preObject.rows(), currentTemplate.rows());
-        ArrayList<Mat> extendedPreObject = extendDimensions(rows,cols,preObject);
-        ArrayList<Mat> extendedCurrentTemplate = extendDimensions(rows,cols,currentTemplate);
+        ArrayList<Mat> extendedPreObject = extendDimensions(rows, cols, preObject);
+        ArrayList<Mat> extendedCurrentTemplate = extendDimensions(rows, cols, currentTemplate);
         return 0;
 
     }
 
     private ArrayList<Mat> extendDimensions(int rows, int cols, Mat mat) {
         ArrayList<Mat> extendedMats = new ArrayList<>();
-        byte[][] extendedMatVectors = new byte[256][rows*cols];
+        byte[][] extendedMatVectors = new byte[256][rows * cols];
         for (int i = 0; i < 256; i++) {
             extendedMats.add(Mat.zeros(rows, cols, CvType.CV_8UC1));
-            for(int j=0;j<rows*cols;j++){
+            for (int j = 0; j < rows * cols; j++) {
                 extendedMatVectors[i][j] = 0;
             }
         }
-        byte[] matVector = new byte[cols*rows];
+        byte[] matVector = new byte[cols * rows];
         mat.get(0, 0, matVector);
-        for(int i=0;i<cols*rows;i++){
+        for (int i = 0; i < cols * rows; i++) {
             extendedMatVectors[matVector[i]][i] = 1;
         }
-        for(int i=0;i<256;i++){
+        for (int i = 0; i < 256; i++) {
             extendedMats.get(i).put(0, 0, extendedMatVectors[i]);
         }
         return extendedMats;
@@ -257,17 +238,15 @@ public class HolisticClassifier extends ActivityTemplate {
     }
 
     private void updateRIIC_h(RIIC_h riic_h, RIIC_h candidates, Mat segment) {
+        Mat newMat = extractHolisticFeatures(segment);
         if (candidates.isEmpty()) {
-            Mat mat = extractHolisticFeatures(segment);
-            riic_h.addMat(segment);
+            riic_h.addMat(newMat);
         } else {
             while (candidates.isNotEmpty()) {
                 PreObject currentTemplate = candidates.next();
-                riic_h.addOp(currentTemplate);
+                riic_h.addOp(currentTemplate, newMat);
             }
         }
     }
-
-    
 
 }

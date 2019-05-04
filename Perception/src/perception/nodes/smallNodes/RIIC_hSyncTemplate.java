@@ -123,18 +123,18 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
     }
 
     private RIIC_h syncronizeRIIC_h(RIIC_h updatedRIIC_h) {
-        ArrayList<String> updateTemplates = updatedRIIC_h.getTemplates();
-        ArrayList<String> templates = riic_h.getTemplates();
-        for (int i = 0; i < updateTemplates.size(); i++) {
-            if (!templates.contains(updateTemplates.get(i))) {
-                templates.add(updateTemplates.get(i));
-            }
-        }
-        return new RIIC_h(templates, "UPDATED SYNC RIIC_H");
+//        ArrayList<String> updateTemplates = updatedRIIC_h.getTemplates();
+//        ArrayList<String> templates = riic_h.getTemplates();
+//        for (int i = 0; i < updateTemplates.size(); i++) {
+//            if (!templates.contains(updateTemplates.get(i))) {
+//                templates.add(updateTemplates.get(i));
+//            }
+//        }
+        return new RIIC_h("UPDATED SYNC RIIC_H");
     }
 
     private void storeRIIC_h(RIIC_h riic_h) {
-        this.riic_h = new RIIC_h(riic_h.getTemplates(), "UPDATED SYNC RIIC_H");
+//        this.riic_h = new RIIC_h(riic_h.getTemplates(), "UPDATED SYNC RIIC_H");
     }
 
 }
