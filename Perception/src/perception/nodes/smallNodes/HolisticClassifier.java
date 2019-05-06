@@ -5,6 +5,7 @@
  */
 package perception.nodes.smallNodes;
 
+import java.io.IOException;
 import static java.lang.Integer.min;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -12,8 +13,11 @@ import java.util.logging.Logger;
 import org.opencv.core.Mat;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.ximgproc.Ximgproc;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.PreObject;
@@ -21,6 +25,7 @@ import perception.structures.PreObjectSection;
 import perception.structures.RIIC_h;
 import perception.structures.RIIC_hAndPreObjectSegmentPair;
 import perception.structures.Sendable;
+import perception.structures.StructureTemplate;
 import spike.LongSpike;
 import perception.templates.ActivityTemplate;
 import utils.SimpleLogger;
@@ -42,6 +47,7 @@ import utils.SimpleLogger;
 public class HolisticClassifier extends ActivityTemplate {
 
     private final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS_C = new ArrayList<>();
     private final ArrayList<Integer> cRECEIVERS = new ArrayList<>();
 
     /**
@@ -59,6 +65,14 @@ public class HolisticClassifier extends ActivityTemplate {
         RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ2);
         RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ3);
         RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ4);
+        RECEIVERS_C.add(AreaNames.RIIC_hSync_fQ1);
+        RECEIVERS_C.add(AreaNames.RIIC_hSync_fQ2);
+        RECEIVERS_C.add(AreaNames.RIIC_hSync_fQ3);
+        RECEIVERS_C.add(AreaNames.RIIC_hSync_fQ4);
+        RECEIVERS_C.add(AreaNames.RIIC_hSync_pQ1);
+        RECEIVERS_C.add(AreaNames.RIIC_hSync_pQ2);
+        RECEIVERS_C.add(AreaNames.RIIC_hSync_pQ3);
+        RECEIVERS_C.add(AreaNames.RIIC_hSync_pQ4);
         cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ1);
         cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ2);
         cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ3);
@@ -94,12 +108,14 @@ public class HolisticClassifier extends ActivityTemplate {
         try {
             LongSpike spike = new LongSpike(data);
             if (isCorrectDataType(spike.getIntensity(), RIIC_hAndPreObjectSegmentPair.class)) {
+                LOCAL_RETINOTOPIC_ID = (String)spike.getLocation();
                 Sendable received = (Sendable) spike.getIntensity();
                 RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
                 ActivityTemplate.log(this, (String) pair.getLoggable());
                 RIIC_h riic_h = pair.getRIIC_h();
                 PreObjectSection preObjectSegment = pair.getPreObjectSegment();
-                RIIC_h candidates = getCandidates(riic_h, preObjectSegment);
+                Mat holisticMat = extractHolisticFeatures(preObjectSegment.getSegment());
+                RIIC_h candidates = getCandidates(riic_h, holisticMat);
                 sendTo(
                         new Sendable(
                                 new RIIC_hAndPreObjectSegmentPair(
@@ -111,7 +127,7 @@ public class HolisticClassifier extends ActivityTemplate {
                                 ),
                                 this.ID,
                                 received.getTrace(),
-                                RECEIVERS_H.get(
+                                cRECEIVERS.get(
                                         RETINOTOPIC_ID.indexOf(
                                                 (String) spike.getLocation()
                                         )
@@ -120,7 +136,21 @@ public class HolisticClassifier extends ActivityTemplate {
                         spike.getLocation(),
                         spike.getTiming()
                 );
-                updateRIIC_h(riic_h, candidates, preObjectSegment.getSegment());
+                sendTo(
+                        new Sendable(
+                                candidates,
+                                this.ID,
+                                received.getTrace(),
+                                RECEIVERS_C.get(
+                                        RETINOTOPIC_ID.indexOf(
+                                                (String) spike.getLocation()
+                                        )
+                                )
+                        ),
+                        spike.getLocation(),
+                        spike.getTiming()
+                );
+                updateRIIC_h(riic_h, candidates, holisticMat);
                 sendTo(
                         new Sendable(
                                 riic_h,
@@ -148,8 +178,7 @@ public class HolisticClassifier extends ActivityTemplate {
         }
     }
 
-    private RIIC_h getCandidates(RIIC_h riic_h, PreObjectSection preObjectSegment) {
-        Mat preObject = extractHolisticFeatures(preObjectSegment.getSegment());
+    private RIIC_h getCandidates(RIIC_h riic_h, Mat preObject) throws IOException {
         RIIC_h riic_hTemplates = new RIIC_h("EMPTY ACTIVATED TEMPLATES");
         int i = 0;
         while (riic_h.isNotEmpty() && i <= GlobalConfig.CANDIDATES_MAX_QUANTITY) {
@@ -165,11 +194,22 @@ public class HolisticClassifier extends ActivityTemplate {
         return riic_hTemplates;
     }
 
-    private Mat extractHolisticFeatures(Mat mat) {
-        Mat newMat = Mat.zeros(mat.size(), CvType.CV_8UC1);
-        Imgproc.threshold(mat, newMat, 50, 255, Imgproc.THRESH_BINARY_INV);
-        
-        return preObject;
+    private Mat extractHolisticFeatures(Mat mat) throws IOException {
+        //System.out.println("TYPE: "+(new Mat()).type()+ " | CHANNELS: "+(new Mat()).channels());
+        Mat threshold = new Mat();
+        Mat dist = new Mat();
+        Mat filtered = new Mat();
+        Imgproc.threshold(mat, threshold, 127, 255, Imgproc.THRESH_BINARY);
+        Imgproc.boxFilter(threshold, threshold,-1,new Size(15,15),new Point(-1,-1));
+        show(threshold,LOCAL_RETINOTOPIC_ID,this.getClass());
+        threshold.convertTo(threshold, CvType.CV_8UC1);
+        //dist = StructureTemplate.grassfireTransform(threshold);
+        //Imgproc.distanceTransform(threshold, dist, Imgproc.DIST_L2, Imgproc.DIST_MASK_3);
+//        Ximgproc.thinning(threshold, dist, Ximgproc.THINNING_ZHANGSUEN);
+//        Imgproc.boxFilter(dist, filtered,-1,new Size(5,5),new Point(4,4));
+//        Imgproc.threshold(filtered, filtered, 5, 255, Imgproc.THRESH_BINARY);
+//        show(filtered,LOCAL_RETINOTOPIC_ID,this.getClass());
+        return threshold;
     }
 
     private double getDistance(Mat preObject, Mat currentTemplate) {
@@ -237,14 +277,14 @@ public class HolisticClassifier extends ActivityTemplate {
         }
     }
 
-    private void updateRIIC_h(RIIC_h riic_h, RIIC_h candidates, Mat segment) {
-        Mat newMat = extractHolisticFeatures(segment);
+    private void updateRIIC_h(RIIC_h riic_h, RIIC_h candidates, Mat newMat) throws IOException {
         if (candidates.isEmpty()) {
             riic_h.addMat(newMat);
         } else {
             while (candidates.isNotEmpty()) {
                 PreObject currentTemplate = candidates.next();
                 riic_h.addOp(currentTemplate, newMat);
+                show(riic_h.next().getData(),"New RIIC");
             }
         }
     }

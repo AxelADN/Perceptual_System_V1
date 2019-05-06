@@ -146,25 +146,19 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected void show(Mat image, String title) throws IOException {
-        //Encoding the image 
-        MatOfByte matOfByte = new MatOfByte();
-        Imgcodecs.imencode(".png", image, matOfByte);
-
-        //Storing the encoded Mat in a byte array 
-        byte[] byteArray = matOfByte.toArray();
-
-        //Preparing the Buffered Image 
-        InputStream in = new ByteArrayInputStream(byteArray);
-        BufferedImage bufImage = ImageIO.read(in);
-
-        //Instantiate JFrame 
-        JFrame frame = new JFrame();
-
-        //Set Content to the JFrame 
-        frame.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
-        frame.pack();
-        frame.setTitle(title);
-        frame.setVisible(true);
+        show(image,0,0,title);
+    }
+    
+    protected void show(Mat image, String title, Class klass) throws IOException{
+        if(GlobalConfig.showEnablerIDs == klass){
+            show(image,title);
+        }
+    }
+    
+    protected void show(Mat image, String title, int ID) throws IOException{
+        if(GlobalConfig.showEnablerID == ID){
+            show(image,title);
+        }
     }
 
     protected void show(Mat image, int x, int y, String title) throws IOException {

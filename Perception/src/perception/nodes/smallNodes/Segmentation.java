@@ -378,7 +378,7 @@ public class Segmentation extends ActivityTemplate {
         return new ArrayList();
     }
 
-    private ArrayList<ArrayList<MatOfPoint>> findContourList(ArrayList<Mat> mats) {
+    private ArrayList<ArrayList<MatOfPoint>> findContourList(ArrayList<Mat> mats) throws IOException {
         ArrayList<Mat> thresholds = new ArrayList<>();
         ArrayList<ArrayList<MatOfPoint>> contourLists = new ArrayList<>();
         for (Mat mat : mats) {
@@ -386,7 +386,7 @@ public class Segmentation extends ActivityTemplate {
             thresholds.add(new Mat());
         }
         for (int i = 0; i < 8; i++) {
-            Imgproc.threshold(mats.get(i), thresholds.get(i), 100, 255, Imgproc.THRESH_BINARY_INV);
+            Imgproc.threshold(mats.get(i), thresholds.get(i), 100, 255, Imgproc.THRESH_BINARY);
         }
         int i = 0;
         for (Mat mat : thresholds) {
@@ -436,7 +436,7 @@ public class Segmentation extends ActivityTemplate {
                 Rect boundingBox = Imgproc.boundingRect(contour);
                 Mat mask = Mat.zeros(croppedSections.get(i).size(), CvType.CV_8UC1);
                 Imgproc.rectangle(mask, boundingBox, new Scalar(255, 255, 255), -1);
-                maskedSection.add(new Mat(mask.size(), CvType.CV_8UC1, new Scalar(255)));
+                maskedSection.add(new Mat(mask.size(), CvType.CV_8UC1, new Scalar(0)));
                 System.out.println("Size " + i + ": (" + croppedSections.get(i).size().width + "," + croppedSections.get(i).size().height + ")");
                 croppedSections.get(i).copyTo(maskedSection.get(j), mask);
             }

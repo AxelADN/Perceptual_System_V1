@@ -6,7 +6,7 @@
 package perception.config;
 
 import org.opencv.core.Size;
-import perception.nodes.smallNodes.PreObjectBufferTemplate;
+import perception.nodes.smallNodes.HolisticClassifier;
 
 /**
  *
@@ -24,10 +24,12 @@ public class GlobalConfig {
     
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
-    public static final int showEnablerID = 0;
-    public static  final Class showEnablerIDs = PreObjectBufferTemplate.class;
+    public static final int showEnablerID = 0;//AreaNames.Segmentation;
+    public static  final Class showEnablerIDs = HolisticClassifier.class;
     
     public static double ACTIVATION_THRESHOLD = 0.75;
     public static int CANDIDATES_MAX_QUANTITY = 5;
     public static int MAX_DOUBLE_TO_INT_FACTOR = 1000000;
+    
+    public static boolean INVERTED = false;
 }
