@@ -10,8 +10,12 @@ import static java.lang.Integer.min;
 import java.util.Comparator;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
+import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import perception.config.GlobalConfig;
 
@@ -84,6 +88,15 @@ public abstract class StructureTemplate implements Serializable {
         }
         newMat.put(0, 0, extendedNewMat);
         return newMat;
+    }
+    
+    public static MatOfPoint keyPointToPoint(MatOfKeyPoint keyPointsMat){
+        KeyPoint[] keyPoints = keyPointsMat.toArray();
+        Point[] points = new Point[keyPoints.length];
+        for(int i=0; i<points.length;i++){
+            points[i] = keyPoints[i].pt;
+        }
+        return new MatOfPoint(points);
     }
 
     public static Mat grassfireTransform(Mat mat) {

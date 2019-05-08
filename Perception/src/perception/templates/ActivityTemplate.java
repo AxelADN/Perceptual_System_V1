@@ -39,6 +39,9 @@ public abstract class ActivityTemplate extends Activity {
     protected int currentSyncID;
     public static final ArrayList<String> RETINOTOPIC_ID = new ArrayList<>();
     protected String LOCAL_RETINOTOPIC_ID;
+    private static int syncs = 0;
+    private static ArrayList<ArrayList<Mat>> showSegments = new ArrayList<>();
+    private static ArrayList<String> showTitle = new ArrayList<>();
 
     public ActivityTemplate() {
         this.namer = AreaNames.class;
@@ -152,6 +155,31 @@ public abstract class ActivityTemplate extends Activity {
     protected void show(Mat image, String title, Class klass) throws IOException{
         if(GlobalConfig.showEnablerIDs == klass){
             show(image,title);
+        }
+    }
+    
+    protected void show(Mat image, String title, Class klass, int sync) throws IOException{
+        if(GlobalConfig.showEnablerIDs == klass){
+            ArrayList<Mat> showMats = new ArrayList<>();
+            if(syncs ==0){
+                syncs = sync;
+                showMats.add(image);
+                showSegments.add(showMats);
+                showTitle.add(title);
+            }else if(sync==syncs){
+                if(showTitle.contains(title)){
+                    showSegments.get(showTitle.indexOf(title)).add(image);
+                }else{
+                    showMats.add(image);
+                    showSegments.add(showMats);
+                    showTitle.add(title);
+                }
+            } else{
+                syncs = sync;
+                showList(showSegments,klass.getName());
+                showSegments = new ArrayList<>();
+                showTitle = new ArrayList<>();
+            }
         }
     }
     

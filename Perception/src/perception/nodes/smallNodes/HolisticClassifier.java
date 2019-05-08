@@ -13,11 +13,14 @@ import java.util.logging.Logger;
 import org.opencv.core.Mat;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
+import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.ximgproc.Ximgproc;
+import org.opencv.features2d.FastFeatureDetector;
+import org.opencv.features2d.Features2d;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.PreObject;
@@ -108,13 +111,17 @@ public class HolisticClassifier extends ActivityTemplate {
         try {
             LongSpike spike = new LongSpike(data);
             if (isCorrectDataType(spike.getIntensity(), RIIC_hAndPreObjectSegmentPair.class)) {
-                LOCAL_RETINOTOPIC_ID = (String)spike.getLocation();
+                LOCAL_RETINOTOPIC_ID = (String) spike.getLocation();
+                currentSyncID = (int) spike.getTiming();
                 Sendable received = (Sendable) spike.getIntensity();
                 RIIC_hAndPreObjectSegmentPair pair = (RIIC_hAndPreObjectSegmentPair) received.getData();
                 ActivityTemplate.log(this, (String) pair.getLoggable());
                 RIIC_h riic_h = pair.getRIIC_h();
                 PreObjectSection preObjectSegment = pair.getPreObjectSegment();
                 Mat holisticMat = extractHolisticFeatures(preObjectSegment.getSegment());
+                Mat hardHolisticMat = new Mat();
+                Imgproc.threshold(holisticMat, hardHolisticMat, 5, 255, Imgproc.THRESH_BINARY);
+                show(hardHolisticMat, "HolisticFeatures: " + LOCAL_RETINOTOPIC_ID, this.getClass());
                 RIIC_h candidates = getCandidates(riic_h, holisticMat);
                 sendTo(
                         new Sendable(
@@ -123,18 +130,18 @@ public class HolisticClassifier extends ActivityTemplate {
                                         preObjectSegment,
                                         "NEW_CANDIDATES: "
                                         + spike.getTiming()
-                                        + (String) spike.getLocation()
+                                        + LOCAL_RETINOTOPIC_ID
                                 ),
                                 this.ID,
                                 received.getTrace(),
                                 cRECEIVERS.get(
                                         RETINOTOPIC_ID.indexOf(
-                                                (String) spike.getLocation()
+                                                LOCAL_RETINOTOPIC_ID
                                         )
                                 )
                         ),
-                        spike.getLocation(),
-                        spike.getTiming()
+                        LOCAL_RETINOTOPIC_ID,
+                        currentSyncID
                 );
                 sendTo(
                         new Sendable(
@@ -143,12 +150,12 @@ public class HolisticClassifier extends ActivityTemplate {
                                 received.getTrace(),
                                 RECEIVERS_C.get(
                                         RETINOTOPIC_ID.indexOf(
-                                                (String) spike.getLocation()
+                                                LOCAL_RETINOTOPIC_ID
                                         )
                                 )
                         ),
-                        spike.getLocation(),
-                        spike.getTiming()
+                        LOCAL_RETINOTOPIC_ID,
+                        currentSyncID
                 );
                 updateRIIC_h(riic_h, candidates, holisticMat);
                 sendTo(
@@ -158,12 +165,12 @@ public class HolisticClassifier extends ActivityTemplate {
                                 received.getTrace(),
                                 RECEIVERS_H.get(
                                         RETINOTOPIC_ID.indexOf(
-                                                (String) spike.getLocation()
+                                                LOCAL_RETINOTOPIC_ID
                                         )
                                 )
                         ),
-                        spike.getLocation(),
-                        spike.getTiming()
+                        LOCAL_RETINOTOPIC_ID,
+                        currentSyncID
                 );
             } else {
                 sendToLostData(
@@ -185,7 +192,7 @@ public class HolisticClassifier extends ActivityTemplate {
             PreObject currentTemplate = riic_h.next();
             double activationLevel = getDistance(preObject, currentTemplate.getData());
             if (activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD) {
-                currentTemplate.addPriority(activationLevel);
+                currentTemplate.addPriority(activationLevel+(1/(1+i)));
                 riic_hTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                 i++;
             }
@@ -195,21 +202,11 @@ public class HolisticClassifier extends ActivityTemplate {
     }
 
     private Mat extractHolisticFeatures(Mat mat) throws IOException {
-        //System.out.println("TYPE: "+(new Mat()).type()+ " | CHANNELS: "+(new Mat()).channels());
         Mat threshold = new Mat();
-        Mat dist = new Mat();
         Mat filtered = new Mat();
         Imgproc.threshold(mat, threshold, 127, 255, Imgproc.THRESH_BINARY);
-        Imgproc.boxFilter(threshold, threshold,-1,new Size(15,15),new Point(-1,-1));
-        show(threshold,LOCAL_RETINOTOPIC_ID,this.getClass());
-        threshold.convertTo(threshold, CvType.CV_8UC1);
-        //dist = StructureTemplate.grassfireTransform(threshold);
-        //Imgproc.distanceTransform(threshold, dist, Imgproc.DIST_L2, Imgproc.DIST_MASK_3);
-//        Ximgproc.thinning(threshold, dist, Ximgproc.THINNING_ZHANGSUEN);
-//        Imgproc.boxFilter(dist, filtered,-1,new Size(5,5),new Point(4,4));
-//        Imgproc.threshold(filtered, filtered, 5, 255, Imgproc.THRESH_BINARY);
-//        show(filtered,LOCAL_RETINOTOPIC_ID,this.getClass());
-        return threshold;
+        Imgproc.boxFilter(threshold, filtered,-1,new Size(15,15),new Point(-1,-1));
+        return filtered;
     }
 
     private double getDistance(Mat preObject, Mat currentTemplate) {
@@ -280,11 +277,12 @@ public class HolisticClassifier extends ActivityTemplate {
     private void updateRIIC_h(RIIC_h riic_h, RIIC_h candidates, Mat newMat) throws IOException {
         if (candidates.isEmpty()) {
             riic_h.addMat(newMat);
+            //show(newMat,"Added New Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
         } else {
             while (candidates.isNotEmpty()) {
                 PreObject currentTemplate = candidates.next();
-                riic_h.addOp(currentTemplate, newMat);
-                show(riic_h.next().getData(),"New RIIC");
+                Mat showMat = riic_h.addOp(currentTemplate, newMat);
+                //show(showMat,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
             }
         }
     }

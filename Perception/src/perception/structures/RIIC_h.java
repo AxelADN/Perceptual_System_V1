@@ -88,20 +88,23 @@ public class RIIC_h extends StructureTemplate implements Serializable {
         );
     }
 
-    public void addOp(PreObject currentTemplate, Mat currentMat) {
+    public Mat addOp(PreObject currentTemplate, Mat currentMat) {
+        Mat newMat
+                = sumMat(
+                        templates.get(
+                                currentTemplate.getLabel()
+                        ).getData(),
+                        currentMat
+                );
         addPreObject(
                 new PreObject(
-                        sumMat(
-                                templates.get(
-                                        currentTemplate.getLabel()
-                                ).getData(),
-                                currentMat
-                        ),
+                        newMat,
                         currentTemplate.getModifyValue()
                 ).copyEssentials(
                         currentTemplate
                 )
         );
+        return newMat;
     }
 
     public void addActivated(ArrayList<PreObject> activated) {

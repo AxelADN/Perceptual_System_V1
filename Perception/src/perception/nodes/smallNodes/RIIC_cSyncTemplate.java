@@ -130,11 +130,11 @@ public abstract class RIIC_cSyncTemplate extends ActivityTemplate {
                 templates.add(updateTemplates.get(i));
             }
         }
-        return new RIIC_c(templates, "UPDATED SYNC RIIC_C");
+        return new RIIC_c("UPDATED SYNC RIIC_C");
     }
 
     private void storeRIIC_c(RIIC_c riic_c) {
-        this.riic_c = new RIIC_c(riic_c.getTemplates(), "UPDATED SYNC RIIC_C");
+        this.riic_c = new RIIC_c("UPDATED SYNC RIIC_C");
     }
 
 }

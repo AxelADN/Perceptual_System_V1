@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -352,6 +353,10 @@ public class Segmentation extends ActivityTemplate {
             scene.copyTo(retinotopicSections.get(5), MASK_pQ2);
             scene.copyTo(retinotopicSections.get(6), MASK_pQ3);
             scene.copyTo(retinotopicSections.get(7), MASK_pQ4);
+            Imgproc.rectangle(retinotopicSections.get(4), POINTS.get(5),POINTS.get(8), new Scalar(0), -1);
+            Imgproc.rectangle(retinotopicSections.get(5), POINTS.get(8),POINTS.get(3), new Scalar(0), -1);
+            Imgproc.rectangle(retinotopicSections.get(6), POINTS.get(11),POINTS.get(8), new Scalar(0), -1);
+            Imgproc.rectangle(retinotopicSections.get(7), POINTS.get(13),POINTS.get(8), new Scalar(0), -1);
             croppedSections.add(new Mat(retinotopicSections.get(0), RECT_ROI_fQ1));
             croppedSections.add(new Mat(retinotopicSections.get(1), RECT_ROI_fQ2));
             croppedSections.add(new Mat(retinotopicSections.get(2), RECT_ROI_fQ3));
@@ -386,7 +391,7 @@ public class Segmentation extends ActivityTemplate {
             thresholds.add(new Mat());
         }
         for (int i = 0; i < 8; i++) {
-            Imgproc.threshold(mats.get(i), thresholds.get(i), 100, 255, Imgproc.THRESH_BINARY);
+            Imgproc.threshold(mats.get(i), thresholds.get(i), 127, 255, Imgproc.THRESH_BINARY);
         }
         int i = 0;
         for (Mat mat : thresholds) {

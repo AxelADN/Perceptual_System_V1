@@ -7,6 +7,11 @@ package perception.structures;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.UUID;
+import org.opencv.core.Mat;
+import static perception.structures.StructureTemplate.Mat2Bytes;
 
 /**
  *
@@ -14,42 +19,124 @@ import java.util.ArrayList;
  */
 public class RIIC_c <T> extends StructureTemplate implements Serializable{
     
-    private final ArrayList<T> templates;
+    private final PriorityQueue<PreObject> templatesID;
+    private final HashMap<String, PreObject> templates;
+    private HashMap<String, PreObject> templatesAux;
+    private boolean empty;
 
     public RIIC_c(String loggableObject) {
         super(loggableObject);
-        templates = new ArrayList<>();
-    }
-    
-    public RIIC_c(ArrayList<T> templates, String loggableObject) {
-        super(loggableObject);
-        this.templates = templates;
+        this.templatesID = new PriorityQueue<>(new PreObjectComparator());
+        this.templates = new HashMap<>();
+        this.templatesAux = new HashMap<>();
+        empty = true;
     }
 
-    public void write(T object) {
-        if (!templates.contains(object)) {
-            templates.add(object);
+    public void addPreObject(PreObject preObject) {
+        PreObject existingPreObject = this.templates.put(preObject.getLabel(), preObject);
+        if (existingPreObject == null) {
+            this.templatesID.add(preObject.getPreObjectEssentials());
+        } else {
+            if (this.templatesID.contains(existingPreObject)) {
+                this.templatesID.remove(existingPreObject);
+            }
         }
-        setLoggable("UPDATED_RIIC_C: " + templates.toString());
+        empty = false;
     }
 
-    public ArrayList<T> read(T object) {
-        ArrayList<T> array = new ArrayList<>();
-        int index = templates.indexOf(object);
-        if (index - 1 >= 0) {
-            array.add(templates.get(index - 1));
+    public RIIC_c getLabels() {
+        RIIC_c riic_c = new RIIC_c("RIIC_H ACTIVATED TEMPLATES");
+        for (int i = 0; i < this.templatesID.size(); i++) {
+            riic_c.addPreObject(next());
         }
-        array.add(templates.get(index));
-        if (index + 1 < array.size()) {
-            array.add(templates.get(index + 1));
+        retrieveAll();
+        return riic_c;
+    }
+
+    public boolean isNotEmpty() {
+        return !empty;
+    }
+
+    public PreObject next() {
+        if (templatesID.size() <= 1) {
+            empty = true;
         }
-        return array;
+        PreObject aux = templatesID.poll();
+        templatesAux.put(aux.getLabel(), aux);
+        return aux;
     }
     
-    public ArrayList<T> getTemplates(){
-        if(templates == null)
-            return new ArrayList<T>();
-        return templates;
+    public PreObject nextData() {
+        if (templatesID.size() <= 1) {
+            empty = true;
+        }
+        PreObject aux = templatesID.poll();
+        templatesAux.put(aux.getLabel(), aux);
+        return templates.get(aux.getLabel());
+    }
+
+    public void retrieveAll() {
+        for (String UID : templatesAux.keySet()) {
+            templatesID.add(templatesAux.get(UID));
+        }
+        if (this.templatesID.size() >= 1) {
+            empty = false;
+        }
+        templatesAux = new HashMap<>();
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void addMat(Mat segment) {
+        PreObject newPreObject = new PreObject(segment);
+        newPreObject.setLabel(
+                UUID.nameUUIDFromBytes(
+                        Mat2Bytes(segment)
+                ).toString()
+        );
+    }
+
+    public Mat addOp(PreObject currentTemplate, Mat currentMat) {
+        Mat newMat
+                = sumMat(
+                        templates.get(
+                                currentTemplate.getLabel()
+                        ).getData(),
+                        currentMat
+                );
+        addPreObject(
+                new PreObject(
+                        newMat,
+                        currentTemplate.getModifyValue()
+                ).copyEssentials(
+                        currentTemplate
+                )
+        );
+        return newMat;
+    }
+    
+    public RIIC_c getRIIC_hActivations(RIIC_h riic_h){
+        RIIC_c newRIIC_c = new RIIC_c("NEW REFERENCED COMPONENTS");
+        while(riic_h.isNotEmpty()){
+            PreObject preObject = riic_h.next();
+            for(String ref: preObject.getComponents()){
+                newRIIC_c.addPreObject(this.templates.get(ref));
+            }
+        }
+        riic_h.retrieveAll();
+        return newRIIC_c;
+    }
+
+    public void addActivated(ArrayList<PreObject> activated) {
+        for (PreObject activatedPreObject : activated) {
+            templates.get(activatedPreObject.getLabel()).setPriority(activatedPreObject.getPriority());
+        }
+    }
+
+    public ArrayList<String> getTemplates() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

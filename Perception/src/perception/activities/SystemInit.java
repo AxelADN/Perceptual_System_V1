@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import perception.config.AreaNames;
@@ -49,6 +50,21 @@ public class SystemInit extends ActivityTemplate {
                         new PreObjectSet(
                                 image,
                                 "NEW PREOBJECT SET"
+                        ),
+                        this.ID,
+                        AreaNames.Segmentation
+                )
+        );
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(SystemInit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sendTo(
+                new Sendable(
+                        new PreObjectSet(
+                                Mat.zeros(GlobalConfig.WINDOW_SIZE, CvType.CV_8UC1),
+                                "END PREOBJECT"
                         ),
                         this.ID,
                         AreaNames.Segmentation

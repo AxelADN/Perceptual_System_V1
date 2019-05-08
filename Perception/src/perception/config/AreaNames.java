@@ -23,7 +23,7 @@ public class AreaNames {
     public static final int SystemInit = IDHelper.generateID("ITC", 3, 0);
 
     public static final int ITa = IDHelper.generateID("ITa", 0, 0);
-    public static final int SceneCompositon = IDHelper.generateID("ITa", 1, 0);
+    public static final int SceneSync = IDHelper.generateID("ITa", 1, 0);
     public static final int Identify = IDHelper.generateID("ITa", 2, 0);
 
     public static final int ITp_h = IDHelper.generateID("ITp_h", 0, 0);
@@ -97,5 +97,6 @@ public class AreaNames {
     public static final int RIIC_cSync_pQ2 = IDHelper.generateID("RIICManager", 23, 0);
     public static final int RIIC_cSync_pQ3 = IDHelper.generateID("RIICManager", 24, 0);
     public static final int RIIC_cSync_pQ4 = IDHelper.generateID("RIICManager", 25, 0);
+    public static int SceneCompositon;
     
 }

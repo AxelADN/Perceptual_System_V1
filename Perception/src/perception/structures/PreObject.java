@@ -6,6 +6,7 @@
 package perception.structures;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import org.opencv.core.Mat;
 
 /**
@@ -15,15 +16,19 @@ import org.opencv.core.Mat;
 public class PreObject extends StructureTemplate implements Serializable{
     
     private String UID;
+    private String candidateRef;
     private final byte[] data;
     private double priority;
     private int modifyValue;
+    private ArrayList<String> componentRef;
     
     public PreObject(Mat mat){
         this.data = Mat2Bytes(mat);
         this.UID = "NULL";
         this.priority = 0.0;
         this. modifyValue = 0;
+        this.candidateRef = "";
+        this.componentRef = new ArrayList<>();
     }
     
     public PreObject(Mat mat, int modifyValue){
@@ -31,6 +36,8 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.UID = "NULL";
         this.priority = 0.0;
         this. modifyValue = modifyValue;
+        this.candidateRef = "";
+        this.componentRef = new ArrayList<>();
     }
     
     public PreObject(String UID, double priority, int modifyValue){
@@ -38,6 +45,8 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.priority = priority;
         this.modifyValue = modifyValue;
         this.data = null;
+        this.candidateRef = "";
+        this.componentRef = new ArrayList<>();
     }
     
     public PreObject getPreObjectEssentials(){
@@ -73,12 +82,36 @@ public class PreObject extends StructureTemplate implements Serializable{
         return this.UID;
     }
 
-    void setPriority(double priority) {
+    public void setPriority(double priority) {
         this.priority = priority;
         this.modifyValue++;
     }
 
-    int getModifyValue() {
+    public int getModifyValue() {
         return this.modifyValue;
+    }
+    
+    public ArrayList<String> getComponents(){
+        return this.componentRef;
+    }
+    
+    public void addComponent(String label){
+        this.componentRef.add(label);
+        this.modifyValue++;
+    }
+    
+    public void addComponents(ArrayList<String> newComponents){
+        for(String label: newComponents){
+            addComponent(label);
+        }
+        this.modifyValue++;
+    }
+    public void setComponents(ArrayList<String> newComponents){
+        this.componentRef = newComponents;
+        this.modifyValue++;
+    }
+    
+    public void setCandidateRef(String label){
+        this.candidateRef = label;
     }
 }

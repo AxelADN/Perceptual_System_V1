@@ -5,6 +5,7 @@
  */
 package perception.nodes.smallNodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -155,7 +156,8 @@ public abstract class CandidatesBufferTemplate extends ActivityTemplate {
      */
     protected void storeInBuffer(
             RIIC_hAndPreObjectSegmentPair riic_hAndPreObjectSegmentPair
-    ) {
+    ) throws IOException {
+        show(riic_hAndPreObjectSegmentPair.getPreObjectSegment().getSegment(),"Segment: " + LOCAL_RETINOTOPIC_ID);
         bufferedRIIC_hAndPreObjectSegmentPair = riic_hAndPreObjectSegmentPair;
     }
 
@@ -172,7 +174,10 @@ public abstract class CandidatesBufferTemplate extends ActivityTemplate {
             RIIC_c riic_c,
             RIIC_hAndPreObjectSegmentPair riic_hAndPreObjectSegmentPair
     ) {
-        return new RIIC_cAndRIIC_hAndPreObjectSegmentPairPair(riic_c, riic_hAndPreObjectSegmentPair, "TRIPLET_" + LOCAL_RETINOTOPIC_ID);
+        return new RIIC_cAndRIIC_hAndPreObjectSegmentPairPair(
+                riic_c, riic_hAndPreObjectSegmentPair, 
+                "TRIPLET_" + LOCAL_RETINOTOPIC_ID
+        );
     }
 
     /**
