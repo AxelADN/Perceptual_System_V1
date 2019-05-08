@@ -43,7 +43,7 @@ public class V4Contour extends FrameActivity {
         this.ID = AreaNames.V4Contour;
         this.namer = AreaNames.class;
         ors = new Mat[Config.gaborOrientations];
-        initFrames(3,16);
+        initFrames(3,20);
     }
 
     @Override

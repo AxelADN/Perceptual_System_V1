@@ -12,7 +12,8 @@ public class AreaNames {
 	public static int V1HyperComplex = IDHelper.generateID("V1", 4, 0);
               
         public static int V2	=           IDHelper.generateID("V2", 0, 0);
-	public static int V2Proccess	=   IDHelper.generateID("V2",1,0);
+	public static int V2AngularCells	=   IDHelper.generateID("V2",1,0);	
+        public static int V2IlusoryCells = IDHelper.generateID("V2", 2 , 0);
         
         public static int V4 =              IDHelper.generateID("V4",0,0);
         public static int V4Color = IDHelper.generateID("V4", 2, 0);	
@@ -38,6 +39,8 @@ public class AreaNames {
 				
 	public static int Attention = IDHelper.generateID("Attention", 0, 0);
 	public static int SaliencyProcess = IDHelper.generateID("Attention", 1 , 0);
+	
+
 	
 	//@addNodes
         //no quitar el comentario de add Nodes

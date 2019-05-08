@@ -74,8 +74,7 @@ public class V1ComplexCells extends FrameActivity {
                     for (int i = 0; i < 4; i++) {
                         frame[i].setImage(Convertor.ConvertMat2Image(energy[i]), "energy " + i);
                         LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i), Convertor.MatToMatrix(energy[i]), 0);
-                        send(AreaNames.V2, sendSpike.getByteArray());
-                        send(AreaNames.V4Contour, sendSpike.getByteArray());
+                        send(AreaNames.V2IlusoryCells, sendSpike.getByteArray());
                     }
                 }
 

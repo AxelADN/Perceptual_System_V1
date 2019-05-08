@@ -26,6 +26,7 @@ public class Config {
     public static int gaborOrientations = 4;
     public static int width=300;
     public static int heigth=250;
+    public static boolean ilusoryEnabled = true;
     
     /**
      * Paths for the image showed in the GUI
