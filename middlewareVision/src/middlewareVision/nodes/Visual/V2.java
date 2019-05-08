@@ -5,6 +5,7 @@
  */
 package middlewareVision.nodes.Visual;
 
+import middlewareVision.nodes.Visual.smallNodes.V2AngularCells;
 import kmiddle2.nodes.areas.Area;
 import middlewareVision.config.AreaNames;
 import utils.SimpleLogger;

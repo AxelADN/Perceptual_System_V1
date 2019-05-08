@@ -1,4 +1,4 @@
-package middlewareVision.nodes.Visual;
+package middlewareVision.nodes.Visual.smallNodes;
 
 
 

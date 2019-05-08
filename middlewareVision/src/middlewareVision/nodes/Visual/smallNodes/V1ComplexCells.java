@@ -1,19 +1,14 @@
-package middlewareVision.nodes.Visual;
+package middlewareVision.nodes.Visual.smallNodes;
 
-import imgio.RetinalImageIO;
-import imgio.RetinalTextIO;
 import spike.Location;
-import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
-import middlewareVision.core.nodes.FrameActivity;
+import gui.FrameActivity;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import spike.Modalities;
 import utils.Convertor;

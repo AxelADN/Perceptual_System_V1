@@ -1,4 +1,4 @@
-package middlewareVision.nodes.Visual;
+package middlewareVision.nodes.Visual.smallNodes;
 
 import imgio.RetinalImageIO;
 import imgio.RetinalTextIO;
@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
-import middlewareVision.core.nodes.FrameActivity;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;

@@ -1,4 +1,4 @@
-package middlewareVision.nodes.Visual;
+package middlewareVision.nodes.Visual.smallNodes;
 
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
@@ -7,9 +7,7 @@ import java.util.logging.Logger;
 import matrix.labelMatrix;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
-import org.opencv.core.Mat;
 import spike.Modalities;
-import utils.Convertor;
 import utils.LongSpike;
 import utils.SimpleLogger;
 import utils.numSync;

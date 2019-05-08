@@ -2,6 +2,7 @@ package middlewareVision.nodes.Visual;
 
 
 
+import middlewareVision.nodes.Visual.smallNodes.LGNSimpleOpponentCells;
 import kmiddle2.nodes.areas.Area;
 import middlewareVision.config.AreaNames;
 import utils.SimpleLogger;

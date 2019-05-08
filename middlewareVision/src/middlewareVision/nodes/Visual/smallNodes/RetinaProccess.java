@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package middlewareVision.nodes.Visual;
+package middlewareVision.nodes.Visual.smallNodes;
 
-import middlewareVision.core.nodes.Frame;
+import gui.Frame;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.IOException;
 import java.util.LinkedList;
 import middlewareVision.config.AreaNames;
-import middlewareVision.core.nodes.GUIActivity;
+import gui.GUIActivity;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;

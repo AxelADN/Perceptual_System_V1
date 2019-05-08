@@ -5,7 +5,7 @@
  */
 package middlewareVision.ExampleNodes;
 
-import middlewareVision.core.nodes.GUIActivity;
+import gui.GUIActivity;
 import kmiddle2.nodes.activities.Activity;
 import middlewareVision.config.AreaNames;
 import utils.SimpleLogger;

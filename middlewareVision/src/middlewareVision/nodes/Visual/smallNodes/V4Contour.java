@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package middlewareVision.nodes.Visual;
+package middlewareVision.nodes.Visual.smallNodes;
 
 import spike.Location;
-import middlewareVision.core.nodes.FrameActivity;
+import gui.FrameActivity;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,6 @@ import static org.opencv.core.CvType.CV_8UC3;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import static org.opencv.imgproc.Imgproc.drawContours;
 import spike.Modalities;
@@ -28,7 +27,6 @@ import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
 import utils.MatrixUtils;
-import utils.SimpleLogger;
 import utils.numSync;
 
 public class V4Contour extends FrameActivity {

@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package middlewareVision.nodes.Visual;
+package middlewareVision.nodes.Visual.smallNodes;
 
-import middlewareVision.core.nodes.Frame;
+import gui.Frame;
 import spike.Location;
-import middlewareVision.core.nodes.FrameActivity;
+import gui.FrameActivity;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +25,6 @@ import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
 import utils.MatrixUtils;
-import utils.SimpleLogger;
 import utils.numSync;
 
 /**

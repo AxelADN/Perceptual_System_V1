@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package middlewareVision.core.nodes;
+package gui;
 
 import gui.ActivityFrame;
 import kmiddle2.nodes.activities.Activity;
