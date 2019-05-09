@@ -41,7 +41,7 @@ public class SpecialKernels {
         for(int i =0; i < kernel.length;i++)
             r += kernel[i];
         
-        System.out.println(r);
+        //System.out.println(r);
         
         return m;
     }

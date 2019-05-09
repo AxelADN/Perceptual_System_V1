@@ -110,7 +110,6 @@ public class V4Contour extends FrameActivity {
      * @return a matrix of points of the contours
      */
     public List<MatOfPoint> ContourIntegration(Mat mat, int mode, int method) {
-        System.out.println("contornos");
         Mat dst = mat;
         List<MatOfPoint> points = new ArrayList<>();
         Mat hierarchy = new Mat();

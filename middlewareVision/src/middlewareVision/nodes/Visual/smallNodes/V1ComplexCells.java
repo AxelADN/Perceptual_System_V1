@@ -69,7 +69,6 @@ public class V1ComplexCells extends FrameActivity {
                 }
 
                 if (sync.isComplete()) {
-                    System.out.println("si se completo");
                     energyProcess(ors);
                     for (int i = 0; i < 4; i++) {
                         frame[i].setImage(Convertor.ConvertMat2Image(energy[i]), "energy " + i);

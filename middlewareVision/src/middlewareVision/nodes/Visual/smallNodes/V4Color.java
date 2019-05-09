@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.smallNodes;
 
+import gui.FrameActivity;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
@@ -7,7 +8,10 @@ import java.util.logging.Logger;
 import matrix.labelMatrix;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
 import spike.Modalities;
+import utils.Convertor;
 import utils.LongSpike;
 import utils.SimpleLogger;
 import utils.numSync;
@@ -16,7 +20,7 @@ import utils.numSync;
  *
  *
  */
-public class V4Color extends Activity {
+public class V4Color extends FrameActivity {
 
 
     /*
@@ -28,6 +32,7 @@ public class V4Color extends Activity {
         this.ID = AreaNames.V4Color;
         this.namer = AreaNames.class;
         DKL = new matrix[3];
+        initFrames(1,23);
     }
 
     @Override
@@ -54,11 +59,11 @@ public class V4Color extends Activity {
             if (sync.isComplete()) {
                 labelMatrix labels = generateLabelMatrix(DKL);
                 
-                
+                frame[0].setImage(Convertor.ConvertMat2Image2(matLabel), "color labels");
                 LongSpike labelSpike = new LongSpike(Modalities.VISUAL, new Location(0), labels, 0);
-                LongSpike LChannelSpike = new LongSpike(Modalities.VISUAL, new Location(1), DKL[2], 0);
+                //LongSpike LChannelSpike = new LongSpike(Modalities.VISUAL, new Location(1), DKL[2], 0);
                 send(AreaNames.ITC, labelSpike.getByteArray());
-                send(AreaNames.ITC, LChannelSpike.getByteArray());
+                //send(AreaNames.ITC, LChannelSpike.getByteArray());
             }
 
         } catch (Exception ex) {
@@ -76,18 +81,24 @@ public class V4Color extends Activity {
     private int NoConcentricCircles = 4;
 
     private int NoRadialDivisions = 12;
+    
+    private int NoHeightDivisions = 5;
 
     /*
     ****************************************************************************
     metodos nuevos
     ****************************************************************************
      */
+    
+    Mat matLabel;
     private labelMatrix generateLabelMatrix(matrix[] mat) {
         labelMatrix labels = new labelMatrix(mat[0].getWidth(), mat[0].getHeight());
+        matLabel=new Mat(mat[0].getHeight(), mat[0].getWidth(), CvType.CV_8UC3);
         for (int i = 0; i < mat[0].getWidth(); i++) {
             for (int j = 0; j < mat[0].getHeight(); j++) {
                 double D = mat[0].getValue(i, j);
                 double K = mat[1].getValue(i, j);
+                double L = mat[2].getValue(i, j);
                 if (D > 1) {
                     D = 1;
                 }
@@ -100,7 +111,9 @@ public class V4Color extends Activity {
                 if (K < -1) {
                     K = -1;
                 }
-                int[] colorLabel = {getConcentricCircleLabel(D, K), getAngleLabel(D, K)};
+                int[] colorLabel = {getConcentricCircleLabel(D, K), getAngleLabel(D, K), getHeightLabel(L)};
+                matLabel.put(j, i, new byte[]{(byte)(getConcentricCircleLabel(D, K)*(255/NoConcentricCircles)),
+                    (byte)(getAngleLabel(D, K)*(255/NoRadialDivisions)),(byte)(getHeightLabel(L)*(255/NoHeightDivisions))});
                 labels.setLabel(i, j, colorLabel);
             }
         }
@@ -147,6 +160,11 @@ public class V4Color extends Activity {
         colorLabel = getConcentricCircleLabel(D, K) + "," + getAngleLabel(D, K);
 
         return colorLabel;
+    }
+    
+    public int getHeightLabel(double L){
+        double div=1/(double)NoHeightDivisions;
+        return (int) (L/div);
     }
 
     public int getConcentricCircleLabel(double X, double Y) {
