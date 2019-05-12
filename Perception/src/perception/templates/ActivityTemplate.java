@@ -22,6 +22,7 @@ import kmiddle2.nodes.activities.Activity;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import perception.GUI.XFrame;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
@@ -107,7 +108,7 @@ public abstract class ActivityTemplate extends Activity {
 
     protected <T extends Serializable> void sendToRetroReactiveQueuer_ITp_h(LongSpike spike) {
         Sendable toSend = (Sendable) spike.getIntensity();
-        
+
         sendTo(
                 new Sendable(
                         toSend.getData(),
@@ -119,16 +120,31 @@ public abstract class ActivityTemplate extends Activity {
                 spike.getTiming()
         );
     }
-    
+
     protected <T extends Serializable> void sendToRetroReactiveQueuer_ITp_c(LongSpike spike) {
         Sendable toSend = (Sendable) spike.getIntensity();
-        
+
         sendTo(
                 new Sendable(
                         toSend.getData(),
                         toSend.getReceiver(),
                         toSend.getTrace(),
                         AreaNames.RetroReactiveQueuer_ITp_c
+                ),
+                spike.getLocation(),
+                spike.getTiming()
+        );
+    }
+
+    protected <T extends Serializable> void sendToRetroReactiveQueuer_RIICManager(LongSpike spike) {
+        Sendable toSend = (Sendable) spike.getIntensity();
+
+        sendTo(
+                new Sendable(
+                        toSend.getData(),
+                        toSend.getReceiver(),
+                        toSend.getTrace(),
+                        AreaNames.RetroReactiveQueuer_RIICManager
                 ),
                 spike.getLocation(),
                 spike.getTiming()
@@ -166,43 +182,53 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected XFrame show(Mat image, String title) throws IOException {
-        return show(image,0,0,title);
+        return show(image, 0, 0, title);
     }
-    
-    protected void show(Mat image, String title, Class klass) throws IOException{
-        if(GlobalConfig.showEnablerIDs == klass){
-            show(image,title);
+
+    protected void show(Mat image, String title, Class klass) throws IOException {
+        if (GlobalConfig.showEnablerIDs == klass) {
+            show(image, title);
         }
     }
-    
-    protected void show(Mat image, String title, Class klass, int sync) throws IOException{
-        if(GlobalConfig.showEnablerIDs == klass){
+
+    protected void showMax(Mat image, String title, Class klass) throws IOException {
+        if (GlobalConfig.showEnablerIDs == klass) {
+            Mat hardMat = new Mat();
+            Imgproc.threshold(image, hardMat, 5, 255, Imgproc.THRESH_BINARY);
+            show(hardMat, title);
+        }
+    }
+
+    protected void show(Mat image, String title, Class klass, int sync) throws IOException {
+        if (GlobalConfig.showEnablerIDs == klass) {
             ArrayList<Mat> showMats = new ArrayList<>();
-            if(syncs ==0){
+            if (syncs == 0) {
                 syncs = sync;
                 showMats.add(image);
                 showSegments.add(showMats);
                 showTitle.add(title);
-            }else if(sync==syncs){
-                if(showTitle.contains(title)){
-                    showSegments.get(showTitle.indexOf(title)).add(image);
-                }else{
-                    showMats.add(image);
-                    showSegments.add(showMats);
-                    showTitle.add(title);
+            } else {
+                if (sync == syncs) {
+                    if (showTitle.contains(title)) {
+                        showSegments.get(showTitle.indexOf(title)).add(image);
+                    } else {
+                        showMats.add(image);
+                        showSegments.add(showMats);
+                        showTitle.add(title);
+                    }
+                } else {
+                    syncs = sync;
+                    showList(showSegments, klass.getName());
+                    showSegments = new ArrayList<>();
+                    showTitle = new ArrayList<>();
                 }
-            } else{
-                syncs = sync;
-                showList(showSegments,klass.getName());
-                showSegments = new ArrayList<>();
-                showTitle = new ArrayList<>();
             }
         }
     }
-    
-    protected void show(Mat image, String title, int ID) throws IOException{
-        if(GlobalConfig.showEnablerID == ID){
-            show(image,title);
+
+    protected void show(Mat image, String title, int ID) throws IOException {
+        if (GlobalConfig.showEnablerID == ID) {
+            show(image, title);
         }
     }
 
@@ -227,7 +253,7 @@ public abstract class ActivityTemplate extends Activity {
         frame.setTitle(title);
         frame.setLocation(x, y);
         frame.setVisible(true);
-        
+
         return frame;
     }
 
@@ -242,9 +268,9 @@ public abstract class ActivityTemplate extends Activity {
             i++;
         }
     }
-    
-    protected double getFechner(double activation){
-        return GlobalConfig.FECHNER_CONSTANT*Math.log(activation/GlobalConfig.ACTIVATION_THRESHOLD);
+
+    protected double getFechner(double activation) {
+        return GlobalConfig.FECHNER_CONSTANT * Math.log(activation / GlobalConfig.ACTIVATION_THRESHOLD);
     }
 
 }

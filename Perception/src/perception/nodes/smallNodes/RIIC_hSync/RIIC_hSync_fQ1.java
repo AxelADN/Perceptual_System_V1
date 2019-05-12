@@ -7,7 +7,11 @@ package perception.nodes.smallNodes.RIIC_hSync;
 
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.RIIC_hSyncTemplate;
+import perception.structures.InternalRequest;
+import perception.structures.Sendable;
 import perception.templates.ActivityTemplate;
+import spike.LongSpike;
+import spike.Modalities;
 import utils.SimpleLogger;
 
 /**
@@ -37,6 +41,21 @@ public class RIIC_hSync_fQ1 extends RIIC_hSyncTemplate {
     public void init() {
         super.init();
         SimpleLogger.log(this, "RIIC_H_SYNC_FQ1: init()");
+        this.sendToRetroReactiveQueuer_RIICManager(
+                new LongSpike(
+                        Modalities.PERCEPTION,
+                        this.LOCAL_RETINOTOPIC_ID,
+                        new Sendable(
+                                new InternalRequest(
+                                        "H",
+                                        "NEW RETINOTOPIC INFLUENCE REQUEST"
+                                ),
+                                this.ID,
+                                AreaNames.RIIC_hSync_fQ2
+                        ),
+                        0
+                )
+        );
     }
 
     /**

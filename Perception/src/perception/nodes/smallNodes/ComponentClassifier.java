@@ -242,7 +242,7 @@ public class ComponentClassifier extends ActivityTemplate {
             while (riic_c.isNotEmpty() && i <= GlobalConfig.CANDIDATES_MAX_QUANTITY) {
                 PreObject currentTemplate = riic_c.next();
                 double activationLevel = getDistance(component.getData(), currentTemplate.getData());
-                if (activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD) {
+                if (activationLevel <= GlobalConfig.ACTIVATION_THRESHOLD) {
                     currentTemplate.addPriority(getFechner(activationLevel));
                     riic_cTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                     component.addCandidateRef(currentTemplate.getLabel());
@@ -286,6 +286,7 @@ public class ComponentClassifier extends ActivityTemplate {
                 PreObject currentTemplate = candidates.next();
                 if (currentTemplate.getCandidateRef().isEmpty()) {
                     currentTemplate.addCandidateRef(riic_h.getLabels());
+                    System.out.println(currentTemplate.getCandidateRef());
                 } else {
                     boolean hasIt=false;
                     for (String label : currentTemplate.getCandidateRef()) {

@@ -123,13 +123,13 @@ public abstract class RIIC_cSyncTemplate extends ActivityTemplate {
     }
 
     private RIIC_c syncronizeRIIC_c(RIIC_c updatedRIIC_c) {
-        ArrayList<String> updateTemplates = updatedRIIC_c.getTemplates();
-        ArrayList<String> templates = riic_c.getTemplates();
-        for (int i = 0; i < updateTemplates.size(); i++) {
-            if (!templates.contains(updateTemplates.get(i))) {
-                templates.add(updateTemplates.get(i));
-            }
-        }
+//        ArrayList<String> updateTemplates = updatedRIIC_c.getTemplates();
+//        ArrayList<String> templates = riic_c.getTemplates();
+//        for (int i = 0; i < updateTemplates.size(); i++) {
+//            if (!templates.contains(updateTemplates.get(i))) {
+//                templates.add(updateTemplates.get(i));
+//            }
+//        }
         return new RIIC_c("UPDATED SYNC RIIC_C");
     }
 

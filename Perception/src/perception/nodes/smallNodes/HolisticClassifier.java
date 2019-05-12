@@ -119,9 +119,7 @@ public class HolisticClassifier extends ActivityTemplate {
                 RIIC_h riic_h = pair.getRIIC_h();
                 PreObjectSection preObjectSegment = pair.getPreObjectSegment();
                 Mat holisticMat = extractHolisticFeatures(preObjectSegment.getSegment());
-                Mat hardHolisticMat = new Mat();
-                Imgproc.threshold(holisticMat, hardHolisticMat, 5, 255, Imgproc.THRESH_BINARY);
-                show(hardHolisticMat, "HolisticFeatures: " + LOCAL_RETINOTOPIC_ID, this.getClass());
+                //showMax(holisticMat, "HolisticFeatures: " + LOCAL_RETINOTOPIC_ID, this.getClass());
                 RIIC_h candidates = getCandidates(riic_h, holisticMat);
                 sendTo(
                         new Sendable(
@@ -188,10 +186,13 @@ public class HolisticClassifier extends ActivityTemplate {
     private RIIC_h getCandidates(RIIC_h riic_h, Mat preObject) throws IOException {
         RIIC_h riic_hTemplates = new RIIC_h("EMPTY ACTIVATED TEMPLATES");
         int i = 0;
+        //showMax(preObject,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
         while (riic_h.isNotEmpty() && i <= GlobalConfig.CANDIDATES_MAX_QUANTITY) {
-            PreObject currentTemplate = riic_h.next();
+            PreObject currentTemplate = riic_h.nextData();
+            //showMax(currentTemplate.getData(),"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
             double activationLevel = getDistance(preObject, currentTemplate.getData());
-            if (activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD) {
+            //System.out.println("KSKSKS: "+activationLevel);
+            if (activationLevel <= GlobalConfig.ACTIVATION_THRESHOLD) {
                 currentTemplate.addPriority(getFechner(activationLevel));
                 riic_hTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                 i++;
@@ -279,12 +280,12 @@ public class HolisticClassifier extends ActivityTemplate {
     private void updateRIIC_h(RIIC_h riic_h, RIIC_h candidates, Mat newMat) throws IOException {
         if (candidates.isEmpty()) {
             riic_h.addMat(newMat);
-            //show(newMat,"Added New Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+            showMax(riic_h.getPreObject().getData(),"Added New Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
         } else {
             while (candidates.isNotEmpty()) {
                 PreObject currentTemplate = candidates.next();
                 Mat showMat = riic_h.addOp(currentTemplate, newMat);
-                //show(showMat,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+                showMax(showMat,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
             }
         }
     }

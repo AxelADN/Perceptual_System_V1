@@ -5,13 +5,12 @@ import perception.nodes.bigNodes.ITp_h;
 import kmiddle2.nodes.service.Igniter;
 
 import org.opencv.core.Core;
+import perception.config.GlobalConfig;
 import perception.nodes.bigNodes.ITp_c;
 import perception.nodes.bigNodes.RIICManager;
 import utils.SimpleLogger;
 
 public class perception extends Igniter {
-
-    private final boolean DEBUG = true;
     private final byte ENTITY_ID = 34;
 
     public perception() {
@@ -23,10 +22,10 @@ public class perception extends Igniter {
             ITp_c.class.getName(),
             RIICManager.class.getName(),};
 
-        SimpleLogger.setDebug(DEBUG);
+        SimpleLogger.setDebug(GlobalConfig.DEBUG);
 
         configuration.setLocal(true);
-        configuration.setDebug(!DEBUG);
+        configuration.setDebug(false);
         configuration.setTCP();
         configuration.setEntityID(ENTITY_ID);
 

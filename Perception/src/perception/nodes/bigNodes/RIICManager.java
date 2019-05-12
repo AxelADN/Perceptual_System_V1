@@ -6,10 +6,12 @@
 package perception.nodes.bigNodes;
 
 
+import kmiddle2.nodes.activities.ActConf;
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.RIIC.*;
 import perception.nodes.smallNodes.RIIC_cSync.*;
 import perception.nodes.smallNodes.RIIC_hSync.*;
+import perception.nodes.smallNodes.RetroReactiveQueuer_RIICManager;
 import perception.templates.AreaTemplate;
 import utils.SimpleLogger;
 
@@ -46,6 +48,7 @@ public class RIICManager extends AreaTemplate {
         addProcess(RIIC_cSync_pQ2.class);
         addProcess(RIIC_cSync_pQ3.class);
         addProcess(RIIC_cSync_pQ4.class);
+        addProcess(RetroReactiveQueuer_RIICManager.class,ActConf.TYPE_PARALLEL);
     }
     
     @Override

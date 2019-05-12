@@ -84,6 +84,15 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.modifyValue++;
     }
     
+    public String[][] getRetinotopicObjArray(){
+        String[][] labels = new String[this.retinotopicObj.size()][2];
+        for(int i=0; i<this.retinotopicObj.size();i++){
+            labels[i][0] = this.retinotopicObj.get(i).get_S();
+            labels[i][1] = this.retinotopicObj.get(i).get_T();
+        }
+        return labels;
+    }
+    
     public ArrayList<PairWrapper<String,String>> getRetinotopicObj(){
         return this.retinotopicObj;
     }

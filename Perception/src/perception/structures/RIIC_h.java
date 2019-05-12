@@ -88,6 +88,15 @@ public class RIIC_h extends StructureTemplate implements Serializable {
         templatesAux.put(aux.getLabel(), aux);
         return aux;
     }
+    
+    public PreObject nextData() {
+        if (templatesID.size() <= 1) {
+            empty = true;
+        }
+        PreObject aux = templatesID.poll();
+        templatesAux.put(aux.getLabel(), aux);
+        return templates.get(aux.getLabel());
+    }
 
     public void retrieveAll() {
         for (String UID : templatesAux.keySet()) {
@@ -110,6 +119,7 @@ public class RIIC_h extends StructureTemplate implements Serializable {
                         Mat2Bytes(segment)
                 ).toString()
         );
+        this.addPreObject(newPreObject);
     }
 
     public Mat addOp(PreObject currentTemplate, Mat currentMat) {
@@ -139,6 +149,10 @@ public class RIIC_h extends StructureTemplate implements Serializable {
 
     public PreObject getPreObject(String label) {
         return templates.get(label);
+    }
+    
+    public PreObject getPreObject() {
+        return templates.get(templatesID.peek().getLabel());
     }
 
 }

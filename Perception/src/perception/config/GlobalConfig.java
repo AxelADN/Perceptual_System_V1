@@ -27,11 +27,13 @@ public class GlobalConfig {
     public static final int showEnablerID = 0;//AreaNames.Segmentation;
     public static  final Class showEnablerIDs = HolisticClassifier.class;
     
-    public static double ACTIVATION_THRESHOLD = 0.75;
+    public static double ACTIVATION_THRESHOLD = 0.5;
     public static int CANDIDATES_MAX_QUANTITY = 5;
     public static int MAX_DOUBLE_TO_INT_FACTOR = 1000000;
     
     public static boolean INVERTED = false;
     public static double FECHNER_CONSTANT = 1.0;
     public static double RETINOTOPIC_INFLUENCE_FACTOR = 0.5;
+    
+    public static boolean DEBUG = false;
 }
