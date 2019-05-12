@@ -157,7 +157,11 @@ public abstract class CandidatesBufferTemplate extends ActivityTemplate {
     protected void storeInBuffer(
             RIIC_hAndPreObjectSegmentPair riic_hAndPreObjectSegmentPair
     ) throws IOException {
-        show(riic_hAndPreObjectSegmentPair.getPreObjectSegment().getSegment(),"Segment: " + LOCAL_RETINOTOPIC_ID);
+        show(
+                riic_hAndPreObjectSegmentPair.getPreObjectSegment().getSegment(),
+                "Segment: " + LOCAL_RETINOTOPIC_ID,
+                this.getClass()
+        );
         bufferedRIIC_hAndPreObjectSegmentPair = riic_hAndPreObjectSegmentPair;
     }
 

@@ -17,8 +17,8 @@ import static perception.structures.StructureTemplate.Mat2Bytes;
  *
  * @author AxelADN
  */
-public class RIIC_c <T> extends StructureTemplate implements Serializable{
-    
+public class RIIC_c<T> extends StructureTemplate implements Serializable {
+
     private final PriorityQueue<PreObject> templatesID;
     private final HashMap<String, PreObject> templates;
     private HashMap<String, PreObject> templatesAux;
@@ -32,16 +32,50 @@ public class RIIC_c <T> extends StructureTemplate implements Serializable{
         empty = true;
     }
 
-    public void addPreObject(PreObject preObject) {
+    public PreObject addPreObject(PreObject preObject) {
         PreObject existingPreObject = this.templates.put(preObject.getLabel(), preObject);
         if (existingPreObject == null) {
             this.templatesID.add(preObject.getPreObjectEssentials());
         } else {
-            if (this.templatesID.contains(existingPreObject)) {
-                this.templatesID.remove(existingPreObject);
+            PreObject currentPreObject = this.contains(existingPreObject);
+            if (currentPreObject != null) {
+                this.templatesID.remove(currentPreObject);
+                this.templatesID.add(preObject.getPreObjectEssentials());
+            } else {
+                this.templatesID.add(preObject.getPreObjectEssentials());
             }
         }
         empty = false;
+        return preObject;
+    }
+
+    public RIIC_c getEssentials() {
+        RIIC_c newRIIC_c = new RIIC_c("RIIC_C ESSENTIALS");
+        for (PreObject preObject : templatesID) {
+            PreObject essentials = preObject.getPreObjectEssentials();
+            essentials.addCandidateRef(preObject.getCandidateRef());
+            newRIIC_c.addPreObject(essentials);
+        }
+        return newRIIC_c;
+    }
+
+    private PreObject contains(PreObject preObject) {
+        ArrayList<PreObject> aux = new ArrayList<>();
+        PreObject newPreObject = this.templatesID.poll();
+        while (newPreObject != null) {
+            aux.add(newPreObject);
+            if (newPreObject.getLabel().equals(preObject.getLabel())) {
+                for (PreObject auxPreObject : aux) {
+                    this.templatesID.add(auxPreObject);
+                }
+                return newPreObject;
+            }
+            newPreObject = this.templatesID.poll();
+        }
+        for (PreObject auxPreObject : aux) {
+            this.templatesID.add(auxPreObject);
+        }
+        return null;
     }
 
     public RIIC_c getLabels() {
@@ -65,7 +99,7 @@ public class RIIC_c <T> extends StructureTemplate implements Serializable{
         templatesAux.put(aux.getLabel(), aux);
         return aux;
     }
-    
+
     public PreObject nextData() {
         if (templatesID.size() <= 1) {
             empty = true;
@@ -89,13 +123,14 @@ public class RIIC_c <T> extends StructureTemplate implements Serializable{
         return empty;
     }
 
-    public void addMat(Mat segment) {
+    public PreObject addMat(Mat segment) {
         PreObject newPreObject = new PreObject(segment);
         newPreObject.setLabel(
                 UUID.nameUUIDFromBytes(
                         Mat2Bytes(segment)
                 ).toString()
         );
+        return this.addPreObject(newPreObject);
     }
 
     public Mat addOp(PreObject currentTemplate, Mat currentMat) {
@@ -116,13 +151,15 @@ public class RIIC_c <T> extends StructureTemplate implements Serializable{
         );
         return newMat;
     }
-    
-    public RIIC_c getRIIC_hActivations(RIIC_h riic_h){
+
+    public RIIC_c getRIIC_hActivations(RIIC_h riic_h) {
         RIIC_c newRIIC_c = new RIIC_c("NEW REFERENCED COMPONENTS");
-        while(riic_h.isNotEmpty()){
+        while (riic_h.isNotEmpty()) {
             PreObject preObject = riic_h.next();
-            for(String ref: preObject.getComponents()){
-                newRIIC_c.addPreObject(this.templates.get(ref));
+            if (preObject.hasComponents()) {
+                for (String ref : preObject.getComponents()) {
+                    newRIIC_c.addPreObject(this.templates.get(ref));
+                }
             }
         }
         riic_h.retrieveAll();
@@ -138,5 +175,5 @@ public class RIIC_c <T> extends StructureTemplate implements Serializable{
     public ArrayList<String> getTemplates() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

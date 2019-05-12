@@ -16,19 +16,21 @@ import org.opencv.core.Mat;
 public class PreObject extends StructureTemplate implements Serializable{
     
     private String UID;
-    private String candidateRef;
+    private ArrayList<String> candidateRef;
     private final byte[] data;
-    private double priority;
+    private Double priority;
     private int modifyValue;
     private ArrayList<String> componentRef;
+    private ArrayList<PairWrapper<String,String>> retinotopicObj;
     
     public PreObject(Mat mat){
         this.data = Mat2Bytes(mat);
         this.UID = "NULL";
         this.priority = 0.0;
         this. modifyValue = 0;
-        this.candidateRef = "";
+        this.candidateRef = new ArrayList<>();
         this.componentRef = new ArrayList<>();
+        this.retinotopicObj = new ArrayList<>();
     }
     
     public PreObject(Mat mat, int modifyValue){
@@ -36,8 +38,9 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.UID = "NULL";
         this.priority = 0.0;
         this. modifyValue = modifyValue;
-        this.candidateRef = "";
+        this.candidateRef = new ArrayList<>();
         this.componentRef = new ArrayList<>();
+        this.retinotopicObj = new ArrayList<>();
     }
     
     public PreObject(String UID, double priority, int modifyValue){
@@ -45,19 +48,44 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.priority = priority;
         this.modifyValue = modifyValue;
         this.data = null;
-        this.candidateRef = "";
+        this.candidateRef = new ArrayList<>();
         this.componentRef = new ArrayList<>();
+        this.retinotopicObj = new ArrayList<>();
+    }
+    
+    public PreObject(String UID, double priority, int modifyValue, ArrayList<String> candidateRef,ArrayList<String> componentRef, ArrayList<PairWrapper<String,String>> retinotopicObj){
+        this.UID = UID;
+        this.priority = priority;
+        this.modifyValue = modifyValue;
+        this.data = null;
+        this.candidateRef = candidateRef;
+        this.componentRef = componentRef;
+        this.retinotopicObj = retinotopicObj;
     }
     
     public PreObject getPreObjectEssentials(){
-        return new PreObject(this.UID,this.priority, this.modifyValue);
+        return new PreObject(this.UID,this.priority, this.modifyValue,this.candidateRef,this.componentRef,this.retinotopicObj);
     }
     
     public PreObject copyEssentials(PreObject preObject){
         PreObject newPreObject = new PreObject(this.getData(),this.modifyValue);
         newPreObject.setPriority(preObject.getPriority());
         newPreObject.setLabel(preObject.getLabel());
+        newPreObject.addCandidateRef(preObject.candidateRef);
+        newPreObject.addComponents(preObject.getComponents());
+        newPreObject.addRetinotopicObj(preObject.getRetinotopicObj());
         return newPreObject;
+    }
+    
+    public void addRetinotopicObj(ArrayList<PairWrapper<String,String>> labels){
+        for(PairWrapper<String,String> retinotopicLabel: labels){
+            this.retinotopicObj.add(retinotopicLabel);
+        }
+        this.modifyValue++;
+    }
+    
+    public ArrayList<PairWrapper<String,String>> getRetinotopicObj(){
+        return this.retinotopicObj;
     }
     
     public void setLabel(String UID){
@@ -111,7 +139,23 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.modifyValue++;
     }
     
-    public void setCandidateRef(String label){
-        this.candidateRef = label;
+    public void addCandidateRef(String label){
+        this.candidateRef.add(label);
+        this.modifyValue++;
+    }
+    
+    public void addCandidateRef(ArrayList<String> labels){
+        for(String label: labels){
+            this.candidateRef.add(label);
+        }
+        this.modifyValue++;
+    }
+    
+    public ArrayList<String> getCandidateRef(){
+        return this.candidateRef;
+    }
+
+    boolean hasComponents() {
+        return this.componentRef.isEmpty();
     }
 }

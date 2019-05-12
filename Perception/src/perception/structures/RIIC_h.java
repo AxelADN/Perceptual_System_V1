@@ -31,25 +31,49 @@ public class RIIC_h extends StructureTemplate implements Serializable {
         empty = true;
     }
 
+    //IMPORTANTE: ¿Los apuntadores se mantienen al pasar a otro servidor?
     public void addPreObject(PreObject preObject) {
         PreObject existingPreObject = this.templates.put(preObject.getLabel(), preObject);
         if (existingPreObject == null) {
             this.templatesID.add(preObject.getPreObjectEssentials());
         } else {
-            if (this.templatesID.contains(existingPreObject)) {
-                this.templatesID.remove(existingPreObject);
+            PreObject currentPreObject = this.contains(existingPreObject);
+            if (currentPreObject != null) {
+                this.templatesID.remove(currentPreObject);
+                this.templatesID.add(preObject.getPreObjectEssentials());
+            } else {
+                this.templatesID.add(preObject.getPreObjectEssentials());
             }
         }
         empty = false;
     }
 
-    public RIIC_h getLabels() {
-        RIIC_h riic_h = new RIIC_h("RIIC_H ACTIVATED TEMPLATES");
+    private PreObject contains(PreObject preObject) {
+        ArrayList<PreObject> aux = new ArrayList<>();
+        PreObject newPreObject = this.templatesID.poll();
+        while (newPreObject != null) {
+            aux.add(newPreObject);
+            if (newPreObject.getLabel().equals(preObject.getLabel())) {
+                for (PreObject auxPreObject : aux) {
+                    this.templatesID.add(auxPreObject);
+                }
+                return newPreObject;
+            }
+            newPreObject = this.templatesID.poll();
+        }
+        for (PreObject auxPreObject : aux) {
+            this.templatesID.add(auxPreObject);
+        }
+        return null;
+    }
+
+    public ArrayList<String> getLabels() {
+        ArrayList<String> labels = new ArrayList<>();
         for (int i = 0; i < this.templatesID.size(); i++) {
-            riic_h.addPreObject(next());
+            labels.add(next().getLabel());
         }
         retrieveAll();
-        return riic_h;
+        return labels;
     }
 
     public boolean isNotEmpty() {
@@ -111,6 +135,10 @@ public class RIIC_h extends StructureTemplate implements Serializable {
         for (PreObject activatedPreObject : activated) {
             templates.get(activatedPreObject.getLabel()).setPriority(activatedPreObject.getPriority());
         }
+    }
+
+    public PreObject getPreObject(String label) {
+        return templates.get(label);
     }
 
 }

@@ -22,6 +22,7 @@ import kmiddle2.nodes.activities.Activity;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import perception.GUI.XFrame;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.Sendable;
@@ -104,14 +105,30 @@ public abstract class ActivityTemplate extends Activity {
         }
     }
 
-    protected <T extends Serializable> void sendToRetroReactiveQueuer(LongSpike spike) {
+    protected <T extends Serializable> void sendToRetroReactiveQueuer_ITp_h(LongSpike spike) {
         Sendable toSend = (Sendable) spike.getIntensity();
+        
         sendTo(
                 new Sendable(
                         toSend.getData(),
                         toSend.getReceiver(),
                         toSend.getTrace(),
-                        AreaNames.RetroReactiveQueuer
+                        AreaNames.RetroReactiveQueuer_ITp_h
+                ),
+                spike.getLocation(),
+                spike.getTiming()
+        );
+    }
+    
+    protected <T extends Serializable> void sendToRetroReactiveQueuer_ITp_c(LongSpike spike) {
+        Sendable toSend = (Sendable) spike.getIntensity();
+        
+        sendTo(
+                new Sendable(
+                        toSend.getData(),
+                        toSend.getReceiver(),
+                        toSend.getTrace(),
+                        AreaNames.RetroReactiveQueuer_ITp_c
                 ),
                 spike.getLocation(),
                 spike.getTiming()
@@ -148,8 +165,8 @@ public abstract class ActivityTemplate extends Activity {
         return route.contentEquals(this.LOCAL_RETINOTOPIC_ID);
     }
 
-    protected void show(Mat image, String title) throws IOException {
-        show(image,0,0,title);
+    protected XFrame show(Mat image, String title) throws IOException {
+        return show(image,0,0,title);
     }
     
     protected void show(Mat image, String title, Class klass) throws IOException{
@@ -189,7 +206,7 @@ public abstract class ActivityTemplate extends Activity {
         }
     }
 
-    protected void show(Mat image, int x, int y, String title) throws IOException {
+    protected XFrame show(Mat image, int x, int y, String title) throws IOException {
         //Encoding the image 
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", image, matOfByte);
@@ -202,7 +219,7 @@ public abstract class ActivityTemplate extends Activity {
         BufferedImage bufImage = ImageIO.read(in);
 
         //Instantiate JFrame 
-        JFrame frame = new JFrame();
+        XFrame frame = new XFrame();
 
         //Set Content to the JFrame 
         frame.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
@@ -210,6 +227,8 @@ public abstract class ActivityTemplate extends Activity {
         frame.setTitle(title);
         frame.setLocation(x, y);
         frame.setVisible(true);
+        
+        return frame;
     }
 
     protected void showList(ArrayList<ArrayList<Mat>> imageList, String title) throws IOException {
@@ -222,6 +241,10 @@ public abstract class ActivityTemplate extends Activity {
             }
             i++;
         }
+    }
+    
+    protected double getFechner(double activation){
+        return GlobalConfig.FECHNER_CONSTANT*Math.log(activation/GlobalConfig.ACTIVATION_THRESHOLD);
     }
 
 }

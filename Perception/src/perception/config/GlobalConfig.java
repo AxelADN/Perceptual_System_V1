@@ -6,7 +6,7 @@
 package perception.config;
 
 import org.opencv.core.Size;
-import perception.nodes.smallNodes.HolisticClassifier;
+import perception.nodes.smallNodes.*;
 
 /**
  *
@@ -14,7 +14,7 @@ import perception.nodes.smallNodes.HolisticClassifier;
  */
 public class GlobalConfig {
     
-    public static final String windowsFile = "C:\\Users\\AxelADN\\Git\\cuayollotol\\Perception\\src\\resources\\Sample_01.png";
+    public static final String windowsFile = "src/resources/Sample_01.png";
     public static final String linuxFile = "/home/axeladn/Git/cuayollotol/Perception/src/resources/Sample_01.png";
     
     public static final int WINDOW_WIDTH = 480;
@@ -32,4 +32,6 @@ public class GlobalConfig {
     public static int MAX_DOUBLE_TO_INT_FACTOR = 1000000;
     
     public static boolean INVERTED = false;
+    public static double FECHNER_CONSTANT = 1.0;
+    public static double RETINOTOPIC_INFLUENCE_FACTOR = 0.5;
 }

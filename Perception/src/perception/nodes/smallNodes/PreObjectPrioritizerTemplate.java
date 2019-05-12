@@ -120,7 +120,7 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                     prioritized[retinotopicIndex] = true;
 
                 } else {
-                    sendToRetroReactiveQueuer(spike);
+                    sendToRetroReactiveQueuer_ITp_h(spike);
                 }
             } else {
                 if (isRIIC_h(spike.getIntensity())) {    //If it's RIIC_h type: 

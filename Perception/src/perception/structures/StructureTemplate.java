@@ -28,6 +28,33 @@ public abstract class StructureTemplate implements Serializable {
 //    protected static final class SerializedArrayList<T> extends ArrayList<T> implements Serializable{}
 //    protected static final class SerializedPriorityQueue<T> extends PriorityQueue<T> implements Serializable{}
 //    protected static final class SerializedHashMap<S,T> extends HashMap<S,T> implements Serializable{}
+    protected static final class PairWrapper<S, T> implements Serializable{
+
+        S obj_S;
+        T obj_T;
+
+        public PairWrapper(S obj_S, T obj_T) {
+            this.obj_S = obj_S;
+            this.obj_T = obj_T;
+        }
+
+        public S get_S() {
+            return this.obj_S;
+        }
+
+        public T get_T() {
+            return this.obj_T;
+        }
+
+        public void set_S(S obj_S) {
+            this.obj_S = obj_S;
+        }
+
+        public void set_T(T obj_T) {
+            this.obj_T = obj_T;
+        }
+    }
+
     protected static final class PreObjectComparator implements Serializable, Comparator<PreObject> {
 
         @Override
@@ -89,11 +116,11 @@ public abstract class StructureTemplate implements Serializable {
         newMat.put(0, 0, extendedNewMat);
         return newMat;
     }
-    
-    public static MatOfPoint keyPointToPoint(MatOfKeyPoint keyPointsMat){
+
+    public static MatOfPoint keyPointToPoint(MatOfKeyPoint keyPointsMat) {
         KeyPoint[] keyPoints = keyPointsMat.toArray();
         Point[] points = new Point[keyPoints.length];
-        for(int i=0; i<points.length;i++){
+        for (int i = 0; i < points.length; i++) {
             points[i] = keyPoints[i].pt;
         }
         return new MatOfPoint(points);
@@ -117,25 +144,25 @@ public abstract class StructureTemplate implements Serializable {
                 if (extended2dMat[i][j] > 0) {
                     extended2dMat[i][j]
                             = 127
-                            + (extended2dMat[i-1][j]
-                            <= extended2dMat[i][j-1]
-                                    ? extended2dMat[i-1][j]
-                                    : extended2dMat[i][j-1]);
+                            + (extended2dMat[i - 1][j]
+                            <= extended2dMat[i][j - 1]
+                                    ? extended2dMat[i - 1][j]
+                                    : extended2dMat[i][j - 1]);
                 } else {
                     extended2dMat[i][j] = 0;
                 }
-                
+
             }
         }
         float val = 0;
         for (int i = mat.cols() - 2; i >= 0; i--) {
             for (int j = mat.rows() - 2; j >= 0; j--) {
-                if (extended2dMat[i][j] >0) {
+                if (extended2dMat[i][j] > 0) {
                     val
-                            = extended2dMat[ i + 1][j]
-                            <= extended2dMat[i][ j + 1]
-                            ? extended2dMat[ i + 1][j]
-                            : extended2dMat[i][ j + 1];
+                            = extended2dMat[i + 1][j]
+                            <= extended2dMat[i][j + 1]
+                                    ? extended2dMat[i + 1][j]
+                                    : extended2dMat[i][j + 1];
                     extended2dMat[i][j]
                             = extended2dMat[i][j]
                             <= val + 127
@@ -144,18 +171,18 @@ public abstract class StructureTemplate implements Serializable {
                 } else {
                     extended2dMat[i][j] = 0;
                 }
-                
+
             }
         }
         for (int i = 0; i < mat.cols(); i++) {
             for (int j = 0; j < mat.rows(); j++) {
                 extendedMat[j + (mat.rows() * i)] = extended2dMat[i][j];
-                
+
             }
         }
-        
+
         floatMat.put(0, 0, extendedMat);
-        Core.normalize(floatMat, floatMat, 255, 0,Core.NORM_L1);
+        Core.normalize(floatMat, floatMat, 255, 0, Core.NORM_L1);
         floatMat.convertTo(floatMat, CvType.CV_8UC1);
         return floatMat;
     }

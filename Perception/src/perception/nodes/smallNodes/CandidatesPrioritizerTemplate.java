@@ -115,7 +115,7 @@ public abstract class CandidatesPrioritizerTemplate extends ActivityTemplate {
                         prioritized[retinotopicIndex] = true;
                     } else {
                         //Lost data is sent.
-                        sendToRetroReactiveQueuer(spike);
+                        sendToRetroReactiveQueuer_ITp_c(spike);
                     }
                 } else if (isRIIC_c(spike.getIntensity())) {    //If it's RIIC_c type: 
                     ActivityTemplate.log(

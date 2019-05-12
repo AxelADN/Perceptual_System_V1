@@ -13,8 +13,6 @@ import kmiddle2.util.IDHelper;
  */
 public class AreaNames {
 
-    public static final int MEM = IDHelper.generateID("MEM", 0, 0);
-
     public static final int LostData = IDHelper.generateID("LostData", 0, 0);
 
     public static final int ITC = IDHelper.generateID("ITC", 0, 0);
@@ -24,6 +22,7 @@ public class AreaNames {
 
     public static final int ITa = IDHelper.generateID("ITa", 0, 0);
     public static final int SceneSync = IDHelper.generateID("ITa", 1, 0);
+    public static int SceneCompositon;
     public static final int Identify = IDHelper.generateID("ITa", 2, 0);
 
     public static final int ITp_h = IDHelper.generateID("ITp_h", 0, 0);
@@ -47,7 +46,7 @@ public class AreaNames {
     public static final int PreObjectBuffer_pQ3 = IDHelper.generateID("ITp_h", 18, 0);
     public static final int PreObjectBuffer_pQ4 = IDHelper.generateID("ITp_h", 19, 0);
     public static final int HolisticClassifier = IDHelper.generateID("ITp_h", 20, 0);
-    public static final int RetroReactiveQueuer = IDHelper.generateID("ITp_h", 21, 0);
+    public static final int RetroReactiveQueuer_ITp_h = IDHelper.generateID("ITp_h", 21, 0);
     
     
     public static final int ITp_c = IDHelper.generateID("ITp_c", 0, 0);
@@ -70,6 +69,7 @@ public class AreaNames {
     public static final int CandidatesPrioritizerTemplate = IDHelper.generateID("ITp_c", 17, 0);
     public static final int CandidatesBufferTemplate = IDHelper.generateID("ITp_c", 18, 0);
     public static final int ComponentClassifier = IDHelper.generateID("ITp_c", 19, 0);
+    public static final int RetroReactiveQueuer_ITp_c = IDHelper.generateID("ITp_c", 20, 0);
 
     public static final int RIICManager = IDHelper.generateID("RIICManager", 0, 0);
     public static final int RIIC_fQ1 = IDHelper.generateID("RIICManager", 1, 0);
@@ -97,6 +97,6 @@ public class AreaNames {
     public static final int RIIC_cSync_pQ2 = IDHelper.generateID("RIICManager", 23, 0);
     public static final int RIIC_cSync_pQ3 = IDHelper.generateID("RIICManager", 24, 0);
     public static final int RIIC_cSync_pQ4 = IDHelper.generateID("RIICManager", 25, 0);
-    public static int SceneCompositon;
+    public static final int RetroReactiveQueuer_RIICManager = IDHelper.generateID("RIICManager", 26, 0);
     
 }

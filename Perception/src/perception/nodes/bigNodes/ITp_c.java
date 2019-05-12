@@ -5,10 +5,12 @@
  */
 package perception.nodes.bigNodes;
 
+import kmiddle2.nodes.activities.ActConf;
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.CandidatesBuffer.*;
 import perception.nodes.smallNodes.CandidatesPrioritazer.*;
 import perception.nodes.smallNodes.ComponentClassifier;
+import perception.nodes.smallNodes.RetroReactiveQueuer_ITp_c;
 
 import perception.templates.AreaTemplate;
 import utils.SimpleLogger;
@@ -38,6 +40,7 @@ public class ITp_c extends AreaTemplate {
         addProcess(CandidatesBuffer_pQ3.class);
         addProcess(CandidatesBuffer_pQ4.class);
         addProcess(ComponentClassifier.class);
+        addProcess(RetroReactiveQueuer_ITp_c.class,ActConf.TYPE_PARALLEL);
         
         
         

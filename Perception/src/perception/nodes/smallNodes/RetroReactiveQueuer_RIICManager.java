@@ -27,15 +27,15 @@ import utils.SimpleLogger;
  * @see perception.nodes.smallNodes.PreObjectPrioritizer PreObjectPrioritizer
  * class group
  */
-public class RetroReactiveQueuer extends ActivityTemplate {
+public class RetroReactiveQueuer_RIICManager extends ActivityTemplate {
 
     /**
      * Constructor: Defines node identifiers and variables. The
      * <code>RECEIVERS</code> constant is defined with all node receivers linked
      * from this node.
      */
-    public RetroReactiveQueuer() {
-        this.ID = AreaNames.RetroReactiveQueuer;
+    public RetroReactiveQueuer_RIICManager() {
+        this.ID = AreaNames.RetroReactiveQueuer_RIICManager;
     }
 
     /**
@@ -43,7 +43,7 @@ public class RetroReactiveQueuer extends ActivityTemplate {
      */
     @Override
     public void init() {
-        SimpleLogger.log(this, "RETRO_REACTIVE_QUEUER: init()");
+        SimpleLogger.log(this, "mRETRO_REACTIVE_QUEUER: init()");
     }
 
     /**
@@ -88,7 +88,7 @@ public class RetroReactiveQueuer extends ActivityTemplate {
                 );
             }
         } catch (Exception ex) {
-            Logger.getLogger(RetroReactiveQueuer.class.getName()
+            Logger.getLogger(RetroReactiveQueuer_RIICManager.class.getName()
             ).log(Level.SEVERE, null, ex);
         }
     }

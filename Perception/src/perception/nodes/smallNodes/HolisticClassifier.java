@@ -68,14 +68,14 @@ public class HolisticClassifier extends ActivityTemplate {
         RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ2);
         RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ3);
         RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ4);
-        RECEIVERS_C.add(AreaNames.RIIC_hSync_fQ1);
-        RECEIVERS_C.add(AreaNames.RIIC_hSync_fQ2);
-        RECEIVERS_C.add(AreaNames.RIIC_hSync_fQ3);
-        RECEIVERS_C.add(AreaNames.RIIC_hSync_fQ4);
-        RECEIVERS_C.add(AreaNames.RIIC_hSync_pQ1);
-        RECEIVERS_C.add(AreaNames.RIIC_hSync_pQ2);
-        RECEIVERS_C.add(AreaNames.RIIC_hSync_pQ3);
-        RECEIVERS_C.add(AreaNames.RIIC_hSync_pQ4);
+        RECEIVERS_C.add(AreaNames.RIIC_cSync_fQ1);
+        RECEIVERS_C.add(AreaNames.RIIC_cSync_fQ2);
+        RECEIVERS_C.add(AreaNames.RIIC_cSync_fQ3);
+        RECEIVERS_C.add(AreaNames.RIIC_cSync_fQ4);
+        RECEIVERS_C.add(AreaNames.RIIC_cSync_pQ1);
+        RECEIVERS_C.add(AreaNames.RIIC_cSync_pQ2);
+        RECEIVERS_C.add(AreaNames.RIIC_cSync_pQ3);
+        RECEIVERS_C.add(AreaNames.RIIC_cSync_pQ4);
         cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ1);
         cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ2);
         cRECEIVERS.add(AreaNames.CandidatesPrioritizer_fQ3);
@@ -192,7 +192,7 @@ public class HolisticClassifier extends ActivityTemplate {
             PreObject currentTemplate = riic_h.next();
             double activationLevel = getDistance(preObject, currentTemplate.getData());
             if (activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD) {
-                currentTemplate.addPriority(activationLevel+(1/(1+i)));
+                currentTemplate.addPriority(getFechner(activationLevel));
                 riic_hTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                 i++;
             }
@@ -203,9 +203,11 @@ public class HolisticClassifier extends ActivityTemplate {
 
     private Mat extractHolisticFeatures(Mat mat) throws IOException {
         Mat threshold = new Mat();
+        Mat skeleton = new Mat();
         Mat filtered = new Mat();
         Imgproc.threshold(mat, threshold, 127, 255, Imgproc.THRESH_BINARY);
-        Imgproc.boxFilter(threshold, filtered,-1,new Size(15,15),new Point(-1,-1));
+        Ximgproc.thinning(threshold, skeleton, Ximgproc.THINNING_ZHANGSUEN);
+        Imgproc.boxFilter(skeleton, filtered,-1,new Size(15,15),new Point(-1,-1));
         return filtered;
     }
 

@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
+import perception.config.GlobalConfig;
+import perception.structures.PreObject;
+import perception.structures.RIIC_c;
 import perception.structures.RIIC_h;
 import perception.structures.Sendable;
 import perception.templates.ActivityTemplate;
@@ -16,10 +19,10 @@ import spike.LongSpike;
 import utils.SimpleLogger;
 
 /**
- * Class Template for RIIC_hSync class group. The inherited subclasses
- * receive data from ComponentClassifier class. It verifies the origin of
- * the incoming data and merge it then store it inside this node and send 
- * a copy of a RIIC_h object to the RIIC class group.
+ * Class Template for RIIC_hSync class group. The inherited subclasses receive
+ * data from ComponentClassifier class. It verifies the origin of the incoming
+ * data and merge it then store it inside this node and send a copy of a RIIC_h
+ * object to the RIIC class group.
  *
  * @author axeladn
  * @version 1.0
@@ -36,9 +39,9 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
     private RIIC_h riic_h;
 
     /**
-     * Constructor: Defines node constants. The
-     * <code>RECEIVERS</code> constant is defined with all node receivers
-     * belonging to a class group linked from this node.
+     * Constructor: Defines node constants. The <code>RECEIVERS</code> constant
+     * is defined with all node receivers belonging to a class group linked from
+     * this node.
      */
     public RIIC_hSyncTemplate() {
         RECEIVERS.add(AreaNames.RIIC_fQ1);
@@ -76,45 +79,67 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
+            this.currentSyncID = (int) spike.getTiming();
             if (isCorrectRoute((String) spike.getLocation())) {
                 if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
-                    RIIC_h updatedRIIC_h
-                            = syncronizeRIIC_h(
-                                    (RIIC_h) ((Sendable) spike.getIntensity()).getData()
-                            );
+                    RIIC_h newRIIC_h = (RIIC_h) ((Sendable) spike.getIntensity()).getData();
+                    syncronizeRIIC_h(newRIIC_h);
                     ActivityTemplate.log(
                             this,
-                            updatedRIIC_h.getLoggable()
+                            this.riic_h.getLoggable()
                     );
-                    storeRIIC_h(updatedRIIC_h);
                     sendTo(
                             new Sendable(
-                                    updatedRIIC_h,
+                                    this.riic_h,
                                     this.ID,
                                     ((Sendable) spike.getIntensity()).getTrace(),
                                     RECEIVERS.get(
                                             RETINOTOPIC_ID.indexOf(LOCAL_RETINOTOPIC_ID)
                                     )
                             ),
-                            spike.getLocation()
+                            LOCAL_RETINOTOPIC_ID,
+                            this.currentSyncID
                     );
+                } else {
+                    if (isCorrectDataType(spike.getIntensity(), RIIC_c.class)) {
+                        RIIC_c riic_c = (RIIC_c) ((Sendable) spike.getIntensity()).getData();
+                        while (riic_c.isNotEmpty()) {
+                            PreObject preObject = riic_c.next();
+                            boolean found = false;
+                            for (String label : preObject.getCandidateRef()) {
+                                PreObject hPreObject = this.riic_h.getPreObject(label);
+                                if (hPreObject != null) {
+                                    hPreObject.addCandidateRef(preObject.getLabel());
+                                }
+                            }
+                        }
+                    } else {
+                        sendToLostData(
+                                this,
+                                spike,
+                                "RIIC_H TYPE NOT RECOGNIZED: "
+                                + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                        );
+                    }
+                }
+            } else {
+                if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
+                    RIIC_h retinotopicRIIC_h = (RIIC_h)((Sendable)spike.getIntensity()).getData();
+                    while(retinotopicRIIC_h.isNotEmpty()){
+                        PreObject preObject = retinotopicRIIC_h.next();
+                        PreObject hPreObject = this.riic_h.getPreObject(preObject.getLabel());
+                        hPreObject.addPriority(GlobalConfig.RETINOTOPIC_INFLUENCE_FACTOR*hPreObject.getPriority());
+                    }
                 } else {
                     sendToLostData(
                             this,
                             spike,
-                            "RIIC_H TYPE NOT RECOGNIZED: "
-                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                            "MISTAKEN RETINOTOPIC ROUTE: "
+                            + (String) spike.getLocation()
+                            + " | FROM "
+                            + searchIDName(((Sendable) spike.getIntensity()).getSender())
                     );
                 }
-            } else {
-                sendToLostData(
-                        this,
-                        spike,
-                        "MISTAKEN RETINOTOPIC ROUTE: "
-                        + (String) spike.getLocation()
-                        + " | FROM "
-                        + searchIDName(((Sendable) spike.getIntensity()).getSender())
-                );
             }
         } catch (Exception ex) {
             Logger.getLogger(RIIC_hSyncTemplate.class.getName()
@@ -122,15 +147,20 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
         }
     }
 
-    private RIIC_h syncronizeRIIC_h(RIIC_h updatedRIIC_h) {
-//        ArrayList<String> updateTemplates = updatedRIIC_h.getTemplates();
-//        ArrayList<String> templates = riic_h.getTemplates();
-//        for (int i = 0; i < updateTemplates.size(); i++) {
-//            if (!templates.contains(updateTemplates.get(i))) {
-//                templates.add(updateTemplates.get(i));
-//            }
-//        }
-        return new RIIC_h("UPDATED SYNC RIIC_H");
+    private void syncronizeRIIC_h(RIIC_h riic_h) {
+        while (riic_h.isNotEmpty()) {
+            PreObject preObject = riic_h.next();
+            PreObject template = this.riic_h.getPreObject(preObject.getLabel());
+            if (template != null) {
+                if (preObject.getModifyValue() >= template.getModifyValue()) {
+                    this.riic_h.addPreObject(preObject);
+                }
+            } else {
+                this.riic_h.addPreObject(preObject);
+            }
+
+        }
+        this.riic_h.setLoggable("SYNCED RIIC_H");
     }
 
     private void storeRIIC_h(RIIC_h riic_h) {

@@ -55,6 +55,7 @@ import utils.SimpleLogger;
 public class ComponentClassifier extends ActivityTemplate {
 
     private final ArrayList<Integer> RECEIVERS_C = new ArrayList<>();
+    private final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
 
     /**
      * Constructor: Defines node identifiers and variables. The
@@ -71,6 +72,14 @@ public class ComponentClassifier extends ActivityTemplate {
         RECEIVERS_C.add(AreaNames.RIIC_cSync_pQ2);
         RECEIVERS_C.add(AreaNames.RIIC_cSync_pQ3);
         RECEIVERS_C.add(AreaNames.RIIC_cSync_pQ4);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_fQ1);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_fQ2);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_fQ3);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_fQ4);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ1);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ2);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ3);
+        RECEIVERS_H.add(AreaNames.RIIC_hSync_pQ4);
 
     }
 
@@ -111,7 +120,9 @@ public class ComponentClassifier extends ActivityTemplate {
                 ArrayList<PreObject> components = extractComponentFeatures(preObjectSegment.getSegment());
 //                Mat hardHolisticMat = new Mat();
 //                Imgproc.threshold(holisticMat, hardHolisticMat, 5, 255, Imgproc.THRESH_BINARY);
-//                show(hardHolisticMat,"HolisticFeatures: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+                for (PreObject component : components) {
+                    show(component.getData(), "ComponentFeatures: " + LOCAL_RETINOTOPIC_ID, this.getClass());
+                }
                 RIIC_c candidates = getCandidates(riic_c, riic_h, components);
                 sendTo(
                         new Sendable(
@@ -132,13 +143,27 @@ public class ComponentClassifier extends ActivityTemplate {
                         LOCAL_RETINOTOPIC_ID,
                         currentSyncID
                 );
-                updateRIIC_c(riic_c, candidates, components);
+                updateRIIC_c(riic_c, candidates, components, riic_h);
                 sendTo(
                         new Sendable(
-                                riic_h,
+                                riic_c,
                                 this.ID,
                                 received.getTrace(),
                                 RECEIVERS_C.get(
+                                        RETINOTOPIC_ID.indexOf(
+                                                LOCAL_RETINOTOPIC_ID
+                                        )
+                                )
+                        ),
+                        LOCAL_RETINOTOPIC_ID,
+                        currentSyncID
+                );
+                sendTo(
+                        new Sendable(
+                                riic_c.getEssentials(),
+                                this.ID,
+                                received.getTrace(),
+                                RECEIVERS_H.get(
                                         RETINOTOPIC_ID.indexOf(
                                                 LOCAL_RETINOTOPIC_ID
                                         )
@@ -168,13 +193,11 @@ public class ComponentClassifier extends ActivityTemplate {
         Mat edgesMat = new Mat();
         Mat filtered = new Mat();
         Imgproc.threshold(mat, threshold, 127, 255, Imgproc.THRESH_BINARY);
-        Ximgproc.thinning(threshold, edgesMat, Ximgproc.THINNING_ZHANGSUEN);
-        Imgproc.boxFilter(edgesMat, edgesMat, -1, new Size(15, 15), new Point(-1, -1));
-        features.add(new PreObject(edgesMat));
         cornersMat = corners(threshold);
         Imgproc.boxFilter(cornersMat, filtered, -1, new Size(15, 15), new Point(-1, -1));
         Imgproc.threshold(filtered, filtered, 10, 255, Imgproc.THRESH_BINARY);
-        Imgproc.findContours(cornersMat, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+        //filtered.convertTo(filtered, CvType.CV_8UC1);
+        Imgproc.findContours(filtered, contours, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
         for (MatOfPoint contour : contours) {
             Mat drawn = Mat.zeros(mat.size(), CvType.CV_8UC1);
             Imgproc.fillConvexPoly(drawn, contour, new Scalar(255));
@@ -184,14 +207,16 @@ public class ComponentClassifier extends ActivityTemplate {
         return features;
     }
 
-    private Mat corners(Mat mat) {
+    private Mat corners(Mat mat) throws IOException {
         MatOfKeyPoint points = new MatOfKeyPoint();
         FastFeatureDetector fast = FastFeatureDetector.create();
         fast.setNonmaxSuppression(false);
         fast.detect(mat, points);
-        Mat lines = Mat.zeros(mat.size(), mat.type());
+        Mat lines = Mat.zeros(mat.size(), CvType.CV_8UC1);
         Scalar color = new Scalar(255, 255, 255);
         Features2d.drawKeypoints(lines, points, lines, color);
+        Imgproc.cvtColor(lines, lines, Imgproc.COLOR_RGB2GRAY);
+        //show(lines,"Corners "+LOCAL_RETINOTOPIC_ID,this.getClass());
         return lines;
     }
 
@@ -209,18 +234,18 @@ public class ComponentClassifier extends ActivityTemplate {
         return newMat;
     }
 
-    private RIIC_c getCandidates(RIIC_c riic_cAll, RIIC_h riic_h, ArrayList<PreObject> preObjects) throws IOException {
+    private RIIC_c getCandidates(RIIC_c riic_cAll, RIIC_h riic_h, ArrayList<PreObject> components) throws IOException {
         RIIC_c riic_c = riic_cAll.getRIIC_hActivations(riic_h);
         RIIC_c riic_cTemplates = new RIIC_c("EMPTY ACTIVATED TEMPLATES");
-        for (PreObject preObject : preObjects) {
+        for (PreObject component : components) {
             int i = 0;
             while (riic_c.isNotEmpty() && i <= GlobalConfig.CANDIDATES_MAX_QUANTITY) {
                 PreObject currentTemplate = riic_c.next();
-                double activationLevel = getDistance(preObject.getData(), currentTemplate.getData());
+                double activationLevel = getDistance(component.getData(), currentTemplate.getData());
                 if (activationLevel >= GlobalConfig.ACTIVATION_THRESHOLD) {
-                    currentTemplate.addPriority(activationLevel + (1 / (1 + i)));
+                    currentTemplate.addPriority(getFechner(activationLevel));
                     riic_cTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
-                    preObject.setCandidateRef(currentTemplate.getLabel());
+                    component.addCandidateRef(currentTemplate.getLabel());
                     i++;
                 }
             }
@@ -248,19 +273,45 @@ public class ComponentClassifier extends ActivityTemplate {
         }
         return sum / (size * 255);
     }
-    
-    private void updateRIIC_c(RIIC_c riic_c, RIIC_c candidates, ArrayList<PreObject> preObjects) throws IOException {
+
+    //IMPORTANTE: Agregar relaciones a componentes nuevos solo con holisticos nuevos.
+    private void updateRIIC_c(RIIC_c riic_c, RIIC_c candidates, ArrayList<PreObject> components, RIIC_h riic_h) throws IOException {
         if (candidates.isEmpty()) {
-            for(PreObject preObject: preObjects){
-                riic_c.addMat(preObject.getData());
-            //show(newMat,"Added New Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+            for (PreObject component : components) {
+                riic_c.addMat(component.getData());
+                //show(newMat,"Added New Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
             }
         } else {
             while (candidates.isNotEmpty()) {
                 PreObject currentTemplate = candidates.next();
-                Mat showMat = riic_c.addOp(currentTemplate, preObjects);
-                //show(showMat,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+                if (currentTemplate.getCandidateRef().isEmpty()) {
+                    currentTemplate.addCandidateRef(riic_h.getLabels());
+                } else {
+                    boolean hasIt=false;
+                    for (String label : currentTemplate.getCandidateRef()) {
+                        if(riic_h.getLabels().contains(label)){
+                            hasIt=true;
+                            break;
+                        }
+                    }
+                    if(!hasIt){
+                        currentTemplate.addCandidateRef(riic_h.getLabels());
+                    }
+                }
+                for (PreObject component : components) {
+                    if (!component.getCandidateRef().isEmpty()) {
+                        for (String label : component.getCandidateRef()) {
+                            if (label.equals(currentTemplate.getLabel())) {
+                                Mat showMat = riic_c.addOp(currentTemplate, component.getData());
+                                //show(showMat,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+                            }
+                        }
+                    } else {
+                        riic_c.addMat(component.getData()).addCandidateRef(riic_h.getLabels());
+                    }
+                }
             }
+            candidates.retrieveAll();
         }
     }
 }

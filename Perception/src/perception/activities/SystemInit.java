@@ -5,13 +5,18 @@
  */
 package perception.activities;
 
+import java.awt.Window;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import perception.GUI.XFrame;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.PreObjectSet;
@@ -35,43 +40,38 @@ public class SystemInit extends ActivityTemplate {
         SimpleLogger.log(this, "SYSTEM_INIT: init()");
         try {
             start();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(SystemInit.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void start() throws IOException {
+    private void start() throws Exception {
         //Reading the Image from the file and storing it in to a Matrix object 
         String file = GlobalConfig.windowsFile;
         Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
-        show(image,"System Init");
-        sendTo(
-                new Sendable(
-                        new PreObjectSet(
-                                image,
-                                "NEW PREOBJECT SET"
-                        ),
-                        this.ID,
-                        AreaNames.Segmentation
-                )
-        );
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(SystemInit.class.getName()).log(Level.SEVERE, null, ex);
+        XFrame frame = show(image, "System Init");
+        while (true) {
+            if (frame.isClicked()) {
+                for (Window win : JFrame.getWindows()) {
+                    win.dispose();
+                }
+                frame = show(image, "System Init");
+                sendTo(
+                        new Sendable(
+                                new PreObjectSet(
+                                        image,
+                                        "NEW PREOBJECT SET"
+                                ),
+                                this.ID,
+                                AreaNames.Segmentation
+                        )
+                );
+                frame.notClicked();
+            }
+            Thread.sleep(100);
         }
-        sendTo(
-                new Sendable(
-                        new PreObjectSet(
-                                Mat.zeros(GlobalConfig.WINDOW_SIZE, CvType.CV_8UC1),
-                                "END PREOBJECT"
-                        ),
-                        this.ID,
-                        AreaNames.Segmentation
-                )
-        );
-    }
 
+    }
     @Override
     public void receive(int nodeID, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
