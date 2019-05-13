@@ -25,7 +25,7 @@ public class GlobalConfig {
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
     public static final int showEnablerID = 0;//AreaNames.Segmentation;
-    public static  final Class showEnablerIDs = HolisticClassifier.class;
+    public static  final Class showEnablerIDs = RIIC_cSyncTemplate.class;
     
     public static double ACTIVATION_THRESHOLD = 0.5;
     public static int CANDIDATES_MAX_QUANTITY = 5;
@@ -36,4 +36,5 @@ public class GlobalConfig {
     public static double RETINOTOPIC_INFLUENCE_FACTOR = 0.5;
     
     public static boolean DEBUG = false;
+    public static double COMPONENT_INFLUENCE_FACTOR = 0.5;
 }

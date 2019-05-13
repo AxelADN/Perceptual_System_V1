@@ -172,8 +172,12 @@ public class RIIC_c<T> extends StructureTemplate implements Serializable {
         }
     }
 
-    public ArrayList<String> getTemplates() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public PreObject getPreObject(String label) {
+        return templates.get(label);
+    }
+    
+    public PreObject getPreObject() {
+        return templates.get(templatesID.peek().getLabel());
     }
 
 }

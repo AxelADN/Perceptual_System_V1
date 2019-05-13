@@ -128,7 +128,7 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
                                 for (String label : preObject.getCandidateRef()) {
                                     PreObject hPreObject = this.riic_h.getPreObject(label);
                                     if (hPreObject != null) {
-                                        hPreObject.addCandidateRef(preObject.getLabel());
+                                        hPreObject.addComponent(preObject.getLabel());
                                     }
                                 }
                             }
