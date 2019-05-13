@@ -5,11 +5,13 @@
  */
 package perception.nodes.smallNodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
 import perception.structures.InternalRequest;
+import perception.structures.PreObject;
 import perception.structures.RIIC;
 import perception.structures.RIIC_c;
 import perception.structures.RIIC_h;
@@ -216,7 +218,12 @@ public abstract class RIICTemplate extends ActivityTemplate {
         riic.writeRIIC_h(riic_h);
     }
 
-    protected void updateRIIC_c(RIIC_c riic_c) {
+    protected void updateRIIC_c(RIIC_c riic_c) throws IOException {
+        while(riic_c.isNotEmpty()){
+            PreObject preObject = riic_c.nextData();
+            show(preObject.getData(),"Updated: "+this.LOCAL_RETINOTOPIC_ID,this.getClass());
+        }
+        riic_c.retrieveAll();
         riic.writeRIIC_c(riic_c);
     }
 

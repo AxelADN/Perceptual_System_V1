@@ -166,7 +166,7 @@ public abstract class RIIC_cSyncTemplate extends ActivityTemplate {
         }
     }
 
-    private void syncronizeRIIC_c(RIIC_c riic_c) throws IOException { 
+    private void syncronizeRIIC_c(RIIC_c riic_c) throws IOException {
         while (riic_c.isNotEmpty()) {
             PreObject preObject = riic_c.nextData();
             show(preObject.getData(),"Syncronized: "+this.LOCAL_RETINOTOPIC_ID,this.getClass());

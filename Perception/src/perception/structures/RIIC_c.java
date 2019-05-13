@@ -141,15 +141,16 @@ public class RIIC_c<T> extends StructureTemplate implements Serializable {
                         ).getData(),
                         currentMat
                 );
-        addPreObject(
-                new PreObject(
-                        newMat,
-                        currentTemplate.getModifyValue()
-                ).copyEssentials(
-                        currentTemplate
-                )
-        );
-        return newMat;
+        PreObject newPreObject
+                = addPreObject(
+                        new PreObject(
+                                newMat,
+                                currentTemplate.getModifyValue()
+                        ).copyEssentials(
+                                currentTemplate
+                        )
+                );
+        return newPreObject.getData();
     }
 
     public RIIC_c getRIIC_hActivations(RIIC_h riic_h) {
@@ -175,7 +176,7 @@ public class RIIC_c<T> extends StructureTemplate implements Serializable {
     public PreObject getPreObject(String label) {
         return templates.get(label);
     }
-    
+
     public PreObject getPreObject() {
         return templates.get(templatesID.peek().getLabel());
     }

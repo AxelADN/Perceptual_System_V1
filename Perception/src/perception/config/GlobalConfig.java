@@ -25,16 +25,17 @@ public class GlobalConfig {
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
     public static final int showEnablerID = 0;//AreaNames.Segmentation;
-    public static  final Class showEnablerIDs = RIIC_cSyncTemplate.class;
+    public static  final Class showEnablerIDs = RIICTemplate.class;
     
-    public static double ACTIVATION_THRESHOLD = 0.5;
-    public static int CANDIDATES_MAX_QUANTITY = 5;
+    public static double ACTIVATION_THRESHOLD_HOLISTIC = 0.005;
+    public static int CANDIDATES_MAX_QUANTITY = 50;
     public static int MAX_DOUBLE_TO_INT_FACTOR = 1000000;
     
     public static boolean INVERTED = false;
     public static double FECHNER_CONSTANT = 1.0;
-    public static double RETINOTOPIC_INFLUENCE_FACTOR = 0.5;
+    public static double RETINOTOPIC_INFLUENCE_FACTOR = 0.25;
     
     public static boolean DEBUG = false;
     public static double COMPONENT_INFLUENCE_FACTOR = 0.5;
+    public static double ACTIVATION_THRESHOLD_COMPONENT = 0.08;
 }

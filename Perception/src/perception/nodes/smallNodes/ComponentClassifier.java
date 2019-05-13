@@ -143,13 +143,12 @@ public class ComponentClassifier extends ActivityTemplate {
                         LOCAL_RETINOTOPIC_ID,
                         currentSyncID
                 );
-                updateRIIC_c(riic_c, candidates, components, riic_h);
                 sendTo(
                         new Sendable(
-                                riic_c,
+                                candidates,
                                 this.ID,
                                 received.getTrace(),
-                                RECEIVERS_C.get(
+                                RECEIVERS_H.get(
                                         RETINOTOPIC_ID.indexOf(
                                                 LOCAL_RETINOTOPIC_ID
                                         )
@@ -158,12 +157,13 @@ public class ComponentClassifier extends ActivityTemplate {
                         LOCAL_RETINOTOPIC_ID,
                         currentSyncID
                 );
+                updateRIIC_c(riic_c, candidates, components, riic_h);
                 sendTo(
                         new Sendable(
-                                riic_c.getEssentials(),
+                                riic_c,
                                 this.ID,
                                 received.getTrace(),
-                                RECEIVERS_H.get(
+                                RECEIVERS_C.get(
                                         RETINOTOPIC_ID.indexOf(
                                                 LOCAL_RETINOTOPIC_ID
                                         )
@@ -234,16 +234,17 @@ public class ComponentClassifier extends ActivityTemplate {
         return newMat;
     }
 
-    private RIIC_c getCandidates(RIIC_c riic_cAll, RIIC_h riic_h, ArrayList<PreObject> components) throws IOException {
-        RIIC_c riic_c = riic_cAll.getRIIC_hActivations(riic_h);
+    private RIIC_c getCandidates(RIIC_c riic_c, RIIC_h riic_h, ArrayList<PreObject> components) throws IOException {
+        //RIIC_c riic_c = riic_cAll.getRIIC_hActivations(riic_h);
         RIIC_c riic_cTemplates = new RIIC_c("EMPTY ACTIVATED TEMPLATES");
         for (PreObject component : components) {
             int i = 0;
             while (riic_c.isNotEmpty() && i <= GlobalConfig.CANDIDATES_MAX_QUANTITY) {
-                PreObject currentTemplate = riic_c.next();
+                PreObject currentTemplate = riic_c.nextData();
                 double activationLevel = getDistance(component.getData(), currentTemplate.getData());
-                if (activationLevel <= GlobalConfig.ACTIVATION_THRESHOLD) {
-                    currentTemplate.addPriority(getFechner(activationLevel));
+                //System.out.println("KSKSKS: "+activationLevel);
+                if (activationLevel <= GlobalConfig.ACTIVATION_THRESHOLD_COMPONENT) {
+                    currentTemplate.addPriority(getFechnerC(activationLevel));
                     riic_cTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                     component.addCandidateRef(currentTemplate.getLabel());
                     i++;
@@ -262,12 +263,14 @@ public class ComponentClassifier extends ActivityTemplate {
     private double getManhattan(Mat preObject, Mat currentTemplate) {
         byte[] extendedPreObject = new byte[(int) preObject.total() * preObject.channels()];
         byte[] extendedCurrentTemplate = new byte[(int) currentTemplate.total() * currentTemplate.channels()];
+        preObject.get(0,0, extendedPreObject);
+        currentTemplate.get(0,0, extendedCurrentTemplate);
         return getManhattan(extendedPreObject, extendedCurrentTemplate);
     }
 
     private double getManhattan(byte[] extendedPreObject, byte[] extendedCurrentTemplate) {
-        int size = min(extendedPreObject.length, extendedCurrentTemplate.length);
-        byte sum = 0;
+        double size = min(extendedPreObject.length, extendedCurrentTemplate.length);
+        double sum = 0;
         for (int i = 0; i < size; i++) {
             sum += Math.abs(extendedPreObject[i] - extendedCurrentTemplate[i]);
         }
@@ -286,7 +289,7 @@ public class ComponentClassifier extends ActivityTemplate {
                 PreObject currentTemplate = candidates.next();
                 if (currentTemplate.getCandidateRef().isEmpty()) {
                     currentTemplate.addCandidateRef(riic_h.getLabels());
-                    System.out.println(currentTemplate.getCandidateRef());
+                    //System.out.println(currentTemplate.getCandidateRef());
                 } else {
                     boolean hasIt=false;
                     for (String label : currentTemplate.getCandidateRef()) {
@@ -304,7 +307,7 @@ public class ComponentClassifier extends ActivityTemplate {
                         for (String label : component.getCandidateRef()) {
                             if (label.equals(currentTemplate.getLabel())) {
                                 Mat showMat = riic_c.addOp(currentTemplate, component.getData());
-                                //show(showMat,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+                                show(showMat,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
                             }
                         }
                     } else {

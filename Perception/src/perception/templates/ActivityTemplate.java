@@ -186,13 +186,13 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected void show(Mat image, String title, Class klass) throws IOException {
-        if (GlobalConfig.showEnablerIDs == klass) {
+        if (GlobalConfig.showEnablerIDs == klass || GlobalConfig.showEnablerIDs == klass.getSuperclass()) {
             show(image, title);
         }
     }
 
     protected void showMax(Mat image, String title, Class klass) throws IOException {
-        if (GlobalConfig.showEnablerIDs == klass) {
+        if (GlobalConfig.showEnablerIDs == klass || GlobalConfig.showEnablerIDs == klass.getSuperclass()) {
             Mat hardMat = new Mat();
             Imgproc.threshold(image, hardMat, 5, 255, Imgproc.THRESH_BINARY);
             show(hardMat, title);
@@ -269,8 +269,12 @@ public abstract class ActivityTemplate extends Activity {
         }
     }
 
-    protected double getFechner(double activation) {
-        return GlobalConfig.FECHNER_CONSTANT * Math.log(activation / GlobalConfig.ACTIVATION_THRESHOLD);
+    protected double getFechnerH(double activation) {
+        return GlobalConfig.FECHNER_CONSTANT * Math.log(activation / GlobalConfig.ACTIVATION_THRESHOLD_HOLISTIC);
+    }
+
+    protected double getFechnerC(double activation) {
+        return GlobalConfig.FECHNER_CONSTANT * Math.log(activation / GlobalConfig.ACTIVATION_THRESHOLD_COMPONENT);
     }
 
 }
