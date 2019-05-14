@@ -21,7 +21,10 @@ public class PreObject extends StructureTemplate implements Serializable{
     private Double priority;
     private int modifyValue;
     private ArrayList<String> componentRef;
+    //String1 = Retinotopic Route
+    //String2 = PreObject Label
     private ArrayList<PairWrapper<String,String>> retinotopicObj;
+    private String retinotopicID;
     
     public PreObject(Mat mat){
         this.data = Mat2Bytes(mat);
@@ -31,6 +34,7 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.candidateRef = new ArrayList<>();
         this.componentRef = new ArrayList<>();
         this.retinotopicObj = new ArrayList<>();
+        this.retinotopicID = new String();
     }
     
     public PreObject(Mat mat, int modifyValue){
@@ -41,6 +45,7 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.candidateRef = new ArrayList<>();
         this.componentRef = new ArrayList<>();
         this.retinotopicObj = new ArrayList<>();
+        this.retinotopicID = new String();
     }
     
     public PreObject(String UID, double priority, int modifyValue){
@@ -51,6 +56,7 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.candidateRef = new ArrayList<>();
         this.componentRef = new ArrayList<>();
         this.retinotopicObj = new ArrayList<>();
+        this.retinotopicID = new String();
     }
     
     public PreObject(String UID, double priority, int modifyValue, ArrayList<String> candidateRef,ArrayList<String> componentRef, ArrayList<PairWrapper<String,String>> retinotopicObj){
@@ -61,6 +67,7 @@ public class PreObject extends StructureTemplate implements Serializable{
         this.candidateRef = candidateRef;
         this.componentRef = componentRef;
         this.retinotopicObj = retinotopicObj;
+        this.retinotopicID = new String();
     }
     
     public PreObject getPreObjectEssentials(){
@@ -80,6 +87,13 @@ public class PreObject extends StructureTemplate implements Serializable{
     public void addRetinotopicObj(ArrayList<PairWrapper<String,String>> labels){
         for(PairWrapper<String,String> retinotopicLabel: labels){
             this.retinotopicObj.add(retinotopicLabel);
+        }
+        this.modifyValue++;
+    }
+
+    public void addRetinotopicObjArray(String[][] preObjects) {
+        for(String[] label:preObjects){
+            this.retinotopicObj.add(new PairWrapper<String,String>(label[0],label[1]));
         }
         this.modifyValue++;
     }
@@ -166,5 +180,9 @@ public class PreObject extends StructureTemplate implements Serializable{
 
     boolean hasComponents() {
         return this.componentRef.isEmpty();
+    }
+
+    public String getRetinotopicID() {
+        return this.retinotopicID;
     }
 }

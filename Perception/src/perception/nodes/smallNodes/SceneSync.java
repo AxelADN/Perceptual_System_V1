@@ -49,11 +49,11 @@ public class SceneSync extends ActivityTemplate {
                     this.scene.add(sceneSegment);
                 } else {
                     if ((int) spike.getTiming() > this.currentSyncID) {
-                        for(RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet:this.scene){
-                            RIIC_hAndPreObjectSegmentPair pair = triplet.getRIIC_hAndPreObjectSegmentPair();
-                            PreObjectSection segment = pair.getPreObjectSegment();
-                            show(segment.getSegment(),"Synced: "+this.currentSyncID,this.getClass());
-                        }
+//                        for(RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet:this.scene){
+//                            RIIC_hAndPreObjectSegmentPair pair = triplet.getRIIC_hAndPreObjectSegmentPair();
+//                            PreObjectSection segment = pair.getPreObjectSegment();
+//                            show(segment.getSegment(),"Synced: "+this.currentSyncID,this.getClass());
+//                        }
                         sendTo(
                                 new Sendable(
                                         this.scene,

@@ -180,5 +180,9 @@ public class RIIC_c<T> extends StructureTemplate implements Serializable {
     public PreObject getPreObject() {
         return templates.get(templatesID.peek().getLabel());
     }
+    
+    public int getSize() {
+        return this.templatesID.size();
+    }
 
 }
