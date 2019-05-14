@@ -92,6 +92,7 @@ public abstract class PreObjectBufferTemplate extends ActivityTemplate {
             LongSpike spike = new LongSpike(data);
             if (isCorrectRoute((String) spike.getLocation())) {
                 if (isCorrectDataType(spike.getIntensity(), PreObjectSection.class)) {
+                    this.currentSyncID = (int)spike.getTiming();
                     ActivityTemplate.log(this,
                             ((PreObjectSection) ((Sendable) spike.getIntensity()).getData()).getLoggable()
                     );
@@ -118,7 +119,8 @@ public abstract class PreObjectBufferTemplate extends ActivityTemplate {
                                         received.getTrace(),
                                         AreaNames.HolisticClassifier
                                 ),
-                                spike.getLocation()
+                                spike.getLocation(),
+                                this.currentSyncID
                         );
                     } else {
                         sendToLostData(

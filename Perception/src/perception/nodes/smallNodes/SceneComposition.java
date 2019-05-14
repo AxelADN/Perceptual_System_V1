@@ -22,7 +22,7 @@ public class SceneComposition extends Activity {
     private static final String userID = "SceneComposition";
     
     public SceneComposition() {
-        this.ID = AreaNames.SceneCompositon;
+        this.ID = AreaNames.SceneComposition;
         this.namer = AreaNames.class;
     }
     

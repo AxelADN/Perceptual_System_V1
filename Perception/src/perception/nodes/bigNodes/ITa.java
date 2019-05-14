@@ -6,6 +6,7 @@
 package perception.nodes.bigNodes;
 
 import perception.config.AreaNames;
+import perception.nodes.smallNodes.SceneSync;
 import perception.templates.AreaTemplate;
 
 /**
@@ -16,6 +17,7 @@ public class ITa extends AreaTemplate {
     
     public ITa() {        
         this.ID = AreaNames.ITa;
+        addProcess(SceneSync.class);
        
     }
     

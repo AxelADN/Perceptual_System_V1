@@ -22,8 +22,8 @@ public class AreaNames {
 
     public static final int ITa = IDHelper.generateID("ITa", 0, 0);
     public static final int SceneSync = IDHelper.generateID("ITa", 1, 0);
-    public static int SceneCompositon;
-    public static final int Identify = IDHelper.generateID("ITa", 2, 0);
+    public static final int RetinotopicExpectationBuilder = IDHelper.generateID("ITa", 2, 0);
+    public static final int SceneComposition = IDHelper.generateID("ITa", 3, 0);
 
     public static final int ITp_h = IDHelper.generateID("ITp_h", 0, 0);
     public static final int BufferSwitch = IDHelper.generateID("ITp_h", 1, 0);

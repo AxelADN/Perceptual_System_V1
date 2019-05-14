@@ -5,7 +5,6 @@
  */
 package perception.nodes.smallNodes;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -107,6 +106,7 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                         && LOCAL_RETINOTOPIC_ID.contentEquals(
                                 (String) spike.getLocation()
                         )) {
+                    this.currentSyncID = (int)spike.getTiming();
                     //Send data to defined node.
                     sendTo(
                             new Sendable(
@@ -114,7 +114,8 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                                     this.ID,
                                     received.getTrace(),
                                     RECEIVERS.get(retinotopicIndex)),
-                            spike.getLocation()
+                            spike.getLocation(),
+                            this.currentSyncID
                     );
                     //Node becomes prioritized in current route.
                     prioritized[retinotopicIndex] = true;
@@ -141,7 +142,8 @@ public abstract class PreObjectPrioritizerTemplate extends ActivityTemplate {
                                         this.ID,
                                         received.getTrace(),
                                         RECEIVERS.get(retinotopicIndex)),
-                                spike.getLocation()
+                                spike.getLocation(),
+                                this.currentSyncID
                         );
                         //Node becomes not prioritized in current route.
                         prioritized[retinotopicIndex] = false;

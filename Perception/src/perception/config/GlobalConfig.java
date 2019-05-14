@@ -25,7 +25,7 @@ public class GlobalConfig {
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
     public static final int showEnablerID = 0;//AreaNames.Segmentation;
-    public static  final Class showEnablerIDs = RIICTemplate.class;
+    public static  final Class showEnablerIDs = SceneSync.class;
     
     public static double ACTIVATION_THRESHOLD_HOLISTIC = 0.005;
     public static int CANDIDATES_MAX_QUANTITY = 50;

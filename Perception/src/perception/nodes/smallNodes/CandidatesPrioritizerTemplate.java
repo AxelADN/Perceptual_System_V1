@@ -102,6 +102,7 @@ public abstract class CandidatesPrioritizerTemplate extends ActivityTemplate {
                     //Checks if data comes from correct retinotopic route.
                     //Checks if node is not prioritized in current route, if it is, then data is lost.
                     if (!prioritized[retinotopicIndex]) {
+                        this.currentSyncID = (int)spike.getTiming();
                         //Send data to defined node.
                         sendTo(
                                 new Sendable(
@@ -109,7 +110,8 @@ public abstract class CandidatesPrioritizerTemplate extends ActivityTemplate {
                                         this.ID,
                                         received.getTrace(),
                                         RECEIVERS.get(retinotopicIndex)),
-                                spike.getLocation()
+                                spike.getLocation(),
+                                this.currentSyncID
                         );
                         //Node becomes prioritized in current route.
                         prioritized[retinotopicIndex] = true;
@@ -133,7 +135,8 @@ public abstract class CandidatesPrioritizerTemplate extends ActivityTemplate {
                                         received.getTrace(),
                                         RECEIVERS.get(retinotopicIndex)
                                 ),
-                                spike.getLocation()
+                                spike.getLocation(),
+                                this.currentSyncID
                         );
                         //Node becomes not prioritized in current route.
                         prioritized[retinotopicIndex] = false;

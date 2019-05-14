@@ -96,6 +96,7 @@ public abstract class CandidatesBufferTemplate extends ActivityTemplate {
                         spike.getIntensity(),
                         RIIC_hAndPreObjectSegmentPair.class
                 )) {
+                    this.currentSyncID = (int) spike.getTiming();
                     ActivityTemplate.log(
                             this,
                             ((RIIC_hAndPreObjectSegmentPair) ((Sendable) spike.getIntensity()).getData()).getLoggable()
@@ -107,40 +108,44 @@ public abstract class CandidatesBufferTemplate extends ActivityTemplate {
                             (Sendable) spike.getIntensity(),
                             (String) spike.getLocation()
                     );
-                } else if (isCorrectDataType(
-                        spike.getIntensity(),
-                        RIIC_c.class
-                )) {
-                    Sendable received = (Sendable) spike.getIntensity();
-                    ActivityTemplate.log(
-                            this,
-                            ((RIIC_c) received.getData()).getLoggable()
-                    );
-                    sendTo(new Sendable(
-                            makePair((RIIC_c) received.getData(),
-                                    bufferedRIIC_hAndPreObjectSegmentPair),
-                            this.ID,
-                            received.getTrace(),
-                            AreaNames.ComponentClassifier
-                    ),
-                            spike.getLocation()
-                    );
                 } else {
-                    sendToLostData(
-                            this,
-                            spike,
-                            "NEITHER CANDIDATE TEMPLATE NOR RIIC_C RECOGNIZED: "
-                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
-                    );
+                    if (isCorrectDataType(
+                            spike.getIntensity(),
+                            RIIC_c.class
+                    )) {
+                        Sendable received = (Sendable) spike.getIntensity();
+                        ActivityTemplate.log(
+                                this,
+                                ((RIIC_c) received.getData()).getLoggable()
+                        );
+                        sendTo(
+                                new Sendable(
+                                        makePair((RIIC_c) received.getData(),
+                                                bufferedRIIC_hAndPreObjectSegmentPair),
+                                        this.ID,
+                                        received.getTrace(),
+                                        AreaNames.ComponentClassifier
+                                ),
+                                spike.getLocation(),
+                                this.currentSyncID
+                        );
+                    } else {
+                        sendToLostData(
+                                this,
+                                spike,
+                                "NEITHER CANDIDATE TEMPLATE NOR RIIC_C RECOGNIZED: "
+                                + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                        );
+                    }
                 }
             } else {
                 sendToLostData(
-                        this, 
-                        spike, 
-                        "MISTAKEN RETINOTOPIC ROUTE: " + 
-                                (String) spike.getLocation()+
-                                " | FROM " +
-                                searchIDName(((Sendable)spike.getIntensity()).getSender())
+                        this,
+                        spike,
+                        "MISTAKEN RETINOTOPIC ROUTE: "
+                        + (String) spike.getLocation()
+                        + " | FROM "
+                        + searchIDName(((Sendable) spike.getIntensity()).getSender())
                 );
             }
         } catch (Exception ex) {
@@ -179,7 +184,7 @@ public abstract class CandidatesBufferTemplate extends ActivityTemplate {
             RIIC_hAndPreObjectSegmentPair riic_hAndPreObjectSegmentPair
     ) {
         return new RIIC_cAndRIIC_hAndPreObjectSegmentPairPair(
-                riic_c, riic_hAndPreObjectSegmentPair, 
+                riic_c, riic_hAndPreObjectSegmentPair,
                 "TRIPLET_" + LOCAL_RETINOTOPIC_ID
         );
     }

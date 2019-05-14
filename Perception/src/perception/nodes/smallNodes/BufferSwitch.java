@@ -35,7 +35,7 @@ import utils.SimpleLogger;
 public class BufferSwitch extends ActivityTemplate {
 
     private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
-    private static int syncID = 0;
+    private static int syncID;
 
     /**
      * Constructor: Defines node identifiers and variables. The
@@ -60,6 +60,7 @@ public class BufferSwitch extends ActivityTemplate {
     @Override
     public void init() {
         SimpleLogger.log(this, "BUFFER_SWITCH: init()");
+        syncID = 0;
     }
 
     /**
@@ -80,6 +81,7 @@ public class BufferSwitch extends ActivityTemplate {
             LongSpike spike = new LongSpike(data);
             if (isCorrectDataType(spike.getIntensity(), PreObjectSection.class)) {
                 distributeSegments((Sendable) spike.getIntensity());
+                syncID++;
             } else {
                 sendToLostData(
                         this,
@@ -136,7 +138,6 @@ public class BufferSwitch extends ActivityTemplate {
                         syncID
                 );
             }
-            syncID++;
             i++;
         }
         if (GlobalConfig.showEnablerID == ID) {
