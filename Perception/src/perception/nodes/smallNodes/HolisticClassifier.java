@@ -187,9 +187,14 @@ public class HolisticClassifier extends ActivityTemplate {
             PreObject currentTemplate = riic_h.nextData();
             //showMax(currentTemplate.getData(),"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
             double activationLevel = getDistance(preObject, currentTemplate.getData());
-            if (activationLevel <= GlobalConfig.ACTIVATION_THRESHOLD_HOLISTIC) {
+            double fechner = getFechnerH(activationLevel);
+            fechner = fechner /(getFechnerH(0));
+            System.out.println("PERCEPT: "+fechner);
+            if (activationLevel >= GlobalConfig.PERCEPT_THRESHOLD_HOLISTIC) {
                 //showMax(currentTemplate.getData(),"Candidate: "+LOCAL_RETINOTOPIC_ID,this.getClass());
-                currentTemplate.addPriority(getFechnerH(activationLevel));
+                currentTemplate.addPriority(fechner);
+                System.out.println("PRECEPT: "+(fechner)+" | "+activationLevel);
+                currentTemplate.setRetinotopicID(this.LOCAL_RETINOTOPIC_ID);
                 riic_hTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                 i++;
             }

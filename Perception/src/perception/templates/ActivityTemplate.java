@@ -270,11 +270,11 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected double getFechnerH(double activation) {
-        return GlobalConfig.FECHNER_CONSTANT * Math.log(activation / GlobalConfig.ACTIVATION_THRESHOLD_HOLISTIC);
+        return GlobalConfig.FECHNER_CONSTANT * Math.log((1-activation) / GlobalConfig.ACTIVATION_THRESHOLD_HOLISTIC);
     }
 
     protected double getFechnerC(double activation) {
-        return GlobalConfig.FECHNER_CONSTANT * Math.log(activation / GlobalConfig.ACTIVATION_THRESHOLD_COMPONENT);
+        return GlobalConfig.FECHNER_CONSTANT * Math.log((1-activation) / GlobalConfig.ACTIVATION_THRESHOLD_COMPONENT);
     }
 
 }

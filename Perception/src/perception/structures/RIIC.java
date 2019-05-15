@@ -27,6 +27,22 @@ public class RIIC extends StructureTemplate implements Serializable {
         this.riic_h = riic_h;
         this.riic_c = riic_c;
     }
+    
+    public void addRIIC_h(RIIC_h riic_h){
+        while(riic_h.isNotEmpty()){
+            PreObject preObject = riic_h.nextData();
+            this.riic_h.addPreObject(preObject);
+        }
+        riic_h.retrieveAll();
+    }
+    
+    public void addRIIC_c(RIIC_c riic_c){
+        while(riic_c.isNotEmpty()){
+            PreObject preObject = riic_c.nextData();
+            this.riic_c.addPreObject(preObject);
+        }
+        riic_c.retrieveAll();
+    }
 
     public void writeRIIC_h(RIIC_h riic_h) {
         this.riic_h = riic_h;

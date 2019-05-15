@@ -6,6 +6,7 @@
 package perception.nodes.smallNodes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
@@ -57,19 +58,29 @@ public class RetinotopicExpectationBuilder extends ActivityTemplate {
         try {
             LongSpike spike = new LongSpike(data);
             if (isCorrectDataType(spike.getIntensity(), RIIC.class)) {
-                RIIC riic = (RIIC) ((Sendable) spike.getIntensity()).getData();
-                this.createHolisticRelations(riic.readRIIC_h());
-                this.sendHolisticRelations(riic.readRIIC_h());
-                this.createComponentRelations(riic.readRIIC_c());
-
+                Sendable received = (Sendable) spike.getIntensity();
+                RIIC riic = (RIIC) (received).getData();
+                this.sendHolisticRelations(
+                        this.createHolisticRelations(
+                                riic.readRIIC_h()
+                        ),
+                        spike
+                );
+                this.sendComponentRelations(
+                        this.createComponentRelations(
+                                riic.readRIIC_c()
+                        ),
+                        spike
+                );
             }
         } catch (Exception ex) {
             Logger.getLogger(RetinotopicExpectationBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void createHolisticRelations(RIIC_h riic_h) {
+    private HashMap<String, RIIC_h> createHolisticRelations(RIIC_h riic_h) {
         String[][] preObjects = new String[riic_h.getSize()][2];
+        HashMap<String, RIIC_h> riics = new HashMap<>();
         int i = 0;
         while (riic_h.isNotEmpty()) {
             PreObject preObject = riic_h.nextData();
@@ -81,12 +92,23 @@ public class RetinotopicExpectationBuilder extends ActivityTemplate {
         while (riic_h.isNotEmpty()) {
             PreObject preObject = riic_h.nextData();
             preObject.addRetinotopicObjArray(preObjects);
+            if (riics.containsKey(preObject.getRetinotopicID())) {
+                RIIC_h currentRIIC_h = riics.get(preObject.getRetinotopicID());
+                currentRIIC_h.addPreObject(preObject);
+                riics.put(preObject.getRetinotopicID(), currentRIIC_h);
+            } else {
+                RIIC_h newRIIC_h = new RIIC_h("NEW RETINOTOPIC INFLUENCE SECTION");
+                newRIIC_h.addPreObject(preObject);
+                riics.put(preObject.getRetinotopicID(), newRIIC_h);
+            }
         }
         riic_h.retrieveAll();
+        return riics;
     }
 
-    private void createComponentRelations(RIIC_c riic_c) {
+    private HashMap<String, RIIC_c> createComponentRelations(RIIC_c riic_c) {
         String[][] preObjects = new String[riic_c.getSize()][2];
+        HashMap<String, RIIC_c> riics = new HashMap<>();
         int i = 0;
         while (riic_c.isNotEmpty()) {
             PreObject preObject = riic_c.nextData();
@@ -98,17 +120,54 @@ public class RetinotopicExpectationBuilder extends ActivityTemplate {
         while (riic_c.isNotEmpty()) {
             PreObject preObject = riic_c.nextData();
             preObject.addRetinotopicObjArray(preObjects);
+            if (riics.containsKey(preObject.getRetinotopicID())) {
+                RIIC_c currentRIIC_c = riics.get(preObject.getRetinotopicID());
+                currentRIIC_c.addPreObject(preObject);
+                riics.put(preObject.getRetinotopicID(), currentRIIC_c);
+            } else {
+                RIIC_c newRIIC_c = new RIIC_c("NEW RETINOTOPIC INFLUENCE SECTION");
+                newRIIC_c.addPreObject(preObject);
+                riics.put(preObject.getRetinotopicID(), newRIIC_c);
+            }
         }
         riic_c.retrieveAll();
+        return riics;
     }
 
-    private void sendHolisticRelations(RIIC_h riic_h) {
-        while (riic_h.isNotEmpty()) {
-            PreObject preObject = riic_h.nextData();
+    private void sendHolisticRelations(HashMap<String, RIIC_h> riics_h, LongSpike spike) {
+        Sendable received = (Sendable) spike.getIntensity();
+        for (String retinotopicLabel : riics_h.keySet()) {
             sendTo(
                     new Sendable(
-                            
-                    )
+                            riics_h.get(retinotopicLabel),
+                            this.ID,
+                            received.getTrace(),
+                            RECEIVERS_H.get(
+                                    RETINOTOPIC_ID.indexOf(
+                                            retinotopicLabel
+                                    )
+                            )
+                    ),
+                    retinotopicLabel
+            );
+        }
+    }
+
+    private void sendComponentRelations(HashMap<String, RIIC_c> riics_c, LongSpike spike) {
+        Sendable received = (Sendable) spike.getIntensity();
+        for (String retinotopicLabel : riics_c.keySet()) {
+            sendTo(
+                    new Sendable(
+                            riics_c.get(retinotopicLabel),
+                            this.ID,
+                            received.getTrace(),
+                            RECEIVERS_C.get(
+                                    RETINOTOPIC_ID.indexOf(
+                                            retinotopicLabel
+                                    )
+                            )
+                    ),
+                    retinotopicLabel
             );
         }
     }

@@ -9,9 +9,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
-import perception.structures.PreObjectSection;
+import perception.structures.RIIC;
 import perception.structures.RIIC_cAndRIIC_hAndPreObjectSegmentPairPair;
-import perception.structures.RIIC_hAndPreObjectSegmentPair;
 import perception.structures.Sendable;
 import perception.templates.ActivityTemplate;
 import spike.LongSpike;
@@ -42,7 +41,6 @@ public class SceneSync extends ActivityTemplate {
             LongSpike spike = new LongSpike(data);
             if (isCorrectDataType(spike.getIntensity(), RIIC_cAndRIIC_hAndPreObjectSegmentPairPair.class)) {
                 Sendable received = (Sendable) spike.getIntensity();
-                System.out.println("SYNCKER: "+spike.getTiming());
                 RIIC_cAndRIIC_hAndPreObjectSegmentPairPair sceneSegment
                         = (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair) received.getData();
                 if ((int) spike.getTiming() == this.currentSyncID) {
@@ -56,7 +54,7 @@ public class SceneSync extends ActivityTemplate {
 //                        }
                         sendTo(
                                 new Sendable(
-                                        this.scene,
+                                        this.getRIIC(),
                                         this.ID,
                                         received.getTrace(),
                                         AreaNames.RetinotopicExpectationBuilder
@@ -85,6 +83,15 @@ public class SceneSync extends ActivityTemplate {
         } catch (Exception ex) {
             Logger.getLogger(SceneSync.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private RIIC getRIIC() {
+        RIIC riic = new RIIC("NEW RETINOTOPIC INFLUENCER RIIC");
+        for(RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet: this.scene){
+            riic.addRIIC_h(triplet.getRIIC_hAndPreObjectSegmentPair().getRIIC_h());
+            riic.addRIIC_c(triplet.getRIIC_c());
+        }
+        return riic;
     }
 
 }

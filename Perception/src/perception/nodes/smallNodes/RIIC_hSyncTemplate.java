@@ -98,26 +98,34 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
                 } else {
                     if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
                         if (((Sendable) spike.getIntensity()).getSender() == this.ID) {
-                            this.updateRetinotopicInfluence((RIIC_h) ((Sendable) spike.getIntensity()).getData());
+                            this.updateRetinotopicInfluence(
+                                    (RIIC_h) ((Sendable) spike.getIntensity()).getData()
+                            );
                         } else {
-                            RIIC_h newRIIC_h = (RIIC_h) ((Sendable) spike.getIntensity()).getData();
-                            syncronizeRIIC_h(newRIIC_h);
-                            ActivityTemplate.log(
-                                    this,
-                                    this.riic_h.getLoggable()
-                            );
-                            sendTo(
-                                    new Sendable(
-                                            this.riic_h,
-                                            this.ID,
-                                            ((Sendable) spike.getIntensity()).getTrace(),
-                                            RECEIVERS.get(
-                                                    RETINOTOPIC_ID.indexOf(LOCAL_RETINOTOPIC_ID)
-                                            )
-                                    ),
-                                    LOCAL_RETINOTOPIC_ID,
-                                    this.currentSyncID
-                            );
+                            if (((Sendable) spike.getIntensity()).getSender() == AreaNames.RetinotopicExpectationBuilder) {
+                                this.syncronizeRetinotopicInfluence(
+                                        (RIIC_h) ((Sendable) spike.getIntensity()).getData()
+                                );
+                            } else {
+                                RIIC_h newRIIC_h = (RIIC_h) ((Sendable) spike.getIntensity()).getData();
+                                syncronizeRIIC_h(newRIIC_h);
+                                ActivityTemplate.log(
+                                        this,
+                                        this.riic_h.getLoggable()
+                                );
+                                sendTo(
+                                        new Sendable(
+                                                this.riic_h,
+                                                this.ID,
+                                                ((Sendable) spike.getIntensity()).getTrace(),
+                                                RECEIVERS.get(
+                                                        RETINOTOPIC_ID.indexOf(LOCAL_RETINOTOPIC_ID)
+                                                )
+                                        ),
+                                        LOCAL_RETINOTOPIC_ID,
+                                        this.currentSyncID
+                                );
+                            }
                         }
                     } else {
                         if (isCorrectDataType(spike.getIntensity(), RIIC_c.class)) {
@@ -170,7 +178,7 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
     private void syncronizeRIIC_h(RIIC_h riic_h) throws IOException {
         while (riic_h.isNotEmpty()) {
             PreObject preObject = riic_h.nextData();
-            show(preObject.getData(),"Syncronized: "+this.LOCAL_RETINOTOPIC_ID,this.getClass());
+            show(preObject.getData(), "Syncronized: " + this.LOCAL_RETINOTOPIC_ID, this.getClass());
             PreObject template = this.riic_h.getPreObject(preObject.getLabel());
             if (template != null) {
                 if (preObject.getModifyValue() >= template.getModifyValue()) {
@@ -244,6 +252,19 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
                 )
         );
         sendRetinotopicInfluences(spike);
+    }
+
+    private void syncronizeRetinotopicInfluence(RIIC_h riic_h) {
+        while (riic_h.isNotEmpty()) {
+            PreObject preObject = riic_h.next();
+            PreObject template = this.riic_h.getPreObject(preObject.getLabel());
+            if (template != null) {
+                if (preObject.getModifyValue() >= template.getModifyValue()) {
+                    template.addRetinotopicObj(preObject.getRetinotopicObj());
+                }
+            }
+        }
+        this.riic_h.setLoggable("SYNCED RETINOTOPIC INFLUENCE RIIC_H");
     }
 
 }

@@ -242,6 +242,7 @@ public class ComponentClassifier extends ActivityTemplate {
                 //System.out.println("KSKSKS: "+activationLevel);
                 if (activationLevel <= GlobalConfig.ACTIVATION_THRESHOLD_COMPONENT) {
                     currentTemplate.addPriority(getFechnerC(activationLevel));
+                    currentTemplate.setRetinotopicID(LOCAL_RETINOTOPIC_ID);
                     riic_cTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                     component.addCandidateRef(currentTemplate.getLabel());
                     i++;
