@@ -241,7 +241,9 @@ public class ComponentClassifier extends ActivityTemplate {
                 double activationLevel = getDistance(component.getData(), currentTemplate.getData());
                 //System.out.println("KSKSKS: "+activationLevel);
                 if (activationLevel <= GlobalConfig.ACTIVATION_THRESHOLD_COMPONENT) {
-                    currentTemplate.addPriority(getFechnerC(activationLevel));
+                    double fechner = getFechnerH(activationLevel);
+                    fechner = fechner / (getFechnerH(0));
+                    currentTemplate.addPriority(fechner);
                     currentTemplate.setRetinotopicID(LOCAL_RETINOTOPIC_ID);
                     riic_cTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                     component.addCandidateRef(currentTemplate.getLabel());
@@ -261,8 +263,8 @@ public class ComponentClassifier extends ActivityTemplate {
     private double getManhattan(Mat preObject, Mat currentTemplate) {
         byte[] extendedPreObject = new byte[(int) preObject.total() * preObject.channels()];
         byte[] extendedCurrentTemplate = new byte[(int) currentTemplate.total() * currentTemplate.channels()];
-        preObject.get(0,0, extendedPreObject);
-        currentTemplate.get(0,0, extendedCurrentTemplate);
+        preObject.get(0, 0, extendedPreObject);
+        currentTemplate.get(0, 0, extendedCurrentTemplate);
         return getManhattan(extendedPreObject, extendedCurrentTemplate);
     }
 
@@ -289,14 +291,14 @@ public class ComponentClassifier extends ActivityTemplate {
                     currentTemplate.addCandidateRef(riic_h.getLabels());
                     //System.out.println(currentTemplate.getCandidateRef());
                 } else {
-                    boolean hasIt=false;
+                    boolean hasIt = false;
                     for (String label : currentTemplate.getCandidateRef()) {
-                        if(riic_h.getLabels().contains(label)){
-                            hasIt=true;
+                        if (riic_h.getLabels().contains(label)) {
+                            hasIt = true;
                             break;
                         }
                     }
-                    if(!hasIt){
+                    if (!hasIt) {
                         currentTemplate.addCandidateRef(riic_h.getLabels());
                     }
                 }
@@ -305,7 +307,7 @@ public class ComponentClassifier extends ActivityTemplate {
                         for (String label : component.getCandidateRef()) {
                             if (label.equals(currentTemplate.getLabel())) {
                                 Mat showMat = riic_c.addOp(currentTemplate, component.getData());
-                                show(showMat,"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+                                show(showMat, "Added Mat: " + LOCAL_RETINOTOPIC_ID, this.getClass());
                             }
                         }
                     } else {

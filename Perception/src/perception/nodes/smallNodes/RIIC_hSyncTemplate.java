@@ -7,6 +7,7 @@ package perception.nodes.smallNodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -179,15 +180,8 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
         while (riic_h.isNotEmpty()) {
             PreObject preObject = riic_h.nextData();
             show(preObject.getData(), "Syncronized: " + this.LOCAL_RETINOTOPIC_ID, this.getClass());
-            PreObject template = this.riic_h.getPreObject(preObject.getLabel());
-            if (template != null) {
-                if (preObject.getModifyValue() >= template.getModifyValue()) {
-                    this.riic_h.addPreObject(preObject);
-                }
-            } else {
-                this.riic_h.addPreObject(preObject);
-            }
-
+            //System.out.println("MODIFY: "+preObject.getModifyValue());
+            this.riic_h.addPreObject(preObject);
         }
         this.riic_h.setLoggable("SYNCED RIIC_H");
     }
@@ -259,9 +253,8 @@ public abstract class RIIC_hSyncTemplate extends ActivityTemplate {
             PreObject preObject = riic_h.next();
             PreObject template = this.riic_h.getPreObject(preObject.getLabel());
             if (template != null) {
-                if (preObject.getModifyValue() >= template.getModifyValue()) {
-                    template.addRetinotopicObj(preObject.getRetinotopicObj());
-                }
+                template.addRetinotopicObj(preObject.getRetinotopicObj());
+                //System.out.println("RETINOBJ: "+Arrays.deepToString(preObject.getRetinotopicObjArray()));
             }
         }
         this.riic_h.setLoggable("SYNCED RETINOTOPIC INFLUENCE RIIC_H");

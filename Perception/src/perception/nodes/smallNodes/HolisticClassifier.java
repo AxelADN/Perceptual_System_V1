@@ -187,13 +187,12 @@ public class HolisticClassifier extends ActivityTemplate {
             PreObject currentTemplate = riic_h.nextData();
             //showMax(currentTemplate.getData(),"Added Mat: "+LOCAL_RETINOTOPIC_ID,this.getClass());
             double activationLevel = getDistance(preObject, currentTemplate.getData());
-            double fechner = getFechnerH(activationLevel);
-            fechner = fechner /(getFechnerH(0));
-            System.out.println("PERCEPT: "+fechner);
-            if (activationLevel >= GlobalConfig.PERCEPT_THRESHOLD_HOLISTIC) {
+            if (activationLevel <= GlobalConfig.ACTIVATION_THRESHOLD_HOLISTIC) {
                 //showMax(currentTemplate.getData(),"Candidate: "+LOCAL_RETINOTOPIC_ID,this.getClass());
+                double fechner = getFechnerH(activationLevel);
+                fechner = fechner / (getFechnerH(0));
                 currentTemplate.addPriority(fechner);
-                System.out.println("PRECEPT: "+(fechner)+" | "+activationLevel);
+                //System.out.println("PRECEPT: " + (fechner) + " | " + activationLevel);
                 currentTemplate.setRetinotopicID(this.LOCAL_RETINOTOPIC_ID);
                 riic_hTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                 i++;
@@ -209,7 +208,7 @@ public class HolisticClassifier extends ActivityTemplate {
         Mat filtered = new Mat();
         Imgproc.threshold(mat, threshold, 127, 255, Imgproc.THRESH_BINARY);
         Ximgproc.thinning(threshold, skeleton, Ximgproc.THINNING_ZHANGSUEN);
-        Imgproc.boxFilter(skeleton, filtered,-1,new Size(15,15),new Point(-1,-1));
+        Imgproc.boxFilter(skeleton, filtered, -1, new Size(15, 15), new Point(-1, -1));
         return filtered;
     }
 
@@ -221,8 +220,8 @@ public class HolisticClassifier extends ActivityTemplate {
     private double getManhattan(Mat preObject, Mat currentTemplate) {
         byte[] extendedPreObject = new byte[(int) preObject.total() * preObject.channels()];
         byte[] extendedCurrentTemplate = new byte[(int) currentTemplate.total() * currentTemplate.channels()];
-        preObject.get(0,0, extendedPreObject);
-        currentTemplate.get(0,0, extendedCurrentTemplate);
+        preObject.get(0, 0, extendedPreObject);
+        currentTemplate.get(0, 0, extendedCurrentTemplate);
         return getManhattan(extendedPreObject, extendedCurrentTemplate);
     }
 

@@ -14,7 +14,7 @@ import perception.nodes.smallNodes.*;
  */
 public class GlobalConfig {
     
-    public static final String windowsFile = "src/resources/Sample_02.png";
+    public static final String windowsFile = "src/resources/Sample_01.png";
     public static final String linuxFile = "/home/axeladn/Git/cuayollotol/Perception/src/resources/Sample_01.png";
     
     public static final int WINDOW_WIDTH = 480;
