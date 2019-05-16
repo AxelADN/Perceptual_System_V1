@@ -125,6 +125,8 @@ public class BufferSwitch extends ActivityTemplate {
                         new Sendable(
                                 new PreObjectSection(
                                         mat,
+                                        RETINOTOPIC_ID.get(i),
+                                        j,
                                         "NEW PREOBJECT SEGMENT: "
                                         + RETINOTOPIC_ID.get(i)
                                         + " | SEG_ID: "

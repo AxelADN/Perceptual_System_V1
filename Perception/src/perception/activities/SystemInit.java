@@ -49,13 +49,13 @@ public class SystemInit extends ActivityTemplate {
         //Reading the Image from the file and storing it in to a Matrix object 
         String file = GlobalConfig.windowsFile;
         Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
-        XFrame frame = show(image, "System Init");
+        XFrame frame = show(image,0,0, "System Init");
         while (true) {
             if (frame.isClicked()) {
                 for (Window win : JFrame.getWindows()) {
                     win.dispose();
                 }
-                frame = show(image, "System Init");
+                frame = show(image,0,0, "System Init");
                 sendTo(
                         new Sendable(
                                 new PreObjectSet(

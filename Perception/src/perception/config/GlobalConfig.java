@@ -24,7 +24,7 @@ public class GlobalConfig {
     
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
-    public static final int showEnablerID = 0;//AreaNames.Segmentation;
+    public static final int showEnablerID = 0;//AreaNames.BufferSwitch;
     public static  final Class showEnablerIDs = HolisticClassifier.class;
     
     public static double ACTIVATION_THRESHOLD_HOLISTIC = 0.005;

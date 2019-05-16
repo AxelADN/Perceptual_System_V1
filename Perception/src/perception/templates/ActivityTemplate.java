@@ -5,6 +5,8 @@
  */
 package perception.templates;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import javax.swing.JLabel;
 import kmiddle2.nodes.activities.Activity;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import perception.GUI.XFrame;
@@ -182,7 +185,8 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected XFrame show(Mat image, String title) throws IOException {
-        return show(image, 0, 0, title);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        return show(image, (int)(Math.random()*(screenSize.width/2)), (int)(Math.random()*(screenSize.height/2)), title);
     }
 
     protected void show(Mat image, String title, Class klass) throws IOException {
@@ -233,6 +237,9 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected XFrame show(Mat image, int x, int y, String title) throws IOException {
+//        Mat image = new Mat();
+//        Imgproc.resize(image0, image, new Size(image0.size().width*3,image0.size().height*3));
+        
         //Encoding the image 
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", image, matOfByte);

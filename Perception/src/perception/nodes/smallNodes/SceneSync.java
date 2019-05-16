@@ -43,6 +43,7 @@ public class SceneSync extends ActivityTemplate {
                 Sendable received = (Sendable) spike.getIntensity();
                 RIIC_cAndRIIC_hAndPreObjectSegmentPairPair sceneSegment
                         = (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair) received.getData();
+                System.out.println("RETINOOOO: "+sceneSegment.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment().getRetinotopicID());
                 if ((int) spike.getTiming() == this.currentSyncID) {
                     this.scene.add(sceneSegment);
                 } else {

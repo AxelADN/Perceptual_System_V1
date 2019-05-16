@@ -115,6 +115,7 @@ public class HolisticClassifier extends ActivityTemplate {
                 RIIC_h riic_h = pair.getRIIC_h();
                 PreObjectSection preObjectSegment = pair.getPreObjectSegment();
                 Mat holisticMat = extractHolisticFeatures(preObjectSegment.getSegment());
+                show(preObjectSegment.getSegment(),"PreObject: "+preObjectSegment.getRetinotopicID(),this.getClass());
                 //showMax(holisticMat, "HolisticFeatures: " + LOCAL_RETINOTOPIC_ID, this.getClass());
                 RIIC_h candidates = getCandidates(riic_h, holisticMat);
                 sendTo(
