@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.PreObjectSection;
@@ -120,14 +124,18 @@ public class BufferSwitch extends ActivityTemplate {
             int j = 0;
             //Send segment in its corresponding retinotopic route.
             ArrayList<Mat> mats = obj.getSegments();
+            ArrayList<Rect> rects = obj.getRects();
             for (Mat mat : mats) {
-                j++;
+                Mat drawmat = Mat.zeros(GlobalConfig.WINDOW_HEIGHT/2,GlobalConfig.WINDOW_WIDTH/2, CvType.CV_8UC1);
+                Imgproc.rectangle(mat, rects.get(j), new Scalar(255),3);
+                show(mat,"BOUNDING");
                 sendTo(
                         new Sendable(
                                 new PreObjectSection(
                                         mat,
                                         RETINOTOPIC_ID.get(i),
                                         retinotopicID,
+                                        rects.get(j),
                                         "NEW PREOBJECT SEGMENT: "
                                         + RETINOTOPIC_ID.get(i)
                                         + " | SEG_ID: "
@@ -141,6 +149,7 @@ public class BufferSwitch extends ActivityTemplate {
                         syncID
                 );
                 retinotopicID++;
+                j++;
             }
             i++;
         }

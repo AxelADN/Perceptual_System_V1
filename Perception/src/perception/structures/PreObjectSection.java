@@ -8,6 +8,7 @@ package perception.structures;
 import java.io.Serializable;
 import java.util.ArrayList;
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
 
 /**
  *
@@ -15,7 +16,19 @@ import org.opencv.core.Mat;
  */
 public class PreObjectSection extends StructureTemplate implements Serializable {
 
+    private final class LocalRect implements Serializable {
+
+        public int x, y, width, height;
+
+        public LocalRect(Rect rect) {
+            this.x = rect.x;
+            this.y = rect.y;
+            this.width = rect.width;
+            this.height = rect.height;
+        }
+    }
     private final ArrayList<byte[]> segments;
+    private final ArrayList<LocalRect> boundingBoxes;
     private final String retinotopicID;
     private int segmentID;
 
@@ -26,9 +39,10 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         }
         this.retinotopicID = new String();
         this.segmentID = 0;
+        this.boundingBoxes = new ArrayList<>();
     }
 
-    public PreObjectSection(ArrayList<Mat> segments, String loggableObject) {
+    public PreObjectSection(ArrayList<Mat> segments, ArrayList<Rect> rects, String loggableObject) {
         super(loggableObject);
         this.segments = new ArrayList<>();
         for (Mat mat : segments) {
@@ -36,6 +50,11 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         }
         this.retinotopicID = new String();
         this.segmentID = 0;
+        this.boundingBoxes = new ArrayList<>();
+        for (Rect rect : rects) {
+            LocalRect newRect = new LocalRect(rect);
+            this.boundingBoxes.add(newRect);
+        }
     }
 
     public PreObjectSection(ArrayList<Mat> segments, String retinotopicID, String loggableObject) {
@@ -46,9 +65,10 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         }
         this.retinotopicID = retinotopicID;
         this.segmentID = 0;
+        this.boundingBoxes = new ArrayList<>();
     }
-    
-    public PreObjectSection(ArrayList<Mat> segments, String retinotopicID,int segmentID, String loggableObject) {
+
+    public PreObjectSection(ArrayList<Mat> segments, String retinotopicID, int segmentID, String loggableObject) {
         super(loggableObject);
         this.segments = new ArrayList<>();
         for (Mat mat : segments) {
@@ -56,6 +76,7 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         }
         this.retinotopicID = retinotopicID;
         this.segmentID = segmentID;
+        this.boundingBoxes = new ArrayList<>();
     }
 
     public PreObjectSection(Mat segment) {
@@ -63,6 +84,7 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         this.segments.add(Mat2Bytes(segment));
         retinotopicID = new String();
         this.segmentID = 0;
+        this.boundingBoxes = new ArrayList<>();
     }
 
     public PreObjectSection(Mat segment, String loggableObject) {
@@ -71,14 +93,30 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         this.segments.add(Mat2Bytes(segment));
         retinotopicID = new String();
         this.segmentID = 0;
+        this.boundingBoxes = new ArrayList<>();
     }
 
-    public PreObjectSection(Mat segment, String retinotopicID,int segmentID, String loggableObject) {
+    public PreObjectSection(Mat segment, String retinotopicID, int segmentID, Rect rect, String loggableObject) {
         super(loggableObject);
         this.segments = new ArrayList<>();
         this.segments.add(Mat2Bytes(segment));
         this.retinotopicID = retinotopicID;
         this.segmentID = segmentID;
+        this.boundingBoxes = new ArrayList<>();
+        this.boundingBoxes.add(new LocalRect(rect));
+    }
+
+    public ArrayList<Rect> getRects() {
+        ArrayList<Rect> rects = new ArrayList<>();
+        for (LocalRect rect : this.boundingBoxes) {
+            rects.add(new Rect(rect.x,rect.y,rect.width,rect.height));
+        }
+        return rects;
+    }
+
+    public Rect getRect() {
+        LocalRect rect = this.boundingBoxes.get(0);
+        return new Rect(rect.x,rect.y,rect.width,rect.height);
     }
 
     public Mat getSegment() {
@@ -100,12 +138,12 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
     public String getRetinotopicID() {
         return this.retinotopicID;
     }
-    
-    public int getSegmentID(){
+
+    public int getSegmentID() {
         return this.segmentID;
     }
-    
-    public void setSegmentID(int segmentID){
+
+    public void setSegmentID(int segmentID) {
         this.segmentID = segmentID;
     }
 

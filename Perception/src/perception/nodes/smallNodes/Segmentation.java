@@ -7,16 +7,15 @@ package perception.nodes.smallNodes;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
@@ -39,7 +38,8 @@ import utils.SimpleLogger;
  */
 public class Segmentation extends ActivityTemplate {
 
-    public static final ArrayList<Point> POINTS=new ArrayList<>();;
+    public static final ArrayList<Point> POINTS = new ArrayList<>();
+    ;
     private final MatOfPoint ROI_fQ1;
     private final MatOfPoint ROI_fQ2;
     private final MatOfPoint ROI_fQ3;
@@ -352,10 +352,10 @@ public class Segmentation extends ActivityTemplate {
             scene.copyTo(retinotopicSections.get(5), MASK_pQ2);
             scene.copyTo(retinotopicSections.get(6), MASK_pQ3);
             scene.copyTo(retinotopicSections.get(7), MASK_pQ4);
-            Imgproc.rectangle(retinotopicSections.get(4), POINTS.get(5),POINTS.get(8), new Scalar(0), -1);
-            Imgproc.rectangle(retinotopicSections.get(5), POINTS.get(8),POINTS.get(3), new Scalar(0), -1);
-            Imgproc.rectangle(retinotopicSections.get(6), POINTS.get(11),POINTS.get(8), new Scalar(0), -1);
-            Imgproc.rectangle(retinotopicSections.get(7), POINTS.get(13),POINTS.get(8), new Scalar(0), -1);
+            Imgproc.rectangle(retinotopicSections.get(4), POINTS.get(5), POINTS.get(8), new Scalar(0), -1);
+            Imgproc.rectangle(retinotopicSections.get(5), POINTS.get(8), POINTS.get(3), new Scalar(0), -1);
+            Imgproc.rectangle(retinotopicSections.get(6), POINTS.get(11), POINTS.get(8), new Scalar(0), -1);
+            Imgproc.rectangle(retinotopicSections.get(7), POINTS.get(13), POINTS.get(8), new Scalar(0), -1);
             croppedSections.add(new Mat(retinotopicSections.get(0), RECT_ROI_fQ1));
             croppedSections.add(new Mat(retinotopicSections.get(1), RECT_ROI_fQ2));
             croppedSections.add(new Mat(retinotopicSections.get(2), RECT_ROI_fQ3));
@@ -364,15 +364,41 @@ public class Segmentation extends ActivityTemplate {
             croppedSections.add(new Mat(retinotopicSections.get(5), RECT_ROI_pQ2));
             croppedSections.add(new Mat(retinotopicSections.get(6), RECT_ROI_pQ3));
             croppedSections.add(new Mat(retinotopicSections.get(7), RECT_ROI_pQ4));
+            int minX = Math.min(
+                    croppedSections.get(0).cols(),
+                    Math.min(
+                            croppedSections.get(1).cols(),
+                            Math.min(
+                                    croppedSections.get(2).cols(),
+                                    croppedSections.get(3).cols()
+                            )
+                    )
+            );
+            int minY = Math.min(
+                    croppedSections.get(0).rows(),
+                    Math.min(
+                            croppedSections.get(1).rows(),
+                            Math.min(
+                                    croppedSections.get(2).rows(),
+                                    croppedSections.get(3).rows()
+                            )
+                    )
+            );
+            Imgproc.resize(croppedSections.get(0), croppedSections.get(0), new Size(minX,minY));
+            Imgproc.resize(croppedSections.get(1), croppedSections.get(1), new Size(minX,minY));
+            Imgproc.resize(croppedSections.get(2), croppedSections.get(2), new Size(minX,minY));
+            Imgproc.resize(croppedSections.get(3), croppedSections.get(3), new Size(minX,minY));
             Imgproc.resize(croppedSections.get(4), croppedSections.get(4), (croppedSections.get(0)).size());
             Imgproc.resize(croppedSections.get(5), croppedSections.get(5), (croppedSections.get(1)).size());
             Imgproc.resize(croppedSections.get(6), croppedSections.get(6), (croppedSections.get(2)).size());
             Imgproc.resize(croppedSections.get(7), croppedSections.get(7), (croppedSections.get(3)).size());
             ArrayList<ArrayList<MatOfPoint>> contourLists = findContourList(croppedSections);
             ArrayList<ArrayList<Mat>> preObjectLists = maskContours(croppedSections, contourLists);
-            ArrayList<PreObjectSection> preObjectSections = createPreObjectSectionList(preObjectLists);
-            if (GlobalConfig.showEnablerID == ID)
+            ArrayList<PreObjectSection> preObjectSections
+                    = createPreObjectSectionList(preObjectLists, getBoundingBoxes(contourLists));
+            if (GlobalConfig.showEnablerID == ID) {
                 showList(preObjectLists, "Sections");
+            }
             return preObjectSections;
 
         } catch (IOException ex) {
@@ -406,22 +432,17 @@ public class Segmentation extends ActivityTemplate {
         return contourLists;
     }
 
-    private ArrayList<Mat> drawContours(ArrayList<Mat> mats, ArrayList<ArrayList<MatOfPoint>> contourLists) {
-        ArrayList<Mat> newMats = new ArrayList<>();
+    private ArrayList<ArrayList<Rect>> getBoundingBoxes(ArrayList<ArrayList<MatOfPoint>> contourLists) throws IOException {
+        ArrayList<ArrayList<Rect>> newRects = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
-            newMats.add(new Mat());
-        }
-        for (int i = 0; i < 8; i++) {
-            //Imgproc.polylines(mats.get(i), contourLists.get(i), true, new Scalar(0, 0, 255), 2);
-
+            newRects.add(new ArrayList<>());
             for (MatOfPoint points : contourLists.get(i)) {
-                List<Point> pointList = points.toList();
-
                 Rect rect = Imgproc.boundingRect(points);
-                Imgproc.rectangle(mats.get(i), rect, new Scalar(0, 0, 255));
+                newRects.get(i).add(rect);
+
             }
         }
-        return mats;
+        return newRects;
     }
 
     private ArrayList<ArrayList<Mat>> maskContours(
@@ -448,12 +469,18 @@ public class Segmentation extends ActivityTemplate {
         return maskedSectionsList;
     }
 
-    private ArrayList<PreObjectSection> createPreObjectSectionList(ArrayList<ArrayList<Mat>> preObjectLists) {
+    private ArrayList<PreObjectSection> createPreObjectSectionList(
+            ArrayList<ArrayList<Mat>> preObjectLists,
+            ArrayList<ArrayList<Rect>> rects) {
         ArrayList<PreObjectSection> preObjectSections = new ArrayList<>();
-        int i = 0;
-        for (ArrayList<Mat> matList : preObjectLists) {
-            preObjectSections.add(new PreObjectSection(matList, "NEW PREOBJECT SEGMENT: " + RETINOTOPIC_ID.get(i)));
-            i++;
+        for (int i = 0; i < preObjectLists.size(); i++) {
+            preObjectSections.add(
+                    new PreObjectSection(
+                            preObjectLists.get(i),
+                            rects.get(i),
+                            "NEW PREOBJECT SEGMENT: " + RETINOTOPIC_ID.get(i)
+                    )
+            );
         }
         return preObjectSections;
     }

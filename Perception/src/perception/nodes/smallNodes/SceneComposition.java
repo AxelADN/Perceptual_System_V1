@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import perception.config.AreaNames;
@@ -35,9 +36,19 @@ import utils.SimpleLogger;
 public class SceneComposition extends ActivityTemplate {
 
     private final HashMap<String, ArrayList<String>> neighbouring;
+    private final HashMap<String, Integer> sectionPoints;
 
     public SceneComposition() {
         this.ID = AreaNames.SceneComposition;
+        this.sectionPoints = new HashMap<>();
+        this.sectionPoints.put("fQ1", 4);
+        this.sectionPoints.put("fQ2", 3);
+        this.sectionPoints.put("fQ3", 7);
+        this.sectionPoints.put("fQ4", 8);
+        this.sectionPoints.put("pQ1", 1);
+        this.sectionPoints.put("pQ2", 0);
+        this.sectionPoints.put("pQ3", 6);
+        this.sectionPoints.put("pQ4", 8);
         this.neighbouring = new HashMap<>();
         this.neighbouring.put(
                 "fQ1",
@@ -100,10 +111,13 @@ public class SceneComposition extends ActivityTemplate {
             LongSpike spike = new LongSpike(data);
             if (isCorrectDataType(spike.getIntensity(), RIIC_cAndRIIC_hAndPreObjectSegmentPairPair.class)) {
                 SimpleLogger.log(this, "DATA_RECEIVED: " + spike.getIntensity());
-                ArrayList<ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups
-                        = this.getPreObjectGroups(
-                                (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData()
-                        );
+                Mat scene = this.composeScene(
+                        (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData()
+                );
+//                ArrayList<ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups
+//                        = this.getPreObjectGroups(
+//                                (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData()
+//                        );
             }
         } catch (Exception ex) {
             Logger.getLogger(SceneComposition.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,15 +219,15 @@ public class SceneComposition extends ActivityTemplate {
 
     private boolean neighbourAssociated(PreObjectSection preObjectSegment, PreObjectSection preObject) throws IOException {
         if (preObjectSegment.getSegmentID() != preObject.getSegmentID()) {
-            Mat reshaped1=new Mat();
-            Mat reshaped2=new Mat();
+            Mat reshaped1 = new Mat();
+            Mat reshaped2 = new Mat();
             switch (preObjectSegment.getRetinotopicID()) {
                 case "fQ1": {
                     switch (preObject.getRetinotopicID()) {
                         case "pQ1": {
-                            reshaped1 = new Mat(preObject.getSegment(),new Rect(Segmentation.POINTS.get(1),Segmentation.POINTS.get(5)));
-                            reshaped2 = new Mat(preObject.getSegment(),new Rect(Segmentation.POINTS.get(5),Segmentation.POINTS.get(10)));
-                            show(reshaped1,"RESHAPED_1",AreaNames.SceneComposition);
+                            reshaped1 = new Mat(preObject.getSegment(), new Rect(Segmentation.POINTS.get(1), Segmentation.POINTS.get(5)));
+                            reshaped2 = new Mat(preObject.getSegment(), new Rect(Segmentation.POINTS.get(5), Segmentation.POINTS.get(10)));
+                            show(reshaped1, "RESHAPED_1", AreaNames.SceneComposition);
                             return this.isUnified(preObjectSegment.getSegment(), reshaped1, "UP")
                                     || this.isUnified(preObjectSegment.getSegment(), reshaped2, "RIGHT");
                         }
@@ -344,5 +358,37 @@ public class SceneComposition extends ActivityTemplate {
                 preObject.setSegment(resizedMat);
             }
         }
+    }
+
+    private Mat composeScene(ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> currentScene) throws IOException {
+        Mat newScene = Mat.zeros(GlobalConfig.WINDOW_SIZE, CvType.CV_8UC1);
+        for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : currentScene) {
+            PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
+            Rect newRect = preObject.getRect();
+            newRect.x += Segmentation.POINTS.get(this.sectionPoints.get(preObject.getRetinotopicID())).x;
+            newRect.y += Segmentation.POINTS.get(this.sectionPoints.get(preObject.getRetinotopicID())).y;
+            if (!this.isFovea(preObject)) {
+                Mat resizedMat = new Mat(preObject.getSegment().size(), preObject.getSegment().type());
+                newRect.x *= GlobalConfig.FOVEA_FACTOR;
+                newRect.y *= GlobalConfig.FOVEA_FACTOR;
+                Imgproc.resize(
+                        preObject.getSegment(),
+                        resizedMat,
+                        new Size(
+                                GlobalConfig.WINDOW_WIDTH/2,
+                                GlobalConfig.WINDOW_HEIGHT/2
+                        )
+                );
+                System.out.println("SIZE: "+newRect.x+" X "+newRect.y);
+            }
+            preObject.getSegment().copyTo(
+                    newScene.submat(
+                            newRect
+                    )
+            );
+
+        }
+        show(newScene,"COMPOSED",AreaNames.SceneComposition);
+        return new Mat();
     }
 }
