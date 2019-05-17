@@ -109,4 +109,8 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         this.segmentID = segmentID;
     }
 
+    public void setSegment(Mat resizedMat) {
+        this.segments.add(0, Mat2Bytes(resizedMat));
+    }
+
 }

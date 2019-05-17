@@ -113,6 +113,7 @@ public class BufferSwitch extends ActivityTemplate {
                 = (ArrayList<PreObjectSection>) data.getData();
         ActivityTemplate.log(this, "BUFFER_SWITCH");
         int i = 0;
+        int retinotopicID = 0;
         //For each segment:
         for (PreObjectSection obj : preObjectSection) {
             showMats.add(obj.getSegments());
@@ -126,7 +127,7 @@ public class BufferSwitch extends ActivityTemplate {
                                 new PreObjectSection(
                                         mat,
                                         RETINOTOPIC_ID.get(i),
-                                        j,
+                                        retinotopicID,
                                         "NEW PREOBJECT SEGMENT: "
                                         + RETINOTOPIC_ID.get(i)
                                         + " | SEG_ID: "
@@ -139,6 +140,7 @@ public class BufferSwitch extends ActivityTemplate {
                         RETINOTOPIC_ID.get(i),
                         syncID
                 );
+                retinotopicID++;
             }
             i++;
         }

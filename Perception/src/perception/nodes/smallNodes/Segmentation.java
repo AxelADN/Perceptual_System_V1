@@ -39,7 +39,7 @@ import utils.SimpleLogger;
  */
 public class Segmentation extends ActivityTemplate {
 
-    private final ArrayList<Point> POINTS;
+    public static final ArrayList<Point> POINTS=new ArrayList<>();;
     private final MatOfPoint ROI_fQ1;
     private final MatOfPoint ROI_fQ2;
     private final MatOfPoint ROI_fQ3;
@@ -71,7 +71,6 @@ public class Segmentation extends ActivityTemplate {
      */
     public Segmentation() {
         this.ID = AreaNames.Segmentation;
-        POINTS = new ArrayList<>();
         double foveaWidth = GlobalConfig.WINDOW_WIDTH * GlobalConfig.FOVEA_FACTOR;
         double foveaHeight = GlobalConfig.WINDOW_HEIGHT * GlobalConfig.FOVEA_FACTOR;
         POINTS.add(

@@ -235,35 +235,6 @@ public class HolisticClassifier extends ActivityTemplate {
         return sum / (size * 255);
     }
 
-    private double getExtendedHammingDistance(Mat preObject, Mat currentTemplate) {
-        int cols = min(preObject.cols(), currentTemplate.cols());
-        int rows = min(preObject.rows(), currentTemplate.rows());
-        ArrayList<Mat> extendedPreObject = extendDimensions(rows, cols, preObject);
-        ArrayList<Mat> extendedCurrentTemplate = extendDimensions(rows, cols, currentTemplate);
-        return 0;
-
-    }
-
-    private ArrayList<Mat> extendDimensions(int rows, int cols, Mat mat) {
-        ArrayList<Mat> extendedMats = new ArrayList<>();
-        byte[][] extendedMatVectors = new byte[256][rows * cols];
-        for (int i = 0; i < 256; i++) {
-            extendedMats.add(Mat.zeros(rows, cols, CvType.CV_8UC1));
-            for (int j = 0; j < rows * cols; j++) {
-                extendedMatVectors[i][j] = 0;
-            }
-        }
-        byte[] matVector = new byte[cols * rows];
-        mat.get(0, 0, matVector);
-        for (int i = 0; i < cols * rows; i++) {
-            extendedMatVectors[matVector[i]][i] = 1;
-        }
-        for (int i = 0; i < 256; i++) {
-            extendedMats.get(i).put(0, 0, extendedMatVectors[i]);
-        }
-        return extendedMats;
-    }
-
     private double getPSNR(Mat preObject, Mat currentTemplate) {
         Mat diff = new Mat();
         Core.absdiff(preObject, currentTemplate, diff);

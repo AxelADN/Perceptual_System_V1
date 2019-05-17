@@ -8,6 +8,7 @@ package perception.nodes.bigNodes;
 import kmiddle2.nodes.activities.ActConf;
 import perception.config.AreaNames;
 import perception.nodes.smallNodes.RetinotopicExpectationBuilder;
+import perception.nodes.smallNodes.SceneComposition;
 import perception.nodes.smallNodes.SceneSync;
 import perception.templates.AreaTemplate;
 
@@ -21,6 +22,7 @@ public class ITa extends AreaTemplate {
         this.ID = AreaNames.ITa;
         addProcess(SceneSync.class);
         addProcess(RetinotopicExpectationBuilder.class,ActConf.TYPE_PARALLEL);
+        addProcess(SceneComposition.class,ActConf.TYPE_PARALLEL);
        
     }
     

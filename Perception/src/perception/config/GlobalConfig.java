@@ -24,8 +24,8 @@ public class GlobalConfig {
     
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
-    public static final int showEnablerID = 0;//AreaNames.BufferSwitch;
-    public static  final Class showEnablerIDs = HolisticClassifier.class;
+    public static final int showEnablerID = AreaNames.SceneComposition;//AreaNames.BufferSwitch;
+    public static  final Class showEnablerIDs = AreaNames.class;
     
     public static double ACTIVATION_THRESHOLD_HOLISTIC = 0.005;
     public static int CANDIDATES_MAX_QUANTITY = 50;
@@ -38,5 +38,5 @@ public class GlobalConfig {
     public static boolean DEBUG = false;
     public static double COMPONENT_INFLUENCE_FACTOR = 0.5;
     public static double ACTIVATION_THRESHOLD_COMPONENT = 0.08;
-    public static double PERCEPT_THRESHOLD_HOLISTIC = 1;
+    public static double PREOBJECT_SUPERPOSITION_FACTOR = 0.5;
 }
