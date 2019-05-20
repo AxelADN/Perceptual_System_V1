@@ -462,7 +462,7 @@ public class Segmentation extends ActivityTemplate {
                 Mat mask = Mat.zeros(croppedSections.get(i).size(), CvType.CV_8UC1);
                 Imgproc.rectangle(mask, boundingBox, new Scalar(255, 255, 255), -1);
                 maskedSection.add(new Mat(mask.size(), CvType.CV_8UC1, new Scalar(0)));
-                System.out.println("Size " + i + ": (" + croppedSections.get(i).size().width + "," + croppedSections.get(i).size().height + ")");
+                //System.out.println("Size " + i + ": (" + croppedSections.get(i).size().width + "," + croppedSections.get(i).size().height + ")");
                 croppedSections.get(i).copyTo(maskedSection.get(j), mask);
             }
         }

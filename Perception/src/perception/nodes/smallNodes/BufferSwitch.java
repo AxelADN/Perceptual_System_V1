@@ -126,9 +126,6 @@ public class BufferSwitch extends ActivityTemplate {
             ArrayList<Mat> mats = obj.getSegments();
             ArrayList<Rect> rects = obj.getRects();
             for (Mat mat : mats) {
-                Mat drawmat = Mat.zeros(GlobalConfig.WINDOW_HEIGHT/2,GlobalConfig.WINDOW_WIDTH/2, CvType.CV_8UC1);
-                Imgproc.rectangle(mat, rects.get(j), new Scalar(255),3);
-                show(mat,"BOUNDING");
                 sendTo(
                         new Sendable(
                                 new PreObjectSection(

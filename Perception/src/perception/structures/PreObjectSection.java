@@ -118,6 +118,11 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         LocalRect rect = this.boundingBoxes.get(0);
         return new Rect(rect.x,rect.y,rect.width,rect.height);
     }
+    
+    public void setRect(Rect rect){
+        LocalRect newRect = new LocalRect(rect);
+        this.boundingBoxes.add(0,newRect);
+    }
 
     public Mat getSegment() {
         return Bytes2Mat(segments.get(0));

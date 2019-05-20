@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -49,6 +50,14 @@ public class SceneComposition extends ActivityTemplate {
         this.sectionPoints.put("pQ2", 0);
         this.sectionPoints.put("pQ3", 6);
         this.sectionPoints.put("pQ4", 8);
+        this.sectionPoints.put("fQ10", 9);
+        this.sectionPoints.put("fQ20", 8);
+        this.sectionPoints.put("fQ30", 12);
+        this.sectionPoints.put("fQ40", 13);
+        this.sectionPoints.put("pQ10", 10);
+        this.sectionPoints.put("pQ20", 8);
+        this.sectionPoints.put("pQ30", 15);
+        this.sectionPoints.put("pQ40", 16);
         this.neighbouring = new HashMap<>();
         this.neighbouring.put(
                 "fQ1",
@@ -111,9 +120,10 @@ public class SceneComposition extends ActivityTemplate {
             LongSpike spike = new LongSpike(data);
             if (isCorrectDataType(spike.getIntensity(), RIIC_cAndRIIC_hAndPreObjectSegmentPairPair.class)) {
                 SimpleLogger.log(this, "DATA_RECEIVED: " + spike.getIntensity());
-                Mat scene = this.composeScene(
-                        (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData()
-                );
+                ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> received
+                        = (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData();
+                Mat scene = this.composeScene(received);
+                show(scene, "COMPOSED", AreaNames.SceneComposition);
 //                ArrayList<ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups
 //                        = this.getPreObjectGroups(
 //                                (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData()
@@ -365,30 +375,41 @@ public class SceneComposition extends ActivityTemplate {
         for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : currentScene) {
             PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
             Rect newRect = preObject.getRect();
-            newRect.x += Segmentation.POINTS.get(this.sectionPoints.get(preObject.getRetinotopicID())).x;
-            newRect.y += Segmentation.POINTS.get(this.sectionPoints.get(preObject.getRetinotopicID())).y;
             if (!this.isFovea(preObject)) {
                 Mat resizedMat = new Mat(preObject.getSegment().size(), preObject.getSegment().type());
-                newRect.x *= GlobalConfig.FOVEA_FACTOR;
-                newRect.y *= GlobalConfig.FOVEA_FACTOR;
+                newRect.x /= (GlobalConfig.FOVEA_FACTOR);
+                newRect.y /= (GlobalConfig.FOVEA_FACTOR);
+                newRect.width /= (GlobalConfig.FOVEA_FACTOR);
+                newRect.height /= (GlobalConfig.FOVEA_FACTOR);
                 Imgproc.resize(
                         preObject.getSegment(),
                         resizedMat,
                         new Size(
-                                GlobalConfig.WINDOW_WIDTH/2,
-                                GlobalConfig.WINDOW_HEIGHT/2
+                                GlobalConfig.WINDOW_WIDTH / 2,
+                                GlobalConfig.WINDOW_HEIGHT / 2
                         )
                 );
-                System.out.println("SIZE: "+newRect.x+" X "+newRect.y);
+                preObject.setSegment(resizedMat);
             }
-            preObject.getSegment().copyTo(
-                    newScene.submat(
-                            newRect
+            newRect.x += Segmentation.POINTS.get(this.sectionPoints.get(preObject.getRetinotopicID())).x;
+            newRect.y += Segmentation.POINTS.get(this.sectionPoints.get(preObject.getRetinotopicID())).y;
+            preObject.setRect(newRect);
+            Rect mask = new Rect(
+                    Segmentation.POINTS.get(
+                            this.sectionPoints.get(
+                                    preObject.getRetinotopicID()
+                            )
+                    ),
+                    Segmentation.POINTS.get(
+                            this.sectionPoints.get(
+                                    preObject.getRetinotopicID() + "0"
+                            )
                     )
             );
-
+            mask.height = preObject.getSegment().rows();
+            mask.width = preObject.getSegment().cols();
+            Core.add(preObject.getSegment(), new Mat(newScene, mask), new Mat(newScene, mask));
         }
-        show(newScene,"COMPOSED",AreaNames.SceneComposition);
-        return new Mat();
+        return newScene;
     }
 }
