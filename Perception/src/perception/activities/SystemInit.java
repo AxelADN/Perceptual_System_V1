@@ -46,15 +46,23 @@ public class SystemInit extends ActivityTemplate {
 
     private void start() throws Exception {
         //Reading the Image from the file and storing it in to a Matrix object 
-        String file = GlobalConfig.windowsFile;
+        double sample = .01;
+        String file = GlobalConfig.GENERIC_FILE+"Sample_"+sample+".png";
+        System.out.println("FILE: "+file);
         Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
-//        XFrame frame = show(image,0,0, "System Init");
+        XFrame frame = show(image,0,0, "System Init");
+        ActivityTemplate.setInitFrame(frame);
         Integer i=0;
-        while (i<GlobalConfig.SYSTEM_TEST_MAX_STEPS) {
-//            if (frame.isClicked()) {
-//                for (Window win : JFrame.getWindows()) {
-//                    win.dispose();
-//                }
+        while (i<=GlobalConfig.SYSTEM_TEST_MAX_STEPS||GlobalConfig.SYSTEM_TEST_MAX_STEPS<0) {
+            if (frame.isClicked()) {
+                sample+=0.01;
+                if(sample >GlobalConfig.MAX_SAMPLES){
+                    sample = 0.01;
+                }
+                file = GlobalConfig.GENERIC_FILE+"Sample_"+sample+".png";
+                image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
+                frame.notClicked();
+            }
                 Mat currentImage = image.clone();
                 Imgproc.putText(currentImage, i.toString(), new Point(0,20), 0, 1, new Scalar(0,0,255));
                 showInit(currentImage);
@@ -68,8 +76,6 @@ public class SystemInit extends ActivityTemplate {
                                 AreaNames.Segmentation
                         )
                 );
-//                frame.notClicked();
-//            }
             Thread.sleep(GlobalConfig.SYSTEM_TIME_STEP);
             i++;
         }

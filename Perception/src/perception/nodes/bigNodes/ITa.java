@@ -10,6 +10,7 @@ import perception.config.AreaNames;
 import perception.nodes.smallNodes.RetinotopicExpectationBuilder;
 import perception.nodes.smallNodes.SceneComposition;
 import perception.nodes.smallNodes.SceneSync;
+import perception.nodes.smallNodes.TraceLogger;
 import perception.templates.AreaTemplate;
 
 /**
@@ -23,6 +24,7 @@ public class ITa extends AreaTemplate {
         addProcess(SceneSync.class);
         addProcess(RetinotopicExpectationBuilder.class,ActConf.TYPE_PARALLEL);
         addProcess(SceneComposition.class,ActConf.TYPE_PARALLEL);
+        addProcess(TraceLogger.class);
        
     }
     

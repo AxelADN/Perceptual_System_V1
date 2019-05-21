@@ -14,7 +14,7 @@ import perception.nodes.smallNodes.*;
  */
 public class GlobalConfig {
     
-    public static final String windowsFile = "src/resources/Sample_01.png";
+    public static final String windowsFile = "src/resources/Sample_02.png";
     public static final String linuxFile = "/home/axeladn/Git/cuayollotol/Perception/src/resources/Sample_01.png";
     
     public static final int WINDOW_WIDTH = 480;
@@ -27,18 +27,21 @@ public class GlobalConfig {
     public static final int showEnablerID = AreaNames.SceneComposition;//AreaNames.BufferSwitch;
     public static  final Class showEnablerIDs = AreaNames.class;
     
-    public static double ACTIVATION_THRESHOLD_HOLISTIC = 0.005;
-    public static int CANDIDATES_MAX_QUANTITY = 50;
-    public static int MAX_DOUBLE_TO_INT_FACTOR = 1000000;
+    public static final double ACTIVATION_THRESHOLD_HOLISTIC = 0.005;
+    public static final int CANDIDATES_MAX_QUANTITY = 50;
+    public static final int MAX_DOUBLE_TO_INT_FACTOR = 1000000;
     
-    public static boolean INVERTED = false;
-    public static double FECHNER_CONSTANT = 1.0;
-    public static double RETINOTOPIC_INFLUENCE_FACTOR = 0.25;
+    public static final boolean INVERTED = false;
+    public static final double FECHNER_CONSTANT = 1.0;
+    public static final double RETINOTOPIC_INFLUENCE_FACTOR = 0.25;
     
-    public static boolean DEBUG = false;
-    public static double COMPONENT_INFLUENCE_FACTOR = 0.5;
-    public static double ACTIVATION_THRESHOLD_COMPONENT = 0.08;
-    public static int PREOBJECT_SUPERPOSITION_FACTOR = 4;
-    public static long SYSTEM_TIME_STEP = (1/10)*1000;
-    public static int SYSTEM_TEST_MAX_STEPS=10*10;
+    public static final boolean DEBUG = false;
+    public static final double COMPONENT_INFLUENCE_FACTOR = 0.5;
+    public static final double ACTIVATION_THRESHOLD_COMPONENT = 0.08;
+    public static final int PREOBJECT_SUPERPOSITION_FACTOR = 4;
+    public static final long SYSTEM_TIME_STEP = 500;
+    public static final int SYSTEM_TEST_MAX_STEPS=-1;
+    public static final String GENERIC_FILE = "src/resources/";
+    public static final boolean TRACE_WRITE = false;
+    public static final double MAX_SAMPLES = 0.02;
 }

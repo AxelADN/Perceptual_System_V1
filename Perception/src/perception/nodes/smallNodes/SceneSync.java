@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
+import perception.structures.InternalRequest;
 import perception.structures.PreObject;
 import perception.structures.RIIC;
 import perception.structures.RIIC_cAndRIIC_hAndPreObjectSegmentPairPair;
@@ -45,32 +46,21 @@ public class SceneSync extends ActivityTemplate {
                 Sendable received = (Sendable) spike.getIntensity();
                 RIIC_cAndRIIC_hAndPreObjectSegmentPairPair sceneSegment
                         = (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair) received.getData();
-                //System.out.println("RETINOOOO: "+sceneSegment.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment().getRetinotopicID());
+                sendTo(
+                        new Sendable(
+                                new InternalRequest(),
+                                this.ID,
+                                received.getTrace(),
+                                AreaNames.SceneComposition
+                        ),
+                        0,
+                        spike.getTiming()
+                );
                 if ((int) spike.getTiming() == this.currentSyncID) {
                     this.scene.add(sceneSegment);
+                    //received.addSender(AreaNames.SceneComposition);
                 } else {
-                    for (int i = 0; i < this.scene.size(); i++) {
-//                        System.out.println("LALALA: "
-//                                + (this.scene.get(i).
-//                                        getRIIC_hAndPreObjectSegmentPair().
-//                                        getRIIC_h().
-//                                        getPreObject().
-//                                        getLabel().
-//                                        equals(
-//                                                sceneSegment.
-//                                                        getRIIC_hAndPreObjectSegmentPair().
-//                                                        getRIIC_h().
-//                                                        getPreObject().
-//                                                        getLabel()
-//                                        ))
-//                        );
-                    }
                     if ((int) spike.getTiming() > this.currentSyncID) {
-//                        for(RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet:this.scene){
-//                            RIIC_hAndPreObjectSegmentPair pair = triplet.getRIIC_hAndPreObjectSegmentPair();
-//                            PreObjectSection segment = pair.getPreObjectSegment();
-//                            show(segment.getSegment(),"Synced: "+this.currentSyncID,this.getClass());
-//                        }
                         sendTo(
                                 new Sendable(
                                         this.getRIIC(),

@@ -82,6 +82,10 @@ public class Sendable implements Serializable {
         this.sendID = 0;
     }
 
+    public void addSender(int sender){
+        this.sender.add(sender);
+    }
+    
     public void assignID() {
         this.sendID = ID;
         ID++;

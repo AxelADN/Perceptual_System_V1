@@ -23,6 +23,7 @@ import org.opencv.imgproc.Imgproc;
 import perception.GUI.XFrame;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
+import perception.structures.InternalRequest;
 import perception.structures.PreObjectSection;
 import perception.structures.RIIC_c;
 import perception.structures.RIIC_cAndRIIC_hAndPreObjectSegmentPairPair;
@@ -134,6 +135,18 @@ public class SceneComposition extends ActivityTemplate {
                 HashMap<Integer, String> objectLabels = this.traduceLabels(preObjectGroups);
                 this.markObjects(preObjectGroups, objectLabels, scene);
                 showFinal(scene);
+            } else {
+                if (isCorrectDataType(spike.getIntensity(), InternalRequest.class)) {
+                    Sendable received = (Sendable) spike.getIntensity();
+                    sendToTraceLogger(spike);
+                } else {
+                    sendToLostData(
+                            this,
+                            spike,
+                            "NO PAIR ARRAY RECOGNIZED: "
+                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                    );
+                }
             }
         } catch (Exception ex) {
             Logger.getLogger(SceneComposition.class.getName()).log(Level.SEVERE, null, ex);
@@ -496,12 +509,12 @@ public class SceneComposition extends ActivityTemplate {
             for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : object) {
                 PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
                 Rect rect = preObject.getRect();
-                Imgproc.rectangle(
-                        scene,
-                        rect,
-                        new Scalar(0, 0, 255),
-                        2
-                );
+//                Imgproc.rectangle(
+//                        scene,
+//                        rect,
+//                        new Scalar(0, 0, 255),
+//                        2
+//                );
                 if (rect.x < minX) {
                     minX = rect.x;
                 }

@@ -67,6 +67,20 @@ public abstract class ActivityTemplate extends Activity {
     public void init() {
 
     }
+    
+    protected void sendToTraceLogger(LongSpike spike) {
+        Sendable received = (Sendable)spike.getIntensity();
+        sendTo(
+                new Sendable(
+                        "NULL",
+                        this.ID,
+                        received.getTrace(),
+                        AreaNames.TraceLogger
+                ),
+                0,
+                spike.getTiming()
+        );
+    }
 
     protected String searchIDName(int NodeID) {
 
@@ -263,6 +277,10 @@ public abstract class ActivityTemplate extends Activity {
                 0
         );
         ActivityTemplate.finalFrame1.setVisible(true);
+    }
+    
+    public static void setInitFrame(XFrame frame){
+        ActivityTemplate.finalFrame2 = frame;
     }
     
     protected void showInit(Mat image) throws IOException{
