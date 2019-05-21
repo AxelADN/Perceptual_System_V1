@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
+import perception.structures.PreObject;
 import perception.structures.RIIC;
 import perception.structures.RIIC_cAndRIIC_hAndPreObjectSegmentPairPair;
+import perception.structures.RIIC_h;
 import perception.structures.Sendable;
 import perception.templates.ActivityTemplate;
 import spike.LongSpike;
@@ -47,6 +49,22 @@ public class SceneSync extends ActivityTemplate {
                 if ((int) spike.getTiming() == this.currentSyncID) {
                     this.scene.add(sceneSegment);
                 } else {
+                    for (int i = 0; i < this.scene.size(); i++) {
+//                        System.out.println("LALALA: "
+//                                + (this.scene.get(i).
+//                                        getRIIC_hAndPreObjectSegmentPair().
+//                                        getRIIC_h().
+//                                        getPreObject().
+//                                        getLabel().
+//                                        equals(
+//                                                sceneSegment.
+//                                                        getRIIC_hAndPreObjectSegmentPair().
+//                                                        getRIIC_h().
+//                                                        getPreObject().
+//                                                        getLabel()
+//                                        ))
+//                        );
+                    }
                     if ((int) spike.getTiming() > this.currentSyncID) {
 //                        for(RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet:this.scene){
 //                            RIIC_hAndPreObjectSegmentPair pair = triplet.getRIIC_hAndPreObjectSegmentPair();
@@ -69,8 +87,9 @@ public class SceneSync extends ActivityTemplate {
                                         AreaNames.SceneComposition
                                 )
                         );
-                        this.currentSyncID = (int)spike.getTiming();
+                        this.currentSyncID = (int) spike.getTiming();
                         this.scene = new ArrayList<>();
+                        this.scene.add(sceneSegment);
                     }
                 }
             } else {
@@ -88,7 +107,7 @@ public class SceneSync extends ActivityTemplate {
 
     private RIIC getRIIC() {
         RIIC riic = new RIIC("NEW RETINOTOPIC INFLUENCER RIIC");
-        for(RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet: this.scene){
+        for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : this.scene) {
             riic.addRIIC_h(triplet.getRIIC_hAndPreObjectSegmentPair().getRIIC_h());
             riic.addRIIC_c(triplet.getRIIC_c());
         }

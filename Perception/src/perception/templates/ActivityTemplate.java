@@ -47,6 +47,8 @@ public abstract class ActivityTemplate extends Activity {
     private static int syncs = 0;
     private static ArrayList<ArrayList<Mat>> showSegments = new ArrayList<>();
     private static ArrayList<String> showTitle = new ArrayList<>();
+    private static XFrame finalFrame1 = new XFrame();
+    private static XFrame finalFrame2 = new XFrame();
 
     public ActivityTemplate() {
         this.namer = AreaNames.class;
@@ -234,6 +236,58 @@ public abstract class ActivityTemplate extends Activity {
         if (GlobalConfig.showEnablerID == ID) {
             show(image, title);
         }
+    }
+    
+    protected void showFinal(Mat image) throws IOException{
+        //Encoding the image 
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".png", image, matOfByte);
+
+        //Storing the encoded Mat in a byte array 
+        byte[] byteArray = matOfByte.toArray();
+
+        //Preparing the Buffered Image 
+        InputStream in = new ByteArrayInputStream(byteArray);
+        BufferedImage bufImage = ImageIO.read(in);
+        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        //Set Content to the JFrame 
+        ActivityTemplate.finalFrame1.getContentPane().removeAll();
+        //ActivityTemplate.finalFrame.getContentPane().validate();
+        ActivityTemplate.finalFrame1.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
+        ActivityTemplate.finalFrame1.pack();
+        ActivityTemplate.finalFrame1.setTitle("Result");
+        ActivityTemplate.finalFrame1.setLocation(
+                screenSize.width-GlobalConfig.WINDOW_WIDTH-10, 
+                0
+        );
+        ActivityTemplate.finalFrame1.setVisible(true);
+    }
+    
+    protected void showInit(Mat image) throws IOException{
+        //Encoding the image 
+        MatOfByte matOfByte = new MatOfByte();
+        Imgcodecs.imencode(".png", image, matOfByte);
+
+        //Storing the encoded Mat in a byte array 
+        byte[] byteArray = matOfByte.toArray();
+
+        //Preparing the Buffered Image 
+        InputStream in = new ByteArrayInputStream(byteArray);
+        BufferedImage bufImage = ImageIO.read(in);
+        
+        //Set Content to the JFrame 
+        ActivityTemplate.finalFrame2.getContentPane().removeAll();
+        //ActivityTemplate.finalFrame.getContentPane().validate();
+        ActivityTemplate.finalFrame2.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
+        ActivityTemplate.finalFrame2.pack();
+        ActivityTemplate.finalFrame2.setTitle("System Init");
+        ActivityTemplate.finalFrame2.setLocation(
+                0, 
+                0
+        );
+        ActivityTemplate.finalFrame2.setVisible(true);
     }
 
     protected XFrame show(Mat image, int x, int y, String title) throws IOException {

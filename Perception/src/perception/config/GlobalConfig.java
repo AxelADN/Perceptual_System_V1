@@ -38,5 +38,7 @@ public class GlobalConfig {
     public static boolean DEBUG = false;
     public static double COMPONENT_INFLUENCE_FACTOR = 0.5;
     public static double ACTIVATION_THRESHOLD_COMPONENT = 0.08;
-    public static double PREOBJECT_SUPERPOSITION_FACTOR = 0.5;
+    public static int PREOBJECT_SUPERPOSITION_FACTOR = 4;
+    public static long SYSTEM_TIME_STEP = (1/10)*1000;
+    public static int SYSTEM_TEST_MAX_STEPS=10*10;
 }

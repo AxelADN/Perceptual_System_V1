@@ -6,16 +6,15 @@
 package perception.activities;
 
 import java.awt.Window;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.IOException;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import perception.GUI.XFrame;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
@@ -49,13 +48,16 @@ public class SystemInit extends ActivityTemplate {
         //Reading the Image from the file and storing it in to a Matrix object 
         String file = GlobalConfig.windowsFile;
         Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
-        XFrame frame = show(image,0,0, "System Init");
-        while (true) {
-            if (frame.isClicked()) {
-                for (Window win : JFrame.getWindows()) {
-                    win.dispose();
-                }
-                frame = show(image,0,0, "System Init");
+//        XFrame frame = show(image,0,0, "System Init");
+        Integer i=0;
+        while (i<GlobalConfig.SYSTEM_TEST_MAX_STEPS) {
+//            if (frame.isClicked()) {
+//                for (Window win : JFrame.getWindows()) {
+//                    win.dispose();
+//                }
+                Mat currentImage = image.clone();
+                Imgproc.putText(currentImage, i.toString(), new Point(0,20), 0, 1, new Scalar(0,0,255));
+                showInit(currentImage);
                 sendTo(
                         new Sendable(
                                 new PreObjectSet(
@@ -66,9 +68,10 @@ public class SystemInit extends ActivityTemplate {
                                 AreaNames.Segmentation
                         )
                 );
-                frame.notClicked();
-            }
-            Thread.sleep(100);
+//                frame.notClicked();
+//            }
+            Thread.sleep(GlobalConfig.SYSTEM_TIME_STEP);
+            i++;
         }
 
     }

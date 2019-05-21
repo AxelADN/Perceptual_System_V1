@@ -138,6 +138,9 @@ public class PreObject extends StructureTemplate implements Serializable {
     }
 
     public String getLabel() {
+        if(this.UID==null){
+            return null;
+        }
         return this.UID;
     }
 

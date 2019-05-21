@@ -15,10 +15,12 @@ import java.util.logging.Logger;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import perception.GUI.XFrame;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.PreObjectSection;
@@ -38,6 +40,10 @@ public class SceneComposition extends ActivityTemplate {
 
     private final HashMap<String, ArrayList<String>> neighbouring;
     private final HashMap<String, Integer> sectionPoints;
+    private static final HashMap<String, String> languageMap = new HashMap<>();
+    private static int labelCounter_h = 'A';
+    private static int labelCounter_c = 'a';
+    private static ArrayList<Integer> languageUsed = new ArrayList<>();
 
     public SceneComposition() {
         this.ID = AreaNames.SceneComposition;
@@ -123,38 +129,64 @@ public class SceneComposition extends ActivityTemplate {
                 ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> received
                         = (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData();
                 Mat scene = this.composeScene(received);
-                show(scene, "COMPOSED", AreaNames.SceneComposition);
-//                ArrayList<ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups
-//                        = this.getPreObjectGroups(
-//                                (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData()
-//                        );
+                HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups
+                        = this.getPreObjectGroups(received);
+                HashMap<Integer, String> objectLabels = this.traduceLabels(preObjectGroups);
+                this.markObjects(preObjectGroups, objectLabels, scene);
+                showFinal(scene);
             }
         } catch (Exception ex) {
             Logger.getLogger(SceneComposition.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private ArrayList<ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>>
+    private HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>>
             getPreObjectGroups(ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> scene) throws IOException {
-        this.reformatScene(scene);
+        HashMap<Integer, Integer> segments = new HashMap<>();
+        int segmentsID = 0;
         for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : scene) {
             RIIC_c riic_c = triplet.getRIIC_c();
             RIIC_h riic_h = triplet.getRIIC_hAndPreObjectSegmentPair().getRIIC_h();
             PreObjectSection preObjectSegment = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
-            show(preObjectSegment.getSegment(), "Result: " + preObjectSegment.getSegmentID(), AreaNames.SceneComposition);
             for (int i = 0; i < scene.size() - 1; i++) {
                 PreObjectSection preObject = scene.get(i).getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
-                if (this.isNeighbour(preObjectSegment, preObject)) {
-                    if (this.neighbourAssociated(preObjectSegment, preObject)) {
-                        preObject.setSegmentID(preObjectSegment.getSegmentID());
+                if (preObjectSegment == preObject) {
+//                    System.out.println("EQUAL: " + preObjectSegment.getSegmentID() + "<>" + preObject.getSegmentID());
+                } else {
+                    if (this.isNeighbour(preObjectSegment, preObject)) {
+                        if (this.isNeighbourAssociated(preObjectSegment, preObject)) {
+                            if (segments.containsKey(preObjectSegment.getSegmentID())) {
+                                segments.put(preObject.getSegmentID(), segments.get(preObjectSegment.getSegmentID()));
+                            } else {
+                                segments.put(preObjectSegment.getSegmentID(), segmentsID);
+                                segments.put(preObject.getSegmentID(), segmentsID);
+                                segmentsID++;
+                            }
+                            preObject.setSegmentID(preObjectSegment.getSegmentID());
+                        }
                     }
                 }
             }
         }
-        for (int i = 0; i < scene.size() - 1; i++) {
-            System.out.println("SEGMENT: " + scene.get(i).getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment().getSegmentID());
+        for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : scene) {
+            PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
+            if (segments.get(preObject.getSegmentID()) != null) {
+                preObject.setSegmentID(segments.get(preObject.getSegmentID()));
+            }
         }
-        return new ArrayList<>();
+        HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> SegmentIdMap = new HashMap<>();
+        for (int i = 0; i < scene.size() - 1; i++) {
+            PreObjectSection preObject = scene.get(i).getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
+//            System.out.println("SEGMENT: " + preObject.getSegmentID());
+            if (SegmentIdMap.containsKey(preObject.getSegmentID())) {
+                SegmentIdMap.get(preObject.getSegmentID()).add(scene.get(i));
+            } else {
+                ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> aux = new ArrayList<>();
+                aux.add(scene.get(i));
+                SegmentIdMap.put(preObject.getSegmentID(), aux);
+            }
+        }
+        return SegmentIdMap;
     }
 
     private boolean isNeighbour(PreObjectSection currentPreObject, PreObjectSection comparedPreObject) {
@@ -227,151 +259,159 @@ public class SceneComposition extends ActivityTemplate {
         return str1.equals(str2);
     }
 
-    private boolean neighbourAssociated(PreObjectSection preObjectSegment, PreObjectSection preObject) throws IOException {
+    private boolean isNeighbourAssociated(PreObjectSection preObjectSegment, PreObjectSection preObject) throws IOException {
         if (preObjectSegment.getSegmentID() != preObject.getSegmentID()) {
-            Mat reshaped1 = new Mat();
-            Mat reshaped2 = new Mat();
+            String dir1 = new String();
+            String dir2 = new String();
             switch (preObjectSegment.getRetinotopicID()) {
                 case "fQ1": {
                     switch (preObject.getRetinotopicID()) {
                         case "pQ1": {
-                            reshaped1 = new Mat(preObject.getSegment(), new Rect(Segmentation.POINTS.get(1), Segmentation.POINTS.get(5)));
-                            reshaped2 = new Mat(preObject.getSegment(), new Rect(Segmentation.POINTS.get(5), Segmentation.POINTS.get(10)));
-                            show(reshaped1, "RESHAPED_1", AreaNames.SceneComposition);
-                            return this.isUnified(preObjectSegment.getSegment(), reshaped1, "UP")
-                                    || this.isUnified(preObjectSegment.getSegment(), reshaped2, "RIGHT");
+                            dir1 = "UP";
+                            dir2 = "RIGHT";
                         }
+                        break;
                         case "fQ2":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "LEFT");
+                            dir1 = "LEFT";
+                            break;
                         case "fQ4":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "DOWN");
+                            dir1 = "DOWN";
+                            break;
                         default:
                             return false;
                     }
                 }
+                break;
                 case "fQ2": {
                     switch (preObject.getRetinotopicID()) {
                         case "pQ2":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "UP")
-                                    || this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "LEFT");
+                            dir1 = "UP";
+                            dir2 = "LEFT";
+                            break;
                         case "fQ1":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "RIGHT");
+                            dir1 = "RIGHT";
+                            break;
                         case "fQ3":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "DOWN");
+                            dir1 = "DOWN";
+                            break;
                         default:
                             return false;
                     }
                 }
+                break;
                 case "fQ3": {
                     switch (preObject.getRetinotopicID()) {
                         case "pQ3":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "DOWN")
-                                    || this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "LEFT");
+                            dir1 = "DOWN";
+                            dir2 = "LEFT";
+                            break;
                         case "fQ2":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "UP");
+                            dir1 = "UP";
+                            break;
                         case "fQ4":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "RIGHT");
+                            dir1 = "RIGHT";
+                            break;
                         default:
                             return false;
                     }
                 }
+                break;
                 case "fQ4": {
                     switch (preObject.getRetinotopicID()) {
                         case "pQ4":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "DOWN")
-                                    || this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "RIGHT");
+                            dir1 = "DOWN";
+                            dir2 = "RIGHT";
+                            break;
                         case "fQ1":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "UP");
+                            dir1 = "UP";
+                            break;
                         case "fQ3":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "LEFT");
+                            dir1 = "LEFT";
+                            break;
                         default:
                             return false;
                     }
                 }
+                break;
                 case "pQ1": {
                     switch (preObject.getRetinotopicID()) {
                         case "fQ1":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "DOWN")
-                                    || this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "LEFT");
+                            dir1 = "DOWN";
+                            dir2 = "LEFT";
+                            break;
                         case "pQ2":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "LEFT");
+                            dir1 = "LEFT";
+                            break;
                         case "pQ4":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "DOWN");
+                            dir1 = "DOWN";
+                            break;
                         default:
                             return false;
                     }
                 }
+                break;
                 case "pQ2": {
                     switch (preObject.getRetinotopicID()) {
                         case "fQ2":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "DOWN")
-                                    || this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "RIGHT");
+                            dir1 = "DOWN";
+                            dir2 = "RIGHT";
+                            break;
                         case "pQ1":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "RIGHT");
+                            dir1 = "RIGHT";
+                            break;
                         case "pQ3":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "DOWN");
+                            dir1 = "DOWN";
+                            break;
                         default:
                             return false;
                     }
                 }
+                break;
                 case "pQ3": {
                     switch (preObject.getRetinotopicID()) {
                         case "fQ3":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "UP")
-                                    || this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "RIGHT");
+                            dir1 = "UP";
+                            dir2 = "RIGHT";
+                            break;
                         case "pQ2":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "UP");
+                            dir1 = "UP";
+                            break;
                         case "pQ4":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "RIGHT");
+                            dir1 = "RIGHT";
+                            break;
                         default:
                             return false;
                     }
                 }
+                break;
                 case "pQ4": {
                     switch (preObject.getRetinotopicID()) {
                         case "fQ4":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "UP")
-                                    || this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "LEFT");
+                            dir1 = "UP";
+                            dir2 = "LEFT";
+                            break;
                         case "pQ1":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "UP");
+                            dir1 = "UP";
+                            break;
                         case "pQ3":
-                            return this.isUnified(preObjectSegment.getSegment(), preObject.getSegment(), "LEFT");
+                            dir1 = "LEFT";
+                            break;
                         default:
                             return false;
                     }
                 }
+                break;
                 default:
                     return false;
             }
+            return this.isInZone(preObjectSegment.getRect(), preObject.getRect(), dir1, dir2);
         } else {
             return false;
         }
     }
 
-    private void reformatScene(ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> currentScene) throws IOException {
-        //ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> newScene = new ArrayList<>();
-        Mat mat;
-        Mat resizedMat;
-        for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : currentScene) {
-            PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
-            if (!this.isFovea(preObject)) {
-                mat = preObject.getSegment();
-                resizedMat = new Mat(mat.size(), mat.type());
-                Imgproc.resize(
-                        mat,
-                        resizedMat,
-                        new Size(
-                                resizedMat.size().width / GlobalConfig.FOVEA_FACTOR,
-                                resizedMat.size().height / GlobalConfig.FOVEA_FACTOR
-                        )
-                );
-                preObject.setSegment(resizedMat);
-            }
-        }
-    }
-
     private Mat composeScene(ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> currentScene) throws IOException {
-        Mat newScene = Mat.zeros(GlobalConfig.WINDOW_SIZE, CvType.CV_8UC1);
+        Mat newScene = Mat.zeros(GlobalConfig.WINDOW_SIZE, CvType.CV_8UC3);
         for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : currentScene) {
             PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
             Rect newRect = preObject.getRect();
@@ -408,8 +448,131 @@ public class SceneComposition extends ActivityTemplate {
             );
             mask.height = preObject.getSegment().rows();
             mask.width = preObject.getSegment().cols();
-            Core.add(preObject.getSegment(), new Mat(newScene, mask), new Mat(newScene, mask));
+            Mat newMat = new Mat(preObject.getSegment().size(), CvType.CV_8UC3);
+            Imgproc.cvtColor(preObject.getSegment(), newMat, Imgproc.COLOR_GRAY2BGR);
+            Core.add(newMat, new Mat(newScene, mask), new Mat(newScene, mask));
+            //Imgproc.rectangle(newScene, mask, new Scalar(0, 0, 255));
         }
         return newScene;
+    }
+
+    private boolean isInZone(Rect rect1, Rect rect2, String dir1, String dir2) {
+        return this.isInZone(rect1, rect2, dir1) || this.isInZone(rect1, rect2, dir2);
+    }
+
+    private boolean isInZone(Rect rect1, Rect rect2, String dir) {
+        switch (dir) {
+            case "LEFT": {
+                return rect2.x + rect2.width <= rect1.x + GlobalConfig.PREOBJECT_SUPERPOSITION_FACTOR
+                        && rect2.x + rect2.width > rect1.x - GlobalConfig.PREOBJECT_SUPERPOSITION_FACTOR;
+            }
+            case "RIGHT": {
+                return rect1.x + rect1.width <= rect2.x + GlobalConfig.PREOBJECT_SUPERPOSITION_FACTOR
+                        && rect1.x + rect1.width > rect2.x - GlobalConfig.PREOBJECT_SUPERPOSITION_FACTOR;
+            }
+            case "UP": {
+                return rect2.y + rect2.height <= rect1.y + GlobalConfig.PREOBJECT_SUPERPOSITION_FACTOR
+                        && rect2.y + rect2.height > rect1.y - GlobalConfig.PREOBJECT_SUPERPOSITION_FACTOR;
+            }
+            case "DOWN": {
+                return rect1.y + rect1.height <= rect2.y + GlobalConfig.PREOBJECT_SUPERPOSITION_FACTOR
+                        && rect1.y + rect1.height > rect2.y - GlobalConfig.PREOBJECT_SUPERPOSITION_FACTOR;
+            }
+            default:
+                return false;
+        }
+    }
+
+    private void markObjects(
+            HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups,
+            HashMap<Integer, String> objectLabels,
+            Mat scene) {
+        for (Integer segmentID : preObjectGroups.keySet()) {
+            ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> object = preObjectGroups.get(segmentID);
+            int minX = GlobalConfig.WINDOW_WIDTH;
+            int minY = GlobalConfig.WINDOW_HEIGHT;
+            int maxX = 0;
+            int maxY = 0;
+            for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : object) {
+                PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
+                Rect rect = preObject.getRect();
+                Imgproc.rectangle(
+                        scene,
+                        rect,
+                        new Scalar(0, 0, 255),
+                        2
+                );
+                if (rect.x < minX) {
+                    minX = rect.x;
+                }
+                if (rect.y < minY) {
+                    minY = rect.y;
+                }
+                if (rect.x + rect.width > maxX) {
+                    maxX = rect.x + rect.width;
+                }
+                if (rect.y + rect.height > maxY) {
+                    maxY = rect.y + rect.height;
+                }
+            }
+            Imgproc.rectangle(
+                    scene,
+                    new Rect(
+                            new Point(minX, minY),
+                            new Point(maxX, maxY)
+                    ),
+                    new Scalar(0, 255, 0)
+            );
+            Imgproc.putText(scene, segmentID.toString(), new Point(minX, minY), 0, 1, new Scalar(255, 0, 0), 1);
+            Imgproc.putText(scene, objectLabels.get(segmentID), new Point(minX, minY + 3), 0, 1, new Scalar(255, 0, 0), 2);
+        }
+    }
+
+    private HashMap<Integer, String>
+            traduceLabels(HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups) {
+        HashMap<Integer, String> objectLabels = new HashMap();
+        for (Integer objectID : preObjectGroups.keySet()) {
+//            System.out.println("IDs: "+objectID);
+            ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> object = preObjectGroups.get(objectID);
+            String totalLabel = new String();
+            for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : object) {
+                RIIC_h riic_h = triplet.getRIIC_hAndPreObjectSegmentPair().getRIIC_h();
+                RIIC_c riic_c = triplet.getRIIC_c();
+                if (riic_h.getPreObject() != null) {
+                    if (!SceneComposition.languageMap.containsKey(riic_h.getPreObject().getLabel())) {
+                        SceneComposition.languageMap.put(riic_h.getPreObject().getLabel(), this.countLabel("H"));
+                    }
+                    totalLabel = totalLabel.concat(SceneComposition.languageMap.get(riic_h.getPreObject().getLabel()));
+                }
+                if (riic_c.getPreObject() != null) {
+                    if (!SceneComposition.languageMap.containsKey(riic_c.getPreObject().getLabel())) {
+                        SceneComposition.languageMap.put(riic_c.getPreObject().getLabel(), this.countLabel("C"));
+                    }
+                    totalLabel = totalLabel.concat(SceneComposition.languageMap.get(riic_c.getPreObject().getLabel()));
+                }
+            }
+            objectLabels.put(objectID, totalLabel);
+        }
+        return objectLabels;
+    }
+
+    private String countLabel(String type) {
+        if ("H".equals(type)) {
+            SceneComposition.labelCounter_h++;
+            if (SceneComposition.labelCounter_h >= 'Z') {
+                //SceneComposition.labelCounter_h = 'A';
+            }
+            return Character.toString((char) SceneComposition.labelCounter_h);
+        } else {
+            if ("C".equals(type)) {
+                SceneComposition.labelCounter_c++;
+                if (SceneComposition.labelCounter_c >= 'z') {
+                    //SceneComposition.labelCounter_c = 'a';
+                }
+                return Character.toString((char) SceneComposition.labelCounter_c);
+            } else {
+                return "0";
+            }
+        }
     }
 }
