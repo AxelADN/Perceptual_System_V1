@@ -20,7 +20,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import perception.GUI.XFrame;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.InternalRequest;
@@ -42,8 +41,8 @@ public class SceneComposition extends ActivityTemplate {
     private final HashMap<String, ArrayList<String>> neighbouring;
     private final HashMap<String, Integer> sectionPoints;
     private static final HashMap<String, String> languageMap = new HashMap<>();
-    private static int labelCounter_h = 'A';
-    private static int labelCounter_c = 'a';
+    private static int labelCounter_h = 0x0100;
+    private static int labelCounter_c = 0x200;
     private static ArrayList<Integer> languageUsed = new ArrayList<>();
 
     public SceneComposition() {
@@ -536,7 +535,7 @@ public class SceneComposition extends ActivityTemplate {
                     ),
                     new Scalar(0, 255, 0)
             );
-            Imgproc.putText(scene, segmentID.toString(), new Point(minX, minY), 0, 1, new Scalar(255, 0, 0), 1);
+            //Imgproc.putText(scene, segmentID.toString(), new Point(minX, minY), 0, 1, new Scalar(255, 0, 0), 1);
             Imgproc.putText(scene, objectLabels.get(segmentID), new Point(minX, minY + 3), 0, 1, new Scalar(255, 0, 0), 2);
         }
     }
@@ -572,19 +571,21 @@ public class SceneComposition extends ActivityTemplate {
     private String countLabel(String type) {
         if ("H".equals(type)) {
             SceneComposition.labelCounter_h++;
-            if (SceneComposition.labelCounter_h >= 'Z') {
-                //SceneComposition.labelCounter_h = 'A';
+            if (SceneComposition.labelCounter_h >= 0x01FF || SceneComposition.labelCounter_h == '?') {
+                SceneComposition.labelCounter_h = '?';
             }
-            return Character.toString((char) SceneComposition.labelCounter_h);
+            return "|"+SceneComposition.labelCounter_h;
+            //return Character.toString((char) SceneComposition.labelCounter_h);
         } else {
             if ("C".equals(type)) {
                 SceneComposition.labelCounter_c++;
-                if (SceneComposition.labelCounter_c >= 'z') {
-                    //SceneComposition.labelCounter_c = 'a';
+                if (SceneComposition.labelCounter_c >= 0x2FF || SceneComposition.labelCounter_c == '?') {
+                    SceneComposition.labelCounter_c = '?';
                 }
-                return Character.toString((char) SceneComposition.labelCounter_c);
+                return "|"+SceneComposition.labelCounter_c;
+                //return Character.toString((char) SceneComposition.labelCounter_c);
             } else {
-                return "0";
+                return Character.toString((char)'¿');
             }
         }
     }

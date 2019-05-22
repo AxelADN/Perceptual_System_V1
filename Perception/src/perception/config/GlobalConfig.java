@@ -24,7 +24,7 @@ public class GlobalConfig {
     
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
-    public static final int showEnablerID = AreaNames.SceneComposition;//AreaNames.BufferSwitch;
+    public static final int showEnablerID = 0;//AreaNames.BufferSwitch;
     public static  final Class showEnablerIDs = AreaNames.class;
     
     public static final double ACTIVATION_THRESHOLD_HOLISTIC = 0.005;
@@ -39,9 +39,9 @@ public class GlobalConfig {
     public static final double COMPONENT_INFLUENCE_FACTOR = 0.5;
     public static final double ACTIVATION_THRESHOLD_COMPONENT = 0.08;
     public static final int PREOBJECT_SUPERPOSITION_FACTOR = 4;
-    public static final long SYSTEM_TIME_STEP = 500;
+    public static final long SYSTEM_TIME_STEP = 250;
     public static final int SYSTEM_TEST_MAX_STEPS=-1;
     public static final String GENERIC_FILE = "src/resources/";
     public static final boolean TRACE_WRITE = false;
-    public static final double MAX_SAMPLES = 0.02;
+    public static final double MAX_SAMPLES = 0.01;
 }

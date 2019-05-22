@@ -5,11 +5,10 @@
  */
 package perception.activities;
 
-import java.awt.Window;
+import java.util.List;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
@@ -29,8 +28,18 @@ import utils.SimpleLogger;
  */
 public class SystemInit extends ActivityTemplate {
 
+    private final Experimenter experiment;
+
     public SystemInit() {
         this.ID = AreaNames.SystemInit;
+        this.experiment = new Experimenter(
+                "Test03",
+                List.of(1000),
+                15,
+                1,
+                false,
+                true
+        );
 
     }
 
@@ -46,25 +55,32 @@ public class SystemInit extends ActivityTemplate {
 
     private void start() throws Exception {
         //Reading the Image from the file and storing it in to a Matrix object 
-        double sample = .01;
-        String file = GlobalConfig.GENERIC_FILE+"Sample_"+sample+".png";
-        System.out.println("FILE: "+file);
+        String file = this.experiment.getFile();
         Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
-        XFrame frame = show(image,0,0, "System Init");
+        XFrame frame = show(image, 0, 0, "System Init");
         ActivityTemplate.setInitFrame(frame);
-        Integer i=0;
-        while (i<=GlobalConfig.SYSTEM_TEST_MAX_STEPS||GlobalConfig.SYSTEM_TEST_MAX_STEPS<0) {
-            if (frame.isClicked()) {
-                sample+=0.01;
-                if(sample >GlobalConfig.MAX_SAMPLES){
-                    sample = 0.01;
+        Integer i = 0;
+        boolean flag = true;
+        while (!this.experiment.finished()) {
+            flag = true;
+            while (flag) {
+                if (this.experiment.finishedBlock()) {
+                    image = this.experiment.finishStep(image);
+                    flag = false;
+                } else {
+                    image = this.experiment.step(image);
                 }
-                file = GlobalConfig.GENERIC_FILE+"Sample_"+sample+".png";
-                image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
-                frame.notClicked();
-            }
+//            if (frame.isClicked()) {
+//                sample+=0.01;
+//                if(sample >GlobalConfig.MAX_SAMPLES){
+//                    sample = 0.01;
+//                }
+//                file = GlobalConfig.GENERIC_FILE+"Sample_"+sample+".png";
+//                image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
+//                frame.notClicked();
+//            }
                 Mat currentImage = image.clone();
-                Imgproc.putText(currentImage, i.toString(), new Point(0,20), 0, 1, new Scalar(0,0,255));
+                Imgproc.putText(currentImage, i.toString(), new Point(0, 30), 0, 1, new Scalar(0, 0, 255));
                 showInit(currentImage);
                 sendTo(
                         new Sendable(
@@ -76,11 +92,12 @@ public class SystemInit extends ActivityTemplate {
                                 AreaNames.Segmentation
                         )
                 );
-            Thread.sleep(GlobalConfig.SYSTEM_TIME_STEP);
-            i++;
+                Thread.sleep(GlobalConfig.SYSTEM_TIME_STEP);
+                i++;
+            }
         }
-
     }
+
     @Override
     public void receive(int nodeID, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
