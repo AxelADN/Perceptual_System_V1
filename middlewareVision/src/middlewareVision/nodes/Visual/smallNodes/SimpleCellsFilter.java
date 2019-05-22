@@ -1,10 +1,10 @@
 package middlewareVision.nodes.Visual.smallNodes;
 
-import gui.FrameActivity;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import matrix.SimpleCellMatrix;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import org.opencv.core.CvType;
@@ -17,72 +17,58 @@ import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
-import utils.MatrixUtils;
 import utils.SimpleLogger;
-import utils.numSync;
 
 /**
- * Author: Elon Musk
+ *
  *
  */
-public class V2IlusoryCells extends FrameActivity {
+public class SimpleCellsFilter extends Activity {
 
     /**
      * *************************************************************************
-     * Init variables
+     * CONSTANTES
      * *************************************************************************
      */
-    float sigma = 0.47f * 2f;
-    float inc = (float) (Math.PI / 4);
-
     /**
      * *************************************************************************
      * CONSTRUCTOR Y METODOS PARA RECIBIR
      * *************************************************************************
      */
-    public V2IlusoryCells() {
-        this.ID = AreaNames.V2IlusoryCells;
+    public SimpleCellsFilter() {
+        this.ID = AreaNames.SimpleCellsFilter;
         this.namer = AreaNames.class;
-        //initFrames(4, 12);
     }
 
     @Override
     public void init() {
-        SimpleLogger.log(this, "SMALL NODE V2IlusoryCells");
+        SimpleLogger.log(this, "SMALL NODE SimpleCellsFilter");
     }
 
     @Override
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
-            /*
-            extract the variable needed for the sync
-             */
             Location l = (Location) spike.getLocation();
             int index = l.getValues()[0];
-
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
-                Mat edges = Convertor.matrixToMat((matrix) spike.getIntensity());
-                Mat ilusoryEdges;
-                if (Config.ilusoryEnabled) {
-                    ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.08f, 0, 31, 20, 0.1, index);
-                } else {
-                    ilusoryEdges = edges.clone();
-                }
-                if (Config.ilusoryEnabled) {
-                    ilusoryEdges = MatrixUtils.maxSum(ilusoryEdges, edges);
-                }
-                LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(ilusoryEdges), 0);
-                send(AreaNames.V2AngularCells, sendSpike.getByteArray());
-                send(AreaNames.V4Contour, sendSpike.getByteArray());
-                send(AreaNames.V2Visualizer, sendSpike.getByteArray());
-
+                Mat raw = Convertor.matrixToMat((matrix) spike.getIntensity());
+                
+                Mat evenOrs = gaborFilter(raw, 0, index);
+                Mat oddOrs = gaborFilter(raw, 0.3, index);
+                
+                matrix evenMatrix=Convertor.MatToMatrix(evenOrs);
+                matrix oddMatrix=Convertor.MatToMatrix(oddOrs);
+                
+                SimpleCellMatrix scMatrix=new SimpleCellMatrix(evenMatrix, oddMatrix);
+                
+                LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), scMatrix, 0);
+                send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
             }
 
-
         } catch (Exception ex) {
-            Logger.getLogger(V2IlusoryCells.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SimpleCellsFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -91,31 +77,31 @@ public class V2IlusoryCells extends FrameActivity {
      * METODOS
      * ************************************************************************
      */
-    /**
-     *
-     * @param img array of matrixes
-     * @param sigma i dont know what is sigma
-     * @param psi offset
-     * @param kernelSize size of kernel
-     * @param lenght lenght of the gabor function
-     * @param aspectRatio <0.5 elongated @retur n
-     */
-    public Mat elongatedGaborFilter(Mat img, float sigma, double psi, int kernelSize, double lenght, double aspectRatio, int index) {
-        Mat ors = new Mat();
+    float inc = (float) (Math.PI / 4);
+    float sigma = 0.47f * 2f;
+
+    public Mat gaborFilter(Mat img, double phi, int part) {
+        Mat ors;
+        //Imgproc.blur(img, img, new Size(Config.blur, Config.blur));
+        ors = new Mat();
         Mat kernel = new Mat();
+        //size of the kernel
+        int kernelSize = 13;
         //angle of the orientation
-        float angle = index * inc;
+        float angle = part * inc;
         //initializate the ors and gab array matrix with zeros
         ors = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
         Mat gab = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
+        //convert the matrix img to float matrix
+        img.convertTo(img, CV_32F);
         //generate the gabor filter
-        kernel = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, lenght, aspectRatio, psi, CvType.CV_32F);
-        // Imgproc.getga
+        kernel = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, 2f, 0.8f, phi, CvType.CV_32F);
         //perform the convolution on the image IMG with the filter GAB
         Imgproc.filter2D(img, gab, CV_32F, kernel);
         //apply a threshold from the value 0.2 to 1
-        Imgproc.threshold(gab, gab, 0.4, 1, Imgproc.THRESH_TOZERO);
+        Imgproc.threshold(gab, gab, 0.2, 1, Imgproc.THRESH_TOZERO);
         ors = gab;
         return ors;
     }
+
 }

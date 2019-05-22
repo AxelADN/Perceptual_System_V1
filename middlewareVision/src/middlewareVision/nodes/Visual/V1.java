@@ -5,6 +5,8 @@
  */
 package middlewareVision.nodes.Visual;
 
+import middlewareVision.nodes.Visual.smallNodes.V1EdgeVisualizer;
+import middlewareVision.nodes.Visual.smallNodes.SimpleCellsFilter;
 import middlewareVision.nodes.Visual.smallNodes.V1DoubleOpponent;
 import middlewareVision.nodes.Visual.smallNodes.V1ComplexCells;
 import middlewareVision.nodes.Visual.smallNodes.V1SimpleCells;
@@ -25,6 +27,10 @@ public class V1 extends Area{
 	addProcess(V1DoubleOpponent.class);
 	//addProcess(V1HyperComplex.class);
 	
+	addProcess(SimpleCellsFilter.class);
+	
+	addProcess(V1EdgeVisualizer.class);
+	
 	//@AddProcess
     }
 
@@ -41,6 +47,10 @@ public class V1 extends Area{
 	send(AreaNames.V1ComplexCells,data);
 	send(AreaNames.V1DoubleOpponent,data);/*
 	send(AreaNames.V1HyperComplex,data);*/
+	
+	send(AreaNames.SimpleCellsFilter,data);
+	
+	send(AreaNames.V1EdgeVisualizer,data);
 	
 	//@SendProcess
     }

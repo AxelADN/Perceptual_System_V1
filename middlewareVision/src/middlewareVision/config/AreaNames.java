@@ -42,6 +42,12 @@ public class AreaNames {
 	
 
 	
+	public static int SimpleCellsFilter = IDHelper.generateID("V1", 5, 0);
+	
+	public static int V1EdgeVisualizer = IDHelper.generateID("V1", 6 , 0);
+	
+	public static int V2Visualizer = IDHelper.generateID("V2", 3 , 0);
+	
 	//@addNodes
         //no quitar el comentario de add Nodes
 }

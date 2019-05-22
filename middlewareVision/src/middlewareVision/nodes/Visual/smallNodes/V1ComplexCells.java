@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import gui.FrameActivity;
+import matrix.SimpleCellMatrix;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -49,33 +50,26 @@ public class V1ComplexCells extends FrameActivity {
         SimpleLogger.log(this, "SMALL NODE V1this");
     }
 
-    //espero 8 matrices
-    numSync sync = new numSync(8);
-
     @Override
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
 
             Location l = (Location) spike.getLocation();
-            int i1 = l.getValues()[0];
-            int i2 = l.getValues()[1];
+            int index = l.getValues()[0];
 
-                
-                if (spike.getModality() == Modalities.VISUAL) {
+            if (spike.getModality() == Modalities.VISUAL) {
 
-                    ors[i1][i2] = Convertor.matrixToMat((matrix) spike.getIntensity());
-                    sync.addReceived(i1 + i2 * 4);
-                }
+                SimpleCellMatrix scm = (SimpleCellMatrix) spike.getIntensity();
+                Mat evenOrs = Convertor.matrixToMat(scm.getEvenOrs());
+                Mat oddOrs = Convertor.matrixToMat(scm.getOddOrs());
 
-                if (sync.isComplete()) {
-                    energyProcess(ors);
-                    for (int i = 0; i < 4; i++) {
-                        frame[i].setImage(Convertor.ConvertMat2Image(energy[i]), "energy " + i);
-                        LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i), Convertor.MatToMatrix(energy[i]), 0);
-                        send(AreaNames.V2IlusoryCells, sendSpike.getByteArray());
-                    }
-                }
+                Mat energy = energyProcess(evenOrs, oddOrs);
+                LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(energy), 0);
+                send(AreaNames.V1EdgeVisualizer, sendSpike1.getByteArray());
+                send(AreaNames.V2IlusoryCells, sendSpike1.getByteArray());
+
+            }
 
         } catch (Exception ex) {
             Logger.getLogger(V1ComplexCells.class.getName()).log(Level.SEVERE, null, ex);
@@ -87,23 +81,23 @@ public class V1ComplexCells extends FrameActivity {
      * METODOS
      * ************************************************************************
      */
-    public void energyProcess(Mat mat[][]) {
-        energy = new Mat[4];
+    public Mat energyProcess(Mat mat1, Mat mat2) {
         Mat r1, r2;
 
-        for (int i = 0; i < 4; i++) {
-            energy[i] = Mat.zeros(mat[0][0].rows(), mat[0][0].cols(), CvType.CV_32FC1);
-            r1 = mat[i][0];
-            r2 = mat[i][1];
+        Mat energy = Mat.zeros(mat1.rows(), mat1.cols(), CvType.CV_32FC1);
+        r1 = mat1;
+        r2 = mat2;
 
-            Core.pow(r1, 2, r1);
-            Core.pow(r2, 2, r2);
+        Core.pow(r1, 2, r1);
+        Core.pow(r2, 2, r2);
 
-            Core.add(r1, r2, r1);
+        Core.add(r1, r2, r1);
 
-            Core.sqrt(r1, energy[i]);
+        Core.sqrt(r1, energy);
 
-            Imgproc.threshold(energy[i], energy[i], 0.2, 1, Imgproc.THRESH_TOZERO);
-        }
+        Imgproc.threshold(energy, energy, 0.2, 1, Imgproc.THRESH_TOZERO);
+
+        return energy;
+
     }
 }

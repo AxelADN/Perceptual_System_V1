@@ -43,7 +43,7 @@ public class V4Contour extends FrameActivity {
         this.ID = AreaNames.V4Contour;
         this.namer = AreaNames.class;
         ors = new Mat[Config.gaborOrientations];
-        initFrames(3,20);
+        initFrames(3, 20);
     }
 
     @Override
@@ -67,41 +67,42 @@ public class V4Contour extends FrameActivity {
                 ors[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
                 /*
                 add the received index to the sync
-                */
+                 */
                 sync.addReceived(index);
+                try {
+                    combinedEdges = MatrixUtils.maxSum(ors);
+                    BufferedImage img = Convertor.ConvertMat2Image(combinedEdges);
+                    frame[0].setImage(img, "combined");
+                } catch (Exception ex) {
+
+                }
 
             }
             /*
             if the sync of matrix is complete
-            */
+             */
             if (sync.isComplete()) {
-                combinedEdges=MatrixUtils.maxSum(ors);
-                BufferedImage img = Convertor.ConvertMat2Image(combinedEdges);
-                frame[0].setImage(img, "combined");
-                
-                
-                
-                contours1=drawMatContours(combinedEdges, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_TC89_L1);
+
+                contours1 = drawMatContours(combinedEdges, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_TC89_L1);
                 BufferedImage img2 = Convertor.ConvertMat2Image2(contours1);
-                frame[1].setImage(img2 , "contours1");
-                contours2=drawMatContours(combinedEdges, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
+                frame[1].setImage(img2, "contours1");
+                contours2 = drawMatContours(combinedEdges, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
                 BufferedImage img3 = Convertor.ConvertMat2Image2(contours2);
-                frame[2].setImage(img3 , "contours2");
-                
+                frame[2].setImage(img3, "contours2");
+
                 /**
-                 * si la matriz es normal en colores de 0 a 255, se puede convertir directo a bytes sin pasar por la imagen
+                 * si la matriz es normal en colores de 0 a 255, se puede
+                 * convertir directo a bytes sin pasar por la imagen
                  */
                 LongSpike sendSpike = new LongSpike(Modalities.VISUAL, 0, Convertor.matToBytes(contours1), 0);
                 send(AreaNames.ITC, sendSpike.getByteArray());
-                
+
             }
-            
+
         } catch (Exception ex) {
             Logger.getLogger(V4Contour.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
 
     /**
      * Do the contour integration by find contours
@@ -121,14 +122,16 @@ public class V4Contour extends FrameActivity {
 
     /**
      * Draw the contours in a color matrix
+     *
      * @param src mat with values between 0 and 1
      * @return a color matrix of contours
      */
-    double thresh=0.6;
+    double thresh = 0.6;
+
     public Mat drawMatContours(Mat src, int mode, int method) {
-        Mat thresolded=new Mat();
+        Mat thresolded = new Mat();
         Imgproc.threshold(src, thresolded, thresh, 1, Imgproc.THRESH_BINARY);
-        thresolded.convertTo(thresolded, CvType.CV_8U);      
+        thresolded.convertTo(thresolded, CvType.CV_8U);
         List<MatOfPoint> contours = ContourIntegration(thresolded, mode, method);
         Mat contoursMat;
         contoursMat = Mat.zeros(src.size(), CV_8UC3);

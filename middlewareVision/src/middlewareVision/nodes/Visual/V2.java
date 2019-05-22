@@ -5,6 +5,7 @@
  */
 package middlewareVision.nodes.Visual;
 
+import middlewareVision.nodes.Visual.smallNodes.V2Visualizer;
 import middlewareVision.nodes.Visual.smallNodes.V2AngularCells;
 import kmiddle2.nodes.areas.Area;
 import middlewareVision.config.AreaNames;
@@ -22,7 +23,9 @@ public class V2 extends Area{
         this.namer = AreaNames.class;
         addProcess(V2AngularCells.class);
         addProcess(V2IlusoryCells.class);
-        //@AddProcess
+        addProcess(V2Visualizer.class);
+	
+	//@AddProcess
     }
 
     @Override
@@ -35,7 +38,9 @@ public class V2 extends Area{
     public void receive(int nodeID, byte[] data) {
         send(AreaNames.V2AngularCells, data);
         send(AreaNames.V2IlusoryCells, data);
-        //@SendProcess
+        send(AreaNames.V2Visualizer,data);
+	
+	//@SendProcess
     }
     
     
