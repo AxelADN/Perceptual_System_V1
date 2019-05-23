@@ -40,10 +40,11 @@ public class SceneComposition extends ActivityTemplate {
 
     private final HashMap<String, ArrayList<String>> neighbouring;
     private final HashMap<String, Integer> sectionPoints;
-    private static final HashMap<String, String> languageMap = new HashMap<>();
+    private static final HashMap<String, Integer> languageMap = new HashMap<>();
     private static int labelCounter_h = 0x0100;
     private static int labelCounter_c = 0x200;
     private static ArrayList<Integer> languageUsed = new ArrayList<>();
+    private static final HashMap<String,Double> intensityMap = new HashMap<>();
 
     public SceneComposition() {
         this.ID = AreaNames.SceneComposition;
@@ -131,7 +132,7 @@ public class SceneComposition extends ActivityTemplate {
                 Mat scene = this.composeScene(received);
                 HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups
                         = this.getPreObjectGroups(received);
-                HashMap<Integer, String> objectLabels = this.traduceLabels(preObjectGroups);
+                HashMap<Integer, HashMap<Integer,Double>> objectLabels = this.traduceLabels(preObjectGroups);
                 this.markObjects(preObjectGroups, objectLabels, scene);
                 showFinal(scene);
             } else {
@@ -497,7 +498,7 @@ public class SceneComposition extends ActivityTemplate {
 
     private void markObjects(
             HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups,
-            HashMap<Integer, String> objectLabels,
+            HashMap<Integer, HashMap<Integer,Double>> objectLabels,
             Mat scene) {
         for (Integer segmentID : preObjectGroups.keySet()) {
             ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> object = preObjectGroups.get(segmentID);
@@ -536,17 +537,21 @@ public class SceneComposition extends ActivityTemplate {
                     new Scalar(0, 255, 0)
             );
             //Imgproc.putText(scene, segmentID.toString(), new Point(minX, minY), 0, 1, new Scalar(255, 0, 0), 1);
-            Imgproc.putText(scene, objectLabels.get(segmentID), new Point(minX, minY + 3), 0, 1, new Scalar(255, 0, 0), 2);
+            String objectLabel = new String();
+            for(Integer label:objectLabels.get(segmentID).keySet()){
+                objectLabel = objectLabel.concat(label.toString()+"|");
+            }
+            Imgproc.putText(scene, objectLabel, new Point(minX, minY + 3), 0, 1, new Scalar(255, 0, 0), 2);
         }
     }
 
-    private HashMap<Integer, String>
+    private HashMap<Integer, HashMap<Integer,Double>>
             traduceLabels(HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups) {
-        HashMap<Integer, String> objectLabels = new HashMap();
+        HashMap<Integer, HashMap<Integer,Double>> objectLabels = new HashMap();
         for (Integer objectID : preObjectGroups.keySet()) {
 //            System.out.println("IDs: "+objectID);
             ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> object = preObjectGroups.get(objectID);
-            String totalLabel = new String();
+            HashMap<Integer,Double> totalLabel = new HashMap<>();
             for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : object) {
                 RIIC_h riic_h = triplet.getRIIC_hAndPreObjectSegmentPair().getRIIC_h();
                 RIIC_c riic_c = triplet.getRIIC_c();
@@ -554,13 +559,13 @@ public class SceneComposition extends ActivityTemplate {
                     if (!SceneComposition.languageMap.containsKey(riic_h.getPreObject().getLabel())) {
                         SceneComposition.languageMap.put(riic_h.getPreObject().getLabel(), this.countLabel("H"));
                     }
-                    totalLabel = totalLabel.concat(SceneComposition.languageMap.get(riic_h.getPreObject().getLabel()));
+                    totalLabel.put(SceneComposition.languageMap.get(riic_h.getPreObject().getLabel()),riic_h.getPreObject().getPriority());
                 }
                 if (riic_c.getPreObject() != null) {
                     if (!SceneComposition.languageMap.containsKey(riic_c.getPreObject().getLabel())) {
                         SceneComposition.languageMap.put(riic_c.getPreObject().getLabel(), this.countLabel("C"));
                     }
-                    totalLabel = totalLabel.concat(SceneComposition.languageMap.get(riic_c.getPreObject().getLabel()));
+                    totalLabel.put(SceneComposition.languageMap.get(riic_c.getPreObject().getLabel()),riic_c.getPreObject().getPriority());
                 }
             }
             objectLabels.put(objectID, totalLabel);
@@ -568,24 +573,22 @@ public class SceneComposition extends ActivityTemplate {
         return objectLabels;
     }
 
-    private String countLabel(String type) {
+    private int countLabel(String type) {
         if ("H".equals(type)) {
             SceneComposition.labelCounter_h++;
-            if (SceneComposition.labelCounter_h >= 0x01FF || SceneComposition.labelCounter_h == '?') {
+            if (SceneComposition.labelCounter_h > 0x01FF || SceneComposition.labelCounter_h == '?') {
                 SceneComposition.labelCounter_h = '?';
             }
-            return "|"+SceneComposition.labelCounter_h;
-            //return Character.toString((char) SceneComposition.labelCounter_h);
+            return SceneComposition.labelCounter_h;
         } else {
             if ("C".equals(type)) {
                 SceneComposition.labelCounter_c++;
-                if (SceneComposition.labelCounter_c >= 0x2FF || SceneComposition.labelCounter_c == '?') {
+                if (SceneComposition.labelCounter_c > 0x02FF || SceneComposition.labelCounter_c == '?') {
                     SceneComposition.labelCounter_c = '?';
                 }
-                return "|"+SceneComposition.labelCounter_c;
-                //return Character.toString((char) SceneComposition.labelCounter_c);
+                return SceneComposition.labelCounter_c;
             } else {
-                return Character.toString((char)'¿');
+                return '¿';
             }
         }
     }

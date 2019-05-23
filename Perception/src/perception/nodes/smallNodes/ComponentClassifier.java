@@ -244,6 +244,7 @@ public class ComponentClassifier extends ActivityTemplate {
                     double fechner = getFechnerH(activationLevel);
                     fechner = fechner / (getFechnerH(0));
                     currentTemplate.addPriority(fechner);
+                    //System.out.println("PRIORITY: "+currentTemplate.getPriority());
                     currentTemplate.setRetinotopicID(LOCAL_RETINOTOPIC_ID);
                     riic_cTemplates.addPreObject(currentTemplate.getPreObjectEssentials());
                     component.addCandidateRef(currentTemplate.getLabel());
