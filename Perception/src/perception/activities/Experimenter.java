@@ -57,11 +57,11 @@ public class Experimenter {
 
     public Mat step(Mat image) {
         if (this.passedTrial()) {
-            this.sample += 1;
             image = Imgcodecs.imread(
                     this.file + this.blockNames + this.block + "/" + this.sampleNames + this.sample+this.ext,
                     Imgcodecs.IMREAD_COLOR
             );
+            this.sample += 1;
             this.trial += (1 / this.trialCriteriaValues.size());
         }
         return image;
@@ -78,11 +78,11 @@ public class Experimenter {
     
     public Mat finishStep(Mat image){
         if (this.finisher) {
-        this.sample += 1;
             image = Imgcodecs.imread(
                     this.file + this.blockNames + this.block + "/" + this.sampleNames + this.sample+this.ext,
                     Imgcodecs.IMREAD_COLOR
             );
+            this.sample += 1;
         }
         return image;
     }

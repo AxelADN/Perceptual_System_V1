@@ -33,9 +33,9 @@ public class SystemInit extends ActivityTemplate {
     public SystemInit() {
         this.ID = AreaNames.SystemInit;
         this.experiment = new Experimenter(
-                "Test03",
+                "Test01",
                 List.of(1000),
-                15,
+                1,
                 1,
                 false,
                 true

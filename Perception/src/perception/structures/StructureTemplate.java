@@ -28,7 +28,7 @@ public abstract class StructureTemplate implements Serializable {
 //    protected static final class SerializedArrayList<T> extends ArrayList<T> implements Serializable{}
 //    protected static final class SerializedPriorityQueue<T> extends PriorityQueue<T> implements Serializable{}
 //    protected static final class SerializedHashMap<S,T> extends HashMap<S,T> implements Serializable{}
-    protected static final class PairWrapper<S, T> implements Serializable{
+    protected static final class PairWrapper<S, T> implements Serializable {
 
         S obj_S;
         T obj_T;
@@ -59,9 +59,17 @@ public abstract class StructureTemplate implements Serializable {
 
         @Override
         public int compare(PreObject o1, PreObject o2) {
-            double objInt1 = o1.getPriority() * GlobalConfig.MAX_DOUBLE_TO_INT_FACTOR;
-            double objInt2 = o2.getPriority() * GlobalConfig.MAX_DOUBLE_TO_INT_FACTOR;
-            return (int) objInt1 - (int) objInt2;
+            double objInt1 = o1.getPriority();
+            double objInt2 = o2.getPriority();
+            if (objInt1 < objInt2) {
+                return 1;
+            } else {
+                if (objInt1 > objInt2) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
         }
 
     }
