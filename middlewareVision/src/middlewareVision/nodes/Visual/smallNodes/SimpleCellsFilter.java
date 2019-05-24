@@ -82,7 +82,7 @@ public class SimpleCellsFilter extends Activity {
 
     public Mat gaborFilter(Mat img, double phi, int part) {
         Mat ors;
-        //Imgproc.blur(img, img, new Size(Config.blur, Config.blur));
+        Imgproc.blur(img, img, new Size(Config.blur, Config.blur));
         ors = new Mat();
         Mat kernel = new Mat();
         //size of the kernel

@@ -42,7 +42,8 @@ public class Config {
     /*----------------MODE----------------------*/
     public static final int CAMERA=1;
     public static final int CLICK=2;
+    public static final int RENDER=3;
     
-    public static final int option=CLICK;
+    public static final int option=RENDER;
 
 }

@@ -7,9 +7,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_32F;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import static org.opencv.imgproc.Imgproc.getGaborKernel;
@@ -65,21 +67,16 @@ public class V2IlusoryCells extends FrameActivity {
                 //assign information from LGN to the DKL array matrix
                 Mat edges = Convertor.matrixToMat((matrix) spike.getIntensity());
                 Mat ilusoryEdges;
-                if (Config.ilusoryEnabled) {
-                    ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.08f, 0, 31, 20, 0.1, index);
-                } else {
-                    ilusoryEdges = edges.clone();
-                }
-                if (Config.ilusoryEnabled) {
-                    ilusoryEdges = MatrixUtils.maxSum(ilusoryEdges, edges);
-                }
+                ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.5f, 1, 5, 200, 0.05, index);
+                
+                Core.multiply(ilusoryEdges, new Scalar(0.5), ilusoryEdges);
+                ilusoryEdges = MatrixUtils.maxSum(ilusoryEdges, edges);
                 LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(ilusoryEdges), 0);
                 send(AreaNames.V2AngularCells, sendSpike.getByteArray());
                 send(AreaNames.V4Contour, sendSpike.getByteArray());
                 send(AreaNames.V2Visualizer, sendSpike.getByteArray());
 
             }
-
 
         } catch (Exception ex) {
             Logger.getLogger(V2IlusoryCells.class.getName()).log(Level.SEVERE, null, ex);

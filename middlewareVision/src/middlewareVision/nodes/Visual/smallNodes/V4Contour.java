@@ -81,6 +81,7 @@ public class V4Contour extends FrameActivity {
             /*
             if the sync of matrix is complete
              */
+            
             if (sync.isComplete()) {
 
                 contours1 = drawMatContours(combinedEdges, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_TC89_L1);
@@ -126,7 +127,7 @@ public class V4Contour extends FrameActivity {
      * @param src mat with values between 0 and 1
      * @return a color matrix of contours
      */
-    double thresh = 0.6;
+    double thresh = 0.2;
 
     public Mat drawMatContours(Mat src, int mode, int method) {
         Mat thresolded = new Mat();

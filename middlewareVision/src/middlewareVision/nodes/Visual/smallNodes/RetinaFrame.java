@@ -6,6 +6,8 @@
 package middlewareVision.nodes.Visual.smallNodes;
 
 import gui.ActivityFrame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 import utils.Config;
 import utils.FileUtils;
 import utils.layoutManager;
@@ -22,54 +25,78 @@ import utils.layoutManager;
  * @author Luis Humanoide
  */
 public class RetinaFrame extends ActivityFrame<RetinaProccess> {
+
     int index;
+    String folder;
+
+    Timer timer = new Timer(1500, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                // Aquí el código que queramos ejecutar.
+                activity.setImage();
+            } catch (IOException ex) {
+                Logger.getLogger(RetinaFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    });
+
     /**
      * Creates new form RetinaFrame
      */
     public RetinaFrame(RetinaProccess activity, int index) {
         super(activity);
         initComponents();
-        this.index=index;
+        this.index = index;
         this.setLocation(layoutManager.points.get(index));
+        if (Config.option == Config.CLICK) {
+            folder = "images";
+        }
+        if (Config.option == Config.RENDER) {
+            folder = "render";
+            timer.start();
+        }
     }
 
-    public void setIndex(int index){
-        this.index=index;
+    public void setIndex(int index) {
+        this.index = index;
     }
-    
+
     public void setImage(BufferedImage image) {
         jLabel1.setIcon(new ImageIcon(image));
         repaint();
     }
-    
+
     /**
      * put the image on the retina
+     *
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
-    public BufferedImage createImage() throws IOException{
-        String path=getImageName();
+    public BufferedImage createImage() throws IOException {
+        String path = getImageName(folder);
         File file = new File(path);
-        BufferedImage img = ImageIO.read(file);    
+        BufferedImage img = ImageIO.read(file);
         return img;
     }
-    
+
     /**
      * pick a random image fro the IMAGES folder
-     * @return 
+     *
+     * @return
      */
-    int count=0;
-     String getImageName() {
-        String path = "images/";
-        String imageName="";
+    int count = 0;
+
+    String getImageName(String folder) {
+
+        String path = folder + "/";
+        String imageName = "";
         String[] files = FileUtils.getFiles(path);
         if (files != null) {
             int size = files.length;
-            imageName=files[(count++)%size];
+            imageName = files[(count++) % size];
         }
         return imageName;
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -109,7 +136,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO add your handling code here:
-        if(Config.option==Config.CLICK){
+        if (Config.option == Config.CLICK) {
             try {
                 activity.setImage();
             } catch (IOException ex) {
