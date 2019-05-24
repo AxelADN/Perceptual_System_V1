@@ -118,7 +118,7 @@ public class ComponentClassifier extends ActivityTemplate {
 //                Mat hardHolisticMat = new Mat();
 //                Imgproc.threshold(holisticMat, hardHolisticMat, 5, 255, Imgproc.THRESH_BINARY);
                 for (PreObject component : components) {
-                    show(component.getData(), "ComponentFeatures: " + LOCAL_RETINOTOPIC_ID, this.getClass());
+                    show(component.getData(), "ComponentFeatures: " + LOCAL_RETINOTOPIC_ID, this.ID);
                 }
                 RIIC_c candidates = getCandidates(riic_c, riic_h, components);
                 sendTo(
@@ -189,7 +189,7 @@ public class ComponentClassifier extends ActivityTemplate {
         ArrayList<MatOfPoint> contours = new ArrayList<>();
         Mat edgesMat = new Mat();
         Mat filtered = new Mat();
-        Imgproc.threshold(mat, threshold, 127, 255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(mat, threshold, GlobalConfig.THRESHOLD_LOWER_LIMIT-1, 255, Imgproc.THRESH_BINARY);
         cornersMat = corners(threshold);
         Imgproc.boxFilter(cornersMat, filtered, -1, new Size(15, 15), new Point(-1, -1));
         Imgproc.threshold(filtered, filtered, 10, 255, Imgproc.THRESH_BINARY);

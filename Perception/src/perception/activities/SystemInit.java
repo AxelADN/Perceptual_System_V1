@@ -35,10 +35,10 @@ public class SystemInit extends ActivityTemplate {
         this.experiment = new Experimenter(
                 "Test01",
                 List.of(1000),
-                1,
+                0,
                 1,
                 false,
-                true
+                false
         );
 
     }

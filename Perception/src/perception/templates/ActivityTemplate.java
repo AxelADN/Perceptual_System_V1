@@ -21,6 +21,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import kmiddle2.nodes.activities.Activity;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.core.Size;
@@ -67,9 +68,9 @@ public abstract class ActivityTemplate extends Activity {
     public void init() {
 
     }
-    
+
     protected void sendToTraceLogger(LongSpike spike) {
-        Sendable received = (Sendable)spike.getIntensity();
+        Sendable received = (Sendable) spike.getIntensity();
         sendTo(
                 new Sendable(
                         "NULL",
@@ -202,7 +203,7 @@ public abstract class ActivityTemplate extends Activity {
 
     protected XFrame show(Mat image, String title) throws IOException {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        return show(image, (int)(Math.random()*(screenSize.width/2)), (int)(Math.random()*(screenSize.height/2)), title);
+        return show(image, (int) (Math.random() * (screenSize.width / 2)), (int) (Math.random() * (screenSize.height / 2)), title);
     }
 
     protected void show(Mat image, String title, Class klass) throws IOException {
@@ -251,8 +252,8 @@ public abstract class ActivityTemplate extends Activity {
             show(image, title);
         }
     }
-    
-    protected void showFinal(Mat image) throws IOException{
+
+    protected void showFinal(Mat image) throws IOException {
         //Encoding the image 
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", image, matOfByte);
@@ -263,7 +264,7 @@ public abstract class ActivityTemplate extends Activity {
         //Preparing the Buffered Image 
         InputStream in = new ByteArrayInputStream(byteArray);
         BufferedImage bufImage = ImageIO.read(in);
-        
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         //Set Content to the JFrame 
@@ -273,17 +274,17 @@ public abstract class ActivityTemplate extends Activity {
         ActivityTemplate.finalFrame1.pack();
         ActivityTemplate.finalFrame1.setTitle("Result");
         ActivityTemplate.finalFrame1.setLocation(
-                screenSize.width-GlobalConfig.WINDOW_WIDTH-10, 
+                screenSize.width - GlobalConfig.WINDOW_WIDTH - 10,
                 0
         );
         ActivityTemplate.finalFrame1.setVisible(true);
     }
-    
-    public static void setInitFrame(XFrame frame){
+
+    public static void setInitFrame(XFrame frame) {
         ActivityTemplate.finalFrame2 = frame;
     }
-    
-    protected void showInit(Mat image) throws IOException{
+
+    protected void showInit(Mat image) throws IOException {
         //Encoding the image 
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", image, matOfByte);
@@ -294,7 +295,7 @@ public abstract class ActivityTemplate extends Activity {
         //Preparing the Buffered Image 
         InputStream in = new ByteArrayInputStream(byteArray);
         BufferedImage bufImage = ImageIO.read(in);
-        
+
         //Set Content to the JFrame 
         ActivityTemplate.finalFrame2.getContentPane().removeAll();
         //ActivityTemplate.finalFrame.getContentPane().validate();
@@ -302,16 +303,18 @@ public abstract class ActivityTemplate extends Activity {
         ActivityTemplate.finalFrame2.pack();
         ActivityTemplate.finalFrame2.setTitle("System Init");
         ActivityTemplate.finalFrame2.setLocation(
-                0, 
+                0,
                 0
         );
         ActivityTemplate.finalFrame2.setVisible(true);
     }
 
-    protected XFrame show(Mat image, int x, int y, String title) throws IOException {
+    protected XFrame show(Mat superImage, int x, int y, String title) throws IOException {
 //        Mat image = new Mat();
 //        Imgproc.resize(image0, image, new Size(image0.size().width*3,image0.size().height*3));
-        
+        Mat image = Mat.zeros(superImage.size(), CvType.CV_8UC1);
+        Imgproc.threshold(superImage, image, GlobalConfig.THRESHOLD_LOWER_LIMIT - 1, 255, Imgproc.THRESH_BINARY);
+
         //Encoding the image 
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", image, matOfByte);
@@ -337,6 +340,7 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected void showList(ArrayList<ArrayList<Mat>> imageList, String title) throws IOException {
+        Mat superImage;
         int i = 0;
         for (ArrayList<Mat> row : imageList) {
             int j = 0;
@@ -349,11 +353,11 @@ public abstract class ActivityTemplate extends Activity {
     }
 
     protected double getFechnerH(double activation) {
-        return GlobalConfig.FECHNER_CONSTANT * Math.log((1-activation) / GlobalConfig.ACTIVATION_THRESHOLD_HOLISTIC);
+        return GlobalConfig.FECHNER_CONSTANT * Math.log((1 - activation) / GlobalConfig.ACTIVATION_THRESHOLD_HOLISTIC);
     }
 
     protected double getFechnerC(double activation) {
-        return GlobalConfig.FECHNER_CONSTANT * Math.log((1-activation) / GlobalConfig.ACTIVATION_THRESHOLD_COMPONENT);
+        return GlobalConfig.FECHNER_CONSTANT * Math.log((1 - activation) / GlobalConfig.ACTIVATION_THRESHOLD_COMPONENT);
     }
 
 }

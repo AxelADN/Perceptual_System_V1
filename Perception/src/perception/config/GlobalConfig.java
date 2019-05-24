@@ -17,6 +17,8 @@ public class GlobalConfig {
     public static final String windowsFile = "src/resources/Sample_02.png";
     public static final String linuxFile = "/home/axeladn/Git/cuayollotol/Perception/src/resources/Sample_01.png";
     
+    public static final boolean SYSTEM_EXTERNAL_INPUT = false;
+    
     public static final int WINDOW_WIDTH = 480;
     public static final int WINDOW_HEIGHT = 360;
     
@@ -44,4 +46,5 @@ public class GlobalConfig {
     public static final String GENERIC_FILE = "src/resources/";
     public static final boolean TRACE_WRITE = false;
     public static final double MAX_SAMPLES = 0.01;
+    public static int THRESHOLD_LOWER_LIMIT = 1;
 }

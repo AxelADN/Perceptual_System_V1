@@ -277,21 +277,22 @@ public class Segmentation extends ActivityTemplate {
             //Checks data type.
             if (isCorrectDataType(spike.getIntensity(), PreObjectSet.class)) {
                 Sendable receivedData;
-                ArrayList<PreObjectSection> preObjectSection;
+                ArrayList<PreObjectSection> preObjectSections;
                 receivedData = (Sendable) spike.getIntensity();
+                PreObjectSet scene = (PreObjectSet)receivedData.getData();
                 ActivityTemplate.log(
                         this,
-                        ((PreObjectSet) receivedData.getData()).getLoggable()
+                        scene.getLoggable()
                 );
+                if(!GlobalConfig.SYSTEM_EXTERNAL_INPUT){
+                    scene = this.sceneSegmentation((PreObjectSet) receivedData.getData());
+                }
                 //Segments received data.
-                preObjectSection
-                        = segmentScene(
-                                (PreObjectSet) receivedData.getData()
-                        );
+                preObjectSections = segmentScene(scene);
                 //Sends segmented data as wrapped object.
                 sendTo(
                         new Sendable(
-                                preObjectSection,
+                                preObjectSections,
                                 this.ID,
                                 receivedData.getTrace(),
                                 AreaNames.BufferSwitch)
@@ -384,10 +385,10 @@ public class Segmentation extends ActivityTemplate {
                             )
                     )
             );
-            Imgproc.resize(croppedSections.get(0), croppedSections.get(0), new Size(minX,minY));
-            Imgproc.resize(croppedSections.get(1), croppedSections.get(1), new Size(minX,minY));
-            Imgproc.resize(croppedSections.get(2), croppedSections.get(2), new Size(minX,minY));
-            Imgproc.resize(croppedSections.get(3), croppedSections.get(3), new Size(minX,minY));
+            Imgproc.resize(croppedSections.get(0), croppedSections.get(0), new Size(minX, minY));
+            Imgproc.resize(croppedSections.get(1), croppedSections.get(1), new Size(minX, minY));
+            Imgproc.resize(croppedSections.get(2), croppedSections.get(2), new Size(minX, minY));
+            Imgproc.resize(croppedSections.get(3), croppedSections.get(3), new Size(minX, minY));
             Imgproc.resize(croppedSections.get(4), croppedSections.get(4), (croppedSections.get(0)).size());
             Imgproc.resize(croppedSections.get(5), croppedSections.get(5), (croppedSections.get(1)).size());
             Imgproc.resize(croppedSections.get(6), croppedSections.get(6), (croppedSections.get(2)).size());
@@ -416,7 +417,7 @@ public class Segmentation extends ActivityTemplate {
             thresholds.add(new Mat());
         }
         for (int i = 0; i < 8; i++) {
-            Imgproc.threshold(mats.get(i), thresholds.get(i), 127, 255, Imgproc.THRESH_BINARY);
+            Imgproc.threshold(mats.get(i), thresholds.get(i), GlobalConfig.THRESHOLD_LOWER_LIMIT-1, 255, Imgproc.THRESH_BINARY);
         }
         int i = 0;
         for (Mat mat : thresholds) {
@@ -483,5 +484,23 @@ public class Segmentation extends ActivityTemplate {
             );
         }
         return preObjectSections;
+    }
+
+    public PreObjectSet sceneSegmentation(PreObjectSet scene) throws IOException {
+        Mat threshold = new Mat(GlobalConfig.WINDOW_SIZE,CvType.CV_8UC1);
+        ArrayList<MatOfPoint> contours = new ArrayList<>();
+        Mat matID = Mat.zeros(GlobalConfig.WINDOW_SIZE,CvType.CV_8UC1);
+        Imgproc.threshold(scene.getMat(), threshold, 127, 255, Imgproc.THRESH_BINARY);
+        Imgproc.findContours(
+                    threshold,
+                    contours,
+                    new Mat(),
+                    Imgproc.RETR_LIST,
+                    Imgproc.CHAIN_APPROX_SIMPLE
+            );
+        for(int i=0;i<contours.size();i++){
+            Imgproc.fillConvexPoly(matID, contours.get(i), new Scalar(i+GlobalConfig.THRESHOLD_LOWER_LIMIT));
+        }
+        return new PreObjectSet(matID,"NEW INPUT SCENE WITH IDs");
     }
 }

@@ -115,7 +115,7 @@ public class HolisticClassifier extends ActivityTemplate {
                 RIIC_h riic_h = pair.getRIIC_h();
                 PreObjectSection preObjectSegment = pair.getPreObjectSegment();
                 Mat holisticMat = extractHolisticFeatures(preObjectSegment.getSegment());
-                show(preObjectSegment.getSegment(),"PreObject: "+preObjectSegment.getRetinotopicID(),this.getClass());
+                show(preObjectSegment.getSegment(),"PreObject: "+preObjectSegment.getRetinotopicID(),this.ID);
                 //showMax(holisticMat, "HolisticFeatures: " + LOCAL_RETINOTOPIC_ID, this.getClass());
                 RIIC_h candidates = getCandidates(riic_h, holisticMat);
                 sendTo(
@@ -208,7 +208,7 @@ public class HolisticClassifier extends ActivityTemplate {
         Mat threshold = new Mat();
         Mat skeleton = new Mat();
         Mat filtered = new Mat();
-        Imgproc.threshold(mat, threshold, 127, 255, Imgproc.THRESH_BINARY);
+        Imgproc.threshold(mat, threshold, GlobalConfig.THRESHOLD_LOWER_LIMIT-1, 255, Imgproc.THRESH_BINARY);
         Ximgproc.thinning(threshold, skeleton, Ximgproc.THINNING_ZHANGSUEN);
         Imgproc.boxFilter(skeleton, filtered, -1, new Size(15, 15), new Point(-1, -1));
         return filtered;
