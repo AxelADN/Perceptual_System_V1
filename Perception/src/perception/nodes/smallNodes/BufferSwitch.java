@@ -9,11 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
 import perception.structures.PreObjectSection;
@@ -117,7 +114,7 @@ public class BufferSwitch extends ActivityTemplate {
                 = (ArrayList<PreObjectSection>) data.getData();
         ActivityTemplate.log(this, "BUFFER_SWITCH");
         int i = 0;
-        int retinotopicID = 0;
+        int retinotopicID = -1;
         //For each segment:
         for (PreObjectSection obj : preObjectSection) {
             showMats.add(obj.getSegments());
@@ -145,7 +142,7 @@ public class BufferSwitch extends ActivityTemplate {
                         RETINOTOPIC_ID.get(i),
                         syncID
                 );
-                retinotopicID++;
+                retinotopicID--;
                 j++;
             }
             i++;

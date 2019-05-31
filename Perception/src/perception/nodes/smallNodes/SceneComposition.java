@@ -129,10 +129,10 @@ public class SceneComposition extends ActivityTemplate {
                 SimpleLogger.log(this, "DATA_RECEIVED: " + spike.getIntensity());
                 ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> received
                         = (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData();
-                Mat scene = this.composeScene(received);
                 HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups
                         = this.getPreObjectGroups(received);
                 HashMap<Integer, HashMap<Integer,Double>> objectLabels = this.traduceLabels(preObjectGroups);
+                Mat scene = this.composeScene(received);
                 this.markObjects(preObjectGroups, objectLabels, scene);
                 showFinal(scene);
             } else {
@@ -156,36 +156,46 @@ public class SceneComposition extends ActivityTemplate {
     private HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>>
             getPreObjectGroups(ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> scene) throws IOException {
         HashMap<Integer, Integer> segments = new HashMap<>();
-        int segmentsID = 0;
-        for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : scene) {
-            RIIC_c riic_c = triplet.getRIIC_c();
-            RIIC_h riic_h = triplet.getRIIC_hAndPreObjectSegmentPair().getRIIC_h();
-            PreObjectSection preObjectSegment = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
-            for (int i = 0; i < scene.size() - 1; i++) {
-                PreObjectSection preObject = scene.get(i).getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
-                if (preObjectSegment == preObject) {
-//                    System.out.println("EQUAL: " + preObjectSegment.getSegmentID() + "<>" + preObject.getSegmentID());
-                } else {
-                    if (this.isNeighbour(preObjectSegment, preObject)) {
-                        if (this.isNeighbourAssociated(preObjectSegment, preObject)) {
-                            if (segments.containsKey(preObjectSegment.getSegmentID())) {
-                                segments.put(preObject.getSegmentID(), segments.get(preObjectSegment.getSegmentID()));
-                            } else {
-                                segments.put(preObjectSegment.getSegmentID(), segmentsID);
-                                segments.put(preObject.getSegmentID(), segmentsID);
-                                segmentsID++;
-                            }
-                            preObject.setSegmentID(preObjectSegment.getSegmentID());
-                        }
-                    }
-                }
-            }
-        }
+//        int segmentsID = 0;
+//        for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : scene) {
+//            RIIC_c riic_c = triplet.getRIIC_c();
+//            RIIC_h riic_h = triplet.getRIIC_hAndPreObjectSegmentPair().getRIIC_h();
+//            PreObjectSection preObjectSegment = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
+//            for (int i = 0; i < scene.size() - 1; i++) {
+//                PreObjectSection preObject = scene.get(i).getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
+//                if (preObjectSegment == preObject) {
+////                    System.out.println("EQUAL: " + preObjectSegment.getSegmentID() + "<>" + preObject.getSegmentID());
+//                } else {
+//                    if (this.isNeighbour(preObjectSegment, preObject)) {
+//                        if (this.isNeighbourAssociated(preObjectSegment, preObject)) {
+//                            if (segments.containsKey(preObjectSegment.getSegmentID())) {
+//                                segments.put(preObject.getSegmentID(), segments.get(preObjectSegment.getSegmentID()));
+//                            } else {
+//                                segments.put(preObjectSegment.getSegmentID(), segmentsID);
+//                                segments.put(preObject.getSegmentID(), segmentsID);
+//                                segmentsID++;
+//                            }
+//                            preObject.setSegmentID(preObjectSegment.getSegmentID());
+//                        }
+//                    }
+//                }
+//            }
+//        }
         for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : scene) {
             PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
-            if (segments.get(preObject.getSegmentID()) != null) {
-                preObject.setSegmentID(segments.get(preObject.getSegmentID()));
+            System.out.println("ID: "+preObject.getSegmentID());
+            byte[] IdArray = new byte[(int)preObject.getSegment().total()];
+            preObject.getSegment().get(0, 0, IdArray);
+            for(int i=0; i<IdArray.length;i++){
+                if(IdArray[i]!=0){
+                    preObject.setSegmentID(IdArray[i]);
+                    //System.out.println("BYTE: "+preObject.getSegmentID());
+                    break;
+                }
             }
+//            if (segments.get(preObject.getSegmentID()) != null) {
+//                preObject.setSegmentID(segments.get(preObject.getSegmentID()));
+//            }
         }
         HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> SegmentIdMap = new HashMap<>();
         for (int i = 0; i < scene.size() - 1; i++) {
@@ -541,7 +551,8 @@ public class SceneComposition extends ActivityTemplate {
             for(Integer label:objectLabels.get(segmentID).keySet()){
                 objectLabel = objectLabel.concat(label.toString()+"|");
             }
-            Imgproc.putText(scene, objectLabel, new Point(minX, minY + 3), 0, 1, new Scalar(255, 0, 0), 2);
+            //Imgproc.putText(scene, objectLabel, new Point(minX, minY + 3), 0, 1, new Scalar(255, 0, 0), 2);
+            Imgproc.putText(scene, segmentID.toString(), new Point(minX, minY + 3), 0, 1, new Scalar(0, 0, 255),5);
         }
     }
 

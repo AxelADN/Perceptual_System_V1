@@ -26,7 +26,7 @@ public class GlobalConfig {
     
     public static final double FOVEA_FACTOR = 0.27272727272727272727272727272727;//0.454545455;//0.27272727272727272727272727272727;
     
-    public static final int showEnablerID = 0;//AreaNames.BufferSwitch;
+    public static final int showEnablerID = 0;//AreaNames.Segmentation;//AreaNames.BufferSwitch;
     public static  final Class showEnablerIDs = AreaNames.class;
     
     public static final double ACTIVATION_THRESHOLD_HOLISTIC = 0.005;
@@ -46,5 +46,6 @@ public class GlobalConfig {
     public static final String GENERIC_FILE = "src/resources/";
     public static final boolean TRACE_WRITE = false;
     public static final double MAX_SAMPLES = 0.01;
-    public static int THRESHOLD_LOWER_LIMIT = 1;
+    public static final int THRESHOLD_LOWER_LIMIT = 1;
+    public static final boolean MANUAL_CONTROLLER = true;
 }

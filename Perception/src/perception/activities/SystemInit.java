@@ -35,10 +35,10 @@ public class SystemInit extends ActivityTemplate {
         this.experiment = new Experimenter(
                 "Test01",
                 List.of(1000),
-                0,
+                1,
                 1,
                 false,
-                false
+                true
         );
 
     }
@@ -70,6 +70,24 @@ public class SystemInit extends ActivityTemplate {
                 } else {
                     image = this.experiment.step(image);
                 }
+                if (frame.isClicked() || !GlobalConfig.MANUAL_CONTROLLER) {
+                    Mat currentImage = image.clone();
+                    Imgproc.putText(currentImage, i.toString(), new Point(0, 30), 0, 1, new Scalar(0, 0, 255));
+                    showInit(currentImage);
+                    sendTo(
+                            new Sendable(
+                                    new PreObjectSet(
+                                            image,
+                                            "NEW PREOBJECT SET"
+                                    ),
+                                    this.ID,
+                                    AreaNames.ITC_Interface
+                            )
+                    );
+                    Thread.sleep(GlobalConfig.SYSTEM_TIME_STEP);
+                    i++;
+                    frame.notClicked();
+                }
 //            if (frame.isClicked()) {
 //                sample+=0.01;
 //                if(sample >GlobalConfig.MAX_SAMPLES){
@@ -79,21 +97,6 @@ public class SystemInit extends ActivityTemplate {
 //                image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
 //                frame.notClicked();
 //            }
-                Mat currentImage = image.clone();
-                Imgproc.putText(currentImage, i.toString(), new Point(0, 30), 0, 1, new Scalar(0, 0, 255));
-                showInit(currentImage);
-                sendTo(
-                        new Sendable(
-                                new PreObjectSet(
-                                        image,
-                                        "NEW PREOBJECT SET"
-                                ),
-                                this.ID,
-                                AreaNames.Segmentation
-                        )
-                );
-                Thread.sleep(GlobalConfig.SYSTEM_TIME_STEP);
-                i++;
             }
         }
     }

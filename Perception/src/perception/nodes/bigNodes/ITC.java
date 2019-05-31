@@ -9,6 +9,7 @@ package perception.nodes.bigNodes;
 import kmiddle2.nodes.activities.ActConf;
 import perception.activities.SystemInit;
 import perception.config.AreaNames;
+import perception.nodes.smallNodes.ITC_Interface;
 import perception.nodes.smallNodes.Segmentation;
 import perception.templates.AreaTemplate;
 import utils.SimpleLogger;
@@ -24,6 +25,7 @@ public class ITC extends AreaTemplate {
         this.ID = AreaNames.ITC;
         
         addProcess(SystemInit.class);
+        addProcess(ITC_Interface.class,ActConf.TYPE_PARALLEL);
         addProcess(Segmentation.class,ActConf.TYPE_PARALLEL);
         
         

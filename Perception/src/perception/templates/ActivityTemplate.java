@@ -18,13 +18,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import kmiddle2.nodes.activities.Activity;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import perception.GUI.XFrame;
@@ -253,7 +251,10 @@ public abstract class ActivityTemplate extends Activity {
         }
     }
 
-    protected void showFinal(Mat image) throws IOException {
+    protected void showFinal(Mat superImage) throws IOException {
+        Mat image = Mat.zeros(superImage.size(), CvType.CV_8UC1);
+        Imgproc.threshold(superImage, image, GlobalConfig.THRESHOLD_LOWER_LIMIT - 1, 255, Imgproc.THRESH_BINARY);
+
         //Encoding the image 
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", image, matOfByte);

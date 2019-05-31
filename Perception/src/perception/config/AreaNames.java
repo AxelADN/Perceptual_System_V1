@@ -19,6 +19,7 @@ public class AreaNames {
     public static final int Segmentation = IDHelper.generateID("ITC", 1, 0);
     public static final int GenericActivity = IDHelper.generateID("ITC", 2, 0);
     public static final int SystemInit = IDHelper.generateID("ITC", 3, 0);
+    public static final int ITC_Interface = IDHelper.generateID("ITC", 4, 0);
 
     public static final int ITa = IDHelper.generateID("ITa", 0, 0);
     public static final int SceneSync = IDHelper.generateID("ITa", 1, 0);

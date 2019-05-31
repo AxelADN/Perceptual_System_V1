@@ -279,12 +279,12 @@ public class Segmentation extends ActivityTemplate {
                 Sendable receivedData;
                 ArrayList<PreObjectSection> preObjectSections;
                 receivedData = (Sendable) spike.getIntensity();
-                PreObjectSet scene = (PreObjectSet)receivedData.getData();
+                PreObjectSet scene = (PreObjectSet) receivedData.getData();
                 ActivityTemplate.log(
                         this,
                         scene.getLoggable()
                 );
-                if(!GlobalConfig.SYSTEM_EXTERNAL_INPUT){
+                if (!GlobalConfig.SYSTEM_EXTERNAL_INPUT) {
                     scene = this.sceneSegmentation((PreObjectSet) receivedData.getData());
                 }
                 //Segments received data.
@@ -417,7 +417,7 @@ public class Segmentation extends ActivityTemplate {
             thresholds.add(new Mat());
         }
         for (int i = 0; i < 8; i++) {
-            Imgproc.threshold(mats.get(i), thresholds.get(i), GlobalConfig.THRESHOLD_LOWER_LIMIT-1, 255, Imgproc.THRESH_BINARY);
+            Imgproc.threshold(mats.get(i), thresholds.get(i), GlobalConfig.THRESHOLD_LOWER_LIMIT - 1, 255, Imgproc.THRESH_BINARY);
         }
         int i = 0;
         for (Mat mat : thresholds) {
@@ -487,20 +487,26 @@ public class Segmentation extends ActivityTemplate {
     }
 
     public PreObjectSet sceneSegmentation(PreObjectSet scene) throws IOException {
-        Mat threshold = new Mat(GlobalConfig.WINDOW_SIZE,CvType.CV_8UC1);
+        Mat threshold = new Mat(GlobalConfig.WINDOW_SIZE, CvType.CV_8UC1);
         ArrayList<MatOfPoint> contours = new ArrayList<>();
-        Mat matID = Mat.zeros(GlobalConfig.WINDOW_SIZE,CvType.CV_8UC1);
+        Mat matID = Mat.zeros(GlobalConfig.WINDOW_SIZE, CvType.CV_8UC1);
         Imgproc.threshold(scene.getMat(), threshold, 127, 255, Imgproc.THRESH_BINARY);
         Imgproc.findContours(
-                    threshold,
-                    contours,
-                    new Mat(),
-                    Imgproc.RETR_LIST,
-                    Imgproc.CHAIN_APPROX_SIMPLE
-            );
-        for(int i=0;i<contours.size();i++){
-            Imgproc.fillConvexPoly(matID, contours.get(i), new Scalar(i+GlobalConfig.THRESHOLD_LOWER_LIMIT));
+                threshold,
+                contours,
+                new Mat(),
+                Imgproc.RETR_LIST,
+                Imgproc.CHAIN_APPROX_SIMPLE
+        );
+        for (int i = 0; i < contours.size(); i++) {
+            if (Imgproc.contourArea(contours.get(i)) > 25) {
+                Imgproc.fillConvexPoly(matID, contours.get(i), new Scalar(i + GlobalConfig.THRESHOLD_LOWER_LIMIT));
+                Mat IDMat = matID.clone();
+                Imgproc.putText(IDMat, (new Integer(i+1)).toString(), contours.get(i).toList().get(0), 0, 1, new Scalar(127),5);
+                //show(IDMat, "Contours");
+            }
         }
-        return new PreObjectSet(matID,"NEW INPUT SCENE WITH IDs");
+        System.out.println("OBJECTS: " + contours.size());
+        return new PreObjectSet(matID, "NEW INPUT SCENE WITH IDs");
     }
 }
