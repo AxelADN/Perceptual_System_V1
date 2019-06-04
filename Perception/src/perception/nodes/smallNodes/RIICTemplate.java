@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import perception.config.AreaNames;
+import perception.config.GlobalConfig;
 import perception.structures.InternalRequest;
 import perception.structures.PreObject;
 import perception.structures.RIIC;
@@ -39,10 +40,11 @@ import utils.SimpleLogger;
  * PreObjectPrioritizer Template
  */
 public abstract class RIICTemplate extends ActivityTemplate {
-    
+
     private final ArrayList<Integer> RECEIVERS_H = new ArrayList<>();
     private final ArrayList<Integer> RECEIVERS_C = new ArrayList<>();
     private final RIIC riic;
+    private final ArrayList<Integer> LOCAL_RECEIVERS = new ArrayList<>();
 
     /**
      * Constructor: Defines node identifier and constants. The
@@ -70,6 +72,14 @@ public abstract class RIICTemplate extends ActivityTemplate {
         RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_pQ2);
         RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_pQ3);
         RECEIVERS_C.add(AreaNames.CandidatesPrioritizer_pQ4);
+        LOCAL_RECEIVERS.add(AreaNames.RIIC_fQ1);
+        LOCAL_RECEIVERS.add(AreaNames.RIIC_fQ2);
+        LOCAL_RECEIVERS.add(AreaNames.RIIC_fQ3);
+        LOCAL_RECEIVERS.add(AreaNames.RIIC_fQ4);
+        LOCAL_RECEIVERS.add(AreaNames.RIIC_pQ1);
+        LOCAL_RECEIVERS.add(AreaNames.RIIC_pQ2);
+        LOCAL_RECEIVERS.add(AreaNames.RIIC_pQ3);
+        LOCAL_RECEIVERS.add(AreaNames.RIIC_pQ4);
     }
 
     /**
@@ -92,9 +102,24 @@ public abstract class RIICTemplate extends ActivityTemplate {
      */
     @Override
     public void receive(int nodeID, byte[] data) {
+        boolean storageActivity = false;
         try {
             LongSpike spike = new LongSpike(data);
-            if (isCorrectRoute((String) spike.getLocation())) {
+            if (isCorrectDataType(spike.getIntensity(), InternalRequest.class)) {
+                InternalRequest request = (InternalRequest) ((Sendable) spike.getIntensity()).getData();
+                if (request.type() instanceof String) {
+                    if ("M".equals(request.type())) {
+                        this.acceptRequest(spike);
+                        storageActivity = true;
+                    }
+                } else {
+                    if (request.type() instanceof RIIC) {
+                        this.retrieveData((RIIC) request.type());
+                        storageActivity = true;
+                    }
+                }
+            }
+            if (!storageActivity && isCorrectRoute((String) spike.getLocation())) {
                 if (isCorrectDataType(spike.getIntensity(), InternalRequest.class)) {
                     ActivityTemplate.log(
                             this,
@@ -146,32 +171,36 @@ public abstract class RIICTemplate extends ActivityTemplate {
                                 break;
                         }
                     }
-                } else if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
-                    ActivityTemplate.log(
-                            this,
-                            ((RIIC_h) ((Sendable) spike.getIntensity()).getData()).getLoggable()
-                    );
-                    updateRIIC_h(
-                            (RIIC_h) ((Sendable) spike.getIntensity()).getData()
-                    );
-                } else if (isCorrectDataType(spike.getIntensity(), RIIC_c.class)) {
-                    ActivityTemplate.log(
-                            this,
-                            ((RIIC_c) ((Sendable) spike.getIntensity()).getData()).getLoggable()
-                    );
-                    updateRIIC_c(
-                            (RIIC_c) ((Sendable) spike.getIntensity()).getData()
-                    );
                 } else {
-                    sendToLostData(
-                            this,
-                            spike,
-                            "NEITHER INTERNAL REQUEST NOR RIIC_X RECOGNIZED: "
-                            + ((Sendable) spike.getIntensity()).getData().getClass().getName()
-                    );
+                    if (isCorrectDataType(spike.getIntensity(), RIIC_h.class)) {
+                        ActivityTemplate.log(
+                                this,
+                                ((RIIC_h) ((Sendable) spike.getIntensity()).getData()).getLoggable()
+                        );
+                        updateRIIC_h(
+                                (RIIC_h) ((Sendable) spike.getIntensity()).getData()
+                        );
+                    } else {
+                        if (isCorrectDataType(spike.getIntensity(), RIIC_c.class)) {
+                            ActivityTemplate.log(
+                                    this,
+                                    ((RIIC_c) ((Sendable) spike.getIntensity()).getData()).getLoggable()
+                            );
+                            updateRIIC_c(
+                                    (RIIC_c) ((Sendable) spike.getIntensity()).getData()
+                            );
+                        } else {
+                            sendToLostData(
+                                    this,
+                                    spike,
+                                    "NEITHER INTERNAL REQUEST NOR RIIC_X RECOGNIZED: "
+                                    + ((Sendable) spike.getIntensity()).getData().getClass().getName()
+                            );
+                        }
+                    }
                 }
             } else {
-                sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE: " + (String) spike.getLocation());
+                sendToLostData(this, spike, "MISTAKEN RETINOTOPIC ROUTE OR ACTIVITY: " + (String) spike.getLocation());
             }
         } catch (Exception ex) {
             Logger.getLogger(RIICTemplate.class.getName()).log(Level.SEVERE, null, ex);
@@ -219,12 +248,53 @@ public abstract class RIICTemplate extends ActivityTemplate {
     }
 
     protected void updateRIIC_c(RIIC_c riic_c) throws IOException {
-        while(riic_c.isNotEmpty()){
+        while (riic_c.isNotEmpty()) {
             PreObject preObject = riic_c.nextData();
-            show(preObject.getData(),"Updated: "+this.LOCAL_RETINOTOPIC_ID,this.getClass());
+            show(preObject.getData(), "Updated: " + this.LOCAL_RETINOTOPIC_ID, this.getClass());
         }
         riic_c.retrieveAll();
         riic.writeRIIC_c(riic_c);
+    }
+
+    private void storeData() {
+        sendTo(
+                new Sendable(
+                        this.riic,
+                        this.ID,
+                        AreaNames.StorageManager
+                )
+        );
+    }
+
+    private void acceptRequest(LongSpike spike) {
+        InternalRequest request = (InternalRequest) ((Sendable) spike.getIntensity()).getData();
+        request.accept();
+        if (GlobalConfig.MANUAL_STORAGE) {
+            this.sendToRetroReactiveQueuer_RIICManager(
+                    new LongSpike(
+                            spike.getModality(),
+                            spike.getLocation(),
+                            new Sendable(
+                                    new InternalRequest(
+                                            "M",
+                                            "NEW STORAGE REQUEST"
+                                    ),
+                                    this.ID,
+                                    LOCAL_RECEIVERS.get(
+                                            (RETINOTOPIC_ID.indexOf(LOCAL_RETINOTOPIC_ID) + 1) % 8
+                                    )
+                            ),
+                            0
+                    )
+            );
+        }
+        this.storeData();
+    }
+
+    private void retrieveData(RIIC riic) {
+        this.riic.writeRIIC_h(riic.readRIIC_h());
+        this.riic.writeRIIC_c(riic.readRIIC_c());
+        this.riic.setLoggable("NEW_RIIC_FROM_STORAGE");
     }
 
 }

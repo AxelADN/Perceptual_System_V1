@@ -191,7 +191,7 @@ public abstract class RIIC_cSyncTemplate extends ActivityTemplate {
                 //System.out.println("RETINOBJ: "+Arrays.deepToString(preObject.getRetinotopicObjArray()));
             }
         }
-        this.riic_c.setLoggable("SYNCED RETINOTOPIC INFLUENCE RIIC_H");
+        this.riic_c.setLoggable("SYNCED RETINOTOPIC INFLUENCE RIIC_C");
     }
 
     private void acceptRequest(LongSpike spike) {

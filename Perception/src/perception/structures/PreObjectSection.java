@@ -31,6 +31,7 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
     private final ArrayList<LocalRect> boundingBoxes;
     private final String retinotopicID;
     private int segmentID;
+    private final String sceneID;
 
     public PreObjectSection(ArrayList<Mat> segments) {
         this.segments = new ArrayList<>();
@@ -40,6 +41,7 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         this.retinotopicID = new String();
         this.segmentID = 0;
         this.boundingBoxes = new ArrayList<>();
+        this.sceneID = "NULL SCENE ID";
     }
 
     public PreObjectSection(ArrayList<Mat> segments, ArrayList<Rect> rects, String loggableObject) {
@@ -50,6 +52,23 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         }
         this.retinotopicID = new String();
         this.segmentID = 0;
+        this.boundingBoxes = new ArrayList<>();
+        for (Rect rect : rects) {
+            LocalRect newRect = new LocalRect(rect);
+            this.boundingBoxes.add(newRect);
+        }
+        this.sceneID = "NULL SCENE ID";
+    }
+    
+    public PreObjectSection(ArrayList<Mat> segments, ArrayList<Rect> rects, String sceneID, String loggableObject) {
+        super(loggableObject);
+        this.segments = new ArrayList<>();
+        for (Mat mat : segments) {
+            this.segments.add(Mat2Bytes(mat));
+        }
+        this.retinotopicID = new String();
+        this.segmentID = 0;
+        this.sceneID = sceneID;
         this.boundingBoxes = new ArrayList<>();
         for (Rect rect : rects) {
             LocalRect newRect = new LocalRect(rect);
@@ -66,6 +85,7 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         this.retinotopicID = retinotopicID;
         this.segmentID = 0;
         this.boundingBoxes = new ArrayList<>();
+        this.sceneID = "NULL SCENE ID";
     }
 
     public PreObjectSection(ArrayList<Mat> segments, String retinotopicID, int segmentID, String loggableObject) {
@@ -77,6 +97,7 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         this.retinotopicID = retinotopicID;
         this.segmentID = segmentID;
         this.boundingBoxes = new ArrayList<>();
+        this.sceneID = "NULL SCENE ID";
     }
 
     public PreObjectSection(Mat segment) {
@@ -85,6 +106,7 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         retinotopicID = new String();
         this.segmentID = 0;
         this.boundingBoxes = new ArrayList<>();
+        this.sceneID = "NULL SCENE ID";
     }
 
     public PreObjectSection(Mat segment, String loggableObject) {
@@ -94,6 +116,7 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         retinotopicID = new String();
         this.segmentID = 0;
         this.boundingBoxes = new ArrayList<>();
+        this.sceneID = "NULL SCENE ID";
     }
 
     public PreObjectSection(Mat segment, String retinotopicID, int segmentID, Rect rect, String loggableObject) {
@@ -104,8 +127,23 @@ public class PreObjectSection extends StructureTemplate implements Serializable 
         this.segmentID = segmentID;
         this.boundingBoxes = new ArrayList<>();
         this.boundingBoxes.add(new LocalRect(rect));
+        this.sceneID = "NULL SCENE ID";
+    }
+    public PreObjectSection(Mat segment, String retinotopicID, int segmentID, Rect rect, String sceneID, String loggableObject) {
+        super(loggableObject);
+        this.segments = new ArrayList<>();
+        this.segments.add(Mat2Bytes(segment));
+        this.retinotopicID = retinotopicID;
+        this.segmentID = segmentID;
+        this.boundingBoxes = new ArrayList<>();
+        this.boundingBoxes.add(new LocalRect(rect));
+        this.sceneID = sceneID;
     }
 
+    public String getSceneID(){
+        return this.sceneID;
+    }
+    
     public ArrayList<Rect> getRects() {
         ArrayList<Rect> rects = new ArrayList<>();
         for (LocalRect rect : this.boundingBoxes) {

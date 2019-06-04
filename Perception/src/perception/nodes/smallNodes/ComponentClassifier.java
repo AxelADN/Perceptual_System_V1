@@ -115,10 +115,8 @@ public class ComponentClassifier extends ActivityTemplate {
                 RIIC_h riic_h = pair.getRIIC_hAndPreObjectSegmentPair().getRIIC_h();
                 PreObjectSection preObjectSegment = pair.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
                 ArrayList<PreObject> components = extractComponentFeatures(preObjectSegment.getSegment());
-//                Mat hardHolisticMat = new Mat();
-//                Imgproc.threshold(holisticMat, hardHolisticMat, 5, 255, Imgproc.THRESH_BINARY);
                 for (PreObject component : components) {
-                    show(component.getData(), "ComponentFeatures: " + LOCAL_RETINOTOPIC_ID, this.ID);
+                    showMax(component.getData(), "ComponentFeatures: " + LOCAL_RETINOTOPIC_ID, this.ID);
                 }
                 RIIC_c candidates = getCandidates(riic_c, riic_h, components);
                 sendTo(

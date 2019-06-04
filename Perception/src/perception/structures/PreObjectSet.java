@@ -15,23 +15,39 @@ import org.opencv.core.Mat;
 public class PreObjectSet<T> extends StructureTemplate implements Serializable{
 
     private final T data;
+    private final String sceneID;
+    private static int autoSceneID = 0;
 
     public PreObjectSet(Mat data) {
         this.data = (T)Mat2Bytes(data);
+        this.sceneID = "NULL SCENE NAME"+autoSceneID;
+        autoSceneID++;
     }
     
     public PreObjectSet(Mat data, String loggableObject) {
         super(loggableObject);
         this.data = (T)Mat2Bytes(data);
+        this.sceneID = "NULL SCENE NAME"+autoSceneID;
+        autoSceneID++;
+    }
+    
+    public PreObjectSet(Mat data, String sceneID,String loggableObject) {
+        super(loggableObject);
+        this.data = (T)Mat2Bytes(data);
+        this.sceneID = sceneID;
     }
     
     public PreObjectSet(T data) {
         this.data = data;
+        this.sceneID = "NULL SCENE NAME"+autoSceneID;
+        autoSceneID++;
     }
     
     public PreObjectSet(T data, String loggableObject) {
         super(loggableObject);
         this.data = data;
+        sceneID = "NULL SCENE NAME"+autoSceneID;
+        autoSceneID++;
     }
 
     public T getData() {
@@ -40,5 +56,9 @@ public class PreObjectSet<T> extends StructureTemplate implements Serializable{
     
     public Mat getMat(){
         return Bytes2Mat((byte[])data);
+    }
+    
+    public String getSceneID(){
+        return this.sceneID;
     }
 }

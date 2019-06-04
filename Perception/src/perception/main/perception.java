@@ -8,6 +8,7 @@ import org.opencv.core.Core;
 import perception.config.GlobalConfig;
 import perception.nodes.bigNodes.ITa;
 import perception.nodes.bigNodes.ITp_c;
+import perception.nodes.bigNodes.ControlNodes;
 import perception.nodes.bigNodes.RIICManager;
 import utils.SimpleLogger;
 
@@ -22,7 +23,8 @@ public class perception extends Igniter {
             ITp_h.class.getName(),
             ITp_c.class.getName(),
             RIICManager.class.getName(),
-            ITa.class.getName()
+            ITa.class.getName(),
+            ControlNodes.class.getName()
         };
 
         SimpleLogger.setDebug(GlobalConfig.DEBUG);

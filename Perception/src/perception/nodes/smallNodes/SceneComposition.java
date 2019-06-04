@@ -44,7 +44,7 @@ public class SceneComposition extends ActivityTemplate {
     private static int labelCounter_h = 0x0100;
     private static int labelCounter_c = 0x200;
     private static ArrayList<Integer> languageUsed = new ArrayList<>();
-    private static final HashMap<String,Double> intensityMap = new HashMap<>();
+    private static final HashMap<String, Double> intensityMap = new HashMap<>();
 
     public SceneComposition() {
         this.ID = AreaNames.SceneComposition;
@@ -131,7 +131,8 @@ public class SceneComposition extends ActivityTemplate {
                         = (ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>) ((Sendable) spike.getIntensity()).getData();
                 HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups
                         = this.getPreObjectGroups(received);
-                HashMap<Integer, HashMap<Integer,Double>> objectLabels = this.traduceLabels(preObjectGroups);
+                HashMap<Integer, HashMap<Integer, Double>> objectLabels = this.traduceLabels(preObjectGroups);
+                this.sendToResults(preObjectGroups, objectLabels);
                 Mat scene = this.composeScene(received);
                 this.markObjects(preObjectGroups, objectLabels, scene);
                 showFinal(scene);
@@ -183,22 +184,44 @@ public class SceneComposition extends ActivityTemplate {
 //        }
         for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : scene) {
             PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
-            System.out.println("ID: "+preObject.getSegmentID());
-            byte[] IdArray = new byte[(int)preObject.getSegment().total()];
+            //System.out.println("ID: "+preObject.getSegmentID());
+            byte[] IdArray = new byte[(int) preObject.getSegment().total()];
             preObject.getSegment().get(0, 0, IdArray);
-            for(int i=0; i<IdArray.length;i++){
-                if(IdArray[i]!=0){
-                    preObject.setSegmentID(IdArray[i]);
-                    //System.out.println("BYTE: "+preObject.getSegmentID());
-                    break;
+            //printMat(IdArray,preObject.getSegment().cols(),preObject.getSegment().rows());
+            HashMap<Byte, Integer> IdMap = new HashMap<>();
+            for (int i = 0; i < IdArray.length; i++) {
+                if (IdArray[i] != 0) {
+                    if (IdMap.containsKey(IdArray[i])) {
+                        IdMap.put(IdArray[i], IdMap.get(IdArray[i]) + 1);
+                    } else {
+                        IdMap.put(IdArray[i], 1);
+                    }
                 }
             }
+            //System.out.println("BYTE: "+IdMap.toString());
+            int maxIdVal = 0;
+            byte maxID = 0;
+            for (Byte id : IdMap.keySet()) {
+                if (IdMap.get(id) > maxIdVal) {
+                    maxIdVal = IdMap.get(id);
+                    maxID = id;
+                } else {
+                    if (IdMap.get(id) == maxIdVal) {
+                        if (id > maxID) {
+                            maxIdVal = IdMap.get(id);
+                            maxID = id;
+                        }
+                    }
+                }
+            }
+            preObject.setSegmentID(maxID);
+            //System.out.println("MAXID: "+maxID);
 //            if (segments.get(preObject.getSegmentID()) != null) {
 //                preObject.setSegmentID(segments.get(preObject.getSegmentID()));
 //            }
         }
         HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> SegmentIdMap = new HashMap<>();
-        for (int i = 0; i < scene.size() - 1; i++) {
+        for (int i = 0; i < scene.size(); i++) {
             PreObjectSection preObject = scene.get(i).getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
 //            System.out.println("SEGMENT: " + preObject.getSegmentID());
             if (SegmentIdMap.containsKey(preObject.getSegmentID())) {
@@ -437,6 +460,7 @@ public class SceneComposition extends ActivityTemplate {
         Mat newScene = Mat.zeros(GlobalConfig.WINDOW_SIZE, CvType.CV_8UC3);
         for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : currentScene) {
             PreObjectSection preObject = triplet.getRIIC_hAndPreObjectSegmentPair().getPreObjectSegment();
+            //printMat(preObject.getSegment());
             Rect newRect = preObject.getRect();
             if (!this.isFovea(preObject)) {
                 Mat resizedMat = new Mat(preObject.getSegment().size(), preObject.getSegment().type());
@@ -506,9 +530,26 @@ public class SceneComposition extends ActivityTemplate {
         }
     }
 
+    private void sendToResults(
+            HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups,
+            HashMap<Integer, HashMap<Integer, Double>> objectLabels) {
+        for (Integer id : preObjectGroups.keySet()) {
+            ArrayList<Object> wrapper = new ArrayList<>();
+            wrapper.add(preObjectGroups.get(id));
+            wrapper.add(objectLabels.get(id));
+            sendTo(
+                    new Sendable(
+                            wrapper,
+                            this.ID,
+                            AreaNames.ObserverOutput
+                    )
+            );
+        }
+    }
+
     private void markObjects(
             HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups,
-            HashMap<Integer, HashMap<Integer,Double>> objectLabels,
+            HashMap<Integer, HashMap<Integer, Double>> objectLabels,
             Mat scene) {
         for (Integer segmentID : preObjectGroups.keySet()) {
             ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> object = preObjectGroups.get(segmentID);
@@ -548,21 +589,21 @@ public class SceneComposition extends ActivityTemplate {
             );
             //Imgproc.putText(scene, segmentID.toString(), new Point(minX, minY), 0, 1, new Scalar(255, 0, 0), 1);
             String objectLabel = new String();
-            for(Integer label:objectLabels.get(segmentID).keySet()){
-                objectLabel = objectLabel.concat(label.toString()+"|");
+            for (Integer label : objectLabels.get(segmentID).keySet()) {
+                objectLabel = objectLabel.concat(label.toString() + "|");
             }
-            //Imgproc.putText(scene, objectLabel, new Point(minX, minY + 3), 0, 1, new Scalar(255, 0, 0), 2);
-            Imgproc.putText(scene, segmentID.toString(), new Point(minX, minY + 3), 0, 1, new Scalar(0, 0, 255),5);
+            Imgproc.putText(scene, objectLabel, new Point(minX, minY + 3), 0, 1, new Scalar(255, 0, 0), 2);
+            //Imgproc.putText(scene, segmentID.toString(), new Point(minX, minY + 3), 0, 1, new Scalar(0, 0, 255),5);
         }
     }
 
-    private HashMap<Integer, HashMap<Integer,Double>>
+    private HashMap<Integer, HashMap<Integer, Double>>
             traduceLabels(HashMap<Integer, ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair>> preObjectGroups) {
-        HashMap<Integer, HashMap<Integer,Double>> objectLabels = new HashMap();
+        HashMap<Integer, HashMap<Integer, Double>> objectLabels = new HashMap();
         for (Integer objectID : preObjectGroups.keySet()) {
 //            System.out.println("IDs: "+objectID);
             ArrayList<RIIC_cAndRIIC_hAndPreObjectSegmentPairPair> object = preObjectGroups.get(objectID);
-            HashMap<Integer,Double> totalLabel = new HashMap<>();
+            HashMap<Integer, Double> totalLabel = new HashMap<>();
             for (RIIC_cAndRIIC_hAndPreObjectSegmentPairPair triplet : object) {
                 RIIC_h riic_h = triplet.getRIIC_hAndPreObjectSegmentPair().getRIIC_h();
                 RIIC_c riic_c = triplet.getRIIC_c();
@@ -570,13 +611,13 @@ public class SceneComposition extends ActivityTemplate {
                     if (!SceneComposition.languageMap.containsKey(riic_h.getPreObject().getLabel())) {
                         SceneComposition.languageMap.put(riic_h.getPreObject().getLabel(), this.countLabel("H"));
                     }
-                    totalLabel.put(SceneComposition.languageMap.get(riic_h.getPreObject().getLabel()),riic_h.getPreObject().getPriority());
+                    totalLabel.put(SceneComposition.languageMap.get(riic_h.getPreObject().getLabel()), riic_h.getPreObject().getPriority());
                 }
                 if (riic_c.getPreObject() != null) {
                     if (!SceneComposition.languageMap.containsKey(riic_c.getPreObject().getLabel())) {
                         SceneComposition.languageMap.put(riic_c.getPreObject().getLabel(), this.countLabel("C"));
                     }
-                    totalLabel.put(SceneComposition.languageMap.get(riic_c.getPreObject().getLabel()),riic_c.getPreObject().getPriority());
+                    totalLabel.put(SceneComposition.languageMap.get(riic_c.getPreObject().getLabel()), riic_c.getPreObject().getPriority());
                 }
             }
             objectLabels.put(objectID, totalLabel);

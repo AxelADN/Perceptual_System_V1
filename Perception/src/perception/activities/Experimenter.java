@@ -5,7 +5,6 @@
  */
 package perception.activities;
 
-import java.nio.file.Path;
 import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -51,8 +50,12 @@ public class Experimenter {
         this.totalBlocks = totalBlocks;
     }
 
-    public String getFile() {
+    public String getMayorFile() {
         return this.file + this.blockNames + this.block + "/" + this.sampleNames + this.sample+this.ext;
+    }
+    
+    public String getFile(){
+        return this.blockNames + this.block + "/" + this.sampleNames + this.sample;
     }
 
     public Mat step(Mat image) {
