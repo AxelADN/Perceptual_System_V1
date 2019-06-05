@@ -68,6 +68,7 @@ public class V1ComplexCells extends FrameActivity {
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(energy), 0);
                 send(AreaNames.V1EdgeVisualizer, sendSpike1.getByteArray());
                 send(AreaNames.V2IlusoryCells, sendSpike1.getByteArray());
+                send(AreaNames.MotionCells,sendSpike1.getByteArray());
 
             }
 
