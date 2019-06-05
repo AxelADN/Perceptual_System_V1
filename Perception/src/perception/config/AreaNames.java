@@ -13,42 +13,45 @@ import kmiddle2.util.IDHelper;
  */
 public class AreaNames {
 
-    public static final int LostData = IDHelper.generateID("LostData", 0, 0);
+    public static final int ControlNodes = IDHelper.generateID("ControlNodes", 0, 0);
+    public static final int LostData = IDHelper.generateID("ControlNodes", 1, 0);
+    public static final int ObserverOutput = IDHelper.generateID("ControlNodes", 2, 0);
+    public static final int TraceLogger = IDHelper.generateID("ControlNodes", 3, 0);
+    public static final int StorageManager = IDHelper.generateID("ControlNodes", 4, 0);
 
     public static final int ITC = IDHelper.generateID("ITC", 0, 0);
     public static final int Segmentation = IDHelper.generateID("ITC", 1, 0);
     public static final int GenericActivity = IDHelper.generateID("ITC", 2, 0);
     public static final int SystemInit = IDHelper.generateID("ITC", 3, 0);
     public static final int ITC_Interface = IDHelper.generateID("ITC", 4, 0);
+    public static final int BufferSwitch = IDHelper.generateID("ITC", 5, 0);
 
     public static final int ITa = IDHelper.generateID("ITa", 0, 0);
     public static final int SceneSync = IDHelper.generateID("ITa", 1, 0);
     public static final int RetinotopicExpectationBuilder = IDHelper.generateID("ITa", 2, 0);
     public static final int SceneComposition = IDHelper.generateID("ITa", 3, 0);
-    public static final int TraceLogger = IDHelper.generateID("ITa", 4, 0);
 
     public static final int ITp_h = IDHelper.generateID("ITp_h", 0, 0);
-    public static final int BufferSwitch = IDHelper.generateID("ITp_h", 1, 0);
-    public static final int PreObjectPrioritizerTemplate = IDHelper.generateID("ITp_h", 2, 0);
-    public static final int PreObjectPrioritizer_fQ1 = IDHelper.generateID("ITp_h", 3, 0);
-    public static final int PreObjectPrioritizer_fQ2 = IDHelper.generateID("ITp_h", 4, 0);
-    public static final int PreObjectPrioritizer_fQ3 = IDHelper.generateID("ITp_h", 5, 0);
-    public static final int PreObjectPrioritizer_fQ4 = IDHelper.generateID("ITp_h", 6, 0);
-    public static final int PreObjectPrioritizer_pQ1 = IDHelper.generateID("ITp_h", 7, 0);
-    public static final int PreObjectPrioritizer_pQ2 = IDHelper.generateID("ITp_h", 8, 0);
-    public static final int PreObjectPrioritizer_pQ3 = IDHelper.generateID("ITp_h", 9, 0);
-    public static final int PreObjectPrioritizer_pQ4 = IDHelper.generateID("ITp_h", 10, 0);
-    public static final int PreObjectBufferTemplate = IDHelper.generateID("ITp_h", 11, 0);
-    public static final int PreObjectBuffer_fQ1 = IDHelper.generateID("ITp_h", 12, 0);
-    public static final int PreObjectBuffer_fQ2 = IDHelper.generateID("ITp_h", 13, 0);
-    public static final int PreObjectBuffer_fQ3 = IDHelper.generateID("ITp_h", 14, 0);
-    public static final int PreObjectBuffer_fQ4 = IDHelper.generateID("ITp_h", 15, 0);
-    public static final int PreObjectBuffer_pQ1 = IDHelper.generateID("ITp_h", 16, 0);
-    public static final int PreObjectBuffer_pQ2 = IDHelper.generateID("ITp_h", 17, 0);
-    public static final int PreObjectBuffer_pQ3 = IDHelper.generateID("ITp_h", 18, 0);
-    public static final int PreObjectBuffer_pQ4 = IDHelper.generateID("ITp_h", 19, 0);
-    public static final int HolisticClassifier = IDHelper.generateID("ITp_h", 20, 0);
-    public static final int RetroReactiveQueuer_ITp_h = IDHelper.generateID("ITp_h", 21, 0);
+    public static final int PreObjectPrioritizerTemplate = IDHelper.generateID("ITp_h", 1, 0);
+    public static final int PreObjectPrioritizer_fQ1 = IDHelper.generateID("ITp_h", 2, 0);
+    public static final int PreObjectPrioritizer_fQ2 = IDHelper.generateID("ITp_h", 3, 0);
+    public static final int PreObjectPrioritizer_fQ3 = IDHelper.generateID("ITp_h", 4, 0);
+    public static final int PreObjectPrioritizer_fQ4 = IDHelper.generateID("ITp_h", 5, 0);
+    public static final int PreObjectPrioritizer_pQ1 = IDHelper.generateID("ITp_h", 6, 0);
+    public static final int PreObjectPrioritizer_pQ2 = IDHelper.generateID("ITp_h", 7, 0);
+    public static final int PreObjectPrioritizer_pQ3 = IDHelper.generateID("ITp_h", 8, 0);
+    public static final int PreObjectPrioritizer_pQ4 = IDHelper.generateID("ITp_h", 9, 0);
+    public static final int PreObjectBufferTemplate = IDHelper.generateID("ITp_h", 10, 0);
+    public static final int PreObjectBuffer_fQ1 = IDHelper.generateID("ITp_h", 11, 0);
+    public static final int PreObjectBuffer_fQ2 = IDHelper.generateID("ITp_h", 12, 0);
+    public static final int PreObjectBuffer_fQ3 = IDHelper.generateID("ITp_h", 13, 0);
+    public static final int PreObjectBuffer_fQ4 = IDHelper.generateID("ITp_h", 14, 0);
+    public static final int PreObjectBuffer_pQ1 = IDHelper.generateID("ITp_h", 15, 0);
+    public static final int PreObjectBuffer_pQ2 = IDHelper.generateID("ITp_h", 16, 0);
+    public static final int PreObjectBuffer_pQ3 = IDHelper.generateID("ITp_h", 17, 0);
+    public static final int PreObjectBuffer_pQ4 = IDHelper.generateID("ITp_h", 18, 0);
+    public static final int HolisticClassifier = IDHelper.generateID("ITp_h", 19, 0);
+    public static final int RetroReactiveQueuer_ITp_h = IDHelper.generateID("ITp_h", 20, 0);
     
     
     public static final int ITp_c = IDHelper.generateID("ITp_c", 0, 0);

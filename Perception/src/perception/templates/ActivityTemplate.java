@@ -66,6 +66,31 @@ public abstract class ActivityTemplate extends Activity {
     public void init() {
 
     }
+    
+    protected void printMat(byte[] mat,int cols, int rows){
+        int k=0;
+        for(int i=0;i<rows;i++){
+            for(int j=0; j<cols;j++){
+                System.out.print(mat[k]);
+                k++;
+            }
+            System.out.println();
+        }
+    }
+    
+    protected void printMat(Mat currentMat){
+        byte[] mat = new byte[(int)currentMat.total()];
+        currentMat.get(0,0,mat);
+        int k=0;
+        for(int i=0;i<currentMat.rows();i++){
+            for(int j=0; j<currentMat.cols();j++){
+                System.out.print(mat[k]);
+                k++;
+            }
+            System.out.println();
+        }
+        System.out.println("------------------------------------------------------------");
+    }
 
     protected void sendToTraceLogger(LongSpike spike) {
         Sendable received = (Sendable) spike.getIntensity();
@@ -78,6 +103,12 @@ public abstract class ActivityTemplate extends Activity {
                 ),
                 0,
                 spike.getTiming()
+        );
+    }
+    
+    protected void sendToObserverOutput(Sendable result) {
+        sendTo(
+                result
         );
     }
 
@@ -213,7 +244,14 @@ public abstract class ActivityTemplate extends Activity {
     protected void showMax(Mat image, String title, Class klass) throws IOException {
         if (GlobalConfig.showEnablerIDs == klass || GlobalConfig.showEnablerIDs == klass.getSuperclass()) {
             Mat hardMat = new Mat();
-            Imgproc.threshold(image, hardMat, 5, 255, Imgproc.THRESH_BINARY);
+            Imgproc.threshold(image, hardMat, GlobalConfig.THRESHOLD_LOWER_LIMIT, 255, Imgproc.THRESH_BINARY);
+            show(hardMat, title);
+        }
+    }
+    protected void showMax(Mat image, String title, int ID) throws IOException {
+        if (GlobalConfig.showEnablerID == ID) {
+            Mat hardMat = new Mat();
+            Imgproc.threshold(image, hardMat, GlobalConfig.THRESHOLD_LOWER_LIMIT, 255, Imgproc.THRESH_BINARY);
             show(hardMat, title);
         }
     }

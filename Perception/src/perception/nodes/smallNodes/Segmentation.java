@@ -396,7 +396,7 @@ public class Segmentation extends ActivityTemplate {
             ArrayList<ArrayList<MatOfPoint>> contourLists = findContourList(croppedSections);
             ArrayList<ArrayList<Mat>> preObjectLists = maskContours(croppedSections, contourLists);
             ArrayList<PreObjectSection> preObjectSections
-                    = createPreObjectSectionList(preObjectLists, getBoundingBoxes(contourLists));
+                    = createPreObjectSectionList(preObjectLists, getBoundingBoxes(contourLists),preObjectSet.getSceneID());
             if (GlobalConfig.showEnablerID == ID) {
                 showList(preObjectLists, "Sections");
             }
@@ -472,13 +472,15 @@ public class Segmentation extends ActivityTemplate {
 
     private ArrayList<PreObjectSection> createPreObjectSectionList(
             ArrayList<ArrayList<Mat>> preObjectLists,
-            ArrayList<ArrayList<Rect>> rects) {
+            ArrayList<ArrayList<Rect>> rects,
+            String sceneID) {
         ArrayList<PreObjectSection> preObjectSections = new ArrayList<>();
         for (int i = 0; i < preObjectLists.size(); i++) {
             preObjectSections.add(
                     new PreObjectSection(
                             preObjectLists.get(i),
                             rects.get(i),
+                            sceneID,
                             "NEW PREOBJECT SEGMENT: " + RETINOTOPIC_ID.get(i)
                     )
             );
@@ -506,7 +508,7 @@ public class Segmentation extends ActivityTemplate {
                 //show(IDMat, "Contours");
             }
         }
-        System.out.println("OBJECTS: " + contours.size());
-        return new PreObjectSet(matID, "NEW INPUT SCENE WITH IDs");
+        //System.out.println("OBJECTS: " + contours.size());
+        return new PreObjectSet(matID, scene.getSceneID(), "NEW INPUT SCENE WITH IDs");
     }
 }

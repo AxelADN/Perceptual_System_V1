@@ -17,7 +17,6 @@ import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
-import perception.config.GlobalConfig;
 
 /**
  *

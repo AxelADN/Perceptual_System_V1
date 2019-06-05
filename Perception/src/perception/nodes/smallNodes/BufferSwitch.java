@@ -130,6 +130,7 @@ public class BufferSwitch extends ActivityTemplate {
                                         RETINOTOPIC_ID.get(i),
                                         retinotopicID,
                                         rects.get(j),
+                                        syncID+"->"+obj.getSceneID(),
                                         "NEW PREOBJECT SEGMENT: "
                                         + RETINOTOPIC_ID.get(i)
                                         + " | SEG_ID: "

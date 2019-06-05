@@ -24,7 +24,6 @@ public class ITa extends AreaTemplate {
         addProcess(SceneSync.class);
         addProcess(RetinotopicExpectationBuilder.class,ActConf.TYPE_PARALLEL);
         addProcess(SceneComposition.class,ActConf.TYPE_PARALLEL);
-        addProcess(TraceLogger.class);
        
     }
     

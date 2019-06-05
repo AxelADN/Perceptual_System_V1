@@ -7,7 +7,6 @@ package perception.nodes.bigNodes;
 
 import kmiddle2.nodes.activities.ActConf;
 import perception.config.AreaNames;
-import perception.nodes.smallNodes.BufferSwitch;
 import perception.nodes.smallNodes.HolisticClassifier;
 import perception.nodes.smallNodes.PreObjectBuffer.*;
 import perception.nodes.smallNodes.PreObjectPrioritizer.*;
@@ -24,7 +23,6 @@ public class ITp_h extends AreaTemplate {
 
     public ITp_h() {
         this.ID = AreaNames.ITp_h;
-        addProcess(BufferSwitch.class, ActConf.TYPE_PARALLEL);
         addProcess(PreObjectPrioritizer_fQ1.class);
         addProcess(PreObjectPrioritizer_fQ2.class);
         addProcess(PreObjectPrioritizer_fQ3.class);

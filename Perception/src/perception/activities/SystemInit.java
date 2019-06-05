@@ -5,6 +5,7 @@
  */
 package perception.activities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.logging.Level;
@@ -17,6 +18,7 @@ import org.opencv.imgproc.Imgproc;
 import perception.GUI.XFrame;
 import perception.config.AreaNames;
 import perception.config.GlobalConfig;
+import perception.structures.InternalRequest;
 import perception.structures.PreObjectSet;
 import perception.structures.Sendable;
 import perception.templates.ActivityTemplate;
@@ -29,13 +31,22 @@ import utils.SimpleLogger;
 public class SystemInit extends ActivityTemplate {
 
     private final Experimenter experiment;
+    private final ArrayList<Integer> RECEIVERS = new ArrayList<>();
 
     public SystemInit() {
         this.ID = AreaNames.SystemInit;
+        RECEIVERS.add(AreaNames.RIIC_fQ1);
+        RECEIVERS.add(AreaNames.RIIC_fQ2);
+        RECEIVERS.add(AreaNames.RIIC_fQ3);
+        RECEIVERS.add(AreaNames.RIIC_fQ4);
+        RECEIVERS.add(AreaNames.RIIC_pQ1);
+        RECEIVERS.add(AreaNames.RIIC_pQ2);
+        RECEIVERS.add(AreaNames.RIIC_pQ3);
+        RECEIVERS.add(AreaNames.RIIC_pQ4);
         this.experiment = new Experimenter(
-                "Test01",
-                List.of(1000),
-                1,
+                "Test04",
+                List.of(500),
+                6,
                 1,
                 false,
                 true
@@ -55,7 +66,7 @@ public class SystemInit extends ActivityTemplate {
 
     private void start() throws Exception {
         //Reading the Image from the file and storing it in to a Matrix object 
-        String file = this.experiment.getFile();
+        String file = this.experiment.getMayorFile();
         Mat image = Imgcodecs.imread(file, Imgcodecs.IMREAD_COLOR);
         XFrame frame = show(image, 0, 0, "System Init");
         ActivityTemplate.setInitFrame(frame);
@@ -78,6 +89,7 @@ public class SystemInit extends ActivityTemplate {
                             new Sendable(
                                     new PreObjectSet(
                                             image,
+                                            this.experiment.getFile(),
                                             "NEW PREOBJECT SET"
                                     ),
                                     this.ID,
@@ -87,6 +99,22 @@ public class SystemInit extends ActivityTemplate {
                     Thread.sleep(GlobalConfig.SYSTEM_TIME_STEP);
                     i++;
                     frame.notClicked();
+                }
+                if (frame.isMemoryOption() && GlobalConfig.MANUAL_STORAGE) {
+                    for (Integer receiver : RECEIVERS) {
+                        sendTo(
+                                new Sendable(
+                                        new InternalRequest(
+                                                "M",
+                                                "NEW_STORAGE_REQUEST"
+                                        ),
+                                        this.ID,
+                                        receiver
+                                ),
+                                "NULL"
+                        );
+                    }
+                    frame.noOption();
                 }
 //            if (frame.isClicked()) {
 //                sample+=0.01;
