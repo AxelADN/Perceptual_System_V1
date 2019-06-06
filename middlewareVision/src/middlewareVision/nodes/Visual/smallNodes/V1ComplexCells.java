@@ -10,8 +10,11 @@ import matrix.SimpleCellMatrix;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
 import spike.Modalities;
+import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
 import utils.SimpleLogger;
@@ -65,10 +68,13 @@ public class V1ComplexCells extends FrameActivity {
                 Mat oddOrs = Convertor.matrixToMat(scm.getOddOrs());
 
                 Mat energy = energyProcess(evenOrs, oddOrs);
+                Mat energy2=energy.clone();
+                Imgproc.resize(energy2, energy2, new Size(Config.motionWidth,Config.motionHeight), INTER_CUBIC);
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(energy), 0);
+                LongSpike sendSpike2 = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(energy2), 0);
                 send(AreaNames.V1EdgeVisualizer, sendSpike1.getByteArray());
                 send(AreaNames.V2IlusoryCells, sendSpike1.getByteArray());
-                send(AreaNames.MotionCells,sendSpike1.getByteArray());
+                send(AreaNames.MotionCells,sendSpike2.getByteArray());
 
             }
 

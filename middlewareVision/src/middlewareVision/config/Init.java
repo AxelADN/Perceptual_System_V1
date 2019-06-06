@@ -9,6 +9,7 @@ import org.opencv.core.Core;
 import utils.SimpleLogger;
 import utils.layoutManager;
 import middlewareVision.nodes.Visual.LGN;
+import utils.SpecialKernels;
 //@import
 
 
@@ -47,6 +48,8 @@ public class Init extends Igniter {
         layoutManager.initLayout();
         setAreas(areaNames);
         run();
+        SpecialKernels.getdiag45();
+        SpecialKernels.getdiag135();
     }
 
     public static void main(String[] args) {

@@ -15,7 +15,6 @@ import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
-import utils.MatrixUtils;
 import utils.SimpleLogger;
 
 /**
@@ -38,7 +37,7 @@ public class MotionCells extends Activity {
         mats = new matrix[Config.gaborOrientations][numOfMatrixes];
         for (int i = 0; i < Config.gaborOrientations; i++) {
             for (int j = 0; j < numOfMatrixes; j++) {
-                mats[i][j] = Convertor.MatToMatrix(Mat.zeros(new Size(Config.width, Config.heigth), CvType.CV_32FC1));
+                mats[i][j] = Convertor.MatToMatrix(Mat.zeros(new Size(Config.motionWidth, Config.motionHeight), CvType.CV_32FC1));
             }
         }
     }

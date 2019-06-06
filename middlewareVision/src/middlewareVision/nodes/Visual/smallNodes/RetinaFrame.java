@@ -29,7 +29,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
     int index;
     String folder;
 
-    Timer timer = new Timer(1500, new ActionListener() {
+    Timer timer = new Timer(800, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             try {
                 // Aquí el código que queramos ejecutar.
