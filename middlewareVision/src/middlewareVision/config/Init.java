@@ -11,6 +11,11 @@ import utils.layoutManager;
 import middlewareVision.nodes.Visual.LGN;
 //@import
 
+
+/*
+https://www.enmimaquinafunciona.com/pregunta/90466/como-clonar-git-repositorio-solo-algunos-directorios
+*/
+
 public class Init extends Igniter {
 
     private boolean DEBUG = true;
