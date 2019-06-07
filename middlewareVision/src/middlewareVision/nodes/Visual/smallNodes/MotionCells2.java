@@ -108,17 +108,19 @@ public class MotionCells2 extends FrameActivity {
         frame[index].setImage(Convertor.ConvertMat2Image2(mat2), "motion labels");
         return motion;
     }
-
+    int mWidth=Config.motionWidth;
     public Mat getCxMat(int x, int y, Mat[] frames) {
+        int pos=0;
         Mat cx = Mat.zeros(new Size(nFrames, nFrames), CvType.CV_32FC1);
         for (int i = 0; i < cx.width(); i++) {
             for (int j = 0; j < cx.height(); j++) {
                 double value;
-                try {
-                    value = frames[nFrames - i - 1].get(y, x + j * Δd)[0];
-                } catch (Exception ex) {
+                pos=x + j * Δd;
+                if(pos< Config.motionHeight)
+                    value = frames[nFrames - i - 1].get(y, pos)[0];
+                else
                     value = 0;
-                }
+                
                 cx.put(i, j, value);
             }
         }
@@ -126,15 +128,16 @@ public class MotionCells2 extends FrameActivity {
     }
 
     public Mat getCyMat(int x, int y, Mat[] frames) {
+        int pos;
         Mat cx = Mat.zeros(new Size(nFrames, nFrames), CvType.CV_32FC1);
         for (int i = 0; i < cx.width(); i++) {
             for (int j = 0; j < cx.height(); j++) {
                 double value;
-                try {
-                    value = frames[nFrames - j - 1].get(y + i * Δd, x)[0];
-                } catch (Exception ex) {
+                pos=y + i * Δd;
+                if(pos< mWidth)
+                    value = frames[nFrames - j - 1].get(pos, x)[0];
+                else
                     value = 0;
-                }
                 cx.put(i, j, value);
             }
         }
@@ -145,7 +148,7 @@ public class MotionCells2 extends FrameActivity {
         Mat diff = Mat.zeros(new Size(nFrames, nFrames), CV_32F);
         Imgproc.filter2D(c, diff, CV_32F, SpecialKernels.diag45);
         Imgproc.threshold(diff, diff, 0, 1, Imgproc.THRESH_TOZERO);
-        double nz = diff.get(1, 1)[0];
+        double nz = diff.get(1, 1)[0]*5;
         return nz;
 
     }
@@ -154,7 +157,7 @@ public class MotionCells2 extends FrameActivity {
         Mat diff = Mat.zeros(new Size(nFrames, nFrames), CV_32F);
         Imgproc.filter2D(c, diff, CV_32F, SpecialKernels.diag135);
         Imgproc.threshold(diff, diff, 0, 1, Imgproc.THRESH_TOZERO);
-        double nz = diff.get(1, 1)[0];
+        double nz = diff.get(1, 1)[0]*5;
         return nz;
 
     }
