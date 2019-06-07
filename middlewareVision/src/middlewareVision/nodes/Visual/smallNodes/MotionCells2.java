@@ -40,6 +40,8 @@ public class MotionCells2 extends FrameActivity {
     public static int Δd = 1;
     public Mat diag45;
     public Mat diag135;
+    int mWidth = Config.motionWidth;
+    int mHeight = Config.motionHeight;
 
     /**
      * *************************************************************************
@@ -85,21 +87,22 @@ public class MotionCells2 extends FrameActivity {
      * METODOS
      * ************************************************************************
      */
-    Mat matLabel; 
+    Mat matLabel;
     Mat mat2;
+
     public FloatLabelMatrix motionDetect(Mat frames[], int index) {
         matLabel = new Mat(frames[0].height(), frames[0].width(), CvType.CV_8UC3);
-       
-        FloatLabelMatrix motion = new FloatLabelMatrix(Config.motionWidth, Config.motionHeight);
-        for (int x = 0; x < frames[0].width(); x++) {
-            for (int y = 0; y < frames[0].height(); y++) {
+
+        FloatLabelMatrix motion = new FloatLabelMatrix(mWidth, mHeight);
+        for (int x = 0; x < mWidth; x++) {
+            for (int y = 0; y < mHeight; y++) {
                 Mat cx = getCxMat(x, y, frames);
                 Mat cy = getCyMat(x, y, frames);
                 double Lf = getF45(cx);
                 double Rg = getF135(cx);
                 double Up = getF45(cy);
                 double Dw = getF135(cy);
-                matLabel.put(y, x, new byte[]{(byte) (Lf * 255+Dw*200), (byte) (Rg * 255+Dw*200), (byte) (Up * 255)});
+                matLabel.put(y, x, new byte[]{(byte) (Lf * 255 + Dw * 200), (byte) (Rg * 255 + Dw * 200), (byte) (Up * 255)});
 
             }
         }
@@ -108,24 +111,27 @@ public class MotionCells2 extends FrameActivity {
         frame[index].setImage(Convertor.ConvertMat2Image2(mat2), "motion labels");
         return motion;
     }
-    int mWidth=Config.motionWidth;
+
     public Mat getCxMat(int x, int y, Mat[] frames) {
-        int pos=0;
+        int pos = 0;
         Mat cx = Mat.zeros(new Size(nFrames, nFrames), CvType.CV_32FC1);
         for (int i = 0; i < cx.width(); i++) {
             for (int j = 0; j < cx.height(); j++) {
                 double value;
-                pos=x + j * Δd;
-                if(pos< Config.motionHeight)
+                pos = x + j * Δd;
+                if (pos < Config.motionHeight) {
                     value = frames[nFrames - i - 1].get(y, pos)[0];
-                else
-                    value = 0;
-                
-                cx.put(i, j, value);
+
+                    cx.put(i, j, value);
+                }
             }
-        }
-        return cx;
+            
+        }return cx;
     }
+
+    
+
+    
 
     public Mat getCyMat(int x, int y, Mat[] frames) {
         int pos;
@@ -133,22 +139,25 @@ public class MotionCells2 extends FrameActivity {
         for (int i = 0; i < cx.width(); i++) {
             for (int j = 0; j < cx.height(); j++) {
                 double value;
-                pos=y + i * Δd;
-                if(pos< mWidth)
+                pos = y + i * Δd;
+                if (pos < mWidth) {
                     value = frames[nFrames - j - 1].get(pos, x)[0];
-                else
-                    value = 0;
-                cx.put(i, j, value);
+                    cx.put(i, j, value);
+                }
             }
-        }
-        return cx;
+            
+        }return cx;
     }
+
+    
+
+    
 
     public double getF45(Mat c) {
         Mat diff = Mat.zeros(new Size(nFrames, nFrames), CV_32F);
         Imgproc.filter2D(c, diff, CV_32F, SpecialKernels.diag45);
         Imgproc.threshold(diff, diff, 0, 1, Imgproc.THRESH_TOZERO);
-        double nz = diff.get(1, 1)[0]*5;
+        double nz = diff.get(1, 1)[0] * 5;
         return nz;
 
     }
@@ -157,7 +166,7 @@ public class MotionCells2 extends FrameActivity {
         Mat diff = Mat.zeros(new Size(nFrames, nFrames), CV_32F);
         Imgproc.filter2D(c, diff, CV_32F, SpecialKernels.diag135);
         Imgproc.threshold(diff, diff, 0, 1, Imgproc.THRESH_TOZERO);
-        double nz = diff.get(1, 1)[0]*5;
+        double nz = diff.get(1, 1)[0] * 5;
         return nz;
 
     }
