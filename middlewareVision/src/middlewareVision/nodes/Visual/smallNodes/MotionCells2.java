@@ -6,6 +6,7 @@ import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import matrix.ArrayMatrix;
+import matrix.FloatLabel;
 import matrix.FloatLabelMatrix;
 import matrix.labelMatrix;
 import matrix.matrix;
@@ -22,6 +23,7 @@ import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
+import utils.MotionLabelIndex;
 import utils.SimpleLogger;
 import utils.SpecialKernels;
 
@@ -92,7 +94,6 @@ public class MotionCells2 extends FrameActivity {
 
     public FloatLabelMatrix motionDetect(Mat frames[], int index) {
         matLabel = new Mat(frames[0].height(), frames[0].width(), CvType.CV_8UC3);
-
         FloatLabelMatrix motion = new FloatLabelMatrix(mWidth, mHeight);
         for (int x = 0; x < mWidth; x++) {
             for (int y = 0; y < mHeight; y++) {
@@ -102,16 +103,59 @@ public class MotionCells2 extends FrameActivity {
                 double Rg = getF135(cx);
                 double Up = getF45(cy);
                 double Dw = getF135(cy);
-                matLabel.put(y, x, new byte[]{(byte) (Lf * 255 + Dw * 200), (byte) (Rg * 255 + Dw * 200), (byte) (Up * 255)});
+                //matLabel.put(y, x, new byte[]{(byte) (Lf * 255 + Dw * 200), (byte) (Rg * 255 + Dw * 200), (byte) (Up * 255)});
+                motion.setLabel(x, y, new float[]{(float)Lf,(float)Rg,(float)Up,(float)Dw});
 
+            }
+        }
+        /*mat2 = matLabel.clone();
+        Imgproc.resize(mat2, mat2, new Size(Config.width, Config.heigth));
+        frame[index].setImage(Convertor.ConvertMat2Image2(mat2), "motion labels");*/
+        ortogonalMotion(index,motion);
+        return motion;
+    }
+    
+    /**
+     * assign labels of ortogonal motion, thet is,..., the four labels are reduced to 2
+     * @param index
+     * @param motion 
+     */
+    public void ortogonalMotion(int index, FloatLabelMatrix motion){
+        matLabel = new Mat(motion.getHeight(), motion.getWidth(), CvType.CV_8UC3);
+        int labels[]=MotionLabelIndex.labelIndex(index);
+        for(int x=0;x<motion.getWidth();x++){
+            for(int y=0;y<motion.getHeight();y++){
+                float[] labelValues=motion.getLabel(x, y).getLabel();
+                float intensity1=calculateOrtogonalActivation(labelValues[labels[0]],labelValues[labels[1]]);
+                float intensity2=calculateOrtogonalActivation(labelValues[labels[2]],labelValues[labels[3]]);
+                matLabel.put(y, x, new byte[]{(byte) (intensity1*255), (byte) (0), (byte) (intensity2*255)});
             }
         }
         mat2 = matLabel.clone();
         Imgproc.resize(mat2, mat2, new Size(Config.width, Config.heigth));
         frame[index].setImage(Convertor.ConvertMat2Image2(mat2), "motion labels");
-        return motion;
+        
+    }
+    
+    /**
+     * calculate the activation value of 2 preferents labels
+     * @param value1
+     * @param value2
+     * @return 
+     */
+    public float calculateOrtogonalActivation(float value1, float value2){
+        float activation=0;
+        activation=(float) ((float) Math.sqrt(value1*value1+value2*value2)*0.7071);
+        return activation;
     }
 
+    /**
+     * Cx mat
+     * @param x
+     * @param y
+     * @param frames
+     * @return 
+     */
     public Mat getCxMat(int x, int y, Mat[] frames) {
         int pos = 0;
         Mat cx = Mat.zeros(new Size(nFrames, nFrames), CvType.CV_32FC1);
@@ -132,7 +176,13 @@ public class MotionCells2 extends FrameActivity {
     
 
     
-
+    /**
+     * Cy Mat
+     * @param x
+     * @param y
+     * @param frames
+     * @return 
+     */
     public Mat getCyMat(int x, int y, Mat[] frames) {
         int pos;
         Mat cx = Mat.zeros(new Size(nFrames, nFrames), CvType.CV_32FC1);
@@ -152,7 +202,11 @@ public class MotionCells2 extends FrameActivity {
     
 
     
-
+    /**
+     * Convolution with 45° filter
+     * @param c
+     * @return 
+     */
     public double getF45(Mat c) {
         Mat diff = Mat.zeros(new Size(nFrames, nFrames), CV_32F);
         Imgproc.filter2D(c, diff, CV_32F, SpecialKernels.diag45);
@@ -162,6 +216,11 @@ public class MotionCells2 extends FrameActivity {
 
     }
 
+    /**
+     * Convolution with 135° filter
+     * @param c
+     * @return 
+     */
     public double getF135(Mat c) {
         Mat diff = Mat.zeros(new Size(nFrames, nFrames), CV_32F);
         Imgproc.filter2D(c, diff, CV_32F, SpecialKernels.diag135);

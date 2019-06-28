@@ -19,6 +19,30 @@ public class FloatLabelMatrix {
         this.height = height;
     }
 
+    public FloatLabel[][] getLabel() {
+        return label;
+    }
+
+    public void setLabel(FloatLabel[][] label) {
+        this.label = label;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     public FloatLabel getLabel(int x, int y) {
         return label[x][y];
     }
