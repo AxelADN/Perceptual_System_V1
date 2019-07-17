@@ -21,7 +21,7 @@ import utils.SimpleLogger;
  *
  *
  */
-public class MotionCells extends Activity {
+public class V1MotionCells extends Activity {
 
     matrix[][] mats;
     static final int numOfMatrixes = 3;
@@ -31,8 +31,8 @@ public class MotionCells extends Activity {
      * CONSTRUCTOR Y METODOS PARA RECIBIR
      * *************************************************************************
      */
-    public MotionCells() {
-        this.ID = AreaNames.MotionCells;
+    public V1MotionCells() {
+        this.ID = AreaNames.V1MotionCells;
         this.namer = AreaNames.class;
         mats = new matrix[Config.gaborOrientations][numOfMatrixes];
         for (int i = 0; i < Config.gaborOrientations; i++) {
@@ -61,7 +61,7 @@ public class MotionCells extends Activity {
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(MotionCells.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(V1MotionCells.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -86,9 +86,9 @@ public class MotionCells extends Activity {
             ArrayMatrix array=new ArrayMatrix(mats[i]);
             LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), array, 0);
             try {
-                send(AreaNames.MotionCells2, sendSpike1.getByteArray());
+                send(AreaNames.V1MotionCells2, sendSpike1.getByteArray());
             } catch (IOException ex) {
-                Logger.getLogger(MotionCells.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(V1MotionCells.class.getName()).log(Level.SEVERE, null, ex);
             }
         }     
     }

@@ -5,10 +5,10 @@
  */
 package middlewareVision.nodes.Visual;
 
-import middlewareVision.nodes.Visual.smallNodes.MotionCells2;
-import middlewareVision.nodes.Visual.smallNodes.MotionCells;
+import middlewareVision.nodes.Visual.smallNodes.V1MotionCells2;
+import middlewareVision.nodes.Visual.smallNodes.V1MotionCells;
 import middlewareVision.nodes.Visual.smallNodes.V1EdgeVisualizer;
-import middlewareVision.nodes.Visual.smallNodes.SimpleCellsFilter;
+import middlewareVision.nodes.Visual.smallNodes.V1SimpleCellsFilter;
 import middlewareVision.nodes.Visual.smallNodes.V1DoubleOpponent;
 import middlewareVision.nodes.Visual.smallNodes.V1ComplexCells;
 import middlewareVision.nodes.Visual.smallNodes.V1SimpleCells;
@@ -29,13 +29,13 @@ public class V1 extends Area{
 	addProcess(V1DoubleOpponent.class);
 	//addProcess(V1HyperComplex.class);
 	
-	addProcess(SimpleCellsFilter.class);
+	addProcess(V1SimpleCellsFilter.class);
 	
 	addProcess(V1EdgeVisualizer.class);
-	addProcess(MotionCells.class);
+	//addProcess(V1MotionCells.class);
 	//
 	
-	addProcess(MotionCells2.class);
+	//addProcess(V1MotionCells2.class);
 	
 	//@AddProcess
     }
@@ -54,13 +54,13 @@ public class V1 extends Area{
 	send(AreaNames.V1DoubleOpponent,data);/*
 	send(AreaNames.V1HyperComplex,data);*/
 	
-	send(AreaNames.SimpleCellsFilter,data);
+	send(AreaNames.V1SimpleCellsFilter,data);
 	
 	send(AreaNames.V1EdgeVisualizer,data);
-	send(AreaNames.MotionCells,data);
+	send(AreaNames.V1MotionCells,data);
 	//
 	
-	send(AreaNames.MotionCells2,data);
+	send(AreaNames.V1MotionCells2,data);
 	
 	//@SendProcess
     }

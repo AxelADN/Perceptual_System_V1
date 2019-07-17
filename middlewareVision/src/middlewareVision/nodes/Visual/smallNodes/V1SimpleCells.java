@@ -96,7 +96,7 @@ public class V1SimpleCells extends FrameActivity {
                         The location variable is useful to send the index of the orientation matrix
                      */
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), Convertor.MatToMatrix(DKL[idx]), 0);
-                    send(AreaNames.SimpleCellsFilter, sendSpike1.getByteArray());
+                    send(AreaNames.V1SimpleCellsFilter, sendSpike1.getByteArray());
                 }
 
             }

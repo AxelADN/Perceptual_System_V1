@@ -23,7 +23,7 @@ import utils.SimpleLogger;
  *
  *
  */
-public class SimpleCellsFilter extends Activity {
+public class V1SimpleCellsFilter extends Activity {
 
     /**
      * *************************************************************************
@@ -35,8 +35,8 @@ public class SimpleCellsFilter extends Activity {
      * CONSTRUCTOR Y METODOS PARA RECIBIR
      * *************************************************************************
      */
-    public SimpleCellsFilter() {
-        this.ID = AreaNames.SimpleCellsFilter;
+    public V1SimpleCellsFilter() {
+        this.ID = AreaNames.V1SimpleCellsFilter;
         this.namer = AreaNames.class;
     }
 
@@ -68,7 +68,7 @@ public class SimpleCellsFilter extends Activity {
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(SimpleCellsFilter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(V1SimpleCellsFilter.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

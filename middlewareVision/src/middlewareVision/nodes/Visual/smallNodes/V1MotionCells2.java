@@ -31,7 +31,7 @@ import utils.SpecialKernels;
  *
  *
  */
-public class MotionCells2 extends FrameActivity {
+public class V1MotionCells2 extends FrameActivity {
 
     /**
      * *************************************************************************
@@ -50,8 +50,8 @@ public class MotionCells2 extends FrameActivity {
      * CONSTRUCTOR Y METODOS PARA RECIBIR
      * *************************************************************************
      */
-    public MotionCells2() {
-        this.ID = AreaNames.MotionCells2;
+    public V1MotionCells2() {
+        this.ID = AreaNames.V1MotionCells2;
         this.namer = AreaNames.class;
         initFrames(4, 12);
     }
@@ -80,7 +80,7 @@ public class MotionCells2 extends FrameActivity {
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(MotionCells2.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(V1MotionCells2.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

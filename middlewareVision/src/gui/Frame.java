@@ -51,7 +51,6 @@ public class Frame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setUndecorated(true);
         setResizable(false);
         setType(java.awt.Window.Type.UTILITY);
         addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {

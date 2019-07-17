@@ -29,8 +29,8 @@ public class Init extends Igniter {
             Retina.class.getName(),
             LGN.class.getName(),
             V1.class.getName(),
-            //V2.class.getName(),         
-           // V4.class.getName(),
+            V2.class.getName(),         
+            V4.class.getName(),
             /*
             V1.class.getName(),
             V2.class.getName(),

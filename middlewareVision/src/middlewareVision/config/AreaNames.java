@@ -10,10 +10,10 @@ public class AreaNames {
 	public static int V1ComplexCells = IDHelper.generateID("V1", 2, 0);
 	public static int V1DoubleOpponent = IDHelper.generateID("V1", 3, 0);
 	public static int V1HyperComplex = IDHelper.generateID("V1", 4, 0);
-        public static int MotionCells = IDHelper.generateID("V1", 5 , 0);  
+        public static int V1MotionCells = IDHelper.generateID("V1", 5 , 0);  
         public static int V1EdgeVisualizer = IDHelper.generateID("V1", 6 , 0);
-        public static int SimpleCellsFilter = IDHelper.generateID("V1", 7, 0);
-        public static int MotionCells2 = IDHelper.generateID("V1", 8 , 0);
+        public static int V1SimpleCellsFilter = IDHelper.generateID("V1", 7, 0);
+        public static int V1MotionCells2 = IDHelper.generateID("V1", 8 , 0);
         
         public static int V2	=           IDHelper.generateID("V2", 0, 0);
 	public static int V2AngularCells	=   IDHelper.generateID("V2",1,0);	

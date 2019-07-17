@@ -173,7 +173,7 @@ public class V2AngularCells extends FrameActivity {
     /**
      * valor que sirve para ajustar los filtros para cucharear
      */
-    double value = -0.05;
+    double value = -0.00;
 
     /**
      * cut the filter in half
