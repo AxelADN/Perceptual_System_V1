@@ -19,25 +19,28 @@ import utils.numSync;
  *
  *
  */
-public class V1EdgeVisualizer extends FrameActivity {
+public class V1Visualizer extends FrameActivity {
 
     /**
      * *************************************************************************
      * CONSTANTES
      * *************************************************************************
      */
-     public Mat[] ors;
-     int num=8;
+    public Mat[] ors;
+    public Mat[] dkl;
+    int num = 8;
+
     /**
      * *************************************************************************
      * CONSTRUCTOR Y METODOS PARA RECIBIR
      * *************************************************************************
      */
-    public V1EdgeVisualizer() {
-        this.ID = AreaNames.V1EdgeVisualizer;
+    public V1Visualizer() {
+        this.ID = AreaNames.V1Visualizer;
         this.namer = AreaNames.class;
         initFrames(num, 8);
         ors = new Mat[num];
+        dkl = new Mat[3];
     }
 
     @Override
@@ -51,16 +54,22 @@ public class V1EdgeVisualizer extends FrameActivity {
             LongSpike spike = new LongSpike(data);
             Location l = (Location) spike.getLocation();
             int index = l.getValues()[0];
+            int index2 = l.getValues()[1];
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
-
-                ors[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
-                frame[index].setImage(Convertor.ConvertMat2Image(ors[index]), "energy " + index);
+                if (index2 == 0) {
+                    ors[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                    frame[index+4].setImage(Convertor.ConvertMat2Image(ors[index]), "energy " + index);
+                }
+                if (index2 == 1) {
+                    dkl[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                    frame[index+1].setImage(Convertor.ConvertMat2Image(dkl[index]), "d'k'l'" + index);
+                }
 
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(V1EdgeVisualizer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(V1Visualizer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

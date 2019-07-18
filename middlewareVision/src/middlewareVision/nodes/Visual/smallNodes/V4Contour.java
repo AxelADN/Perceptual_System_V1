@@ -43,7 +43,7 @@ public class V4Contour extends FrameActivity {
         this.ID = AreaNames.V4Contour;
         this.namer = AreaNames.class;
         ors = new Mat[Config.gaborOrientations];
-        initFrames(3, 20);
+        initFrames(3, 24);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class V4Contour extends FrameActivity {
                  * convertir directo a bytes sin pasar por la imagen
                  */
                 LongSpike sendSpike = new LongSpike(Modalities.VISUAL, 0, Convertor.matToBytes(contours1), 0);
-                send(AreaNames.ITC, sendSpike.getByteArray());
+               // send(AreaNames.ITC, sendSpike.getByteArray());
 
             }
 

@@ -34,7 +34,7 @@ public class V2Visualizer extends FrameActivity {
         this.ID = AreaNames.V2Visualizer;
         this.namer = AreaNames.class;
         ors = new Mat[4];
-        initFrames(4, 12);
+        initFrames(4, 16);
     }
 
     @Override

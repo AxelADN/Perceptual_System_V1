@@ -95,8 +95,9 @@ public class V1DoubleOpponent extends Activity {
             if (sync.isComplete()) {
                 transduction(DKL1);
                 for(int i=0;i<3;i++){
-                        LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i), Convertor.MatToMatrix(DKL2[i]), 0);
+                        LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,1), Convertor.MatToMatrix(DKL2[i]), 0);
                         send(AreaNames.V4Color, sendSpike.getByteArray());
+                        send(AreaNames.V1Visualizer, sendSpike.getByteArray());
                 }
             }
 

@@ -32,7 +32,7 @@ public class V4Color extends FrameActivity {
         this.ID = AreaNames.V4Color;
         this.namer = AreaNames.class;
         DKL = new matrix[3];
-        initFrames(1,23);
+        initFrames(1,27);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class V4Color extends FrameActivity {
                 frame[0].setImage(Convertor.ConvertMat2Image2(matLabel), "color labels");
                 LongSpike labelSpike = new LongSpike(Modalities.VISUAL, new Location(0), labels, 0);
                 //LongSpike LChannelSpike = new LongSpike(Modalities.VISUAL, new Location(1), DKL[2], 0);
-                send(AreaNames.ITC, labelSpike.getByteArray());
+                //send(AreaNames.ITC, labelSpike.getByteArray());
                 //send(AreaNames.ITC, LChannelSpike.getByteArray());
             }
 

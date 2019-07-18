@@ -125,7 +125,7 @@ public class LGNSimpleOpponentCells extends FrameActivity {
                 mostrar las imagenes procesadas
                 */
                 for(int i=0;i<LMSCones.length;i++){
-                    frame[i].setImage(Convertor.ConvertMat2Image(DKL[i]), "mat");
+                    frame[i].setImage(Convertor.ConvertMat2Image(DKL[i]), "dkl");
                     //mandar los spikes de salida a las celulas simples y doble oponentes de V1
                     LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,-1), Convertor.MatToMatrix(DKL[i]), 0);
                     send(AreaNames.V1SimpleCells, sendSpike.getByteArray());

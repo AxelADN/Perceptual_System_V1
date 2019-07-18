@@ -40,7 +40,7 @@ public class V2AngularCells extends FrameActivity {
         this.namer = AreaNames.class;
         ors = new Mat[Config.gaborOrientations];
         //inicia 4 frames, le da etiquetas de 4 en adelante
-        initFrames(4,16);
+        initFrames(4,20);
         generateKernels();
     }
 
