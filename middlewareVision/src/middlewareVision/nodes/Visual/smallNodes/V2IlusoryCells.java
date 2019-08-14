@@ -67,7 +67,7 @@ public class V2IlusoryCells extends FrameActivity {
                 //assign information from LGN to the DKL array matrix
                 Mat edges = Convertor.matrixToMat((matrix) spike.getIntensity());
                 Mat ilusoryEdges;
-                ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.5f, 1, 5, 200, 0.05, index);
+                ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.5f, 1, 5, 29, 0.05, index);
                 
                 Core.multiply(ilusoryEdges, new Scalar(0.5), ilusoryEdges);
                 ilusoryEdges = MatrixUtils.maxSum(ilusoryEdges, edges);

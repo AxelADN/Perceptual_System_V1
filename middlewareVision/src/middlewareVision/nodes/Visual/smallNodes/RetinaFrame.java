@@ -29,7 +29,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
     int index;
     String folder;
 
-    Timer timer = new Timer(800, new ActionListener() {
+    Timer timer = new Timer(5000, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             try {
                 // Aquí el código que queramos ejecutar.
@@ -53,7 +53,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
         }
         if (Config.option == Config.RENDER) {
             folder = "render";
-            timer.start();
+           // timer.start();
         }
     }
 
@@ -136,7 +136,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO add your handling code here:
-        if (Config.option == Config.CLICK) {
+        if (Config.option == Config.CLICK || Config.option == Config.RENDER) {
             try {
                 activity.setImage();
             } catch (IOException ex) {

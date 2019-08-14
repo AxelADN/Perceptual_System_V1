@@ -32,7 +32,7 @@ public class V4Color extends FrameActivity {
         this.ID = AreaNames.V4Color;
         this.namer = AreaNames.class;
         DKL = new matrix[3];
-        initFrames(1,27);
+        initFrames(1,27+8);
     }
 
     @Override

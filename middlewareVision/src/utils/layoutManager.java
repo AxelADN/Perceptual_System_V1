@@ -22,7 +22,7 @@ public class layoutManager {
      */
     public static void initLayout(){
         int h=4;
-        int v=10;
+        int v=20;
         for(int i=0;i<v;i++){
             for(int j=0;j<h;j++){
                 points.put(i*h+j, getPoint(i,j));

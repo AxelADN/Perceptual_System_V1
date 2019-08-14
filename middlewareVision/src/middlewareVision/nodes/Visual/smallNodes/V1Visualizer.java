@@ -27,8 +27,10 @@ public class V1Visualizer extends FrameActivity {
      * *************************************************************************
      */
     public Mat[] ors;
+    public Mat[] evenOrs;
+    public Mat[] oddOrs;
     public Mat[] dkl;
-    int num = 8;
+    int num = 16;
 
     /**
      * *************************************************************************
@@ -39,7 +41,9 @@ public class V1Visualizer extends FrameActivity {
         this.ID = AreaNames.V1Visualizer;
         this.namer = AreaNames.class;
         initFrames(num, 8);
-        ors = new Mat[num];
+        ors = new Mat[4];
+        evenOrs = new Mat[4];
+        oddOrs= new Mat[4];
         dkl = new Mat[3];
     }
 
@@ -59,11 +63,19 @@ public class V1Visualizer extends FrameActivity {
                 //assign information from LGN to the DKL array matrix
                 if (index2 == 0) {
                     ors[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
-                    frame[index+4].setImage(Convertor.ConvertMat2Image(ors[index]), "energy " + index);
+                    frame[index+4+8].setImage(Convertor.ConvertMat2Image(ors[index]), "energy " + index);
                 }
                 if (index2 == 1) {
                     dkl[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
                     frame[index+1].setImage(Convertor.ConvertMat2Image(dkl[index]), "d'k'l'" + index);
+                }
+                if (index2 == 2) {
+                    evenOrs[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                    frame[index+4].setImage(Convertor.ConvertMat2Image(evenOrs[index]), "evenOrs" + index);
+                }
+                if (index2 == 3) {
+                    oddOrs[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                    frame[index+4+4].setImage(Convertor.ConvertMat2Image(oddOrs[index]), "oddOrs" + index);
                 }
 
             }

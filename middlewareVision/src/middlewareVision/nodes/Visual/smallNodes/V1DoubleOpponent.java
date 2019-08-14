@@ -32,7 +32,7 @@ public class V1DoubleOpponent extends Activity {
     Constantes
     ****************************************************************************
      */
-    private final int KERNEL_SIZE = 3;
+    private final int KERNEL_SIZE = 5;
 
     private final float LMM_ALPHA = 3.2f; // Red
     private final float LMM_BETA = 3f; // Green

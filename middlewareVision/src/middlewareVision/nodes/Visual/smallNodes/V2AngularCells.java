@@ -40,7 +40,7 @@ public class V2AngularCells extends FrameActivity {
         this.namer = AreaNames.class;
         ors = new Mat[Config.gaborOrientations];
         //inicia 4 frames, le da etiquetas de 4 en adelante
-        initFrames(4,20);
+        initFrames(4,20+8);
         generateKernels();
     }
 
@@ -142,7 +142,7 @@ public class V2AngularCells extends FrameActivity {
      */
     public void generateKernels() {
         kernels = new Mat[Config.gaborOrientations * 2];
-        int kernelSize = 11;
+        int kernelSize = 13;
         float angle = 0;
         for (int i = 0; i < Config.gaborOrientations; i++, angle += inc) {
             kernels[i] = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, 5f, 0.5f, 0.8, CvType.CV_32F);
@@ -173,7 +173,7 @@ public class V2AngularCells extends FrameActivity {
     /**
      * valor que sirve para ajustar los filtros para cucharear
      */
-    double value = -0.00;
+    double value = -0.10;
 
     /**
      * cut the filter in half

@@ -53,7 +53,7 @@ public class V1MotionCells2 extends FrameActivity {
     public V1MotionCells2() {
         this.ID = AreaNames.V1MotionCells2;
         this.namer = AreaNames.class;
-        initFrames(4, 12);
+        initFrames(4, 12+12);
     }
 
     @Override

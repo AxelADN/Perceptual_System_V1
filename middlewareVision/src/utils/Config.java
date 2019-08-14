@@ -26,8 +26,8 @@ public class Config {
     public static int gaborOrientations = 4;
     public static int width=250;
     public static int heigth=250;
-    public static int motionWidth=30;
-    public static int motionHeight=30;
+    public static int motionWidth=70;
+    public static int motionHeight=70;
     public static boolean ilusoryEnabled = true;
     
     /**
@@ -46,6 +46,6 @@ public class Config {
     public static final int CLICK=2;
     public static final int RENDER=3;
     
-    public static final int option=RENDER;
+    public static final int option=CLICK;
 
 }

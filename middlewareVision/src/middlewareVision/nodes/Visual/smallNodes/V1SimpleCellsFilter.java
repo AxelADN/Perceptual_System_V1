@@ -56,10 +56,16 @@ public class V1SimpleCellsFilter extends Activity {
                 Mat raw = Convertor.matrixToMat((matrix) spike.getIntensity());
                 
                 Mat evenOrs = gaborFilter(raw, 0, index);
-                Mat oddOrs = gaborFilter(raw, 0.3, index);
+                Mat oddOrs = gaborFilter(raw, 1.1, index);
                 
                 matrix evenMatrix=Convertor.MatToMatrix(evenOrs);
                 matrix oddMatrix=Convertor.MatToMatrix(oddOrs);
+                
+                LongSpike sendEvenMatrix= new LongSpike(Modalities.VISUAL, new Location(index,2), evenMatrix, 0);
+                LongSpike sendOddMatrix= new LongSpike(Modalities.VISUAL, new Location(index,3), oddMatrix, 0);
+                
+                send(AreaNames.V1Visualizer, sendEvenMatrix.getByteArray());
+                send(AreaNames.V1Visualizer, sendOddMatrix.getByteArray());
                 
                 SimpleCellMatrix scMatrix=new SimpleCellMatrix(evenMatrix, oddMatrix);
                 

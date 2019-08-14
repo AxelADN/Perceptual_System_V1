@@ -6,8 +6,11 @@
 package gui;
 
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import utils.layoutManager;
 
 /**
@@ -15,13 +18,15 @@ import utils.layoutManager;
  * @author HumanoideFilms
  */
 public class Frame extends javax.swing.JFrame {
+
     int index;
     String title;
+
     /**
      * Creates new form Frame
      */
     public Frame(int index) {
-        this.index=index;
+        this.index = index;
         initComponents();
         this.setLocation(layoutManager.points.get(index));
 
@@ -31,7 +36,7 @@ public class Frame extends javax.swing.JFrame {
         setVisible(true);
         if (title != null) {
             this.setTitle(title);
-            this.title=title;
+            this.title = title;
         } else {
             this.setTitle("cuayoyotolt");
         }
@@ -59,6 +64,9 @@ public class Frame extends javax.swing.JFrame {
             }
         });
         addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 formMouseReleased(evt);
             }
@@ -87,19 +95,38 @@ public class Frame extends javax.swing.JFrame {
     boolean lock;
     private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
         // TODO add your handling code here:
-        if(!lock){
-            x=-evt.getX();
-            y=-evt.getY();
-            lock=true;
+        if (!lock) {
+            x = -evt.getX();
+            y = -evt.getY();
+            lock = true;
         }
-        this.setLocation(new Point(x+evt.getXOnScreen(),y+evt.getYOnScreen()));
+        this.setLocation(new Point(x + evt.getXOnScreen(), y + evt.getYOnScreen()));
         //System.out.println(x+" "+y);
     }//GEN-LAST:event_formMouseDragged
 
     private void formMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseReleased
         // TODO add your handling code here:
-        lock=false;
+        lock = false;
     }//GEN-LAST:event_formMouseReleased
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+        //JOptionPane.showMessageDialog(null, "diste click alv"+this.getTitle());
+        // Recoge el Clipboard del sistema.
+        Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+        // Recoge la imagen del JLabel.
+        ImageIcon image = (ImageIcon) jLabel1.getIcon();
+
+       // image.getIconHeight()
+                //JOptionPane.showMessageDialog(null, "diste click alv "+image.getIconHeight());
+        // Construye un Transferable con la imagen
+        ImageSelection dh = new ImageSelection(image.getImage());
+        
+
+        // Pone la imagen en el Clipboard
+        cb.setContents(dh, null);
+    }//GEN-LAST:event_formMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

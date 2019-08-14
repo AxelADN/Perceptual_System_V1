@@ -56,7 +56,7 @@ public class V1SimpleCells extends FrameActivity {
         DKL = new Mat[3];
         orsPar = new Mat[4];
         orsImpar = new Mat[4];
-        //initFrames(4, 8);
+        //initFrames(4, 16);
     }
 
     @Override
