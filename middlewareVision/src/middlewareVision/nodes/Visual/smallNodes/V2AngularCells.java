@@ -17,6 +17,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_32F;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import static org.opencv.imgproc.Imgproc.getGaborKernel;
@@ -142,10 +143,11 @@ public class V2AngularCells extends FrameActivity {
      */
     public void generateKernels() {
         kernels = new Mat[Config.gaborOrientations * 2];
-        int kernelSize = 13;
+        int kernelSize = 20;
         float angle = 0;
         for (int i = 0; i < Config.gaborOrientations; i++, angle += inc) {
-            kernels[i] = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, 5f, 0.5f, 0.8, CvType.CV_32F);
+            //sigma, theta, lambda, gamma, psi
+            kernels[i] = getGaborKernel(new Size(kernelSize, kernelSize),0.8, angle, 10, 0.2, 0, CvType.CV_32F);
         }
         cut0matrix(kernels[0], kernelSize);
         cut1matrix(kernels[1], kernelSize);
@@ -173,7 +175,7 @@ public class V2AngularCells extends FrameActivity {
     /**
      * valor que sirve para ajustar los filtros para cucharear
      */
-    double value = -0.10;
+    double value = -0.1;
 
     /**
      * cut the filter in half
@@ -265,7 +267,7 @@ public class V2AngularCells extends FrameActivity {
         }
         System.out.println(c);
     }
-
+    double l3=0.01; 
     /**
      * multiply the matrixes for generating the activation map
      */
@@ -275,7 +277,23 @@ public class V2AngularCells extends FrameActivity {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4 * 2; j++) {
                 v2map[i][j] = new Mat();
-                Core.multiply(filtered[j], filtered[(i + j + 1) % 8], v2map[i][j]);
+                Mat vlvr=new Mat();
+                Mat vlpvr=new Mat();
+                Mat num=new Mat();
+                Mat den=new Mat();
+                Mat h=new Mat();
+                Scalar dl3=new Scalar((double)1/l3);
+                Scalar d2l3=new Scalar((double)2/l3);
+                Scalar dl3_2=new Scalar((double)1/(l3*l3));
+                Core.multiply(filtered[j], filtered[(i + j + 1) % 8], vlvr);
+                Core.add(filtered[j], filtered[(i + j + 1) % 8], vlpvr);
+                Core.add(vlpvr, d2l3, num);
+                Core.multiply(vlpvr, dl3, den);
+                Core.add(den, vlpvr, den);
+                Core.add(den, dl3_2, den);
+                Core.divide(num, den, h);
+                Core.multiply(vlvr, h, v2map[i][j]);
+                //Core.multiply(filtered[j], filtered[(i + j + 1) % 8], v2map[i][j]);
                 Imgproc.threshold(v2map[i][j], v2map[i][j], 0, 1, Imgproc.THRESH_TOZERO);
             }
             c = c + "\n";
