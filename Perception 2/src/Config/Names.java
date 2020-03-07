@@ -12,6 +12,10 @@ import cFramework.util.IDHelper;
  * @author AxelADN
  */
 public class Names {
+    
+    public static long ObserverNode                            =   IDHelper.generateID("ObserverNode");
+    public static long StartingNode                            =   IDHelper.generateID("ObserverNode","StartingNode");
+    
     public static long V1_V2                            =   IDHelper.generateID("V1_V2");
     public static long V1_V2_BasicFeatureExtraction     =   IDHelper.generateID("V1_V2","V1_V2_BasicFeatureExtraction");
     
@@ -25,7 +29,7 @@ public class Names {
     public static long pITC_GeneralFeatureIdentification=   IDHelper.generateID("pITC","pITC_GeneralFeatureIdentification");
     
     public static long aITC                             =   IDHelper.generateID("aITC");
-    public static long aITC_LocalFeatureCompositon      =   IDHelper.generateID("aITC","aITC_LocalFeatureCompositon");
+    public static long aITC_LocalFeatureComposition      =   IDHelper.generateID("aITC","aITC_LocalFeatureCompositon");
     public static long aITC_FeatureComparison           =   IDHelper.generateID("aITC","aITC_FeatureComparison");
     public static long aITC_LocalFeatureIdentification  =   IDHelper.generateID("aITC","aITC_LocalFeatureIdentification");
     public static long aITC_ObjectClassIdentification   =   IDHelper.generateID("aITC","aITC_ObjectClassIdentification");

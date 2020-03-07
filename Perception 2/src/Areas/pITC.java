@@ -6,12 +6,21 @@
 package Areas;
 
 import Config.AreaTemplate;
+import Config.Names;
+import Processes.pITC.*;
 
 /**
  *
  * @author AxelADN
  */
 public class pITC extends AreaTemplate{
+    
+    public pITC () {
+        this.ID =   Names.pITC;
+        addProcess(pITC_GeneralFeatureComposition.class);
+        addProcess(pITC_FeatureComparison.class);
+        addProcess(pITC_GeneralFeatureIdentification.class);
+    }
 
     @Override
     public void receive(long l, byte[] bytes) {

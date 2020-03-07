@@ -6,12 +6,22 @@
 package Areas;
 
 import Config.AreaTemplate;
+import Config.Names;
+import Processes.aITC.*;
 
 /**
  *
  * @author AxelADN
  */
 public class aITC extends AreaTemplate{
+    
+    public aITC () {
+        this.ID =   Names.aITC;
+        addProcess(aITC_LocalFeatureComposition.class);
+        addProcess(aITC_FeatureComparison.class);
+        addProcess(aITC_LocalFeatureIdentification.class);
+        addProcess(aITC_ObjectClassIdentification.class);
+    }
 
     @Override
     public void receive(long l, byte[] bytes) {

@@ -5,47 +5,38 @@
  */
 package perception.pkg2;
 
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import Config.ObserverNode;
+import Areas.*;
+import cFramework.nodes.service.Igniter;
+import org.opencv.core.Core;
 
 /**
  *
  * @author AxelADN
  */
-public class Perception2 extends Application {
+public class Perception2 extends Igniter {
     
-    @Override
-    public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
+    public Perception2 () {
+        addArea(ObserverNode.class.getName());
+        addArea(V1_V2.class.getName());
+        addArea(V4.class.getName());
+        addArea(pITC.class.getName());
+        addArea(aITC.class.getName());
         
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        configuration.setLocal(true);
+        configuration.setDebug(Boolean.FALSE);
+        configuration.setUDP();
         
-        Scene scene = new Scene(root, 300, 250);
-        
-        primaryStage.setTitle("Hello World!");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        run();
     }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        
+        new Perception2();
     }
     
 }

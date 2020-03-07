@@ -6,12 +6,19 @@
 package Areas;
 
 import Config.AreaTemplate;
+import Config.Names;
+import Processes.V1.*;
 
 /**
  *
  * @author AxelADN
  */
 public class V1_V2 extends AreaTemplate{
+    
+    public V1_V2 (){
+        this.ID =   Names.V1_V2;
+        addProcess(V1_V2_BasicFeatureExtraction.class);
+    }
 
     @Override
     public void receive(long l, byte[] bytes) {
