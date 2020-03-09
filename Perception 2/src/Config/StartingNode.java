@@ -8,7 +8,6 @@ package Config;
 import java.util.ArrayList;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-import utils.Conversion;
 import utils.DataStructure;
 
 /**
@@ -19,7 +18,6 @@ public class StartingNode extends ProcessTemplate{
     
     private int time;
     private GUI gui;
-    private Imgcodecs imgcodecs;
     private Mat img;
     private byte[] imgBytes;
     
@@ -29,6 +27,8 @@ public class StartingNode extends ProcessTemplate{
         defaultModality = DataStructure.Modalities.VISUAL_LOW;
         time = 0;
         gui = new GUI(this);
+        
+        
     }
     
     public void triggerSend()
@@ -42,18 +42,14 @@ public class StartingNode extends ProcessTemplate{
     
     @Override
     public void init() {
-        imgcodecs = new Imgcodecs();
         
-        String file = "C:/Users/AxelADN/Documents/NetBeans/PROJECTS/Perception/src/resources/Test05/All/obj20__0.png";
-        img = imgcodecs.imread(file,Imgcodecs.IMREAD_GRAYSCALE);
+        img = Imgcodecs.imread(SystemConfig.file,Imgcodecs.IMREAD_GRAYSCALE);
         //imgBytes = Conversion.MatToByte(img);
         //showImg(imgBytes,img.cols(),img.rows());
         showImg(img);
         
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                gui.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            gui.setVisible(true);
         });
     }
 

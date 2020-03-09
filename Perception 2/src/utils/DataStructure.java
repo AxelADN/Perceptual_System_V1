@@ -5,13 +5,16 @@
  */
 package utils;
 
+import Config.SystemConfig;
 import cFramework.communications.spikes.LongSpike;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
 
 /**
  *
@@ -26,9 +29,7 @@ public class DataStructure {
     public static final int VISUAL_MED=2;
     public static final int VISUAL_HIGH=3;
     public static final int MEMORY_DECLARATIVE=4;
-    public static final int MEMORY_WORKING=5;
-    
-    
+    public static final int MEMORY_WORKING=5;   
 }
     
     public static enum CHUNK_TYPE {
@@ -37,15 +38,81 @@ public class DataStructure {
         ROWS,
     };
     
+    public static class FeatureComparator implements Comparator<FeatureEntity>{
+
+        @Override
+        public int compare(FeatureEntity o1, FeatureEntity o2) {
+            if(o1.getPriority() < o2.getPriority())
+                return 1;
+            else if(o1.getPriority() > o2.getPriority())
+                return -1;
+            else return 0;
+        }
+        
+    }
+            
+    public static class FeatureEntity{
+        
+        private Mat feature;
+        private double priority;
+        private long ID;
+        
+        private static double currentPriority = 0;
+        private static long currentID = 0;
+        
+        public FeatureEntity(Mat newFeature){
+            this.feature = newFeature;
+            this.priority = currentPriority;
+            currentPriority += SystemConfig.STANDAR_PRIORITY_INCREMENT;
+            ID = currentID;
+            currentID ++;
+        }
+        
+        public void increasePriority(){
+            this.priority += SystemConfig.STANDAR_PRIORITY_INCREMENT;
+            currentPriority = this.priority;
+        }
+        
+        public double getPriority(){
+            return this.priority;
+        }
+        
+        public Mat getMat(){
+            return this.feature;
+        }
+        
+        public long getID(){
+            return this.ID;
+        }
+    }
+    
     public static byte[] wrapData(ArrayList<Mat> imgs, int modality, int time){
         ArrayList<byte[]> bytesArray = new ArrayList<>();
         int cols = imgs.get(0).cols();
         int rows = imgs.get(0).rows();
         bytesArray.add(Conversion.IntToByte(cols));
         bytesArray.add(Conversion.IntToByte(rows));
-        for(Mat img: imgs){
+        imgs.forEach((img) -> {
             bytesArray.add(Conversion.MatToByte(img));
+        });
+        try {
+            LongSpike spike = new LongSpike(modality,0,bytesArray,time);
+            return spike.getByteArray();
+        } catch (IOException ex) {
+            Logger.getLogger(DataStructure.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return new byte[]{0};
+    }
+    
+    public static byte[] wrapDataKP(ArrayList<MatOfKeyPoint> imgs, int modality, int time){
+        ArrayList<byte[]> bytesArray = new ArrayList<>();
+        int cols = imgs.get(0).cols();
+        int rows = imgs.get(0).rows();
+        bytesArray.add(Conversion.IntToByte(cols));
+        bytesArray.add(Conversion.IntToByte(rows));
+        imgs.forEach((img) -> {
+            bytesArray.add(Conversion.MatKPToByte(img));
+        });
         try {
             LongSpike spike = new LongSpike(modality,0,bytesArray,time);
             return spike.getByteArray();

@@ -10,12 +10,13 @@ import Config.ProcessTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import org.opencv.core.CvType;
+import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.features2d.*;
 import org.opencv.imgproc.Imgproc;
-import utils.Conversion;
 import utils.DataStructure;
 
 /**
@@ -42,19 +43,25 @@ public class pITC_GeneralFeatureComposition extends ProcessTemplate{
     }
     
     private ArrayList<Mat> generalFeaturesComposition(ArrayList<Mat> imgs){
-        ArrayList<Mat> outputImgs = new ArrayList<>();
-        Mat hierarchy = new Mat();
-        int i=0;
-        for(Mat img: imgs){
-            List<MatOfPoint> contours = new ArrayList<>();
-            Mat aux = Mat.zeros(img.size(),CvType.CV_8UC1);
-            Rect rect = Imgproc.boundingRect(img);
-            Mat crop = new Mat(img,rect);
-            Imgproc.resize(crop, aux, img.size());
-            //Imgproc.rectangle(img, rect, new Scalar(255,255,255));
-            showImg(aux);
-            i++;
-        }
+//        ArrayList<Mat> outputImgs = new ArrayList<>();
+//        Feature2D detector = ORB.create();
+//        MatOfKeyPoint featureKeypoints = new MatOfKeyPoint();
+//        MatOfKeyPoint imgKeypoints = new MatOfKeyPoint();
+//        imgs.forEach((img) -> {
+//            Mat aux = new Mat();
+//            Rect rect = Imgproc.boundingRect(img);
+//            Mat crop = new Mat(img,rect);
+//            Mat imgDescriptor = new Mat();
+//            Mat featureDescriptor = new Mat();
+//            Imgproc.resize(crop, aux, img.size());
+//            detector.detectAndCompute(img, new Mat(), imgKeypoints, imgDescriptor);
+//            detector.detectAndCompute(aux,new Mat(),featureKeypoints,featureDescriptor);
+//            System.out.println(imgDescriptor.size());
+//            //showImg(imgDescriptor);
+//            outputImgs.add(imgDescriptor);
+//            outputImgs.add(featureDescriptor);
+//        });
+        
         return imgs;
     }
     

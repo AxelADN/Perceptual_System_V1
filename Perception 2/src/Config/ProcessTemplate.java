@@ -18,10 +18,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import utils.Conversion;
 import utils.DataStructure;
@@ -67,7 +65,7 @@ public abstract class ProcessTemplate extends Process{
             frame.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
             frame.pack();
             frame.setSize(cols*3, rows);
-            frame.setLocation(rand.nextInt(1000),rand.nextInt(1000));
+            frame.setLocation(rand.nextInt(100),rand.nextInt(100));
             frame.setVisible(true);
             frame.setTitle(IDHelper.getNameAsString(Names.class, this.ID));
         } catch (IOException ex) {

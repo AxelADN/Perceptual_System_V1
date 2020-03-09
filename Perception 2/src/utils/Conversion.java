@@ -8,6 +8,8 @@ package utils;
 import java.nio.ByteBuffer;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 
 /**
@@ -36,6 +38,22 @@ public class Conversion {
         byte[] imgBytes = new byte[(int)(img.total()*img.channels())];
         img.get(0,0, imgBytes);
         return imgBytes;
+    }
+    
+    public static Mat LongToMat(long val,int cols, int rows){
+        Mat outputMat = new Mat(cols,rows,CvType.CV_8UC1);
+        outputMat.setTo(new Scalar(val));
+        return outputMat;
+    }
+    
+    public static byte[] MatKPToByte(MatOfKeyPoint img){
+        float[] imgFloats = new float[(int)(img.total()*img.channels())];
+        img.get(0,0, imgFloats);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(imgFloats.length*4);
+        for(float x: imgFloats){
+            byteBuffer.putFloat(x);
+        }
+        return byteBuffer.array();
     }
     
 }

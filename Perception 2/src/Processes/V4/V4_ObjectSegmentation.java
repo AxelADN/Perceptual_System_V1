@@ -8,14 +8,9 @@ package Processes.V4;
 import Config.Names;
 import Config.ProcessTemplate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import utils.Conversion;
 import utils.DataStructure;
 
 /**
