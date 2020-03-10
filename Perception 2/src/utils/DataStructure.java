@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template FILE, choose Tools | Templates
  * and open the template in the editor.
  */
 package utils;
@@ -56,6 +56,7 @@ public class DataStructure {
         private Mat feature;
         private double priority;
         private long ID;
+        private boolean isLocal = false;
         
         private static double currentPriority = 0;
         private static long currentID = 0;
@@ -66,6 +67,11 @@ public class DataStructure {
             currentPriority += SystemConfig.STANDAR_PRIORITY_INCREMENT;
             ID = currentID;
             currentID ++;
+        }
+        
+        public void isLocal(){
+            this.isLocal = true;
+            ID += 10000;
         }
         
         public void increasePriority(){
@@ -104,14 +110,14 @@ public class DataStructure {
         return new byte[]{0};
     }
     
-    public static byte[] wrapDataKP(ArrayList<MatOfKeyPoint> imgs, int modality, int time){
+    public static byte[] wrapDataD(ArrayList<Mat> imgs, int modality, int time){
         ArrayList<byte[]> bytesArray = new ArrayList<>();
         int cols = imgs.get(0).cols();
         int rows = imgs.get(0).rows();
         bytesArray.add(Conversion.IntToByte(cols));
         bytesArray.add(Conversion.IntToByte(rows));
         imgs.forEach((img) -> {
-            bytesArray.add(Conversion.MatKPToByte(img));
+            bytesArray.add(Conversion.MatToByteD(img));
         });
         try {
             LongSpike spike = new LongSpike(modality,0,bytesArray,time);
@@ -132,6 +138,23 @@ public class DataStructure {
             int rows = Conversion.ByteToInt(bytesArray.get(1));
             for(int i=2; i<bytesArray.size();i++){
                 imgs.add(Conversion.ByteToMat(bytesArray.get(i), cols, rows));
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DataStructure.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return imgs;
+    }
+    
+    public static ArrayList<Mat> getMatsD(byte[] bytes){
+        ArrayList<Mat> imgs = new ArrayList<>();
+        ArrayList<byte[]> bytesArray = new ArrayList<>();
+        try {
+            LongSpike spike = new LongSpike(bytes);
+            bytesArray = (ArrayList<byte[]>)spike.getIntensity();
+            int cols = Conversion.ByteToInt(bytesArray.get(0));
+            int rows = Conversion.ByteToInt(bytesArray.get(1));
+            for(int i=2; i<bytesArray.size();i++){
+                imgs.add(Conversion.ByteToMatD(bytesArray.get(i), cols, rows));
             }
         } catch (Exception ex) {
             Logger.getLogger(DataStructure.class.getName()).log(Level.SEVERE, null, ex);
@@ -167,6 +190,18 @@ public class DataStructure {
         try {
             for(byte[] img: bytes){
                 outputStream.write(img);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(DataStructure.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return outputStream.toByteArray();
+    }
+    
+    public static byte[] mergeBytesFromArray(ArrayList<byte[]> bytes){
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try {
+            for(byte[] data: bytes){
+                outputStream.write(data);
             }
         } catch (IOException ex) {
             Logger.getLogger(DataStructure.class.getName()).log(Level.SEVERE, null, ex);

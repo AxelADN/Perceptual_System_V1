@@ -87,7 +87,7 @@ public abstract class ProcessTemplate extends Process{
             frame.getContentPane().add(new JLabel(new ImageIcon(bufImage)));
             frame.pack();
             frame.setSize(img.cols()*3, img.rows()*2);
-            frame.setLocation(rand.nextInt(1000),rand.nextInt(1000));
+            frame.setLocation(rand.nextInt(100),rand.nextInt(100));
             frame.setVisible(true);
             frame.setTitle(IDHelper.getNameAsString(Names.class, this.ID));
         } catch (IOException ex) {

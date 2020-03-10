@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template FILE, choose Tools | Templates
  * and open the template in the editor.
  */
 package Config;
@@ -33,6 +33,12 @@ public class StartingNode extends ProcessTemplate{
     
     public void triggerSend()
     {
+        int imgIndex = (time%216)+5911;
+        img = Imgcodecs.imread(
+                SystemConfig.FILE+imgIndex+SystemConfig.EXTENSION,
+                Imgcodecs.IMREAD_GRAYSCALE
+        );
+        //showImg(img);
         time++;
         ArrayList<Mat> imgs = new ArrayList<>();
         imgs.add(img);
@@ -42,12 +48,6 @@ public class StartingNode extends ProcessTemplate{
     
     @Override
     public void init() {
-        
-        img = Imgcodecs.imread(SystemConfig.file,Imgcodecs.IMREAD_GRAYSCALE);
-        //imgBytes = Conversion.MatToByte(img);
-        //showImg(imgBytes,img.cols(),img.rows());
-        showImg(img);
-        
         java.awt.EventQueue.invokeLater(() -> {
             gui.setVisible(true);
         });

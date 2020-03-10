@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template FILE, choose Tools | Templates
  * and open the template in the editor.
  */
 package Config;
@@ -21,10 +21,11 @@ public class SystemConfig{
     public static final double STANDAR_PRIORITY_INCREMENT = 0.0001;
     public static final double TEMPLATE_MATCHING_TOLERANCE = 0.8;
     
-    public static final String file = 
+    public static final String FILE = 
             "C:/Users/AxelADN/Google Drive/Posgrado/Tesis_Doctorado/Paper Drafts/"
             + "An_expanded_model_for_perceptual_visual_single_object_recognition/"
-            + "Assets/TestSet/sample_6113.png";
+            + "Assets/TestSet/sample_";
+    public static final String EXTENSION = ".png";
     
     public static Size featureSize(){
         return new Size(FEATURE_WIDTH,FEATURE_HEIGHT);

@@ -29,8 +29,14 @@ public class Names {
     public static long pITC_GeneralFeatureIdentification=   IDHelper.generateID("pITC","pITC_GeneralFeatureIdentification");
     
     public static long aITC                             =   IDHelper.generateID("aITC");
-    public static long aITC_LocalFeatureComposition      =   IDHelper.generateID("aITC","aITC_LocalFeatureCompositon");
+    public static long aITC_LocalFeatureComposition     =   IDHelper.generateID("aITC","aITC_LocalFeatureCompositon");
     public static long aITC_FeatureComparison           =   IDHelper.generateID("aITC","aITC_FeatureComparison");
     public static long aITC_LocalFeatureIdentification  =   IDHelper.generateID("aITC","aITC_LocalFeatureIdentification");
     public static long aITC_ObjectClassIdentification   =   IDHelper.generateID("aITC","aITC_ObjectClassIdentification");
+    
+    public static long MTL                              =   IDHelper.generateID("MTL");
+    public static long MTL_DataStorage                  =   IDHelper.generateID("MTL","MTL_DataStorage");
+    
+    public static long PFC                              =   IDHelper.generateID("PFC");
+    public static long PFC_DataStorage                  =   IDHelper.generateID("PFC","PFC_DataStorage");
 }

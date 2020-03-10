@@ -7,6 +7,10 @@ package Processes.aITC;
 
 import Config.Names;
 import Config.ProcessTemplate;
+import java.util.ArrayList;
+import org.opencv.core.Mat;
+import utils.Conversion;
+import utils.DataStructure;
 
 /**
  *
@@ -14,27 +18,55 @@ import Config.ProcessTemplate;
  */
 public class aITC_ObjectClassIdentification extends ProcessTemplate{
     
-    String lastBytes;
+    byte[] lastBytes;
     
     public aITC_ObjectClassIdentification () {
         this.ID =   Names.aITC_ObjectClassIdentification;
         
-        
+        lastBytes = new byte[1];
     }
     
     @Override
     public void init() {
-        lastBytes = new String();
         
     }
 
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        if(new String(bytes).equals(lastBytes)){
-            System.out.println("..............................................");
-            lastBytes = new String();
-        }else lastBytes = new String(bytes);
+        if(lastBytes.length > 1){
+            if(DataStructure.getTime(bytes) == DataStructure.getTime(lastBytes)){
+                byte[] bytesToSend = objectClassIdentification(
+                        DataStructure.getMatsD(lastBytes),
+                        DataStructure.getMatsD(bytes)
+                );
+                send(
+                        Names.MTL_DataStorage,
+                        bytesToSend
+                );
+                send(
+                        Names.PFC_DataStorage,
+                        bytesToSend
+                );
+                lastBytes = new byte[1];
+            } else lastBytes = new byte[1];
+        } else lastBytes = bytes;
+    }
+
+    private byte[] objectClassIdentification(ArrayList<Mat> mats1, ArrayList<Mat> mats2) {
+        ArrayList<byte[]> totalBytes = new ArrayList<>();
+        ArrayList<byte[]> mats1Bytes = new ArrayList<>();
+        ArrayList<byte[]> mats2Bytes = new ArrayList<>();
+        for(int i=0; i<mats1.size(); i++){
+            mats1Bytes.add(Conversion.DoubleToByte(mats1.get(i).get(0,0)[0]));
+        }
+        for(int i=0; i<mats2.size(); i++){
+            mats2Bytes.add(Conversion.DoubleToByte(mats2.get(i).get(0,0)[0]));
+        }
+        totalBytes.addAll(mats1Bytes);
+        totalBytes.addAll(mats2Bytes);
+        
+        return DataStructure.mergeBytesFromArray(totalBytes);
     }
     
 }

@@ -7,6 +7,9 @@ package Processes.aITC;
 
 import Config.Names;
 import Config.ProcessTemplate;
+import java.util.ArrayList;
+import org.opencv.core.Mat;
+import utils.DataStructure;
 
 /**
  *
@@ -21,7 +24,18 @@ public class aITC_LocalFeatureIdentification extends ProcessTemplate{
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        send(Names.aITC_ObjectClassIdentification,bytes);
+        send(
+                Names.aITC_ObjectClassIdentification,
+                DataStructure.wrapDataD(
+                        localFeaturesIdentification(DataStructure.getMatsD(bytes)), 
+                        defaultModality, 
+                        DataStructure.getTime(bytes)
+                )
+        );
+    }
+    
+    private ArrayList<Mat> localFeaturesIdentification(ArrayList<Mat> imgs){
+        return imgs;
     }
     
 }

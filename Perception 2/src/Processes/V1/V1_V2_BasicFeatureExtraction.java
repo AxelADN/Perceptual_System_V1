@@ -12,10 +12,8 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import utils.Conversion;
 import utils.DataStructure;
 
 /**
@@ -65,8 +63,8 @@ public class V1_V2_BasicFeatureExtraction extends ProcessTemplate{
         Imgproc.threshold(img, HSF, 150, 255, Imgproc.THRESH_TOZERO);
         HSF.convertTo(HSF, CvType.CV_8UC1);
         
-        showImg(LSF);
-        showImg(HSF);
+        //showImg(LSF);
+        //showImg(HSF);
         
         outputImgs.add(LSF);
         outputImgs.add(HSF);

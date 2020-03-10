@@ -1,6 +1,6 @@
 /*
  * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template FILE, choose Tools | Templates
  * and open the template in the editor.
  */
 package Processes.pITC;
@@ -35,14 +35,16 @@ public class pITC_FeatureComparison extends ProcessTemplate{
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        send(
-                Names.pITC_GeneralFeatureIdentification,
-                DataStructure.wrapData(featureComparison(
-                        DataStructure.getMats(bytes)), 
-                        defaultModality, 
-                        DataStructure.getTime(bytes)
-                )
-        );
+        if(l == Names.pITC_GeneralFeatureComposition)
+            send(
+                    Names.pITC_GeneralFeatureIdentification,
+                    DataStructure.wrapDataD(featureComparison(
+                            DataStructure.getMats(bytes)), 
+                            defaultModality, 
+                            DataStructure.getTime(bytes)
+                    )
+            );
+        else if(l == Names.MTL_DataStorage){}
     }
     
     private ArrayList<Mat> featureComparison(ArrayList<Mat> imgs){
@@ -51,6 +53,7 @@ public class pITC_FeatureComparison extends ProcessTemplate{
         FeatureEntity currentFeature;
         boolean matched = false;
         for(Mat img: imgs){
+            unmatchedData.clear();
             matched = false;
             for(int i=0; i<featureData.size();i++){
                 currentFeature = featureData.poll();
@@ -99,7 +102,7 @@ public class pITC_FeatureComparison extends ProcessTemplate{
         Core.subtract(im_float_2,im2_Mean,im_float_2);
         double covar = im_float_1.dot(im_float_2) / n_pixels;
         double correl = covar / (im1_Std.toArray()[0] * im2_Std.toArray()[0]);
-        System.out.println("CORREL: "+correl);
+        //System.out.println("CORREL: "+correl);
 
         return correl > SystemConfig.TEMPLATE_MATCHING_TOLERANCE;
     }
