@@ -34,8 +34,8 @@ public class Names {
     public static long aITC_LocalFeatureIdentification  =   IDHelper.generateID("aITC","aITC_LocalFeatureIdentification");
     public static long aITC_ObjectClassIdentification   =   IDHelper.generateID("aITC","aITC_ObjectClassIdentification");
     
-    public static long MTL                              =   IDHelper.generateID("MTL");
-    public static long MTL_DataStorage                  =   IDHelper.generateID("MTL","MTL_DataStorage");
+    public static long ITC                              =   IDHelper.generateID("MTL");
+    public static long ITC_Interface                  =   IDHelper.generateID("MTL","MTL_DataStorage");
     
     public static long PFC                              =   IDHelper.generateID("PFC");
     public static long PFC_DataStorage                  =   IDHelper.generateID("PFC","PFC_DataStorage");

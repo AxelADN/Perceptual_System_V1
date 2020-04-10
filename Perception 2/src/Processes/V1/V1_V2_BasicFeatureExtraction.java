@@ -7,6 +7,7 @@ package Processes.V1;
 
 import Config.Names;
 import Config.ProcessTemplate;
+import Config.SystemConfig;
 import java.util.ArrayList;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -29,6 +30,11 @@ public class V1_V2_BasicFeatureExtraction extends ProcessTemplate{
         this.ID =   Names.V1_V2_BasicFeatureExtraction;
         
         defaultModality = DataStructure.Modalities.VISUAL_MED;
+    }
+    
+    @Override
+    public void init(){
+        
     }
 
     
@@ -55,12 +61,20 @@ public class V1_V2_BasicFeatureExtraction extends ProcessTemplate{
         Mat HSF = Mat.zeros(img.size(), CvType.CV_8UC1);
         Mat thresh = Mat.zeros(img.size(), CvType.CV_8UC1);
         
-        Imgproc.threshold(img, thresh, 175, 255, Imgproc.THRESH_TOZERO);
-        Imgproc.blur(thresh, LSF, new Size(20,20), new Point(10,10), Core.BORDER_DEFAULT);
+        int holder = 0;
+        while(isFullZero(LSF)){
+            Imgproc.threshold(img, thresh, (175-holder<0?0:175-holder), 255, Imgproc.THRESH_TOZERO);
+            Imgproc.blur(thresh, LSF, new Size(20,20), new Point(10,10), Core.BORDER_DEFAULT);
+            holder+=20;
+        }
         LSF.convertTo(LSF, CvType.CV_8UC1);
         //Imgproc.threshold(LSF, LSF, 40, 255, Imgproc.THRESH_BINARY);
         //Imgproc.medianBlur(threshImg, HSF, 5);
-        Imgproc.threshold(img, HSF, 150, 255, Imgproc.THRESH_TOZERO);
+        holder = 0;
+        while(isFullZero(HSF)){
+            Imgproc.threshold(img, HSF, (200-holder<0?0:150-holder), 255, Imgproc.THRESH_TOZERO);
+            holder+=20;
+        }
         HSF.convertTo(HSF, CvType.CV_8UC1);
         
         //showImg(LSF);
@@ -70,6 +84,25 @@ public class V1_V2_BasicFeatureExtraction extends ProcessTemplate{
         outputImgs.add(HSF);
         
         return outputImgs;
+    }
+    
+    private boolean isFullZero(Mat mat){
+        int total = (int)((mat.cols()*mat.rows())*SystemConfig.ZERO_PIXELS_TOLERANCE);
+        int currentPixels = 0;
+        for(int i=0; i<mat.cols(); i++)
+        {
+            for(int j=0; j<mat.rows(); j++){
+                if(mat.get(j,i)[0]>0){
+                    currentPixels++;
+                }
+                if(currentPixels >= total){
+                    //System.out.println("PIXELS... "+currentPixels);
+                    return false;
+                }
+            }
+        }
+        return true;
+        
     }
     
 }

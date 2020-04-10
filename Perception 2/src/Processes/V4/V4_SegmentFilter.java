@@ -9,11 +9,14 @@ import Config.Names;
 import Config.ProcessTemplate;
 import java.util.ArrayList;
 import java.util.List;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import utils.DataStructure;
 
@@ -54,8 +57,9 @@ public class V4_SegmentFilter extends ProcessTemplate{
         Mat hierarchy = new Mat();
         Mat LSF = imgs.get(0);
         Mat originLSF = imgs.get(2);
-        
+        //showImg(LSF);
         Imgproc.findContours(LSF, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        //System.out.println("contorn.........."+contours.size());
         for(int i=0; i<contours.size(); i++){
             Mat mask = Mat.zeros(LSF.size(), CvType.CV_8UC1);
             Mat auxContLSF = Mat.zeros(LSF.size(), CvType.CV_8UC1);
@@ -78,8 +82,12 @@ public class V4_SegmentFilter extends ProcessTemplate{
         Mat hierarchy = new Mat();
         Mat HSF = imgs.get(1);
         Mat originHSF = imgs.get(3);
+        Mat blurHSF = new Mat();
         
-        Imgproc.findContours(HSF, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        //Imgproc.blur(HSF, blurHSF, new Size(5,5), new Point(2,2), Core.BORDER_DEFAULT);
+        blurHSF = HSF;
+        //showImg(blurHSF);
+        Imgproc.findContours(blurHSF, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         for(int i=0; i<contours.size(); i++){
             MatOfInt hull = new MatOfInt();
             MatOfPoint mopHull = new MatOfPoint();
@@ -99,7 +107,7 @@ public class V4_SegmentFilter extends ProcessTemplate{
                 HSFs.add(auxContHSF);
             }
         }
-        
+        //System.out.println("HSFs...... "+HSFs.size());
         for(Mat img: HSFs){
             //showImg(img);
         }

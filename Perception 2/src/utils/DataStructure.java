@@ -90,6 +90,10 @@ public class DataStructure {
         public long getID(){
             return this.ID;
         }
+
+        public void setID(long ID) {
+            this.ID = ID;
+        }
     }
     
     public static byte[] wrapData(ArrayList<Mat> imgs, int modality, int time){
@@ -221,7 +225,7 @@ public class DataStructure {
             } break;
             case COLS:{
                 outputData = new byte[Integer.BYTES];
-                System.out.println(byteArraySize);
+                //System.out.println(byteArraySize);
                 for(int i=0; i<Integer.BYTES;i++){
                     outputData[i] = data[byteArraySize-(Integer.BYTES+Integer.BYTES)+i];
                 }

@@ -40,12 +40,7 @@ public class aITC_ObjectClassIdentification extends ProcessTemplate{
                         DataStructure.getMatsD(lastBytes),
                         DataStructure.getMatsD(bytes)
                 );
-                send(
-                        Names.MTL_DataStorage,
-                        bytesToSend
-                );
-                send(
-                        Names.PFC_DataStorage,
+                send(Names.ITC_Interface,
                         bytesToSend
                 );
                 lastBytes = new byte[1];

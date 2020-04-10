@@ -117,5 +117,13 @@ public class Conversion {
         }
         return byteBuffer.array();
     }
+
+    public static String DoubleArrayToString(ArrayList<Double> objectData) {
+        StringBuilder str = new StringBuilder();
+        objectData.forEach((obj) -> {
+            str.append(obj.toString());
+        });
+        return str.toString();
+    }
     
 }

@@ -37,7 +37,7 @@ public class PFC_DataStorage extends ProcessTemplate{
 
     private void storeData(byte[] bytes) {
         objectData.addAll(Conversion.BytesToDoubleArray(bytes));
-        System.out.println(objectData.size());
+        //System.out.println(objectData.size());
     }
     
 }

@@ -8,12 +8,14 @@ package Processes.aITC;
 import Config.Names;
 import Config.ProcessTemplate;
 import Config.SystemConfig;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
+import org.opencv.imgcodecs.Imgcodecs;
 import utils.Conversion;
 import utils.DataStructure;
 
@@ -21,60 +23,84 @@ import utils.DataStructure;
  *
  * @author AxelADN
  */
-public class aITC_FeatureComparison extends ProcessTemplate{
-    
-    PriorityQueue<DataStructure.FeatureEntity> featureData;
-    
-    public aITC_FeatureComparison () {
-        this.ID =   Names.aITC_FeatureComparison;
-        
-        featureData = new PriorityQueue<>(new DataStructure.FeatureComparator());
+public class aITC_FeatureComparison extends ProcessTemplate {
+
+    static PriorityQueue<DataStructure.FeatureEntity> featureData;
+
+    public aITC_FeatureComparison() {
+        this.ID = Names.aITC_FeatureComparison;
+
+        if (featureData == null) {
+            featureData = new PriorityQueue<>(new DataStructure.FeatureComparator());
+        }
+
+    }
+
+    @Override
+    public void init() {
+        if (!SystemConfig.TRAINNING_MODE) {
+            File[] files = new File("results/classes_HSF/").listFiles();
+            for (File file : files) {
+                String name = file.getName();
+                Mat mat = Imgcodecs.imread(file.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
+                DataStructure.FeatureEntity entity = new DataStructure.FeatureEntity(mat);
+                entity.setID(Long.parseLong(name.substring(0, name.length() - 4)));
+                featureData.add(entity);
+            }
+        }
     }
 
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        if(l == Names.aITC_LocalFeatureComposition)
+        int thisTime = DataStructure.getTime(bytes);
+        if (l == Names.aITC_LocalFeatureComposition) {
             send(
                     Names.aITC_LocalFeatureIdentification,
                     DataStructure.wrapDataD(
-                            featureComparison(DataStructure.getMats(bytes)), 
-                            defaultModality, 
-                            DataStructure.getTime(bytes)
+                            featureComparison(DataStructure.getMats(bytes)),
+                            defaultModality,
+                            thisTime
                     )
             );
-        else if(l == Names.MTL_DataStorage){}
-            
+        }
+        if (SystemConfig.TRAINNING_MODE && thisTime >= 101) {
+            featureData.forEach((entity) -> {
+                Imgcodecs.imwrite("results/classes_HSF/" + entity.getID() + SystemConfig.EXTENSION, entity.getMat());
+            });
+        } else if (l == Names.ITC_Interface) {
+        }
+
     }
-    
-    private ArrayList<Mat> featureComparison(ArrayList<Mat> imgs){
+
+    private ArrayList<Mat> featureComparison(ArrayList<Mat> imgs) {
         ArrayList<Mat> outputImgs = new ArrayList<>();
         ArrayList<DataStructure.FeatureEntity> unmatchedData = new ArrayList<>();
         DataStructure.FeatureEntity currentFeature;
         boolean matched = false;
-        for(Mat img: imgs){
+        for (Mat img : imgs) {
             unmatchedData.clear();
             matched = false;
-            int i=0;
-            while(i<featureData.size() && !matched){
+            int i = 0;
+            while (i < featureData.size() && !matched) {
                 currentFeature = featureData.poll();
-                if(featuresMatched(currentFeature.getMat(),img)){
-                    outputImgs.add(Conversion.LongToMat(currentFeature.getID(),img.cols(),img.rows()));
+                if (featuresMatched(currentFeature.getMat(), img)) {
+                    outputImgs.add(Conversion.LongToMat(currentFeature.getID(), img.cols(), img.rows()));
                     Core.addWeighted(currentFeature.getMat(), 0.5, img, 0.5, 0.0, currentFeature.getMat());
                     //if(!featureData.contains(currentFeature))
-                        featureData.add(currentFeature);
+                    featureData.add(currentFeature);
                     matched = true;
                     //break;
-                }else{
+                } else {
                     unmatchedData.add(currentFeature);
                 }
                 i++;
             }
             unmatchedData.forEach((entity) -> {
                 //if(!featureData.contains(entity))
-                    featureData.add(entity);
+                featureData.add(entity);
             });
-            if(!matched){
+            if (!matched) {
                 DataStructure.FeatureEntity newEntity = new DataStructure.FeatureEntity(img);
                 newEntity.isLocal();
                 outputImgs.add(Conversion.LongToMat(newEntity.getID(), img.cols(), img.rows()));
@@ -82,9 +108,9 @@ public class aITC_FeatureComparison extends ProcessTemplate{
             }
         }
         featureData.forEach((entity) -> {
-            
+
         });
-        
+
         return outputImgs;
     }
 
@@ -100,19 +126,19 @@ public class aITC_FeatureComparison extends ProcessTemplate{
         // Compute mean and standard deviation of both images
         MatOfDouble im1_Mean = new MatOfDouble();
         MatOfDouble im1_Std = new MatOfDouble();
-        MatOfDouble im2_Mean = new MatOfDouble(); 
+        MatOfDouble im2_Mean = new MatOfDouble();
         MatOfDouble im2_Std = new MatOfDouble();
         Core.meanStdDev(im_float_1, im1_Mean, im1_Std);
         Core.meanStdDev(im_float_2, im2_Mean, im2_Std);
 
         // Compute covariance and correlation coefficient
-        Core.subtract(im_float_1,im1_Mean,im_float_1);
-        Core.subtract(im_float_2,im2_Mean,im_float_2);
+        Core.subtract(im_float_1, im1_Mean, im_float_1);
+        Core.subtract(im_float_2, im2_Mean, im_float_2);
         double covar = im_float_1.dot(im_float_2) / n_pixels;
         double correl = covar / (im1_Std.toArray()[0] * im2_Std.toArray()[0]);
-        System.out.println("CORREL: "+correl);
+        //System.out.println("CORREL: "+correl);
 
         return correl > SystemConfig.TEMPLATE_MATCHING_TOLERANCE;
     }
-    
+
 }

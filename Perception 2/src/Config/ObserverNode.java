@@ -15,6 +15,11 @@ public class ObserverNode extends AreaTemplate{
         this.ID =   Names.ObserverNode;
         addProcess(StartingNode.class);
     }
+    
+    @Override
+    public void init(){
+        //System.out.println("dfjkdfjkdfjkdfjkdfjkdfjkfdjkdfjkdfjkdfjkdf");
+    }
 
     @Override
     public void receive(long l, byte[] bytes) {
