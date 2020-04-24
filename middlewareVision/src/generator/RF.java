@@ -10,21 +10,31 @@ package generator;
  * @author HumanoideFilms
  */
 public class RF {
-    
+
     double rx;
     double ry;
     int px;
     int py;
     double intensity;
+    double angle;
     int combination;
 
-    public RF(double rx, double ry, int px, int py, double intensity, int combination) {
+    public RF(double rx, double ry, int px, int py, double intensity, double angle, int combination) {
         this.rx = rx;
         this.ry = ry;
         this.px = px;
         this.py = py;
         this.intensity = intensity;
+        this.angle = angle;
         this.combination = combination;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
     }
 
     public RF() {
@@ -77,8 +87,8 @@ public class RF {
     public void setCombination(int combination) {
         this.combination = combination;
     }
-    
-    public String getValues(){
-        return rx+" "+ry+" "+px+" "+py+" "+intensity+" "+combination;
+
+    public String getValues() {
+        return rx + " " + ry + " " + px + " " + py + " " + intensity + " " + angle+ " " + combination;
     }
 }

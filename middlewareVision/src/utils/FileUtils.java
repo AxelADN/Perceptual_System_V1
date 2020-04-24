@@ -48,6 +48,15 @@ public class FileUtils {
         }
         return content;
     }
+    
+    /**
+     * Delete a file
+     * @param path 
+     */
+    public static void deleteFile(String path){
+        File file=new File(path);
+        file.delete();
+    }
 
     /**
      * write a file

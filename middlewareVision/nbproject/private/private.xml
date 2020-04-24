@@ -5,9 +5,11 @@
         <group>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RF.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/FileUtils.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/gui/ClickFrame.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RFgenerator.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RFlist.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/GeneradorClases.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/gui/Frame.java</file>
         </group>
     </open-files>
 </project-private>
