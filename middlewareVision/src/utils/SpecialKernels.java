@@ -23,8 +23,8 @@ public class SpecialKernels {
     static float inc = (float) (Math.PI / 4);
     public static Mat diag45;
     public static Mat diag135;
-    static double valueMinus=-0.15;
-    static double valueMax=0.3;
+    static double valueMinus = -0.15;
+    static double valueMax = 0.3;
 
     public static Mat getdiag45() {
         diag45 = Mat.zeros(new Size(3, 3), CvType.CV_32FC1);
@@ -158,6 +158,49 @@ public class SpecialKernels {
         }
 
         m.put(0, 0, kernel);
+        return m;
+    }
+
+    /**
+     * elevates a number to the 2 pow
+     * @param n
+     * @return 
+     */
+    public static double to2(double n){
+        return Math.pow(n, 2);
+    }
+    
+    /**
+     * Get a 2D Gaussian with the complete parameters
+     * @param s size of the kernel
+     * @param A intensity or amplitude
+     * @param x0 center x
+     * @param y0 center y
+     * @param sigmax width x
+     * @param sigmay width y
+     * @param theta angle of rotation
+     * @return a new Gaussian kernel
+     */
+    public static Mat getAdvencedGauss(Size s, double A, double x0, double y0, double sigmax, double sigmay, double theta) {
+        Mat m = new Mat(s, CvType.CV_32FC1);
+        double[] kernel = new double[(int) (s.height * s.width)];
+        double a=to2(Math.cos(theta))/(2*to2(sigmax))+to2(Math.sin(theta))/(2*to2(sigmay));
+        double b=-Math.sin(2*theta)/(4*to2(sigmax))+Math.sin(2*theta)/(4*to2(sigmay));
+        double c=to2(Math.sin(theta))/(2*to2(sigmax))+to2(Math.cos(theta))/(2*to2(sigmay));
+        double s1=0;
+        double s2=0;
+        double cc=0;
+        int p=0;
+         for (int x = 0; x < s.height; x++) {
+            for (int y = 0; y < s.width; y++) {
+                s1=(x-x0);
+                s2=(y-y0);
+                cc=a*to2(s1)+2*b*s1*s2+c*to2(s2);
+                kernel[p]=A*Math.exp(-cc);
+                p++;
+            }
+        }
+        
         return m;
     }
 

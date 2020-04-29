@@ -18,8 +18,9 @@ public class RF {
     double intensity;
     double angle;
     int combination;
+    int size;
 
-    public RF(double rx, double ry, int px, int py, double intensity, double angle, int combination) {
+    public RF(double rx, double ry, int px, int py, double intensity, double angle, int combination, int size) {
         this.rx = rx;
         this.ry = ry;
         this.px = px;
@@ -27,6 +28,15 @@ public class RF {
         this.intensity = intensity;
         this.angle = angle;
         this.combination = combination;
+        this.size=size;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public double getAngle() {
@@ -89,6 +99,6 @@ public class RF {
     }
 
     public String getValues() {
-        return rx + " " + ry + " " + px + " " + py + " " + intensity + " " + angle+ " " + combination;
+        return rx + " " + ry + " " + px + " " + py + " " + intensity + " " + angle+ " " + combination+" "+size;
     }
 }

@@ -12,10 +12,8 @@ package generator;
 public class test {
     
     public static void main(String [] args){
-        System.out.println(label(0.1));
-        System.out.println(label(0.4));
-        System.out.println(label(0.9));
-        System.out.println(label(0.8));
+        double a=5.0/2;
+        System.out.println(a);
     }
     
     public static int label(double d){

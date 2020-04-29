@@ -23,8 +23,8 @@ public class RFlist {
         RFs=new ArrayList<RF>();
     }
     
-    static void addElement(double rx, double ry, int px, int py, double intensity, double angle, int combination){        
-        RF rf=new RF(rx, ry, px, py, intensity, angle, combination);
+    static void addElement(double rx, double ry, int px, int py, double intensity, double angle, int combination, int size){        
+        RF rf=new RF(rx, ry, px, py, intensity, angle, combination, size);
         RFs.add(rf);       
     }
     
@@ -52,7 +52,8 @@ public class RFlist {
             Integer.parseInt(values[3]),
             Double.parseDouble(values[4]),
             Double.parseDouble(values[5]),
-            Integer.parseInt(values[6]));
+            Integer.parseInt(values[6]),
+            Integer.parseInt(values[7]));
             RFs.add(rf);
         }
     }
