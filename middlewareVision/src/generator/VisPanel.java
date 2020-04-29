@@ -42,13 +42,13 @@ public class VisPanel extends javax.swing.JPanel {
     public void Oval(Graphics g, int x, int y, int w, int h, double angle) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
-        g2d.rotate(Math.toRadians(angle),tx(x, 0), ty(y, 0));
+        g2d.rotate(Math.toRadians(angle), tx(x, 0), ty(y, 0));
         g.drawOval(tx(x, 2 * w), ty(y, 2 * h), 2 * w, 2 * h);
-        g2d.rotate(Math.toRadians(-angle),tx(x, 0), ty(y, 0));
+        g2d.rotate(Math.toRadians(-angle), tx(x, 0), ty(y, 0));
     }
-    
+
     public void dString(Graphics g, String string, int x, int y) {
-        g.drawString(string, tx(x, 0), ty(y,0));
+        g.drawString(string, tx(x, 0), ty(y, 0));
     }
 
     public void paintComponent(Graphics g) {
@@ -61,10 +61,13 @@ public class VisPanel extends javax.swing.JPanel {
         g.drawLine(0, height / 2, width, height / 2);
         g.drawLine(width / 2, 0, width / 2, height);
         g.setColor(Color.cyan);
+
         if (RFlist.RFs.size() > 0) {
+            int sizeRect = RFlist.RFs.get(0).size;
+            g.drawRect(tx(0,sizeRect* RFlist.scale), ty(0,sizeRect* RFlist.scale), sizeRect* RFlist.scale, sizeRect* RFlist.scale);
             for (RF rf : RFlist.RFs) {
-                g.setColor(new Color(255-(31)*(rf.combination/10),(31)*(rf.combination/10),(31)*(rf.combination%10)));
-                dString(g, ""+rf.combination,rf.px * RFlist.scale, rf.py * RFlist.scale);
+                g.setColor(new Color(255 - (31) * (rf.combination / 10), (31) * (rf.combination / 10), (31) * (rf.combination % 10)));
+                dString(g, "" + rf.combination, rf.px * RFlist.scale, rf.py * RFlist.scale);
                 Oval(g, rf.px * RFlist.scale, rf.py * RFlist.scale, (int) rf.rx * RFlist.scale, (int) rf.ry * RFlist.scale, rf.angle);
             }
         }

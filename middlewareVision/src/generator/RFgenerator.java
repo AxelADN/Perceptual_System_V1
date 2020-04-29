@@ -14,14 +14,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import utils.Convertor;
 import utils.FileUtils;
+import utils.SpecialKernels;
 
 /**
  *
  * @author HumanoideFilms
  */
 public class RFgenerator extends javax.swing.JFrame {
-    
+
     private DefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
     VisPanel visPanel1;
@@ -31,9 +36,9 @@ public class RFgenerator extends javax.swing.JFrame {
      */
     public RFgenerator() {
         initComponents();
-        visPanel1=new VisPanel();
+        visPanel1 = new VisPanel();
         visPanel1.setVisible(true);
-        visPanel1.setSize(370 ,340);
+        visPanel1.setSize(370, 340);
         visPanel1.setLocation(720, 10);
         jPanel1.add(visPanel1);
         root = new DefaultMutableTreeNode("RFs", true);
@@ -46,7 +51,7 @@ public class RFgenerator extends javax.swing.JFrame {
         }
         RFlist.initList();
     }
-    
+
     public void updateTree() {
         root = new DefaultMutableTreeNode();
         getList(root, new File("RFV4/"));
@@ -283,7 +288,7 @@ public class RFgenerator extends javax.swing.JFrame {
             }
         }
     }
-    
+
     public void getList(DefaultMutableTreeNode node, File f) {
         File fList[] = f.listFiles();
         for (File fi : fList) {
@@ -322,7 +327,7 @@ public class RFgenerator extends javax.swing.JFrame {
         updateTree();
         visPanel1.repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
-    
+
     String filename;
 
     /**
@@ -345,23 +350,51 @@ public class RFgenerator extends javax.swing.JFrame {
             jTextField1.setText(name);
             RFlist.loadList(node);
             fillList();
+            visualizeGaussian();
             visPanel1.repaint();
         }
     }//GEN-LAST:event_jTree1MouseClicked
+    visualizerTest[] vis;
+
+    public void visualizeGaussian() {
+        int p = 0;
+
+        if (RFlist.RFs.size() > 0) {
+            if (vis!=null) {
+                for (visualizerTest vt : vis) {
+                    vt.dispose();
+                }
+            }
+            vis = new visualizerTest[RFlist.RFs.size()];
+            for (RF rf : RFlist.RFs) {
+                vis[p] = new visualizerTest();
+                vis[p].setLocation(p * rf.size, 0);
+                vis[p].setFrameSize(rf.size);
+                vis[p].setVisible(true);
+                vis[p].setDefaultCloseOperation(1);
+                Mat kernel = new Mat();
+                kernel = SpecialKernels.getAdvencedGauss(new Size(rf.size, rf.size), rf.intensity, -rf.py + rf.size / 2, rf.px + rf.size / 2, rf.rx, rf.ry, Math.toRadians(rf.angle + 90));
+                BufferedImage img = Convertor.ConvertMat2Image(kernel);
+                vis[p].setImage(img, "kernel");
+                p++;
+            }
+        }
+    }
+
 
     private void jSlider1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider1MouseDragged
         // TODO add your handling code here:
-        RFlist.scale=jSlider1.getValue();
+        RFlist.scale = jSlider1.getValue();
         visPanel1.repaint();
     }//GEN-LAST:event_jSlider1MouseDragged
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        String name=jTree1.getSelectionPath().getLastPathComponent().toString();
+        String name = jTree1.getSelectionPath().getLastPathComponent().toString();
         FileUtils.deleteFile(name);
         updateTree();
     }//GEN-LAST:event_jButton4ActionPerformed
-    
+
     public void fillList() {
         clearTable();
         int i = 0;
@@ -373,13 +406,13 @@ public class RFgenerator extends javax.swing.JFrame {
             jTable1.setValueAt(rf.intensity, i, 4);
             jTable1.setValueAt(rf.angle, i, 5);
             jTable1.setValueAt(rf.combination, i, 6);
-            size.setText(""+rf.size);
+            size.setText("" + rf.size);
             i++;
         }
     }
-    
+
     public void clearTable() {
-        
+
         for (int i = 0; i < jTable1.getRowCount(); i++) {
             for (int j = 0; j < jTable1.getColumnCount(); j++) {
                 jTable1.setValueAt(null, i, j);
@@ -391,6 +424,7 @@ public class RFgenerator extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

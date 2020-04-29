@@ -200,7 +200,7 @@ public class SpecialKernels {
                 p++;
             }
         }
-        
+        m.put(0, 0, kernel);
         return m;
     }
 
