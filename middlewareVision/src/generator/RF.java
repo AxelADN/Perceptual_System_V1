@@ -101,4 +101,9 @@ public class RF {
     public String getValues() {
         return rx + " " + ry + " " + px + " " + py + " " + intensity + " " + angle+ " " + combination+" "+size;
     }
+    
+    public String getScaledValues(double scale) {
+        return rx*scale + " " + ry*scale + " " + (int)(px*scale) + " " + (int)(py*scale) + " " + intensity + " " + angle+ " " + combination+" "+(int)(size*scale);
+    }
 }
+

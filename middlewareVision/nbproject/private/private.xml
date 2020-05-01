@@ -4,14 +4,16 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RF.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/FileUtils.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/gui/ClickFrame.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/FileUtils.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/config/Init.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RFgenerator.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RFlist.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/GeneradorClases.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/VisPanel.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/test.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/gui/Frame.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/Convertor.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4Contour.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/visualizerTest.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/SpecialKernels.java</file>
         </group>
     </open-files>
