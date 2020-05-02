@@ -131,5 +131,28 @@ public class Convertor {
         }
         return image;
     }
+    /**
+     * method for show filter images from -1 to 1
+     * @param mat1
+     * @return 
+     */
+    public static BufferedImage ConvertMat2FilterImage(Mat mat1) {
+        Mat mat=mat1.clone();
+        MatOfByte bytes = new MatOfByte();
+        Scalar alpha = new Scalar(127);
+        Core.multiply(mat, alpha, mat);
+        Core.add(mat, new Scalar(127), mat);
+        Imgcodecs.imencode(".jpg", mat, bytes);
+        byte[] byteArray = bytes.toArray();
+        BufferedImage image = null;
+        try {
+            InputStream in = new ByteArrayInputStream(byteArray);
+            image = ImageIO.read(in);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return image;
+    }
 
 }

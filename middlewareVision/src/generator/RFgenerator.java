@@ -418,7 +418,7 @@ public class RFgenerator extends javax.swing.JFrame {
                 vis[p].setDefaultCloseOperation(1);
                 Mat kernel = new Mat();
                 kernel = SpecialKernels.getAdvencedGauss(new Size(rf.size, rf.size), rf.intensity, -rf.py + rf.size / 2, rf.px + rf.size / 2, rf.rx, rf.ry, Math.toRadians(rf.angle + 90));
-                BufferedImage img = Convertor.ConvertMat2Image(kernel);
+                BufferedImage img = Convertor.ConvertMat2FilterImage(kernel);
                 vis[p].setImage(img, "kernel");
                 p++;
             }

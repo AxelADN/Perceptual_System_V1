@@ -101,11 +101,11 @@ public class V1SimpleCellsFilter extends Activity {
         //convert the matrix img to float matrix
         img.convertTo(img, CV_32F);
         //generate the gabor filter
-        kernel = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, 2f, 0.8f, phi, CvType.CV_32F);
+        kernel = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, 2f, 0.5f, phi, CvType.CV_32F);
         //perform the convolution on the image IMG with the filter GAB
         Imgproc.filter2D(img, gab, CV_32F, kernel);
         //apply a threshold from the value 0.2 to 1
-        Imgproc.threshold(gab, gab, 0.2, 1, Imgproc.THRESH_TOZERO);
+        Imgproc.threshold(gab, gab, 0, 1, Imgproc.THRESH_TOZERO);
         ors = gab;
         return ors;
     }

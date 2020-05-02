@@ -102,7 +102,7 @@ public class V1ComplexCells extends FrameActivity {
 
         Core.sqrt(r1, energy);
 
-        Imgproc.threshold(energy, energy, 0.2, 1, Imgproc.THRESH_TOZERO);
+        Imgproc.threshold(energy, energy, 0, 1, Imgproc.THRESH_TOZERO);
 
         return energy;
 

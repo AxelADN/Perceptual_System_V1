@@ -48,6 +48,8 @@ public class Init extends Igniter {
         layoutManager.initLayout();
         setAreas(areaNames);
         run();
+        SpecialKernels.initRFlist();
+        SpecialKernels.loadIlusoryFilters();
         SpecialKernels.getdiag45();
         SpecialKernels.getdiag135();
     }

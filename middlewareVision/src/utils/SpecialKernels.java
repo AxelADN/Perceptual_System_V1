@@ -5,6 +5,9 @@
  */
 package utils;
 
+import generator.RF;
+import java.io.File;
+import java.util.ArrayList;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_8U;
@@ -25,6 +28,8 @@ public class SpecialKernels {
     public static Mat diag135;
     static double valueMinus = -0.15;
     static double valueMax = 0.3;
+    public static ArrayList<PairFilter> ilusoryFilters;
+    static ArrayList<RF> RFs;
 
     public static Mat getdiag45() {
         diag45 = Mat.zeros(new Size(3, 3), CvType.CV_32FC1);
@@ -50,6 +55,64 @@ public class SpecialKernels {
             diag135.put(3 - i - 1, i, valueMax);
         }
         return diag135;
+    }
+
+    public static void initRFlist() {
+        RFs = new ArrayList();
+    }
+
+    static Mat getFilterFromRF(RF rf) {
+        return getAdvencedGauss(new Size(rf.getSize(), rf.getSize()), rf.getIntensity(), -rf.getPy() + rf.getSize() / 2, rf.getPx() + rf.getSize() / 2, rf.getRx(), rf.getRy(), Math.toRadians(rf.getAngle() + 90));
+    }
+
+    public static void loadIlusoryFilters() {
+        ilusoryFilters = new ArrayList();
+        String path = "RFV2";
+        String file = "ilusory1";
+        loadList(path + "/" + file + ".txt");
+        for(int i=0;i<Config.gaborOrientations;i++){
+            double angle=(180/Config.gaborOrientations)*i;
+            System.out.println(angle);
+            double rangle=Math.toRadians(angle);
+            RF rf1=RFs.get(0);
+            RF rf2=RFs.get(1);
+            double amp=Math.pow(rf1.getPx(), 2)+Math.pow(rf1.getPy(), 2);
+            amp=Math.sqrt(amp);
+            rf1.setPx((int)(amp*Math.sin(rangle)));
+            rf1.setPy((int)(amp*Math.cos(rangle)));
+            rf1.setAngle(angle);
+            rf2.setPx((int)(-amp*Math.sin(rangle)));
+            rf2.setPy((int)(-amp*Math.cos(rangle)));
+            rf2.setAngle(angle);
+            PairFilter pair = new PairFilter(getFilterFromRF(rf1), getFilterFromRF(rf2));
+            ilusoryFilters.add(pair);
+        }
+        
+        clearList();
+
+    }
+
+    static void clearList() {
+        RFs.clear();
+    }
+
+    static void loadList(String path) {
+        clearList();
+        String stList = FileUtils.readFile(new File(path));
+        System.out.println(stList);
+        String lines[] = stList.split("\\n");
+        for (String st : lines) {
+            String values[] = st.split(" ");
+            RF rf = new RF(Double.parseDouble(values[0]),
+                    Double.parseDouble(values[1]),
+                    Integer.parseInt(values[2]),
+                    Integer.parseInt(values[3]),
+                    Double.parseDouble(values[4]),
+                    Double.parseDouble(values[5]),
+                    Integer.parseInt(values[6]),
+                    Integer.parseInt(values[7]));
+            RFs.add(rf);
+        }
     }
 
     public static Mat getDoubleOpponentKernel(Size s, double sigma1, double sigma2, double height1, double height2, double gamma1, double gamma2, double dX) {
@@ -163,15 +226,17 @@ public class SpecialKernels {
 
     /**
      * elevates a number to the 2 pow
+     *
      * @param n
-     * @return 
+     * @return
      */
-    public static double to2(double n){
+    public static double to2(double n) {
         return Math.pow(n, 2);
     }
-    
+
     /**
      * Get a 2D Gaussian with the complete parameters
+     *
      * @param s size of the kernel
      * @param A intensity or amplitude
      * @param x0 center x
@@ -184,19 +249,19 @@ public class SpecialKernels {
     public static Mat getAdvencedGauss(Size s, double A, double x0, double y0, double sigmax, double sigmay, double theta) {
         Mat m = new Mat(s, CvType.CV_32FC1);
         double[] kernel = new double[(int) (s.height * s.width)];
-        double a=to2(Math.cos(theta))/(2*to2(sigmax))+to2(Math.sin(theta))/(2*to2(sigmay));
-        double b=-Math.sin(2*theta)/(4*to2(sigmax))+Math.sin(2*theta)/(4*to2(sigmay));
-        double c=to2(Math.sin(theta))/(2*to2(sigmax))+to2(Math.cos(theta))/(2*to2(sigmay));
-        double s1=0;
-        double s2=0;
-        double cc=0;
-        int p=0;
-         for (int x = 0; x < s.height; x++) {
+        double a = to2(Math.cos(theta)) / (2 * to2(sigmax)) + to2(Math.sin(theta)) / (2 * to2(sigmay));
+        double b = -Math.sin(2 * theta) / (4 * to2(sigmax)) + Math.sin(2 * theta) / (4 * to2(sigmay));
+        double c = to2(Math.sin(theta)) / (2 * to2(sigmax)) + to2(Math.cos(theta)) / (2 * to2(sigmay));
+        double s1 = 0;
+        double s2 = 0;
+        double cc = 0;
+        int p = 0;
+        for (int x = 0; x < s.height; x++) {
             for (int y = 0; y < s.width; y++) {
-                s1=(x-x0);
-                s2=(y-y0);
-                cc=a*to2(s1)+2*b*s1*s2+c*to2(s2);
-                kernel[p]=A*Math.exp(-cc);
+                s1 = (x - x0);
+                s2 = (y - y0);
+                cc = a * to2(s1) + 2 * b * s1 * s2 + c * to2(s2);
+                kernel[p] = A * Math.exp(-cc);
                 p++;
             }
         }
