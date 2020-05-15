@@ -31,7 +31,7 @@ public class AreaNames {
         /****************************************************************************/
         public static int V4Color = IDHelper.generateID("V4", 2, 0);	
 	public static int V4Contour = IDHelper.generateID("V4", 1, 0);
-        
+        public static int V4ShapeCells = IDHelper.generateID("V4", 3 , 0);
         /****************************************************************************/
         public static int Retina =          IDHelper.generateID("Retina", 0, 0);
         /****************************************************************************/
@@ -48,12 +48,7 @@ public class AreaNames {
 	
 	
 	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	//@addNodes

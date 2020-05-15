@@ -9,6 +9,7 @@ import middlewareVision.nodes.Visual.smallNodes.V4Contour;
 import middlewareVision.nodes.Visual.smallNodes.V4Color;
 import kmiddle2.nodes.areas.Area;
 import middlewareVision.config.AreaNames;
+import middlewareVision.nodes.Visual.smallNodes.V4ShapeCells;
 import utils.SimpleLogger;
 
 /**
@@ -24,6 +25,7 @@ public class V4 extends Area{
         this.namer = AreaNames.class;
         addProcess(V4Contour.class);
         addProcess(V4Color.class);
+        addProcess(V4ShapeCells.class);
 	
 	//@AddProcess
     }
@@ -40,6 +42,7 @@ public class V4 extends Area{
         //SimpleLogger.log(this,"V2 BIG NODE:"+new String(data));
         send(AreaNames.V4Color,data);	
 	send(AreaNames.V4Contour,data);
+        send(AreaNames.V4ShapeCells,data);
 	
 	//@SendProcess
     }

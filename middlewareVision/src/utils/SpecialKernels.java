@@ -31,41 +31,76 @@ public class SpecialKernels {
     public static ArrayList<PairFilter> ilusoryFilters;
     public static ArrayList<PairFilter> endStoppedFilters;
     static ArrayList<RF> RFs;
+    public static Mat v2Kernels[];
+    
+    
+    
+    /***************************************************************************
+     * LOAD THE KERNELS HERE
+     * *************************************************************************
+     */
+    
+    public static void loadKernels(){
+        initRFlist();
+        loadEndStoppedFilters();
+        getdiag45(Config.diagonalSize);
+        getdiag135(Config.diagonalSize);
+        loadV2Kernels();
+    }
 
-    public static Mat getdiag45() {
-        diag45 = Mat.zeros(new Size(3, 3), CvType.CV_32FC1);
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+    /**
+     * Diagonal matrix 45 degrees
+     * @return 
+     */
+    public static Mat getdiag45(int size) {
+        diag45 = Mat.zeros(new Size(size, size), CvType.CV_32FC1);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 diag45.put(i, j, valueMinus);
             }
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < size; i++) {
             diag45.put(i, i, valueMax);
         }
         return diag45;
     }
 
-    public static Mat getdiag135() {
-        diag135 = Mat.zeros(new Size(3, 3), CvType.CV_32FC1);
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+    /**
+     * Diagonal matrix 135 degrees
+     * @return 
+     */
+    public static Mat getdiag135(int size) {
+        diag135 = Mat.zeros(new Size(size, size), CvType.CV_32FC1);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 diag135.put(i, j, valueMinus);
             }
         }
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < size; i++) {
             diag135.put(3 - i - 1, i, valueMax);
         }
         return diag135;
     }
 
+    /**
+     * initialize RF list
+     */
     public static void initRFlist() {
         RFs = new ArrayList();
     }
 
+    /**
+     * Make a Gaussian filter from a Receptive Field class object
+     * @param rf
+     * @return a MAT of the filter
+     */
     static Mat getFilterFromRF(RF rf) {
         return getAdvencedGauss(new Size(rf.getSize(), rf.getSize()), rf.getIntensity(), -rf.getPy() + rf.getSize() / 2, rf.getPx() + rf.getSize() / 2, rf.getRx(), rf.getRy(), Math.toRadians(rf.getAngle() + 90));
     }
 
+    /**
+     *  V2 Ilusory filters
+     */
     public static void loadIlusoryFilters() {
         ilusoryFilters = new ArrayList();
         String path = "RFV2";
@@ -103,7 +138,6 @@ public class SpecialKernels {
         loadList(path + "/" + file + ".txt");
         for(int i=0;i<Config.gaborOrientations;i++){
             double angle=(180/Config.gaborOrientations)*i;
-            System.out.println(angle);
             double rangle=Math.toRadians(angle);
             RF rf1=RFs.get(0);
             RF rf2=RFs.get(1);
@@ -119,6 +153,27 @@ public class SpecialKernels {
             endStoppedFilters.add(pair);
         }       
         clearList();
+    }
+    
+    /**
+     * Load the kernels that will be used in V2 for the angular activation
+     */
+    public static void loadV2Kernels(){
+        v2Kernels=new Mat[Config.gaborOrientations*2];
+        String path = "RFV2";
+        String file = "angular";
+        loadList(path + "/" + file + ".txt");
+        for(int i=0;i<Config.gaborOrientations*2;i++){
+            double angle=(180/Config.gaborOrientations)*i;
+            double rangle=Math.toRadians(angle);
+            RF rf1=RFs.get(0);
+            double amp=Math.pow(rf1.getPx(), 2)+Math.pow(rf1.getPy(), 2);
+            amp=Math.sqrt(amp);
+            rf1.setPx((int)(amp*Math.sin(rangle)));
+            rf1.setPy((int)(amp*Math.cos(rangle)));
+            rf1.setAngle(angle);
+            v2Kernels[i]=getFilterFromRF(rf1);
+        } 
     }
 
     static void clearList() {
@@ -144,6 +199,18 @@ public class SpecialKernels {
         }
     }
 
+    /**
+     * Generate double opponent Kernel for color processing
+     * @param s
+     * @param sigma1
+     * @param sigma2
+     * @param height1
+     * @param height2
+     * @param gamma1
+     * @param gamma2
+     * @param dX
+     * @return 
+     */
     public static Mat getDoubleOpponentKernel(Size s, double sigma1, double sigma2, double height1, double height2, double gamma1, double gamma2, double dX) {
         Mat m = new Mat(s, CvType.CV_32FC1);
 
@@ -171,6 +238,18 @@ public class SpecialKernels {
         return m;
     }
 
+    /**
+     * Get double opponent kernel 
+     * @param s
+     * @param sigmaX1
+     * @param sigmaY1
+     * @param sigmaX2
+     * @param sigmaY2
+     * @param height1
+     * @param height2
+     * @param dX
+     * @return 
+     */
     public static Mat getOtherDoubleOpponentKernel(Size s, double sigmaX1, double sigmaY1, double sigmaX2, double sigmaY2, double height1, double height2, double dX) {
         Mat m = new Mat(s, CvType.CV_32FC1);
         double[] kernel = new double[(int) (s.height * s.width)];
@@ -228,6 +307,14 @@ public class SpecialKernels {
         return m;
     }
 
+    /**
+     * Get a simplified Gaussian filter
+     * @param s
+     * @param sigmaX
+     * @param sigmaY
+     * @param alpha
+     * @return 
+     */
     public static Mat getGauss(Size s, double sigmaX, double sigmaY, double alpha) {
         Mat m = new Mat(s, CvType.CV_32FC1);
         double[] kernel = new double[(int) (s.height * s.width)];

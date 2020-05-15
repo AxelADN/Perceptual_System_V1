@@ -48,10 +48,7 @@ public class Init extends Igniter {
         layoutManager.initLayout();
         setAreas(areaNames);
         run();
-        SpecialKernels.initRFlist();
-        SpecialKernels.loadEndStoppedFilters();
-        SpecialKernels.getdiag45();
-        SpecialKernels.getdiag135();
+        SpecialKernels.loadKernels();
     }
 
     public static void main(String[] args) {

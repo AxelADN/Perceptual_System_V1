@@ -10,6 +10,7 @@ import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import javax.imageio.ImageIO;
+import matrix.ArrayMatrix;
 import matrix.MatrixSerialization;
 import matrix.matrix;
 import org.opencv.core.Core;
@@ -27,6 +28,11 @@ import org.opencv.imgcodecs.Imgcodecs;
  */
 public class Convertor {
 
+    /**
+     * Convert a Mat (where 255 is the max value) to an image
+     * @param mat
+     * @return 
+     */
     public static BufferedImage ConvertMat2Image2(Mat mat) {
         MatOfByte bytes = new MatOfByte();
         Imgcodecs.imencode(".jpg", mat, bytes);
@@ -69,14 +75,42 @@ public class Convertor {
         return return_buff;
     }
 
+    /**
+     * serialize an OpenCV mat (1 channel)
+     * @param src
+     * @return 
+     */
     public static matrix MatToMatrix(Mat src) {
         return MatrixSerialization.serializeMatrix(src);
     }
     
+    /**
+     * Serialize an array of OpenCV matrixes (1 channel)
+     * @param array
+     * @return 
+     */
+    public static ArrayMatrix MatArrayToMatrixArray(Mat array[]){
+        matrix[] ma=new matrix[array.length];
+        for(int i=0;i<array.length;i++){
+            ma[i]=MatToMatrix(array[i]);
+        }
+        return new ArrayMatrix(ma);
+    }
+    
+    /**
+     * Convert 1 channel matrix to a OpenCV Mat
+     * @param m
+     * @return 
+     */
     public static Mat matrixToMat(matrix m){
         return MatrixSerialization.deSerializeMatrix(m);
     }
 
+    /**
+     * Convert a RGB image to mat
+     * @param bi
+     * @return 
+     */
     public static Mat bufferedImageToMat(BufferedImage bi) {
         Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
         byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
@@ -84,6 +118,11 @@ public class Convertor {
         return mat;
     }
 
+    /**
+     * Convert a grayscale image to OpenCV Mat
+     * @param bi
+     * @return 
+     */
     public static Mat bufferedImageToMat2(BufferedImage bi) {
         Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8U);
         byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
@@ -101,6 +140,13 @@ public class Convertor {
         return matToBytes(bufferedImageToMat2(img));
     }
 
+    /**
+     * Convert bytes to OpenCV mat of double values
+     * @param data
+     * @param size
+     * @param type
+     * @return 
+     */
     public static Mat bytesToDoubleMat(byte[] data, Size size, int type) {
         Mat receive = new Mat(size, type);
         receive.put(0, 0, data);
@@ -109,7 +155,7 @@ public class Convertor {
     }
 
     /**
-     * Convert a matrix to image without multiplying by 255
+     * Convert a matrix to image  multiplying by 255
      *
      * @param mat
      * @return
