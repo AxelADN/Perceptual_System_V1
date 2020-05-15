@@ -14,6 +14,7 @@ import middlewareVision.nodes.Visual.smallNodes.V1ComplexCells;
 import middlewareVision.nodes.Visual.smallNodes.V1SimpleCells;
 import kmiddle2.nodes.areas.Area;
 import middlewareVision.config.AreaNames;
+import middlewareVision.nodes.Visual.smallNodes.V1HyperComplex;
 import utils.SimpleLogger;
 
 /**
@@ -27,7 +28,7 @@ public class V1 extends Area{
 	addProcess(V1SimpleCells.class);
 	addProcess(V1ComplexCells.class);
 	addProcess(V1DoubleOpponent.class);
-	//addProcess(V1HyperComplex.class);
+	addProcess(V1HyperComplex.class);
 	
 	addProcess(V1SimpleCellsFilter.class);
 	
@@ -51,8 +52,8 @@ public class V1 extends Area{
         //send(AreaNames.V1Proccess, data);
 	send(AreaNames.V1SimpleCells,data);
 	send(AreaNames.V1ComplexCells,data);
-	send(AreaNames.V1DoubleOpponent,data);/*
-	send(AreaNames.V1HyperComplex,data);*/
+	send(AreaNames.V1DoubleOpponent,data);
+	send(AreaNames.V1HyperComplex,data);
 	
 	send(AreaNames.V1SimpleCellsFilter,data);
 	

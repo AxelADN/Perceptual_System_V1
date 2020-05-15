@@ -4,11 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RF.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/gui/ClickFrame.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V1SimpleCells.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RFgenerator.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RFlist.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/Convertor.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/SpecialKernels.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/VisPanel.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V1SimpleCellsFilter.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V2IlusoryCells.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V1ComplexCells.java</file>
         </group>
     </open-files>
 </project-private>

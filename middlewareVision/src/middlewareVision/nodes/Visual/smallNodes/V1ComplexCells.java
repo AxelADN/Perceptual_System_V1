@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import gui.FrameActivity;
+import kmiddle2.nodes.activities.Activity;
 import matrix.SimpleCellMatrix;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -24,7 +25,7 @@ import utils.numSync;
  *
  *
  */
-public class V1ComplexCells extends FrameActivity {
+public class V1ComplexCells extends Activity {
 
     /**
      * *************************************************************************
@@ -45,7 +46,7 @@ public class V1ComplexCells extends FrameActivity {
         this.namer = AreaNames.class;
         ors = new Mat[4][2];
         energy = new Mat[4];
-        initFrames(4, 8);
+        //initFrames(4, 8);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class V1ComplexCells extends FrameActivity {
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index,0), Convertor.MatToMatrix(energy), 0);
                 LongSpike sendSpike2 = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(energy2), 0);
                 send(AreaNames.V1Visualizer, sendSpike1.getByteArray());
-                send(AreaNames.V2IlusoryCells, sendSpike1.getByteArray());
+                send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
                 send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
 
             }

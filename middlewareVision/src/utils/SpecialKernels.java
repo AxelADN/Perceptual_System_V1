@@ -29,6 +29,7 @@ public class SpecialKernels {
     static double valueMinus = -0.15;
     static double valueMax = 0.3;
     public static ArrayList<PairFilter> ilusoryFilters;
+    public static ArrayList<PairFilter> endStoppedFilters;
     static ArrayList<RF> RFs;
 
     public static Mat getdiag45() {
@@ -91,6 +92,34 @@ public class SpecialKernels {
         clearList();
 
     }
+    
+    /**
+     * Load the endStoppedFilters
+     */
+    public static void loadEndStoppedFilters() {
+        endStoppedFilters = new ArrayList();
+        String path = "RFV1";
+        String file = "endStop";
+        loadList(path + "/" + file + ".txt");
+        for(int i=0;i<Config.gaborOrientations;i++){
+            double angle=(180/Config.gaborOrientations)*i;
+            System.out.println(angle);
+            double rangle=Math.toRadians(angle);
+            RF rf1=RFs.get(0);
+            RF rf2=RFs.get(1);
+            double amp=Math.pow(rf1.getPx(), 2)+Math.pow(rf1.getPy(), 2);
+            amp=Math.sqrt(amp);
+            rf1.setPx((int)(amp*Math.sin(rangle)));
+            rf1.setPy((int)(amp*Math.cos(rangle)));
+            rf1.setAngle(angle);
+            rf2.setPx((int)(-amp*Math.sin(rangle)));
+            rf2.setPy((int)(-amp*Math.cos(rangle)));
+            rf2.setAngle(angle);
+            PairFilter pair = new PairFilter(getFilterFromRF(rf1), getFilterFromRF(rf2));
+            endStoppedFilters.add(pair);
+        }       
+        clearList();
+    }
 
     static void clearList() {
         RFs.clear();
@@ -139,8 +168,6 @@ public class SpecialKernels {
         for (int i = 0; i < kernel.length; i++) {
             r += kernel[i];
         }
-
-        //System.out.println(r);
         return m;
     }
 

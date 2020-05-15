@@ -49,7 +49,7 @@ public class Init extends Igniter {
         setAreas(areaNames);
         run();
         SpecialKernels.initRFlist();
-        SpecialKernels.loadIlusoryFilters();
+        SpecialKernels.loadEndStoppedFilters();
         SpecialKernels.getdiag45();
         SpecialKernels.getdiag135();
     }

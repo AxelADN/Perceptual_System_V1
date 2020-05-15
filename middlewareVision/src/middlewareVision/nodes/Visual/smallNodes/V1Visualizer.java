@@ -30,7 +30,8 @@ public class V1Visualizer extends FrameActivity {
     public Mat[] evenOrs;
     public Mat[] oddOrs;
     public Mat[] dkl;
-    int num = 16;
+    public Mat[] endStopped;
+    int num = 20;
 
     /**
      * *************************************************************************
@@ -45,6 +46,7 @@ public class V1Visualizer extends FrameActivity {
         evenOrs = new Mat[4];
         oddOrs= new Mat[4];
         dkl = new Mat[3];
+        endStopped=new Mat[4];
     }
 
     @Override
@@ -76,6 +78,10 @@ public class V1Visualizer extends FrameActivity {
                 if (index2 == 3) {
                     oddOrs[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
                     frame[index+4+4].setImage(Convertor.ConvertMat2Image(oddOrs[index]), "oddOrs" + index);
+                }
+                if (index2 == 4) {
+                    endStopped[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                    frame[index+4+8+4].setImage(Convertor.ConvertMat2Image(endStopped[index]), "endStopped" + index);
                 }
 
             }

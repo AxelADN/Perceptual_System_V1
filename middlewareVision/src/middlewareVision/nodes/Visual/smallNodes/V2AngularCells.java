@@ -267,7 +267,7 @@ public class V2AngularCells extends FrameActivity {
         }
         System.out.println(c);
     }
-    double l3=0.01; 
+    double l3=0.02; 
     /**
      * multiply the matrixes for generating the activation map
      */

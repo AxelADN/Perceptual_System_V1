@@ -28,7 +28,7 @@ import utils.numSync;
  * Author: Elon Musk
  *
  */
-public class V2IlusoryCells extends FrameActivity {
+public class V2IlusoryCells extends Activity {
 
     /**
      * *************************************************************************
@@ -70,14 +70,14 @@ public class V2IlusoryCells extends FrameActivity {
                 Mat ilusoryEdges;
                 //ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.5f, 1, 5, 29, 0.05, index);
                 ilusoryEdges = ilusoryEdgesProcess(edges, index);
-                Core.multiply(ilusoryEdges, new Scalar(-0.01), ilusoryEdges);
+                Core.multiply(ilusoryEdges, new Scalar(-0.02), ilusoryEdges);
                 //ilusoryEdges = MatrixUtils.maxSum(ilusoryEdges, edges);
                 Core.add(edges, ilusoryEdges, ilusoryEdges);
                 Imgproc.threshold(ilusoryEdges, ilusoryEdges, 0.4, 1, Imgproc.THRESH_TOZERO);
                 LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(ilusoryEdges), 0);
                 send(AreaNames.V2AngularCells, sendSpike.getByteArray());
                 send(AreaNames.V4Contour, sendSpike.getByteArray());
-                send(AreaNames.V2Visualizer, sendSpike.getByteArray());
+                //send(AreaNames.V2Visualizer, sendSpike.getByteArray());
 
             }
 
@@ -100,24 +100,7 @@ public class V2IlusoryCells extends FrameActivity {
      * @param lenght lenght of the gabor function
      * @param aspectRatio <0.5 elongated @retur n
      */
-    public Mat elongatedGaborFilter(Mat img, float sigma, double psi, int kernelSize, double lenght, double aspectRatio, int index) {
-        Mat ors = new Mat();
-        Mat kernel = new Mat();
-        //angle of the orientation
-        float angle = index * inc;
-        //initializate the ors and gab array matrix with zeros
-        ors = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
-        Mat gab = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
-        //generate the gabor filter
-        kernel = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, lenght, aspectRatio, psi, CvType.CV_32F);
-        // Imgproc.getga
-        //perform the convolution on the image IMG with the filter GAB
-        Imgproc.filter2D(img, gab, CV_32F, kernel);
-        //apply a threshold from the value 0.2 to 1
-        Imgproc.threshold(gab, gab, 0, 1, Imgproc.THRESH_TOZERO);
-        ors = gab;
-        return ors;
-    }
+
     
     public Mat ilusoryEdgesProcess(Mat img, int index){
         Mat ors = new Mat();

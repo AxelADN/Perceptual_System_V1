@@ -83,7 +83,7 @@ public class V4Contour extends FrameActivity {
              */
             
             if (sync.isComplete()) {
-
+/*
                 contours1 = drawMatContours(combinedEdges, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_TC89_L1);
                 BufferedImage img2 = Convertor.ConvertMat2Image2(contours1);
                 frame[1].setImage(img2, "contours1");
@@ -95,7 +95,7 @@ public class V4Contour extends FrameActivity {
                  * si la matriz es normal en colores de 0 a 255, se puede
                  * convertir directo a bytes sin pasar por la imagen
                  */
-                LongSpike sendSpike = new LongSpike(Modalities.VISUAL, 0, Convertor.matToBytes(contours1), 0);
+               // LongSpike sendSpike = new LongSpike(Modalities.VISUAL, 0, Convertor.matToBytes(contours1), 0);
                // send(AreaNames.ITC, sendSpike.getByteArray());
 
             }
