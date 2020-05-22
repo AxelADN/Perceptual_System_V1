@@ -15,29 +15,37 @@ import utils.Conversion;
  *
  * @author AxelADN
  */
-public class PFC_DataStorage extends ProcessTemplate{
-    
+public class PFC_DataStorage extends ProcessTemplate {
+
     ArrayList<Double> objectData;
-    
-    public PFC_DataStorage () {
-        this.ID =   Names.PFC_DataStorage;
-        
+
+    public PFC_DataStorage() {
+        this.ID = Names.PFC_DataStorage;
+
         objectData = new ArrayList<>();
     }
-    
+
     @Override
     public void init() {
     }
 
     @Override
+    protected boolean attendSystemServiceCall(byte[] bytes) {
+        return super.attendSystemServiceCall(bytes);
+    }
+
+    @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        storeData(bytes);
+        if (!attendSystemServiceCall(bytes)) {
+            storeData(bytes);
+        }
     }
 
     private void storeData(byte[] bytes) {
-        objectData.addAll(Conversion.BytesToDoubleArray(bytes));
-        //System.out.println(objectData.size());
+        ArrayList<Double> currentObject = Conversion.BytesToDoubleArray(bytes);
+        objectData.addAll(currentObject);
+        System.out.println(currentObject);
     }
-    
+
 }

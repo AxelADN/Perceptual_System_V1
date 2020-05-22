@@ -22,8 +22,9 @@ public class Perception2 extends Igniter {
         addArea(V4.class.getName());
         addArea(pITC.class.getName());
         addArea(aITC.class.getName());
-        addArea(ITC.class.getName());
-        //addArea(PFC.class.getName());
+        //addArea(ITC.class.getName());
+        addArea(PFC.class.getName());
+        addArea(AMY.class.getName());
         
         configuration.setLocal(true);
         configuration.setDebug(Boolean.FALSE);

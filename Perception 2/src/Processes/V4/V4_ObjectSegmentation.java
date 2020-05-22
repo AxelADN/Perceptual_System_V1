@@ -22,18 +22,25 @@ public class V4_ObjectSegmentation extends ProcessTemplate{
     public V4_ObjectSegmentation () {
         this.ID =   Names.V4_ObjectSegmentation;
     }
+    
+    @Override
+    protected boolean attendSystemServiceCall(byte[] bytes){
+        return super.attendSystemServiceCall(bytes);
+    }
 
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        send(
-                Names.V4_SegmentFilter,
-                DataStructure.wrapData(
-                        objectSegmentation(DataStructure.getMats(bytes)), 
-                        defaultModality, 
-                        DataStructure.getTime(bytes)
-                )
-        );
+        if(!attendSystemServiceCall(bytes)){
+            send(
+                    Names.V4_SegmentFilter,
+                    DataStructure.wrapData(
+                            objectSegmentation(DataStructure.getMats(bytes)), 
+                            defaultModality, 
+                            DataStructure.getTime(bytes)
+                    )
+            );
+        }
     }
 
     private ArrayList<Mat> objectSegmentation(ArrayList<Mat> imgs) {

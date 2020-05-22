@@ -15,27 +15,34 @@ import utils.DataStructure;
  *
  * @author AxelADN
  */
-public class pITC_GeneralFeatureIdentification extends ProcessTemplate{
-    
-    public pITC_GeneralFeatureIdentification () {
-        this.ID =   Names.pITC_GeneralFeatureIdentification;
+public class pITC_GeneralFeatureIdentification extends ProcessTemplate {
+
+    public pITC_GeneralFeatureIdentification() {
+        this.ID = Names.pITC_GeneralFeatureIdentification;
+    }
+
+    @Override
+    protected boolean attendSystemServiceCall(byte[] bytes) {
+        return super.attendSystemServiceCall(bytes);
     }
 
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        send(
-                Names.aITC_ObjectClassIdentification,
-                DataStructure.wrapDataD(
-                        generalFeaturesIdentification(DataStructure.getMatsD(bytes)), 
-                        defaultModality, 
-                        DataStructure.getTime(bytes)
-                )
-        );
+        if (!attendSystemServiceCall(bytes)) {
+            send(
+                    Names.aITC_ObjectClassIdentification,
+                    DataStructure.wrapDataD(
+                            generalFeaturesIdentification(DataStructure.getMatsD(bytes)),
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
+        }
     }
-    
-    private ArrayList<Mat> generalFeaturesIdentification(ArrayList<Mat> imgs){
+
+    private ArrayList<Mat> generalFeaturesIdentification(ArrayList<Mat> imgs) {
         return imgs;
     }
-    
+
 }

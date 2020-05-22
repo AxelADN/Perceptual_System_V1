@@ -15,27 +15,34 @@ import utils.DataStructure;
  *
  * @author AxelADN
  */
-public class aITC_LocalFeatureIdentification extends ProcessTemplate{
-    
-    public aITC_LocalFeatureIdentification () {
-        this.ID =   Names.aITC_LocalFeatureIdentification;
+public class aITC_LocalFeatureIdentification extends ProcessTemplate {
+
+    public aITC_LocalFeatureIdentification() {
+        this.ID = Names.aITC_LocalFeatureIdentification;
+    }
+
+    @Override
+    protected boolean attendSystemServiceCall(byte[] bytes) {
+        return super.attendSystemServiceCall(bytes);
     }
 
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        send(
-                Names.aITC_ObjectClassIdentification,
-                DataStructure.wrapDataD(
-                        localFeaturesIdentification(DataStructure.getMatsD(bytes)), 
-                        defaultModality, 
-                        DataStructure.getTime(bytes)
-                )
-        );
+        if (!attendSystemServiceCall(bytes)) {
+            send(
+                    Names.aITC_ObjectClassIdentification,
+                    DataStructure.wrapDataD(
+                            localFeaturesIdentification(DataStructure.getMatsD(bytes)),
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
+        }
     }
-    
-    private ArrayList<Mat> localFeaturesIdentification(ArrayList<Mat> imgs){
+
+    private ArrayList<Mat> localFeaturesIdentification(ArrayList<Mat> imgs) {
         return imgs;
     }
-    
+
 }

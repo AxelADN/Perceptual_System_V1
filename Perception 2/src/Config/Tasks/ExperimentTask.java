@@ -7,7 +7,7 @@ package Config.Tasks;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import Config.GUI_2;
+import Config.GUI_DWM;
 
 /**
  *
@@ -38,9 +38,9 @@ public class ExperimentTask extends TimerTask {
     private int currentLearnCue = 0;
     private int currentMode = LEARN_MODE;
 
-    private GUI_2 mainFrame = null;
+    private GUI_DWM mainFrame = null;
 
-    public ExperimentTask(GUI_2 mainFrame) {
+    public ExperimentTask(GUI_DWM mainFrame) {
         this.mainFrame = mainFrame;
         timer = new Timer();
     }

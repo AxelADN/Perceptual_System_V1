@@ -42,7 +42,7 @@ public class ITC_Interface extends ProcessTemplate {
         time = 1;
 
         objectData = new ArrayList<>();
-        if (!SystemConfig.TRAINNING_MODE) {
+        if (!SystemConfig.TRAINING_MODE) {
             pITC = new BigNodeBridgeConnection(pITC_IP, pITC_Port);
             //aITC = new BigNodeBridgeConnection(aITC_IP, aITC_Port);
             DVC = new BigNodeBridgeConnection(DVC_IP, DVC_Port);
@@ -59,7 +59,7 @@ public class ITC_Interface extends ProcessTemplate {
             pITC.sendReset();
             return;
         }
-            if (!SystemConfig.TRAINNING_MODE) {
+            if (!SystemConfig.TRAINING_MODE) {
                 try {
                     super.receive(l, bytes);
                     DVC.sendFakePosition(time);
@@ -79,7 +79,7 @@ public class ITC_Interface extends ProcessTemplate {
         ArrayList<Double> classID = Conversion.BytesToDoubleArray(bytes);
         objectData.addAll(classID);
         //System.out.println(classID);
-        if (SystemConfig.TRAINNING_MODE && time >= 101) {
+        if (SystemConfig.TRAINING_MODE && time >= 101) {
             FileWriter file;
             try {
                 file = new FileWriter("results/classes.rlog");

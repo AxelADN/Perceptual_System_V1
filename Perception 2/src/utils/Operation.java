@@ -5,10 +5,12 @@
  */
 package utils;
 
+import Config.SystemConfig;
 import java.util.ArrayList;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfDouble;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 
@@ -17,6 +19,60 @@ import org.opencv.core.Scalar;
  * @author AxelADN
  */
 public class Operation {
+    
+    public static boolean featuresMatched(Mat feature1, Mat feature2) {
+        // convert data-type to "float"
+        Mat im_float_1 = new Mat();
+        feature1.convertTo(im_float_1, CvType.CV_32F);
+        Mat im_float_2 = new Mat();
+        feature2.convertTo(im_float_2, CvType.CV_32F);
+
+        int n_pixels = im_float_1.rows() * im_float_1.cols();
+
+        // Compute mean and standard deviation of both images
+        MatOfDouble im1_Mean = new MatOfDouble();
+        MatOfDouble im1_Std = new MatOfDouble();
+        MatOfDouble im2_Mean = new MatOfDouble();
+        MatOfDouble im2_Std = new MatOfDouble();
+        Core.meanStdDev(im_float_1, im1_Mean, im1_Std);
+        Core.meanStdDev(im_float_2, im2_Mean, im2_Std);
+
+        // Compute covariance and correlation coefficient
+        Core.subtract(im_float_1, im1_Mean, im_float_1);
+        Core.subtract(im_float_2, im2_Mean, im_float_2);
+        double covar = im_float_1.dot(im_float_2) / n_pixels;
+        double correl = covar / (im1_Std.toArray()[0] * im2_Std.toArray()[0]);
+        //System.out.println("CORREL: "+correl);
+
+        return correl > SystemConfig.TEMPLATE_MATCHING_TOLERANCE;
+    }
+    
+    public static double featuresMatchedVal(Mat feature1, Mat feature2) {
+        // convert data-type to "float"
+        Mat im_float_1 = new Mat();
+        feature1.convertTo(im_float_1, CvType.CV_32F);
+        Mat im_float_2 = new Mat();
+        feature2.convertTo(im_float_2, CvType.CV_32F);
+
+        int n_pixels = im_float_1.rows() * im_float_1.cols();
+
+        // Compute mean and standard deviation of both images
+        MatOfDouble im1_Mean = new MatOfDouble();
+        MatOfDouble im1_Std = new MatOfDouble();
+        MatOfDouble im2_Mean = new MatOfDouble();
+        MatOfDouble im2_Std = new MatOfDouble();
+        Core.meanStdDev(im_float_1, im1_Mean, im1_Std);
+        Core.meanStdDev(im_float_2, im2_Mean, im2_Std);
+
+        // Compute covariance and correlation coefficient
+        Core.subtract(im_float_1, im1_Mean, im_float_1);
+        Core.subtract(im_float_2, im2_Mean, im_float_2);
+        double covar = im_float_1.dot(im_float_2) / n_pixels;
+        double correl = covar / (im1_Std.toArray()[0] * im2_Std.toArray()[0]);
+        //System.out.println("CORREL: "+correl);
+
+        return correl;
+    }
     
     public static Mat displayableFT(Mat img){
         int addPixelRows = Core.getOptimalDFTSize(img.rows());

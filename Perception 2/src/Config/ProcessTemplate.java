@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import utils.Constants;
 import utils.Conversion;
 import utils.DataStructure;
 
@@ -32,10 +33,15 @@ public abstract class ProcessTemplate extends Process{
     
     private JFrame frame;
     protected int defaultModality;
+    protected byte systemState;
+    protected int thisTime;
     
     public ProcessTemplate () {
         this.namer = Names.class;
         defaultModality = DataStructure.Modalities.DEFAULT;
+        
+        this.systemState = Constants.STATE_TRAINING_ON;
+        this.thisTime = 0;
     }
 
     @Override
@@ -49,6 +55,19 @@ public abstract class ProcessTemplate extends Process{
         byte[] imgCols = DataStructure.getChunk(bytes, DataStructure.CHUNK_TYPE.COLS);
         byte[] imgRows = DataStructure.getChunk(bytes, DataStructure.CHUNK_TYPE.ROWS);
         //showImg(DataStructure.getChunk(bytes, DataStructure.CHUNK_TYPE.IMAGE),Conversion.ByteToInt(imgCols),Conversion.ByteToInt(imgRows));
+    }
+    
+    protected boolean attendSystemServiceCall(byte[] bytes){
+        if(bytes.length == 13){
+            byte[] stateCaller = new byte[12];
+            System.arraycopy(bytes, 0, stateCaller, 0, stateCaller.length);
+            if("SYSTEM STATE".equals(new String(stateCaller))){
+                this.systemState = bytes[stateCaller.length];
+                System.out.println("SYSTEM_STATE_CHANGE...."+IDHelper.getNameAsString(Names.class, this.ID));
+                return true;
+            }
+        }
+        return false;
     }
     
     public void showImg(byte[] bytes, int cols, int rows){
