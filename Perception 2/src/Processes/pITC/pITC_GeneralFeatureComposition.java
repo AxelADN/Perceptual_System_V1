@@ -8,41 +8,40 @@ package Processes.pITC;
 import Config.Names;
 import Config.ProcessTemplate;
 import java.util.ArrayList;
-import java.util.List;
-import org.opencv.core.CvType;
-import org.opencv.core.KeyPoint;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfKeyPoint;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.features2d.*;
-import org.opencv.imgproc.Imgproc;
 import utils.DataStructure;
 
 /**
  *
  * @author AxelADN
  */
-public class pITC_GeneralFeatureComposition extends ProcessTemplate{
-    
-    public pITC_GeneralFeatureComposition () {
-        this.ID =   Names.pITC_GeneralFeatureComposition;
+public class pITC_GeneralFeatureComposition extends ProcessTemplate {
+
+    public pITC_GeneralFeatureComposition() {
+        this.ID = Names.pITC_GeneralFeatureComposition;
+    }
+
+    @Override
+    protected boolean attendSystemServiceCall(byte[] bytes) {
+        return super.attendSystemServiceCall(bytes);
     }
 
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        send(
-                Names.pITC_FeatureComparison,
-                DataStructure.wrapData(
-                        generalFeaturesComposition(DataStructure.getMats(bytes)), 
-                        defaultModality, 
-                        DataStructure.getTime(bytes)
-                )
-        );
+        if (!attendSystemServiceCall(bytes)) {
+            send(
+                    Names.pITC_FeatureComparison,
+                    DataStructure.wrapData(
+                            generalFeaturesComposition(DataStructure.getMats(bytes)),
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
+        }
     }
-    
-    private ArrayList<Mat> generalFeaturesComposition(ArrayList<Mat> imgs){
+
+    private ArrayList<Mat> generalFeaturesComposition(ArrayList<Mat> imgs) {
 //        ArrayList<Mat> outputImgs = new ArrayList<>();
 //        Feature2D detector = ORB.create();
 //        MatOfKeyPoint featureKeypoints = new MatOfKeyPoint();
@@ -61,8 +60,8 @@ public class pITC_GeneralFeatureComposition extends ProcessTemplate{
 //            outputImgs.add(imgDescriptor);
 //            outputImgs.add(featureDescriptor);
 //        });
-        
+
         return imgs;
     }
-    
+
 }

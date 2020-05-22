@@ -136,6 +136,7 @@ public class DataStructure {
         ArrayList<Mat> imgs = new ArrayList<>();
         ArrayList<byte[]> bytesArray = new ArrayList<>();
         try {
+            //System.out.println("BYTES_SIZE..."+bytes.length);
             LongSpike spike = new LongSpike(bytes);
             bytesArray = (ArrayList<byte[]>)spike.getIntensity();
             int cols = Conversion.ByteToInt(bytesArray.get(0));

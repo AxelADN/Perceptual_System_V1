@@ -39,4 +39,8 @@ public class Names {
     
     public static long PFC                              =   IDHelper.generateID("PFC");
     public static long PFC_DataStorage                  =   IDHelper.generateID("PFC","PFC_DataStorage");
+    
+    public static long AMY                              =   IDHelper.generateID("AMY");
+    public static long AMY_Associations                 =   IDHelper.generateID("AMY","AMY_Associations");
+    public static long AMY_Retrieval                    =   IDHelper.generateID("AMY","AMY_Retrieval");
 }

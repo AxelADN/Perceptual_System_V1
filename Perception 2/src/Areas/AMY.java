@@ -5,19 +5,20 @@
  */
 package Areas;
 
-import Processes.V1_V2.V1_V2_BasicFeatureExtraction;
 import Config.AreaTemplate;
 import Config.Names;
+import Processes.AMY.*;
 
 /**
  *
  * @author AxelADN
  */
-public class V1_V2 extends AreaTemplate{
+public class AMY extends AreaTemplate{
     
-    public V1_V2 (){
-        this.ID =   Names.V1_V2;
-        addProcess(V1_V2_BasicFeatureExtraction.class);
+    public AMY (){
+        this.ID =   Names.AMY;
+        addProcess(AMY_Associations.class);
+        addProcess(AMY_Retrieval.class);
     }
 
     @Override

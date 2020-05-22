@@ -21,10 +21,11 @@ public class SystemConfig{
     public static final double STANDAR_PRIORITY_INCREMENT = 0.0001;
     public static final double TEMPLATE_MATCHING_TOLERANCE = 0.9;
     
-    public static final String FILE = "C:\\Users\\AxelADN\\Documents\\NetBeans\\PROJECTS\\Perception\\src\\resources\\Test05\\All\\";
+    public static final String FILE = "C:\\Users\\AxelADN-Cinv\\Google Drive\\Posgrado\\Tesis_Doctorado\\Paper Drafts\\An_expanded_model_for_perceptual_visual_single_object_recognition\\Assets\\TestSet\\";
     public static final String EXTENSION = ".png";
-    public static boolean TRAINNING_MODE = false;
+    public static boolean TRAINING_MODE = true;
     public static double ZERO_PIXELS_TOLERANCE = 0.03;
+    public static byte AFFECTION_VALUE_NEIGHBORHOOD = 10;
     
     public static Size featureSize(){
         return new Size(FEATURE_WIDTH,FEATURE_HEIGHT);

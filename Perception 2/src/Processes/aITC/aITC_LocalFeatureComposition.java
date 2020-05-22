@@ -15,30 +15,37 @@ import utils.DataStructure;
  *
  * @author AxelADN
  */
-public class aITC_LocalFeatureComposition extends ProcessTemplate{
-    
-    public aITC_LocalFeatureComposition () {
-        this.ID =   Names.aITC_LocalFeatureComposition;
+public class aITC_LocalFeatureComposition extends ProcessTemplate {
+
+    public aITC_LocalFeatureComposition() {
+        this.ID = Names.aITC_LocalFeatureComposition;
+    }
+
+    @Override
+    protected boolean attendSystemServiceCall(byte[] bytes) {
+        return super.attendSystemServiceCall(bytes);
     }
 
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
-        send(
-                Names.aITC_FeatureComparison,
-                DataStructure.wrapData(
-                        localFeaturesComposition(DataStructure.getMats(bytes)), 
-                        defaultModality, 
-                        DataStructure.getTime(bytes)
-                )
-        );
+        if (!attendSystemServiceCall(bytes)) {
+            send(
+                    Names.aITC_FeatureComparison,
+                    DataStructure.wrapData(
+                            localFeaturesComposition(DataStructure.getMats(bytes)),
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
+        }
     }
-    
-    private ArrayList<Mat> localFeaturesComposition(ArrayList<Mat> imgs){
+
+    private ArrayList<Mat> localFeaturesComposition(ArrayList<Mat> imgs) {
         imgs.forEach((img) -> {
             //showImg(img);
         });
         return imgs;
     }
-    
+
 }
