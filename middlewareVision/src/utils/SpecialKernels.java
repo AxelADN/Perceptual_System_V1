@@ -8,6 +8,7 @@ package utils;
 import generator.RF;
 import java.io.File;
 import java.util.ArrayList;
+import middlewareVision.nodes.Visual.smallNodes.V4CellStructure;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_8U;
@@ -46,6 +47,7 @@ public class SpecialKernels {
         getdiag45(Config.diagonalSize);
         getdiag135(Config.diagonalSize);
         loadV2Kernels();
+        V4CellStructure.loadV4Structure();
     }
 
     /**
@@ -94,7 +96,7 @@ public class SpecialKernels {
      * @param rf
      * @return a MAT of the filter
      */
-    static Mat getFilterFromRF(RF rf) {
+    public static Mat getFilterFromRF(RF rf) {
         return getAdvencedGauss(new Size(rf.getSize(), rf.getSize()), rf.getIntensity(), -rf.getPy() + rf.getSize() / 2, rf.getPx() + rf.getSize() / 2, rf.getRx(), rf.getRy(), Math.toRadians(rf.getAngle() + 90));
     }
 

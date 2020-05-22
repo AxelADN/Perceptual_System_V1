@@ -5,6 +5,9 @@
  */
 package generator;
 
+import middlewareVision.nodes.Visual.smallNodes.V4CellStructure;
+import org.opencv.core.Core;
+
 /**
  *
  * @author HumanoideFilms
@@ -12,8 +15,9 @@ package generator;
 public class test {
     
     public static void main(String [] args){
-        double a=5.0/2;
-        System.out.println(a);
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        V4CellStructure.loadKernels("RFV4");
+        V4CellStructure.printList();
     }
     
     public static int label(double d){

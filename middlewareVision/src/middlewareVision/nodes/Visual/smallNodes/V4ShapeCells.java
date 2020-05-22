@@ -43,8 +43,8 @@ public class V4ShapeCells extends Activity {
         /**
          * assign N multiChannelMatrixes and memory for the maps from V2
          */
-        mm=new ArrayMatrix[Config.gaborOrientations];
-        v2map=new Mat[mm.length][mm.length*2];
+        mm = new ArrayMatrix[Config.gaborOrientations];
+        v2map = new Mat[mm.length][mm.length * 2];
     }
 
     @Override
@@ -70,22 +70,35 @@ public class V4ShapeCells extends Activity {
                 Location l = (Location) spike.getLocation();
                 int index = l.getValues()[0];
                 //the location index is assigned to the array index
-                mm[index]= (ArrayMatrix) spike.getIntensity();
+                mm[index] = (ArrayMatrix) spike.getIntensity();
                 //ors[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
                 //the received indexes are added to the synchronizer
                 sync.addReceived(index);
 
             }
-            
+
             if (sync.isComplete()) {
 
-                for(int i=0;i<Config.gaborOrientations;i++){
-                    for(int j=0;j<Config.gaborOrientations*2;j++){
-                        v2map[i][j]=Convertor.matrixToMat(mm[i].getArrayMatrix()[j]);
+                for (int i = 0; i < Config.gaborOrientations; i++) {
+                    for (int j = 0; j < Config.gaborOrientations * 2; j++) {
+                        v2map[i][j] = Convertor.matrixToMat(mm[i].getArrayMatrix()[j]);
                     }
+                }
+                /**
+                 * Send to v4 shared memory class
+                 */
+                V4Memory.v2Map = v2map;
+
+                for (int i = 0; i < V4CellStructure.V4Bank.size(); i++) {
+                    LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
+                    send(AreaNames.V4ShapeActivationNode, sendSpike.getByteArray());
                 }
             }
 
+            /**
+             * For each receptive field, sends a command to have multiple nodes
+             * processing
+             */
         } catch (Exception ex) {
             Logger.getLogger(V4ShapeCells.class.getName()).log(Level.SEVERE, null, ex);
         }
