@@ -69,7 +69,8 @@ public class V4CellStructure {
                 for (RF rf : RFs) {
                     Mat mat = new Mat();
                     mat = SpecialKernels.getFilterFromRF(rf);
-                    rflist.addFilter(new indexMat(mat, rf.getCombination()));
+                    int comb=Integer.parseInt(rf.getCombination());
+                    rflist.addFilter(new indexMat(mat, comb/10, comb%10));
 
                 }
                 rflist.name=file;
@@ -111,7 +112,7 @@ public class V4CellStructure {
                     Integer.parseInt(values[3]),
                     Double.parseDouble(values[4]),
                     Double.parseDouble(values[5]),
-                    Integer.parseInt(values[6]),
+                    values[6],
                     Integer.parseInt(values[7]));
             RFs.add(rf);
         }
@@ -256,9 +257,10 @@ class RFBank {
 class indexMat {
 
     Mat mat;
-    int index;
+    int index[];
 
-    public indexMat(Mat mat, int index) {
+
+    public indexMat(Mat mat, int ... index) {
         this.mat = mat;
         this.index = index;
     }
@@ -271,12 +273,14 @@ class indexMat {
         this.mat = mat;
     }
 
-    public int getIndex() {
+    public int[] getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(int[] index) {
         this.index = index;
     }
+
+
 
 }

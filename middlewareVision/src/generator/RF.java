@@ -17,10 +17,10 @@ public class RF {
     int py;
     double intensity;
     double angle;
-    int combination;
+    String combination;
     int size;
 
-    public RF(double rx, double ry, int px, int py, double intensity, double angle, int combination, int size) {
+    public RF(double rx, double ry, int px, int py, double intensity, double angle, String combination, int size) {
         this.rx = rx;
         this.ry = ry;
         this.px = px;
@@ -90,11 +90,11 @@ public class RF {
         this.intensity = intensity;
     }
 
-    public int getCombination() {
+    public String getCombination() {
         return combination;
     }
 
-    public void setCombination(int combination) {
+    public void setCombination(String combination) {
         this.combination = combination;
     }
 

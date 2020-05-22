@@ -66,7 +66,8 @@ public class VisPanel extends javax.swing.JPanel {
             int sizeRect = RFlist.RFs.get(0).size;
             g.drawRect(tx(0,sizeRect* RFlist.scale), ty(0,sizeRect* RFlist.scale), sizeRect* RFlist.scale, sizeRect* RFlist.scale);
             for (RF rf : RFlist.RFs) {
-                g.setColor(new Color(255 - (31) * (rf.combination / 10), (31) * (rf.combination / 10), (31) * (rf.combination % 10)));
+                int comb=Integer.parseInt(rf.combination);
+                g.setColor(new Color(255 - (31) * (comb/ 10), (31) * (comb / 10), (31) * (comb % 10)));
                 dString(g, "" + rf.combination, rf.px * RFlist.scale, rf.py * RFlist.scale);
                 Oval(g, rf.px * RFlist.scale, rf.py * RFlist.scale, (int) rf.rx * RFlist.scale, (int) rf.ry * RFlist.scale, rf.angle);
             }
