@@ -53,8 +53,9 @@ public class V4CellStructure {
 
             }
         }
-
+        V4Memory.activationArray=new Mat[files.length];
         loadRFs();
+        
     }
 
     /**

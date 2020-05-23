@@ -4,8 +4,6 @@ import kmiddle2.util.IDHelper;
 public class AreaNames {
     
     
-	public static int Amy	=           IDHelper.generateID("Amy", 0, 0);
-	public static int AmyProcess1	=   IDHelper.generateID("Amy",1,0);
         
         /****************************************************************************/
 	public static int V1	=           IDHelper.generateID("V1", 0, 0);
@@ -33,6 +31,7 @@ public class AreaNames {
 	public static int V4Contour = IDHelper.generateID("V4", 1, 0);
         public static int V4ShapeCells = IDHelper.generateID("V4", 3 , 0);
         public static int V4ShapeActivationNode = IDHelper.generateID("V4", 4 , 0);
+        public static int V4Visualizer = IDHelper.generateID("V4", 5 , 0);
         /****************************************************************************/
         public static int Retina =          IDHelper.generateID("Retina", 0, 0);
         /****************************************************************************/
@@ -43,6 +42,7 @@ public class AreaNames {
         /****************************************************************************/
 	public static int LGNProcess = IDHelper.generateID("LGN", 1, 0);
 				
+	
 	//@addNodes
         //no quitar el comentario de add Nodes
 }

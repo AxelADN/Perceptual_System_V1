@@ -16,6 +16,15 @@ public class V4Memory {
     
     static Mat [][] v2Map;
     static ArrayList<Mat[]> v4Activations;
+    static Mat[] activationArray;
+
+    public static Mat[] getActivationArray() {
+        return activationArray;
+    }
+
+    public static void setActivationArray(Mat[] activationArray) {
+        V4Memory.activationArray = activationArray;
+    }
 
     public static Mat[][] getV2Map() {
         return v2Map;

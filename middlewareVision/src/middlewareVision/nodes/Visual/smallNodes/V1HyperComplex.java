@@ -58,7 +58,7 @@ public class V1HyperComplex extends Activity {
                 //ilusoryEdges = MatrixUtils.maxSum(ilusoryEdges, edges);
                 Core.add(edges, endStop, endStop);
                 Imgproc.threshold(endStop, endStop, 0.4, 1, Imgproc.THRESH_TOZERO);
-                Core.addWeighted(edges, 0.2, endStop, 0.8, 0, endStop);
+                Core.addWeighted(edges, 0.1, endStop, 0.90, 0, endStop);
                 
                 LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index,4), Convertor.MatToMatrix(endStop), 0);
                 send(AreaNames.V2AngularCells, sendSpike.getByteArray());
