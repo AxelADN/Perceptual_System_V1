@@ -170,7 +170,7 @@
                     <Column editable="true" title="py" type="java.lang.Integer"/>
                     <Column editable="true" title="I" type="java.lang.Double"/>
                     <Column editable="true" title="a" type="java.lang.Double"/>
-                    <Column editable="true" title="Comb" type="java.lang.Integer"/>
+                    <Column editable="true" title="Comb" type="java.lang.String"/>
                   </Table>
                 </Property>
               </Properties>

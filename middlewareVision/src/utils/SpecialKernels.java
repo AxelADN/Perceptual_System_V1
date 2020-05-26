@@ -195,7 +195,7 @@ public class SpecialKernels {
                     Integer.parseInt(values[3]),
                     Double.parseDouble(values[4]),
                     Double.parseDouble(values[5]),
-                    Integer.parseInt(values[6]),
+                    values[6],
                     Integer.parseInt(values[7]));
             RFs.add(rf);
         }

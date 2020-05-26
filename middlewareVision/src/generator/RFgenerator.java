@@ -125,7 +125,7 @@ public class RFgenerator extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Double.class, java.lang.Double.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class, java.lang.Integer.class
+                java.lang.Double.class, java.lang.Double.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -314,7 +314,7 @@ public class RFgenerator extends javax.swing.JFrame {
         RFlist.clearList();
         for (int i = 0; i < jTable1.getRowCount(); i++) {
             if (CompleteRow(i)) {
-                RFlist.addElement((double) jTable1.getValueAt(i, 0), (double) jTable1.getValueAt(i, 1), (int) jTable1.getValueAt(i, 2), (int) jTable1.getValueAt(i, 3), (double) jTable1.getValueAt(i, 4), (double) jTable1.getValueAt(i, 5), (int) jTable1.getValueAt(i, 6), Integer.parseInt(size.getText()));
+                RFlist.addElement((double) jTable1.getValueAt(i, 0), (double) jTable1.getValueAt(i, 1), (int) jTable1.getValueAt(i, 2), (int) jTable1.getValueAt(i, 3), (double) jTable1.getValueAt(i, 4), (double) jTable1.getValueAt(i, 5), (String) jTable1.getValueAt(i, 6), Integer.parseInt(size.getText()));
             }
         }
     }
