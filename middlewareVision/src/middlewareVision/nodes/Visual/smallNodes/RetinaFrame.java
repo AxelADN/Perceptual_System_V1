@@ -6,6 +6,7 @@
 package middlewareVision.nodes.Visual.smallNodes;
 
 import gui.ActivityFrame;
+import gui.Controls;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -95,6 +96,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
             int size = files.length;
             imageName = files[(count++) % size];
         }
+        Controls.setImageName(imageName+"");
         return imageName;
     }
 

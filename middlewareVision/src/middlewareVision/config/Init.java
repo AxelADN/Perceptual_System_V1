@@ -1,5 +1,6 @@
 package middlewareVision.config;
 
+import gui.Controls;
 import kmiddle2.nodes.service.Igniter;
 import middlewareVision.nodes.Visual.V1;
 import middlewareVision.nodes.Visual.Retina;
@@ -44,6 +45,8 @@ public class Init extends Igniter {
         configuration.setDebug(!DEBUG);
         configuration.setTCP();
         configuration.setEntityID(ENTITY_ID);
+        Controls cc=new Controls();
+        cc.setVisible(true);
 
         layoutManager.initLayout();
         setAreas(areaNames);
