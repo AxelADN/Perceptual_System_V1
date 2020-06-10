@@ -34,7 +34,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
         public void actionPerformed(ActionEvent e) {
             try {
                 // Aquí el código que queramos ejecutar.
-                activity.setImage();
+                activity.setImage(0);
             } catch (IOException ex) {
                 Logger.getLogger(RetinaFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -140,7 +140,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
         // TODO add your handling code here:
         if (Config.option == Config.CLICK || Config.option == Config.RENDER) {
             try {
-                activity.setImage();
+                activity.setImage(0);
             } catch (IOException ex) {
                 Logger.getLogger(RetinaFrame.class.getName()).log(Level.SEVERE, null, ex);
             }

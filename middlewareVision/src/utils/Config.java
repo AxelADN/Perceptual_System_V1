@@ -30,6 +30,8 @@ public class Config {
     public static int motionHeight=70;
     public static boolean ilusoryEnabled = true;
     public static int diagonalSize=3;
+    public static double bright=0;
+    public static double contr=1;
     
     /**
      * Paths for the image showed in the GUI

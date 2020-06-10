@@ -17,6 +17,24 @@ public class V4Memory {
     static Mat [][] v2Map;
     static ArrayList<Mat[]> v4Activations;
     static Mat[] activationArray;
+    static Mat contours1;
+    static Mat contours2;
+
+    public static Mat getContours1() {
+        return contours1;
+    }
+
+    public static void setContours1(Mat contours1) {
+        V4Memory.contours1 = contours1;
+    }
+
+    public static Mat getContours2() {
+        return contours2;
+    }
+
+    public static void setContours2(Mat contours2) {
+        V4Memory.contours2 = contours2;
+    }
 
     public static Mat[] getActivationArray() {
         return activationArray;

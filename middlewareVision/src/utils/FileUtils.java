@@ -101,23 +101,33 @@ public class FileUtils {
     public static void saveActivations(String path) {
         saveV2activations(path);
         saveV4activations(path);
+        saveContours(path);
 
     }
 
     public static void saveV2activations(String path) {
-        String newDir=path+"\\\\V2maps";
+        String newDir = path + "\\\\V2maps";
         createDir(newDir);
         for (int i = 0; i < V4Memory.getV2Map().length; i++) {
             for (int j = 0; j < V4Memory.getV2Map()[0].length; j++) {
                 matrix saveMat = Convertor.MatToMatrix(V4Memory.getV2Map()[i][j]);
-                WriteObjectToFile(saveMat, newDir+"\\\\"+i+"_"+j);
+                WriteObjectToFile(saveMat, newDir + "\\\\" + i + "_" + j);
             }
         }
     }
 
+    public static void saveContours(String path) {
+        String newDir = path + "\\\\Contours";
+        createDir(newDir);
+        matrix saveMat = Convertor.MatToMatrix(V4Memory.getContours1());
+        WriteObjectToFile(saveMat, newDir + "\\\\" + 1);
+        matrix saveMat2 = Convertor.MatToMatrix(V4Memory.getContours2());
+        WriteObjectToFile(saveMat2, newDir + "\\\\" + 2);
+    }
+
     public static void WriteObjectToFile(Object serObj, String filepath) {
         try {
-            FileOutputStream fileOut = new FileOutputStream(filepath+".amap");
+            FileOutputStream fileOut = new FileOutputStream(filepath + ".amap");
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(serObj);
             objectOut.close();
@@ -127,13 +137,13 @@ public class FileUtils {
             ex.printStackTrace();
         }
     }
-    
-     public static void saveV4activations(String path) {
-        String newDir=path+"\\\\V4maps";
+
+    public static void saveV4activations(String path) {
+        String newDir = path + "\\\\V4maps";
         createDir(newDir);
         for (int i = 0; i < V4Memory.getActivationArray().length; i++) {
-                matrix saveMat = Convertor.MatToMatrix(V4Memory.getActivationArray()[i]);
-                WriteObjectToFile(saveMat, newDir+"\\\\"+i);
+            matrix saveMat = Convertor.MatToMatrix(V4Memory.getActivationArray()[i]);
+            WriteObjectToFile(saveMat, newDir + "\\\\" + i);
         }
     }
 
