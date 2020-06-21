@@ -36,7 +36,7 @@ public class StartingNode extends ProcessTemplate {
     }
 
     public void triggerSend() {
-        int imgIndex = (int) (Math.random() * 100 + 1);
+        int imgIndex = 30;//(int) (Math.random() * 100 + 1);
         img = Imgcodecs.imread(
                 SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION,
                 Imgcodecs.IMREAD_COLOR

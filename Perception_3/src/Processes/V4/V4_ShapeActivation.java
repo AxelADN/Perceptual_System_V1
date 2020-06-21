@@ -9,12 +9,10 @@ import Config.Names;
 import Config.ProcessTemplate;
 import Config.SystemConfig;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Core;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
@@ -83,15 +81,19 @@ public class V4_ShapeActivation extends ProcessTemplate {
         MatOfPoint2f currentMat2f = new MatOfPoint2f();
         MatOfPoint currentMatPt = new MatOfPoint();
         for(int i=0; i<voronois.size(); i++){
-            Scalar color = new Scalar(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+            //Scalar color = new Scalar(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+            Scalar color = new Scalar(i*256/voronois.size(),256-i*256/voronois.size(),i*256/voronois.size());
             currentMat2f = voronois.get(i);
             currentMat2f.convertTo(currentMatPt, CvType.CV_32S);
             Imgproc.fillConvexPoly(img, currentMatPt, color);
         }
-        ptList.forEach((currentPt) -> {
-            Scalar color = new Scalar(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+        
+        for(int i=0; i<ptList.size(); i++){
+            Point currentPt = ptList.get(i);
+            //Scalar color = new Scalar(random.nextInt(256),random.nextInt(256),random.nextInt(256));
+            Scalar color = new Scalar(256-i*256/ptList.size(),i*256/ptList.size(),256-i*256/ptList.size());
             Imgproc.circle(img, currentPt, 1, color, -1);
-        });
+        }
         
         Mat img2 = Mat.zeros(img.size(), img.type());
         MatOfPoint matpt2 = new MatOfPoint();
