@@ -12,13 +12,17 @@ package utils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import matrix.matrix;
+import middlewareVision.nodes.Visual.smallNodes.V4Memory;
 
 /**
  *
@@ -48,13 +52,14 @@ public class FileUtils {
         }
         return content;
     }
-    
+
     /**
      * Delete a file
-     * @param path 
+     *
+     * @param path
      */
-    public static void deleteFile(String path){
-        File file=new File(path);
+    public static void deleteFile(String path) {
+        File file = new File(path);
         file.delete();
     }
 
@@ -83,6 +88,62 @@ public class FileUtils {
             } catch (Exception e2) {
                 e2.printStackTrace();
             }
+        }
+    }
+
+    public static void createDir(String path) {
+        File directory = new File(path);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+    }
+
+    public static void saveActivations(String path) {
+        saveV2activations(path);
+        saveV4activations(path);
+        saveContours(path);
+
+    }
+
+    public static void saveV2activations(String path) {
+        String newDir = path + "\\\\V2maps";
+        createDir(newDir);
+        for (int i = 0; i < V4Memory.getV2Map().length; i++) {
+            for (int j = 0; j < V4Memory.getV2Map()[0].length; j++) {
+                matrix saveMat = Convertor.MatToMatrix(V4Memory.getV2Map()[i][j]);
+                WriteObjectToFile(saveMat, newDir + "\\\\" + i + "_" + j);
+            }
+        }
+    }
+
+    public static void saveContours(String path) {
+        String newDir = path + "\\\\Contours";
+        createDir(newDir);
+        matrix saveMat = Convertor.MatToMatrix(V4Memory.getContours1());
+        WriteObjectToFile(saveMat, newDir + "\\\\" + 1);
+        matrix saveMat2 = Convertor.MatToMatrix(V4Memory.getContours2());
+        WriteObjectToFile(saveMat2, newDir + "\\\\" + 2);
+    }
+
+    public static void WriteObjectToFile(Object serObj, String filepath) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filepath + ".amap");
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+            objectOut.writeObject(serObj);
+            objectOut.close();
+            System.out.println("The Object  was succesfully written to a file");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void saveV4activations(String path) {
+        String newDir = path + "\\\\V4maps";
+        createDir(newDir);
+        for (int i = 0; i < V4Memory.getActivationArray().length; i++) {
+            matrix saveMat = Convertor.MatToMatrix(V4Memory.getActivationArray()[i]);
+            WriteObjectToFile(saveMat, newDir + "\\\\" + i);
         }
     }
 
@@ -120,7 +181,5 @@ public class FileUtils {
 
         return arr_res;
     }
-    
-    
 
 }

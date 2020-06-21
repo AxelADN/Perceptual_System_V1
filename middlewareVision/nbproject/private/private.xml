@@ -3,25 +3,29 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4ShapeCells.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/FileUtils.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/config/Init.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/MotionLabelIndex.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/gui/ClickFrame.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/FileUtils.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4Visualizer.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4Memory.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V2AngularCells.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RFlist.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V1Visualizer.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/V1.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/test.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/layoutManager.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/Config.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V1ComplexCells.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4Color.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/gui/Controls.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RF.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/RetinaFrame.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4ShapeActivationNode.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V1HyperComplex.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/RFgenerator.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/generator/VisPanel.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V2Visualizer.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4CellStructure.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V1SimpleCellsFilter.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/V4.java</file>
-            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/SpecialKernels.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/config/AreaNames.java</file>
         </group>
     </open-files>

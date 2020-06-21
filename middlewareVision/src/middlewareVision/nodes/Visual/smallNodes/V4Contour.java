@@ -83,14 +83,17 @@ public class V4Contour extends FrameActivity {
              */
             
             if (sync.isComplete()) {
-/*
+
                 contours1 = drawMatContours(combinedEdges, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_TC89_L1);
                 BufferedImage img2 = Convertor.ConvertMat2Image2(contours1);
+                V4Memory.contours1=new Mat();
                 frame[1].setImage(img2, "contours1");
+                Imgproc.cvtColor(contours1, V4Memory.contours1, Imgproc.COLOR_RGB2GRAY);
                 contours2 = drawMatContours(combinedEdges, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
                 BufferedImage img3 = Convertor.ConvertMat2Image2(contours2);
+                V4Memory.contours2=new Mat();
                 frame[2].setImage(img3, "contours2");
-
+                Imgproc.cvtColor(contours2, V4Memory.contours2, Imgproc.COLOR_RGB2GRAY);
                 /**
                  * si la matriz es normal en colores de 0 a 255, se puede
                  * convertir directo a bytes sin pasar por la imagen
@@ -137,7 +140,10 @@ public class V4Contour extends FrameActivity {
         Mat contoursMat;
         contoursMat = Mat.zeros(src.size(), CV_8UC3);
         for (int i = 0; i < contours.size(); i++) {
-            drawContours(contoursMat, contours, i, new Scalar(i * 20 % 255, i * 50 % 255, 200), FILLED);
+            if(i>254){
+                break;
+            }
+            drawContours(contoursMat, contours, i, new Scalar(i , i, i), FILLED);
         }
         contours.clear();
         return contoursMat;

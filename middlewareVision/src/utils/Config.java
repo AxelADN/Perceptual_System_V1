@@ -24,12 +24,14 @@ public class Config {
     public static int tresh=100;
     public static int blur=1;
     public static int gaborOrientations = 4;
-    public static int width=250;
-    public static int heigth=250;
+    public static int width=200;
+    public static int heigth=200;
     public static int motionWidth=70;
     public static int motionHeight=70;
     public static boolean ilusoryEnabled = true;
     public static int diagonalSize=3;
+    public static double bright=0;
+    public static double contr=1;
     
     /**
      * Paths for the image showed in the GUI

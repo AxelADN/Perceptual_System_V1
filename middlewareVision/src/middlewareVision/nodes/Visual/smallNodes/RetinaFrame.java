@@ -6,6 +6,7 @@
 package middlewareVision.nodes.Visual.smallNodes;
 
 import gui.ActivityFrame;
+import gui.Controls;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -33,7 +34,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
         public void actionPerformed(ActionEvent e) {
             try {
                 // Aquí el código que queramos ejecutar.
-                activity.setImage();
+                activity.setImage(0);
             } catch (IOException ex) {
                 Logger.getLogger(RetinaFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -95,6 +96,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
             int size = files.length;
             imageName = files[(count++) % size];
         }
+        Controls.setImageName(imageName+"");
         return imageName;
     }
 
@@ -138,7 +140,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
         // TODO add your handling code here:
         if (Config.option == Config.CLICK || Config.option == Config.RENDER) {
             try {
-                activity.setImage();
+                activity.setImage(0);
             } catch (IOException ex) {
                 Logger.getLogger(RetinaFrame.class.getName()).log(Level.SEVERE, null, ex);
             }

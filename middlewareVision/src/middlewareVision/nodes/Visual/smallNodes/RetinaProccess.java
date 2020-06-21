@@ -5,6 +5,7 @@
  */
 package middlewareVision.nodes.Visual.smallNodes;
 
+import gui.Controls;
 import gui.Frame;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -109,9 +110,9 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
 
         frame = new RetinaFrame(this, 0);
         frame.setSize(Config.width, Config.heigth);
-        
-        initFrames(3,1);
 
+        initFrames(3, 1);
+        Controls.setRet(this);
         startFrame();
     }
 
@@ -132,7 +133,7 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
         }
         if (Config.option == Config.CLICK) {
             try {
-                setImage();
+                setImage(0);
             } catch (IOException ex) {
                 //Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -169,42 +170,50 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
             ex.printStackTrace();
         }
     }
-    Mat src;
+    public Mat src;
+    BufferedImage img;
 
     /**
      * set the image in the frames
-     * @throws IOException 
+     *
+     * @throws IOException
      */
-    void setImage() throws IOException {
-        BufferedImage img = frame.createImage();
+    public void setImage(int c) throws IOException {
+        // BufferedImage img=null;
+        if (c == 0) {
+            img = frame.createImage();
+        }
         src = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
         src = Convertor.bufferedImageToMat(img);
+        src.convertTo(src, -1, Config.contr, Config.bright);
         //cvtColor(src, src, COLOR_BGR2GRAY);
         Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
-        BufferedImage img2=Convertor.ConvertMat2Image2(src);
-        
+        BufferedImage img2 = Convertor.ConvertMat2Image2(src);
+
         frame.setImage(img2);
-        
+
         /*
         do the transductions
-        */
-        Mat transMat[]=transduction(img2);
+         */
+        Mat transMat[] = transduction(img2);
         frames[0].setImage(Convertor.ConvertMat2Image(transMat[0]), "LMM");
         frames[1].setImage(Convertor.ConvertMat2Image(transMat[1]), "SMLPM");
         frames[2].setImage(Convertor.ConvertMat2Image(transMat[2]), "LPM");
-        
-        for(int i=0;i<transMat.length;i++){
-            LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i,1), Convertor.MatToMatrix(transMat[i]), 0);
-            send(AreaNames.LGN, spike.getByteArray());
+
+        if (c == 0 || c == 2) {
+            for (int i = 0; i < transMat.length; i++) {
+                LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i, 1), Convertor.MatToMatrix(transMat[i]), 0);
+                send(AreaNames.LGN, spike.getByteArray());
+            }
         }
-        
 
     }
 
     /**
      * do the transductions
+     *
      * @param img
-     * @return 
+     * @return
      */
     public Mat[] transduction(BufferedImage img) {
 
@@ -235,9 +244,10 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
 
     /**
      * magic
+     *
      * @param src
      * @param dest
-     * @param M 
+     * @param M
      */
     private void calculateReceptorActivation(Mat src, Mat dest, float[][] M) {
         if (src.channels() != 3) {
@@ -273,8 +283,9 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
 
     /**
      * retinal filter LMM
+     *
      * @param LMS
-     * @param dst 
+     * @param dst
      */
     private void LMM(LinkedList<Mat> LMS, Mat dst) {
         int rows = LMS.getFirst().rows();
@@ -293,8 +304,9 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
 
     /**
      * retinal filter SMLPM
+     *
      * @param LMS
-     * @param dst 
+     * @param dst
      */
     private void SMLPM(LinkedList<Mat> LMS, Mat dst) {
         int rows = LMS.getFirst().rows();
@@ -314,9 +326,10 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
     }
 
     /**
-     * Retinal filter LPM 
+     * Retinal filter LPM
+     *
      * @param LMS
-     * @param dst 
+     * @param dst
      */
     private void LPM(LinkedList<Mat> LMS, Mat dst) {
         Core.addWeighted(LMS.get(0), this.LPM_ALPHA, LMS.get(1), this.LPM_BETA, 0, dst);
