@@ -9,18 +9,24 @@ package utils;
  *
  * @author Humanoide
  */
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import matrix.matrix;
 import middlewareVision.nodes.Visual.smallNodes.V4Memory;
 
@@ -101,7 +107,10 @@ public class FileUtils {
     public static void saveActivations(String path) {
         saveV2activations(path);
         saveV4activations(path);
+        saveV2images(path);
+        saveV4images(path);
         saveContours(path);
+        saveContoursImages(path);
 
     }
 
@@ -116,6 +125,22 @@ public class FileUtils {
         }
     }
 
+    public static void saveV2images(String path) {
+        String newDir = path + "\\\\V2ImageMaps";
+        createDir(newDir);
+        for (int i = 0; i < V4Memory.getV2Map().length; i++) {
+            for (int j = 0; j < V4Memory.getV2Map()[0].length; j++) {
+                BufferedImage bi = Convertor.ConvertMat2Image(V4Memory.getV2Map()[i][j]);
+                File outputfile = new File(newDir + "\\" + i + "_" + j + ".jpg");
+                try {
+                    ImageIO.write(bi, "jpg", outputfile);
+                } catch (IOException ex) {
+                    System.out.println(ex);
+                }
+            }
+        }
+    }
+
     public static void saveContours(String path) {
         String newDir = path + "\\\\Contours";
         createDir(newDir);
@@ -125,13 +150,29 @@ public class FileUtils {
         WriteObjectToFile(saveMat2, newDir + "\\\\" + 2);
     }
 
+    public static void saveContoursImages(String path) {
+        String newDir = path + "\\\\ContoursImages";
+        createDir(newDir);
+        BufferedImage bi1 = Convertor.ConvertMat2Image2(V4Memory.getContours1());
+        File outputfile1 = new File(newDir + "\\" + "1.jpg");
+        BufferedImage bi2 = Convertor.ConvertMat2Image2(V4Memory.getContours2());
+        File outputfile2 = new File(newDir + "\\" + "2.jpg");
+
+        try {
+            ImageIO.write(bi1, "jpg", outputfile1);
+            ImageIO.write(bi2, "jpg", outputfile2);
+        } catch (IOException ex) {
+            System.out.println(ex);
+        }
+
+    }
+
     public static void WriteObjectToFile(Object serObj, String filepath) {
         try {
             FileOutputStream fileOut = new FileOutputStream(filepath + ".amap");
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(serObj);
             objectOut.close();
-            System.out.println("The Object  was succesfully written to a file");
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -145,6 +186,21 @@ public class FileUtils {
             matrix saveMat = Convertor.MatToMatrix(V4Memory.getActivationArray()[i]);
             WriteObjectToFile(saveMat, newDir + "\\\\" + i);
         }
+    }
+
+    public static void saveV4images(String path) {
+        String newDir = path + "\\\\V4ImageMaps";
+        createDir(newDir);
+        for (int i = 0; i < V4Memory.getActivationArray().length; i++) {
+            BufferedImage bi = Convertor.ConvertMat2Image(V4Memory.getActivationArray()[i]);
+            File outputfile = new File(newDir + "\\" + i + ".jpg");
+            try {
+                ImageIO.write(bi, "jpg", outputfile);
+            } catch (IOException ex) {
+                System.out.println(ex);
+            }
+        }
+
     }
 
     /**
@@ -180,6 +236,30 @@ public class FileUtils {
         }
 
         return arr_res;
+    }
+
+    /**
+     * Read file object
+     *
+     * @param filepath
+     * @return
+     */
+    public static Object ReadObjectFromFile(String filepath) {
+
+        try {
+
+            FileInputStream fileIn = new FileInputStream(filepath);
+            ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+
+            Object obj = objectIn.readObject();
+
+            objectIn.close();
+            return obj;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 }
