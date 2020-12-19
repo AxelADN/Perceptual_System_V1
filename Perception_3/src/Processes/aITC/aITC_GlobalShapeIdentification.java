@@ -71,6 +71,7 @@ public class aITC_GlobalShapeIdentification extends ProcessTemplate {
         }
         if(!matched){
             FeatureEntity newFE = new FeatureEntity(img);
+            showImg(img);
             outputIDs.add(newFE.getID());
             quadMemory.add(newFE);
         }

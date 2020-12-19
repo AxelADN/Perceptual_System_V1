@@ -114,4 +114,21 @@ public class Operation {
         return magnitude;
     }
     
+    public static boolean matOnes(Mat img){
+        int size = (int)(img.total()*img.channels());
+        byte[] data = new byte[size];
+        img.get(0, 0, data);
+        long total = 0;
+        byte temp = 0;
+        for(int i=0; i<data.length; i++){
+            //System.out.println("D:"+data[i]);
+            if(data[i]<0) temp = (byte) (data[i]*(-1));
+            else temp = data[i];
+            total += temp;
+        }
+        //System.out.println("DATA:  "+total/data.length);
+        if(total == data.length) return true;
+        else return false;
+    }
+    
 }
