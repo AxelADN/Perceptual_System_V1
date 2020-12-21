@@ -12,9 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-import utils.Constants;
 import utils.DataStructure;
-
 /**
  *
  * @author AxelADN
@@ -36,17 +34,20 @@ public class StartingNode extends ProcessTemplate {
     }
 
     public void triggerSend() {
-        int imgIndex = 20;//(int) (Math.random() * 100 + 1);
-        img = Imgcodecs.imread(
-                SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION,
-                Imgcodecs.IMREAD_COLOR
-        );
-        showImg(img);
-        time++;
-        ArrayList<Mat> imgs = new ArrayList<>();
-        imgs.add(img);
-        byte[] bytesToSend = DataStructure.wrapData(imgs, defaultModality, time);
-        send(Names.V1_EdgeActivation, bytesToSend);
+        if(SystemConfig.EXTERNAL_ORIGIN) manageExternalData();
+        else{
+            ArrayList<Mat> imgs = new ArrayList<>();
+            time++;
+            int imgIndex = 20;//(int) (Math.random() * 100 + 1);
+            img = Imgcodecs.imread(
+                    SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION,
+                    Imgcodecs.IMREAD_COLOR
+            );
+            showImg(img);
+            imgs.add(img);
+            byte[] bytesToSend = DataStructure.wrapData(imgs, defaultModality, time);
+            send(Names.V1_EdgeActivation, bytesToSend);
+        }
     }
 
     @Override
@@ -147,6 +148,31 @@ public class StartingNode extends ProcessTemplate {
         }
         Reporter.buildReport();
         Reporter.endReport();
+    }
+
+    private void manageExternalData() {
+        sendV2Map();
+//        sendV4Activations();
+//        sendActivationArray();
+//        sendContours1();
+//        sendContours2();
+    }
+    
+    private void sendV2Map(){
+//        byte[] bytesToSend;
+//        ArrayList<Mat> imgs = new ArrayList<>();
+//        ArrayList<Mat> imgsAux = new ArrayList<>();
+//        Mat[][] v2Map = V4Memory.getV2Map();
+//        for(int i=0; i<v2Map.length; i++){
+//            for(int j=0; j<v2Map[0].length; j++){
+//                imgs.add(v2Map[j][i]);
+//            }
+//        }
+//        for(Mat img: imgs){
+//            imgsAux.add(img);
+//            bytesToSend = DataStructure.wrapData(imgsAux, defaultModality, time);
+//            send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
+//        }
     }
 
 }
