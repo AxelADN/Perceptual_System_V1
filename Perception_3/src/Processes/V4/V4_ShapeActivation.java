@@ -113,7 +113,7 @@ public class V4_ShapeActivation extends ProcessTemplate {
         
         img.copyTo(resultMat, img2);
         
-        showImg(resultMat);
+        //showImg(resultMat);
         outputImgs.add(resultMat);
         
         return outputImgs;

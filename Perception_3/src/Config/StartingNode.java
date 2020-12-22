@@ -22,32 +22,48 @@ public class StartingNode extends ProcessTemplate {
     private int time;
     private static GUI gui = null;
     private Mat img;
+    private String imgString;
+    int imgIndex;
 
     public StartingNode() {
         this.ID = Names.StartingNode;
 
         defaultModality = DataStructure.Modalities.VISUAL_LOW;
         time = 0;
+        imgString = new String();
+        imgIndex = 1;
 
         //send(this.ID,new byte[]{});
         //init();
     }
 
     public void triggerSend() {
+        time++;
         if(SystemConfig.EXTERNAL_ORIGIN) manageExternalData();
         else{
             ArrayList<Mat> imgs = new ArrayList<>();
-            time++;
-            int imgIndex = 20;//(int) (Math.random() * 100 + 1);
             img = Imgcodecs.imread(
-                    SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION,
+                    imgString,
                     Imgcodecs.IMREAD_COLOR
             );
-            showImg(img);
+            //showImg(img);
             imgs.add(img);
-            byte[] bytesToSend = DataStructure.wrapData(imgs, defaultModality, time);
+            byte[] bytesToSend = DataStructure.wrapData(imgs, defaultModality, (time/3));
             send(Names.V1_EdgeActivation, bytesToSend);
         }
+    }
+    
+    public String getImg(){
+        imgString = SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION;
+        return imgString;
+    }
+    
+    public void imgIndexPlus(){
+        imgIndex+=1;
+    }
+    
+    public String getImgName(){
+        return "obj"+imgIndex+"__0";
     }
 
     @Override

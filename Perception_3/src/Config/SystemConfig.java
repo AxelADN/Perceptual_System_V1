@@ -15,7 +15,7 @@ import org.opencv.core.Size;
  */
 public class SystemConfig{
     
-    public static final boolean EXTERNAL_ORIGIN = true;
+    public static final boolean EXTERNAL_ORIGIN = false;
     
     public static final int INPUT_WIDTH   =   128;
     public static final int INPUT_HEIGHT  =   128;
