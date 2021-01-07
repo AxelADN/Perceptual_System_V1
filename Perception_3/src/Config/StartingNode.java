@@ -12,9 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-import utils.Constants;
 import utils.DataStructure;
-
 /**
  *
  * @author AxelADN
@@ -24,29 +22,48 @@ public class StartingNode extends ProcessTemplate {
     private int time;
     private static GUI gui = null;
     private Mat img;
+    private String imgString;
+    int imgIndex;
 
     public StartingNode() {
         this.ID = Names.StartingNode;
 
         defaultModality = DataStructure.Modalities.VISUAL_LOW;
         time = 0;
+        imgString = new String();
+        imgIndex = 1;
 
         //send(this.ID,new byte[]{});
         //init();
     }
 
     public void triggerSend() {
-        int imgIndex = 30;//(int) (Math.random() * 100 + 1);
-        img = Imgcodecs.imread(
-                SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION,
-                Imgcodecs.IMREAD_COLOR
-        );
-        showImg(img);
         time++;
-        ArrayList<Mat> imgs = new ArrayList<>();
-        imgs.add(img);
-        byte[] bytesToSend = DataStructure.wrapData(imgs, defaultModality, time);
-        send(Names.V1_EdgeActivation, bytesToSend);
+        if(SystemConfig.EXTERNAL_ORIGIN) manageExternalData();
+        else{
+            ArrayList<Mat> imgs = new ArrayList<>();
+            img = Imgcodecs.imread(
+                    imgString,
+                    Imgcodecs.IMREAD_COLOR
+            );
+            //showImg(img);
+            imgs.add(img);
+            byte[] bytesToSend = DataStructure.wrapData(imgs, defaultModality, (time/3));
+            send(Names.V1_EdgeActivation, bytesToSend);
+        }
+    }
+    
+    public String getImg(){
+        imgString = SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION;
+        return imgString;
+    }
+    
+    public void imgIndexPlus(){
+        imgIndex+=1;
+    }
+    
+    public String getImgName(){
+        return "obj"+imgIndex+"__0";
     }
 
     @Override
@@ -147,6 +164,31 @@ public class StartingNode extends ProcessTemplate {
         }
         Reporter.buildReport();
         Reporter.endReport();
+    }
+
+    private void manageExternalData() {
+        sendV2Map();
+//        sendV4Activations();
+//        sendActivationArray();
+//        sendContours1();
+//        sendContours2();
+    }
+    
+    private void sendV2Map(){
+//        byte[] bytesToSend;
+//        ArrayList<Mat> imgs = new ArrayList<>();
+//        ArrayList<Mat> imgsAux = new ArrayList<>();
+//        Mat[][] v2Map = V4Memory.getV2Map();
+//        for(int i=0; i<v2Map.length; i++){
+//            for(int j=0; j<v2Map[0].length; j++){
+//                imgs.add(v2Map[j][i]);
+//            }
+//        }
+//        for(Mat img: imgs){
+//            imgsAux.add(img);
+//            bytesToSend = DataStructure.wrapData(imgsAux, defaultModality, time);
+//            send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
+//        }
     }
 
 }

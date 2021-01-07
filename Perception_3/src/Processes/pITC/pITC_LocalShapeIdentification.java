@@ -60,27 +60,35 @@ public class pITC_LocalShapeIdentification extends ProcessTemplate {
     private ArrayList<Long> imageIdentification(ArrayList<Mat> imgs) {
         ArrayList<Long> outputIDs = new ArrayList<>();
         
-        Mat img = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
+        Mat img;
         double correl = 0;
         boolean matched = false;
+        PriorityQueue<FeatureEntity> currentQueue = new PriorityQueue<>();
+        PriorityQueue<FeatureEntity> currentQueue_past = new PriorityQueue<>();
         for(int i=0; i<imgs.size(); i++){
+            img = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
             Imgproc.cvtColor(imgs.get(i), img, Imgproc.COLOR_BGR2GRAY);
-            PriorityQueue<FeatureEntity> currentQueue = quad16memory.get(i);
-            for(FeatureEntity feature: currentQueue){
-                correl = Operation.featuresMatchedVal(img, feature.getMat());
-                if(correl > SystemConfig.TEMPLATE_MATCHING_TOLERANCE){
-                    matched = true;
-                    feature.increasePriority(correl);
-                    outputIDs.add(feature.getID());
-                    break;
+            //if(!img.empty()){
+                currentQueue = quad16memory.get(i);
+                for(FeatureEntity feature: currentQueue){
+                    correl = Operation.featuresMatchedVal(img, feature.getMat());
+                    //System.out.print("INDEX:  "+feature.getID()+" --> CORREL: "+correl+" --> ");
+                    //Operation.matOnes(img);
+                    if(correl > SystemConfig.TEMPLATE_MATCHING_TOLERANCE){
+                        matched = true;
+                        feature.increasePriority(correl);
+                        outputIDs.add(feature.getID());
+                        break;
+                    }
                 }
-            }
-            if(!matched){
-                FeatureEntity newFE = new FeatureEntity(img);
-                newFE.isQuad16();
-                outputIDs.add(newFE.getID());
-                currentQueue.add(newFE);
-            }
+                if(!matched && correl==correl){
+                    FeatureEntity newFE = new FeatureEntity(img);
+                    newFE.isQuad16();
+                    //showImg(img,newFE.getID());
+                    outputIDs.add(newFE.getID());
+                    currentQueue.add(newFE);
+                }
+            //}
         }
         
         return outputIDs;

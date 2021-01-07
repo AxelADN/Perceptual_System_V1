@@ -60,10 +60,11 @@ public class pITC_VicinityShapeIdentification extends ProcessTemplate {
     private ArrayList<Long> imageIdentification(ArrayList<Mat> imgs) {
         ArrayList<Long> outputIDs = new ArrayList<>();
         
-        Mat img = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
+        Mat img;
         double correl = 0;
         boolean matched = false;
         for(int i=0; i<imgs.size(); i++){
+            img = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
             Imgproc.cvtColor(imgs.get(i), img, Imgproc.COLOR_BGR2GRAY);
             PriorityQueue<FeatureEntity> currentQueue = quad4memory.get(i);
             for(FeatureEntity feature: currentQueue){
