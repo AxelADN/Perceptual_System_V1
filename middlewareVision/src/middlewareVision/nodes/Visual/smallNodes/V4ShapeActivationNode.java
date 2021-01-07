@@ -120,12 +120,12 @@ public class V4ShapeActivationNode extends Activity {
         double p = 1 / (double) mats.size();
         //System.out.println("p es "+p+"    1-p "+(1-p));
         for (Mat mat : mats) {
-            Core.pow(mat, 2, mat);
+            Core.pow(mat, 1.2, mat);
             //Core.add(activation, mat, activation);
             Core.multiply(activation, mat, activation);
         }
-        Core.multiply(activation, new Scalar(p), activation);
-        Imgproc.threshold(activation, activation, 0, 1, Imgproc.THRESH_TOZERO);
+        Core.multiply(activation, new Scalar(0.001), activation);
+        //Imgproc.threshold(activation, activation, 0, 1, Imgproc.THRESH_TOZERO);
         return activation;
     }
 

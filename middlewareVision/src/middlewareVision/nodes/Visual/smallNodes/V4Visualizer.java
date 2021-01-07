@@ -11,6 +11,7 @@ import spike.Modalities;
 import utils.Convertor;
 import utils.LongSpike;
 import utils.SimpleLogger;
+import utils.SpecialKernels;
 
 /**
  *
@@ -46,6 +47,7 @@ public class V4Visualizer extends FrameActivity {
             Location l = (Location) spike.getLocation();
             int index = l.getValues()[0];
             if (spike.getModality() == Modalities.VISUAL) {
+                //frame[index].setImage(Convertor.ConvertMat2Image(SpecialKernels.v2Kernels[2]), "V4  " + index);
                 frame[index].setImage(Convertor.ConvertMat2Image(V4Memory.activationArray[index]), "V4  " + index);
             }
 

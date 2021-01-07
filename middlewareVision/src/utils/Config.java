@@ -32,6 +32,7 @@ public class Config {
     public static int diagonalSize=3;
     public static double bright=0;
     public static double contr=1;
+    public static double endstop=0.1;
     
     /**
      * Paths for the image showed in the GUI

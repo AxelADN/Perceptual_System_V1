@@ -7,6 +7,7 @@ package middlewareVision.nodes.Visual.smallNodes;
 
 import java.util.ArrayList;
 import org.opencv.core.Mat;
+import utils.Config;
 
 /**
  *
@@ -15,10 +16,18 @@ import org.opencv.core.Mat;
 public class V4Memory {
     
     static Mat [][] v2Map;
+    public static Mat [] v1Map;
     static ArrayList<Mat[]> v4Activations;
     static Mat[] activationArray;
     static Mat contours1;
     static Mat contours2;
+    
+    public static void initV1Map(){
+        v1Map=new Mat[Config.gaborOrientations];
+        for(int i=0;i<v1Map.length;i++){
+            v1Map[i]=new Mat();
+        }
+    }
 
     public static Mat getContours1() {
         return contours1;
@@ -26,6 +35,14 @@ public class V4Memory {
 
     public static void setContours1(Mat contours1) {
         V4Memory.contours1 = contours1;
+    } 
+    
+    public static Mat[] getV1Map() {
+        return v1Map;
+    }
+
+    public static void setV1Map(Mat[] v1Map) {
+        V4Memory.v1Map = v1Map;
     }
 
     public static Mat getContours2() {

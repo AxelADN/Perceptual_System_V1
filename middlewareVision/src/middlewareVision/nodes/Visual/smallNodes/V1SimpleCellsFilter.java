@@ -56,7 +56,7 @@ public class V1SimpleCellsFilter extends Activity {
                 Mat raw = Convertor.matrixToMat((matrix) spike.getIntensity());
                 
                 Mat evenOrs = gaborFilter(raw, 0, index);
-                Mat oddOrs = gaborFilter(raw, 1.1, index);
+                Mat oddOrs = gaborFilter(raw, 1, index);
                 
                 matrix evenMatrix=Convertor.MatToMatrix(evenOrs);
                 matrix oddMatrix=Convertor.MatToMatrix(oddOrs);
@@ -92,7 +92,7 @@ public class V1SimpleCellsFilter extends Activity {
         ors = new Mat();
         Mat kernel = new Mat();
         //size of the kernel
-        int kernelSize = 13;
+        int kernelSize = 20;
         //angle of the orientation
         float angle = part * inc;
         //initializate the ors and gab array matrix with zeros

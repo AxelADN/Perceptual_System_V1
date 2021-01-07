@@ -10,6 +10,8 @@ import org.opencv.core.Core;
 import utils.SimpleLogger;
 import utils.layoutManager;
 import middlewareVision.nodes.Visual.LGN;
+import middlewareVision.nodes.Visual.smallNodes.V4Memory;
+import org.opencv.core.Mat;
 import utils.SpecialKernels;
 //@import
 
@@ -45,6 +47,7 @@ public class Init extends Igniter {
         configuration.setDebug(!DEBUG);
         configuration.setTCP();
         configuration.setEntityID(ENTITY_ID);
+        V4Memory.initV1Map();
         Controls cc=new Controls();
         cc.setVisible(true);
 

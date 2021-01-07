@@ -24,8 +24,6 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import matrix.matrix;
 import middlewareVision.nodes.Visual.smallNodes.V4Memory;
@@ -49,7 +47,7 @@ public class FileUtils {
                 = new BufferedReader(new InputStreamReader(in))) {
             String line = null;
             while ((line = reader.readLine()) != null) {
-                //System.out.println(line);
+                //Msg.print(line);
                 content = content + line + "\n";
             }
             in.close();
@@ -104,14 +102,50 @@ public class FileUtils {
         }
     }
 
+    /**
+     * save all activations needed
+     *
+     * @param path
+     */
     public static void saveActivations(String path) {
+        saveV1activations(path);
         saveV2activations(path);
-        saveV4activations(path);
+        try {
+            saveV4activations(path);
+        } catch (Exception ex) {
+        }
+        saveV1Images(path);
         saveV2images(path);
-        saveV4images(path);
+        try {
+            saveV4images(path);
+        } catch (Exception ex) {
+        }
         saveContours(path);
         saveContoursImages(path);
 
+    }
+
+    public static void saveV1Images(String path) {
+        String newDir = path + "\\\\V1ImageMaps";
+        createDir(newDir);
+        for (int i = 0; i < V4Memory.getV1Map().length; i++) {
+            BufferedImage bi = Convertor.ConvertMat2Image(V4Memory.getV1Map()[i]);
+            File outputfile = new File(newDir + "\\" + i + ".jpg");
+            try {
+                ImageIO.write(bi, "jpg", outputfile);
+            } catch (IOException ex) {
+                System.out.println(ex);
+            }
+        }
+    }
+
+    public static void saveV1activations(String path) {
+        String newDir = path + "\\\\V1maps";
+        createDir(newDir);
+        for (int i = 0; i < V4Memory.getV1Map().length; i++) {
+            matrix saveMat = Convertor.MatToMatrix(V4Memory.getV1Map()[i]);
+            WriteObjectToFile(saveMat, newDir + "\\\\" + i);
+        }
     }
 
     public static void saveV2activations(String path) {

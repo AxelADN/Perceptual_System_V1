@@ -1,6 +1,7 @@
 package middlewareVision.nodes.Visual.smallNodes;
 
 import gui.FrameActivity;
+import java.io.IOException;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
@@ -14,6 +15,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import spike.Modalities;
+import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
 import utils.SimpleLogger;
@@ -58,9 +60,10 @@ public class V1HyperComplex extends Activity {
                 //ilusoryEdges = MatrixUtils.maxSum(ilusoryEdges, edges);
                 Core.add(edges, endStop, endStop);
                 Imgproc.threshold(endStop, endStop, 0.4, 1, Imgproc.THRESH_TOZERO);
-                Core.addWeighted(edges, 0.1, endStop, 0.90, 0, endStop);
-                
-                LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index,4), Convertor.MatToMatrix(endStop), 0);
+                double w = Config.endstop;
+                Core.addWeighted(edges, w, endStop, 1 - w, 0, endStop);
+                V4Memory.v1Map[index]=endStop;
+                LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index, 4), Convertor.MatToMatrix(endStop), 0);
                 send(AreaNames.V2AngularCells, sendSpike.getByteArray());
                 send(AreaNames.V4Contour, sendSpike.getByteArray());
                 send(AreaNames.V1Visualizer, sendSpike.getByteArray());
@@ -68,9 +71,10 @@ public class V1HyperComplex extends Activity {
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(V1HyperComplex.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }
+
 
     public Mat endStopped(Mat img, int index) {
         Mat ors = new Mat();

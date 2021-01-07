@@ -58,10 +58,10 @@ public class V1 extends Area{
 	send(AreaNames.V1SimpleCellsFilter,data);
 	
 	send(AreaNames.V1Visualizer,data);
-	send(AreaNames.V1MotionCells,data);
+	//send(AreaNames.V1MotionCells,data);
 	//
 	
-	send(AreaNames.V1MotionCells2,data);
+	//send(AreaNames.V1MotionCells2,data);
 	
 	//@SendProcess
     }
