@@ -5,6 +5,7 @@
         <group>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/FileUtils.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/config/Init.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/mapOpener/AmapViewer.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4Memory.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/gui/Frame.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/Config.java</file>
@@ -14,6 +15,7 @@
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/RetinaFrame.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V4ShapeActivationNode.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/middlewareVision/nodes/Visual/smallNodes/V1HyperComplex.java</file>
+            <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/mapOpener/OpenObjectTest.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/Convertor.java</file>
             <file>file:/F:/HumanoideFilms/Documents/cuayollotol/middlewareVision/src/utils/SpecialKernels.java</file>
         </group>
