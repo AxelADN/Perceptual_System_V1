@@ -108,10 +108,10 @@ public class FileUtils {
      * @param path
      */
     public static void saveActivations(String path) {
-        saveV1activations(path);
-        saveV2activations(path);
+        //saveV1activations(path);
+        //saveV2activations(path);
         try {
-            saveV4activations(path);
+            //saveV4activations(path);
         } catch (Exception ex) {
         }
         saveV1Images(path);
@@ -120,7 +120,7 @@ public class FileUtils {
             saveV4images(path);
         } catch (Exception ex) {
         }
-        saveContours(path);
+        //saveContours(path);
         saveContoursImages(path);
 
     }
