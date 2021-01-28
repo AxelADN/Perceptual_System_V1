@@ -63,7 +63,7 @@ public abstract class ProcessTemplate extends Process{
             System.arraycopy(bytes, 0, stateCaller, 0, stateCaller.length);
             if("SYSTEM STATE".equals(new String(stateCaller))){
                 this.systemState = bytes[stateCaller.length];
-                System.out.println("SYSTEM_STATE_CHANGED...."+IDHelper.getNameAsString(Names.class, this.ID));
+                System.out.println("SYSTEM_STATE_CHANGED...."+IDHelper.getNameAsString(Names.class, this.ID)+" --> "+this.systemState);
                 return true;
             }
         }

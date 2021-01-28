@@ -46,15 +46,16 @@ public class pITC_VicinityShapeIdentification extends ProcessTemplate {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
             this.thisTime = DataStructure.getTime(bytes);
+        
+            send(
+                    Names.aITC_ObjectClassification,
+                    DataStructure.wrapDataID(
+                            imageIdentification(DataStructure.getMats(bytes)),
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
         }
-        send(
-                Names.aITC_ObjectClassification,
-                DataStructure.wrapDataID(
-                        imageIdentification(DataStructure.getMats(bytes)),
-                        defaultModality,
-                        DataStructure.getTime(bytes)
-                )
-        );
     }
 
     private ArrayList<Long> imageIdentification(ArrayList<Mat> imgs) {
@@ -64,6 +65,7 @@ public class pITC_VicinityShapeIdentification extends ProcessTemplate {
         double correl = 0;
         boolean matched = false;
         for(int i=0; i<imgs.size(); i++){
+            matched = false;
             img = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
             Imgproc.cvtColor(imgs.get(i), img, Imgproc.COLOR_BGR2GRAY);
             PriorityQueue<FeatureEntity> currentQueue = quad4memory.get(i);

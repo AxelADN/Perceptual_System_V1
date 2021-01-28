@@ -38,16 +38,17 @@ public class aITC_GlobalOrientationTransformation extends ProcessTemplate {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
             this.thisTime = DataStructure.getTime(bytes);
+        
+            ArrayList<Mat> toSend = imageProcessing(DataStructure.getMats(bytes));
+            send(
+                    Names.aITC_GlobalShapeIdentification,
+                    DataStructure.wrapData(
+                            toSend,
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
         }
-        ArrayList<Mat> toSend = imageProcessing(DataStructure.getMats(bytes));
-        send(
-                Names.aITC_GlobalShapeIdentification,
-                DataStructure.wrapData(
-                        toSend,
-                        defaultModality,
-                        DataStructure.getTime(bytes)
-                )
-        );
     }
 
     private ArrayList<Mat> imageProcessing(ArrayList<Mat> imgs) {
@@ -70,7 +71,7 @@ public class aITC_GlobalOrientationTransformation extends ProcessTemplate {
         
         combVec = linearCombination(byteMat, tx, ty);
         orientation = Math.atan2(combVec.y,combVec.x);
-        System.out.println("X--"+combVec.x+", Y--"+combVec.y+", O--"+-1*(orientation*180/Math.PI));
+        //System.out.println("X--"+combVec.x+", Y--"+combVec.y+", O--"+-1*(orientation*180/Math.PI));
         Mat rotation = Imgproc.getRotationMatrix2D(new Point(tx/2,ty/2), -1*(orientation*180/Math.PI), 1);
         Imgproc.warpAffine(img, rotated, rotation, img.size());
         //showImg(img);

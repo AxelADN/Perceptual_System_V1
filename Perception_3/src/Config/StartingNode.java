@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import utils.Constants;
 import utils.DataStructure;
 /**
  *
@@ -39,7 +40,7 @@ public class StartingNode extends ProcessTemplate {
 
     public void triggerSend() {
         time++;
-        if(SystemConfig.EXTERNAL_ORIGIN) manageExternalData();
+        if(SystemConfig.EXTERNAL_ORIGIN) manageExternalData(String.valueOf(time%11+1));
         else{
             ArrayList<Mat> imgs = new ArrayList<>();
             img = Imgcodecs.imread(
@@ -71,14 +72,14 @@ public class StartingNode extends ProcessTemplate {
 
         java.awt.EventQueue.invokeLater(() -> {
             if (SystemConfig.TRAINING_MODE) {
-                //trainningCycle();
+                trainningCycle();
             }
             System.out.println("Training_Finish");
-            //sendSystemStateChange(Constants.STATE_TRAINING_OFF);
+            sendSystemStateChange(Constants.STATE_TRAINING_OFF);
             //SystemConfig.TRAINING_MODE = false;
-            time = 1;
+            time = 0;
             try {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(StartingNode.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -105,17 +106,20 @@ public class StartingNode extends ProcessTemplate {
     }
 
     private void trainningCycle() {
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 11; i++) {
             try {
                 Thread.sleep(250L);
                 System.out.println("TIME... " + i);
                 time = i;
-                this.actionPerformed(
-                        Imgcodecs.imread(
-                                SystemConfig.FILE + "obj" + i + "__0" + SystemConfig.EXTENSION,
-                                Imgcodecs.IMREAD_GRAYSCALE
-                        )
-                );
+                if(SystemConfig.EXTERNAL_ORIGIN) manageExternalData(String.valueOf(time%11+1));
+                else{
+                    this.actionPerformed(
+                            Imgcodecs.imread(
+                                    SystemConfig.FILE + "obj" + i + "__0" + SystemConfig.EXTENSION,
+                                    Imgcodecs.IMREAD_GRAYSCALE
+                            )
+                    );
+                }
             } catch (InterruptedException ex) {
                 Logger.getLogger(StartingNode.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -166,29 +170,77 @@ public class StartingNode extends ProcessTemplate {
         Reporter.endReport();
     }
 
-    private void manageExternalData() {
-        sendV2Map();
-//        sendV4Activations();
-//        sendActivationArray();
-//        sendContours1();
-//        sendContours2();
+    private void manageExternalData(String currentScene) {
+        ArrayList<Mat> imgs2Send = new ArrayList<>();
+        Mat data = new Mat();
+        String sceneFile = SystemConfig.EXTERNAL_INPUT_FILE+currentScene+"\\";
+        sendV2Maps(imgs2Send, data,sceneFile);
+        sendV1Maps(imgs2Send, data,sceneFile);
+        sendV4Maps(imgs2Send, data,sceneFile);
+        sendContours(imgs2Send, data,sceneFile);
     }
     
-    private void sendV2Map(){
-//        byte[] bytesToSend;
-//        ArrayList<Mat> imgs = new ArrayList<>();
-//        ArrayList<Mat> imgsAux = new ArrayList<>();
-//        Mat[][] v2Map = V4Memory.getV2Map();
-//        for(int i=0; i<v2Map.length; i++){
-//            for(int j=0; j<v2Map[0].length; j++){
-//                imgs.add(v2Map[j][i]);
-//            }
-//        }
-//        for(Mat img: imgs){
-//            imgsAux.add(img);
-//            bytesToSend = DataStructure.wrapData(imgsAux, defaultModality, time);
-//            send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
-//        }
+    private void sendContours(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
+        for(int i=1; i<=2; i++){
+            String currentFile = sceneFile+SystemConfig.CONTOURS_FILE+"\\"+String.valueOf(i)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
+            data = Imgcodecs.imread(
+                    currentFile,
+                    Imgcodecs.IMREAD_COLOR
+            );
+            //System.out.println("FILE: "+currentFile);
+            //showImg(data);
+            imgs2Send.add(data);
+            byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
+            send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
+        }
+    }
+    
+    private void sendV1Maps(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
+        for(int i=0; i<4; i++){
+            String currentFile = sceneFile+SystemConfig.V1_FILE+"\\"+String.valueOf(i)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
+            data = Imgcodecs.imread(
+                    currentFile,
+                    Imgcodecs.IMREAD_COLOR
+            );
+            //System.out.println("FILE: "+currentFile);
+            //showImg(data);
+            imgs2Send.add(data);
+            byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
+            send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
+        }
+    }
+    
+    private void sendV2Maps(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
+        for(int i=0; i<4; i++){
+            for(int j=0; j<8; j++){
+                String currentDataNum = String.valueOf(i)+"_"+String.valueOf(j);
+                String currentFile = sceneFile+SystemConfig.V2_FILE+"\\"+currentDataNum+SystemConfig.EXTERNAL_INPUT_EXTENSION;
+                data = Imgcodecs.imread(
+                        currentFile,
+                        Imgcodecs.IMREAD_COLOR
+                );
+                //System.out.println("FILE: "+currentFile);
+                //showImg(data);
+                imgs2Send.add(data);
+                byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
+                send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
+            }
+        }
+    }
+    
+    private void sendV4Maps(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
+        for(int i=0; i<3; i++){
+            String currentFile = sceneFile+SystemConfig.V4_FILE+"\\"+String.valueOf(i)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
+            data = Imgcodecs.imread(
+                    currentFile,
+                    Imgcodecs.IMREAD_COLOR
+            );
+            //System.out.println("FILE: "+currentFile);
+            //showImg(data);
+            imgs2Send.add(data);
+            byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
+            send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
+        }
     }
 
 }

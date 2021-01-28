@@ -52,15 +52,16 @@ public class pITC_ProtoObjectPartitioning extends ProcessTemplate {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
             this.thisTime = DataStructure.getTime(bytes);
+        
+            send(
+                    Names.pITC_LocalSizeTransformation,
+                    DataStructure.wrapData(
+                            imageProcessing(DataStructure.getMats(bytes)),
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
         }
-        send(
-                Names.pITC_LocalSizeTransformation,
-                DataStructure.wrapData(
-                        imageProcessing(DataStructure.getMats(bytes)),
-                        defaultModality,
-                        DataStructure.getTime(bytes)
-                )
-        );
     }
 
     private ArrayList<Mat> imageProcessing(ArrayList<Mat> imgs) {

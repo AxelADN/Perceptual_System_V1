@@ -10,6 +10,7 @@ import Config.ProcessTemplate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import utils.Constants;
 import utils.DataStructure;
 
 /**
@@ -25,6 +26,8 @@ public class aITC_ObjectClassification extends ProcessTemplate {
 //    private ArrayList<Long> quad4IDs;
 //    private ArrayList<Long> quadIDs;
     private boolean timeChanged;
+    private int currentTime;
+    private int theTime;
 
     public aITC_ObjectClassification() {
         this.ID = Names.aITC_ObjectClassification;
@@ -38,22 +41,26 @@ public class aITC_ObjectClassification extends ProcessTemplate {
 //        quadIDs = new ArrayList<>();
         
         timeChanged = false;
+        theTime = 1;
+        currentTime = 1;
+        
     }
 
     @Override
     public void init() {
-
+        
     }
 
     @Override
     public void receive(long l, byte[] bytes) {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
-            int currentTime = DataStructure.getTime(bytes);
-            System.out.println("TIME: "+currentTime);
-            if(currentTime > this.thisTime){
+            //System.out.println("LOLO --> "+currentTime+" "+theTime);
+            currentTime = DataStructure.getTime(bytes);
+            if(currentTime > theTime){
                 timeChanged = true;
-                this.thisTime = currentTime;
+                System.out.println("TimeChange!");
+                theTime= currentTime;
             }
             if(!quad16IDs.isEmpty() && !quad4IDs.isEmpty() && !quadIDs.isEmpty()){
                 if(timeChanged){
@@ -89,6 +96,15 @@ public class aITC_ObjectClassification extends ProcessTemplate {
             if(l == Names.aITC_GlobalShapeIdentification){
                 quadIDs.addAll(DataStructure.getIDs(bytes));
             }
+        } else{
+            java.awt.EventQueue.invokeLater(() -> {
+                if(this.systemState == Constants.STATE_TRAINING_OFF){
+                    System.out.println("SystemState Change!");
+                    theTime = 1;
+                    currentTime = 1;
+                    timeChanged = false;
+                }
+            });
         }
         
     }
@@ -101,6 +117,7 @@ public class aITC_ObjectClassification extends ProcessTemplate {
         totalIDs.addAll(quad16IDs);
         
         System.out.println("TOTAL--"+totalIDs);
+        System.out.println("SIZE--"+totalIDs.size());
         
         return totalIDs;
     }

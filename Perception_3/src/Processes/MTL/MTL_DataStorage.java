@@ -38,7 +38,7 @@ public class MTL_DataStorage extends ProcessTemplate {
 
     private void storeData(ArrayList<Long> objectClass) {
         objectData.add(objectClass);
-        System.out.println("MTL: "+objectClass);
+        //System.out.println("MTL: "+objectClass);
     }
 
 }

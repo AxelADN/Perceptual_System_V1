@@ -46,15 +46,16 @@ public class pITC_LocalShapeIdentification extends ProcessTemplate {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
             this.thisTime = DataStructure.getTime(bytes);
+        
+            send(
+                    Names.aITC_ObjectClassification,
+                    DataStructure.wrapDataID(
+                            imageIdentification(DataStructure.getMats(bytes)),
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
         }
-        send(
-                Names.aITC_ObjectClassification,
-                DataStructure.wrapDataID(
-                        imageIdentification(DataStructure.getMats(bytes)),
-                        defaultModality,
-                        DataStructure.getTime(bytes)
-                )
-        );
     }
 
     private ArrayList<Long> imageIdentification(ArrayList<Mat> imgs) {
@@ -66,15 +67,18 @@ public class pITC_LocalShapeIdentification extends ProcessTemplate {
         PriorityQueue<FeatureEntity> currentQueue = new PriorityQueue<>();
         PriorityQueue<FeatureEntity> currentQueue_past = new PriorityQueue<>();
         for(int i=0; i<imgs.size(); i++){
+            matched = false;
             img = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
             Imgproc.cvtColor(imgs.get(i), img, Imgproc.COLOR_BGR2GRAY);
+            //showImg(img);
             //if(!img.empty()){
                 currentQueue = quad16memory.get(i);
+                //System.out.println("SIZE16: "+currentQueue.size());
                 for(FeatureEntity feature: currentQueue){
                     correl = Operation.featuresMatchedVal(img, feature.getMat());
-                    //System.out.print("INDEX:  "+feature.getID()+" --> CORREL: "+correl+" --> ");
                     //Operation.matOnes(img);
                     if(correl > SystemConfig.TEMPLATE_MATCHING_TOLERANCE){
+                        //System.out.print("INDEX:  "+feature.getID()+" --> CORREL: "+correl+" --> ");
                         matched = true;
                         feature.increasePriority(correl);
                         outputIDs.add(feature.getID());
@@ -91,6 +95,7 @@ public class pITC_LocalShapeIdentification extends ProcessTemplate {
             //}
         }
         
+        //System.out.println("IDs --> "+outputIDs);
         return outputIDs;
     }
 

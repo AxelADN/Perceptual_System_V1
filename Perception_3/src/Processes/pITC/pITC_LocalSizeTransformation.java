@@ -44,24 +44,25 @@ public class pITC_LocalSizeTransformation extends ProcessTemplate {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
             this.thisTime = DataStructure.getTime(bytes);
+        
+            ArrayList<Mat> toSend = imageProcessing(DataStructure.getMats(bytes));
+            send(
+                    Names.pITC_LocalShapeIdentification,
+                    DataStructure.wrapData(
+                            toSend,
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
+            send(
+                    Names.pITC_LocalVicinityConstruction,
+                    DataStructure.wrapData(
+                            toSend,
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
         }
-        ArrayList<Mat> toSend = imageProcessing(DataStructure.getMats(bytes));
-        send(
-                Names.pITC_LocalShapeIdentification,
-                DataStructure.wrapData(
-                        toSend,
-                        defaultModality,
-                        DataStructure.getTime(bytes)
-                )
-        );
-        send(
-                Names.pITC_LocalVicinityConstruction,
-                DataStructure.wrapData(
-                        toSend,
-                        defaultModality,
-                        DataStructure.getTime(bytes)
-                )
-        );
     }
 
     private ArrayList<Mat> imageProcessing(ArrayList<Mat> imgs) {

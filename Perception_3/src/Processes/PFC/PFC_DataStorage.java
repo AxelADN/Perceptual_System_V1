@@ -38,7 +38,7 @@ public class PFC_DataStorage extends ProcessTemplate {
 
     private void storeData(ArrayList<Long> objectClass) {
         objectData.add(objectClass);
-        System.out.println("PFC: "+objectClass);
+        //System.out.println("PFC: "+objectClass);
     }
 
 }

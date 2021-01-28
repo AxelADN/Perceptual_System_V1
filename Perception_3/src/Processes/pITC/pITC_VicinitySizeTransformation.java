@@ -44,24 +44,25 @@ public class pITC_VicinitySizeTransformation extends ProcessTemplate {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
             this.thisTime = DataStructure.getTime(bytes);
+        
+            ArrayList<Mat> toSend = imageProcessing(DataStructure.getMats(bytes));
+            send(
+                    Names.pITC_VicinityShapeIdentification,
+                    DataStructure.wrapData(
+                            toSend,
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
+            send(
+                    Names.aITC_GlobalClusterConstruction,
+                    DataStructure.wrapData(
+                            toSend,
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
         }
-        ArrayList<Mat> toSend = imageProcessing(DataStructure.getMats(bytes));
-        send(
-                Names.pITC_VicinityShapeIdentification,
-                DataStructure.wrapData(
-                        toSend,
-                        defaultModality,
-                        DataStructure.getTime(bytes)
-                )
-        );
-        send(
-                Names.aITC_GlobalClusterConstruction,
-                DataStructure.wrapData(
-                        toSend,
-                        defaultModality,
-                        DataStructure.getTime(bytes)
-                )
-        );
     }
 
     private ArrayList<Mat> imageProcessing(ArrayList<Mat> imgs) {
