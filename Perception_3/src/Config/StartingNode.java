@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import utils.Constants;
 import utils.Convertor;
 import utils.DataStructure;
@@ -266,12 +267,9 @@ public class StartingNode extends ProcessTemplate {
                     Imgcodecs.IMREAD_COLOR
             );
             if(systemState==Constants.STATE_TRAINING_OFF) showImg(data);
-            matrix.matrix mat2Send = Convertor.MatToMatrix(data);
             imgs2Send.add(data);
-//            byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
-//            ArrayList<Mat> mats = DataStructure.getMats(bytesToSend);
-//            System.out.println("BYTES0: "+new String(bytesToSend));
-            sendCommon(Names.pITC_ProtoObjectPartitioning, imgs2Send);
+            byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
+            send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
         }
     }
 

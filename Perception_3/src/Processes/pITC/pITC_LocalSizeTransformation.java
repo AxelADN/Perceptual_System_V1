@@ -72,7 +72,12 @@ public class pITC_LocalSizeTransformation extends ProcessTemplate {
         Mat resultQuad16 = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
         Rect quadBox = new Rect();
         for(Mat quad16: imgs){
-            Imgproc.cvtColor(quad16, quad16gray, Imgproc.COLOR_BGR2GRAY);
+            if(quad16.channels()>1){
+                Imgproc.cvtColor(quad16, quad16gray, Imgproc.COLOR_BGR2GRAY);
+            } else{
+                quad16.copyTo(quad16gray);
+            }
+            
             quadBox = boundingBox(quad16gray);
             if(!quadBox.empty()){
                 quadMask = quad16.submat(quadBox);

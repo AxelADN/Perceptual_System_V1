@@ -56,16 +56,14 @@ public class pITC_ProtoObjectPartitioning extends ProcessTemplate {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
             this.thisTime = DataStructure.getTime(bytes);
-            System.out.println("BYTES: "+new String(bytes));
-            imageProcessing(DataStructure.getMats(bytes));
-//            send(
-//                    Names.pITC_LocalSizeTransformation,
-//                    DataStructure.wrapData(
-//                            imageProcessing(DataStructure.getMats(bytes)),
-//                            defaultModality,
-//                            DataStructure.getTime(bytes)
-//                    )
-//            );
+            send(
+                    Names.pITC_LocalSizeTransformation,
+                    DataStructure.wrapData(
+                            imageProcessing(DataStructure.getMats(bytes)),
+                            defaultModality,
+                            DataStructure.getTime(bytes)
+                    )
+            );
         }
     }
 

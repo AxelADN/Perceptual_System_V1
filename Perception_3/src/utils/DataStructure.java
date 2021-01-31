@@ -134,21 +134,20 @@ public class DataStructure {
     }
     
     public static byte[] wrapData(ArrayList<Mat> imgs, int modality, int time){
-        String stringToSend = new String();
-        BufferedImage buffImg = Conversion.Mat2Img(imgs.get(0));
-        stringToSend = ImageUtils.toBase64(buffImg);
-//        ArrayList<byte[]> bytesArray = new ArrayList<>();
+        ArrayList<matrix.matrix> bytesArray = new ArrayList<>();
+        //ArrayList<byte[]> bytesArray = new ArrayList<>();
 //        int cols = imgs.get(0).cols();
 //        int rows = imgs.get(0).rows();
 //        int type = imgs.get(0).type();
 //        bytesArray.add(Conversion.IntToByte(cols));
 //        bytesArray.add(Conversion.IntToByte(rows));
 //        bytesArray.add(Conversion.IntToByte(type));
-//        imgs.forEach((img) -> {
-//            bytesArray.add(Conversion.MatToByte(img));
-//        });
+        imgs.forEach((img) -> {
+            //bytesArray.add(Conversion.MatToByte(img));
+            bytesArray.add(Convertor.MatToMatrix(img));
+        });
         try {
-            LongSpike spike = new LongSpike(modality,0,stringToSend.getBytes(StandardCharsets.UTF_16),time);
+            LongSpike spike = new LongSpike(modality,0,bytesArray,time);
             return spike.getByteArray();
         } catch (IOException ex) {
             Logger.getLogger(DataStructure.class.getName()).log(Level.SEVERE, null, ex);
@@ -175,24 +174,23 @@ public class DataStructure {
     }
     
     public static ArrayList<Mat> getMats(byte[] bytes){
-        BufferedImage buffImg = ImageUtils.getImageFromBase64(new String(bytes));
-        Mat img = Conversion.Img2Mat(buffImg);
         ArrayList<Mat> imgs = new ArrayList<>();
-        imgs.add(img);
-//        ArrayList<byte[]> bytesArray = new ArrayList<>();
-//        try {
-//            //System.out.println("BYTES_SIZE..."+bytes.length);
-//            LongSpike spike = new LongSpike(bytes);
-//            bytesArray = (ArrayList<byte[]>)spike.getIntensity();
+        ArrayList<matrix.matrix> bytesArray = new ArrayList<>();
+        //ArrayList<byte[]> bytesArray = new ArrayList<>();
+        try {
+            //System.out.println("BYTES_SIZE..."+bytes.length);
+            LongSpike spike = new LongSpike(bytes);
+            bytesArray = (ArrayList<matrix.matrix>)spike.getIntensity();
 //            int cols = Conversion.ByteToInt(bytesArray.get(0));
 //            int rows = Conversion.ByteToInt(bytesArray.get(1));
 //            int type = Conversion.ByteToInt(bytesArray.get(2));
-//            for(int i=3; i<bytesArray.size();i++){
-//                imgs.add(Conversion.ByteToMat(bytesArray.get(i), cols, rows, type));
-//            }
-//        } catch (Exception ex) {
-//            Logger.getLogger(DataStructure.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+            for(int i=0; i<bytesArray.size();i++){
+                //imgs.add(Conversion.ByteToMat(bytesArray.get(i), cols, rows, type));
+                imgs.add(Convertor.matrixToMat(bytesArray.get(i)));
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DataStructure.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return imgs;
     }
     
