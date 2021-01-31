@@ -30,7 +30,7 @@ public class Perception_3 extends Igniter{
         
         configuration.setLocal(true);
         configuration.setDebug(Boolean.FALSE);
-        configuration.setUDP();
+        configuration.setTCP();
         
         run();
     }

@@ -17,17 +17,19 @@ public class SystemConfig{
     
     public static final boolean EXTERNAL_ORIGIN = true;
     public static final String EXTERNAL_INPUT_FILE = "C:\\Users\\AxelADN-Cinv\\Documents\\GitHub\\cuayollotol\\middlewareVision\\savedMaps\\";
+    public static final String EXTERNAL_ORIGIN_IMAGE = "C:\\Users\\AxelADN-Cinv\\Documents\\GitHub\\cuayollotol\\middlewareVision\\images\\";
     public static final String CONTOURS_FILE = "ContoursImages";
     public static final String V1_FILE = "V1ImageMaps";
     public static final String V2_FILE = "V2ImageMaps";
     public static final String V4_FILE = "V4ImageMaps";
     public static final String EXTERNAL_INPUT_EXTENSION = ".jpg";
+    public static final int MAX_EXTERNAL_SAMPLES = 10;
     
     public static final int INPUT_WIDTH   =   128;
     public static final int INPUT_HEIGHT  =   128;
     
     public static final double STANDAR_PRIORITY_INCREMENT = 0.001;
-    public static final double TEMPLATE_MATCHING_TOLERANCE = .99;
+    public static final double TEMPLATE_MATCHING_TOLERANCE = 1;
     
     public static final String FILE = "C:\\Users\\AxelADN-Cinv\\Documents\\Test_Sets\\TestSet_1\\";
     public static final String EXTENSION = ".png";

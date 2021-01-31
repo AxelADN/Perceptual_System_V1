@@ -6,14 +6,21 @@
 package Config;
 
 import cFramework.util.IDHelper;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 import utils.Constants;
+import utils.Convertor;
 import utils.DataStructure;
+import utils.ImageUtils;
 /**
  *
  * @author AxelADN
@@ -25,6 +32,7 @@ public class StartingNode extends ProcessTemplate {
     private Mat img;
     private String imgString;
     int imgIndex;
+    private String currentPrefix;
 
     public StartingNode() {
         this.ID = Names.StartingNode;
@@ -33,15 +41,20 @@ public class StartingNode extends ProcessTemplate {
         time = 0;
         imgString = new String();
         imgIndex = 1;
+        currentPrefix = "obj";
 
         //send(this.ID,new byte[]{});
         //init();
     }
 
     public void triggerSend() {
-        time++;
-        if(SystemConfig.EXTERNAL_ORIGIN) manageExternalData(String.valueOf(time%11+1));
+        if(SystemConfig.EXTERNAL_ORIGIN) {
+            currentPrefix = "Simples_";
+            manageExternalData(currentPrefix+String.valueOf(time%SystemConfig.MAX_EXTERNAL_SAMPLES+1));
+            time++;
+        }
         else{
+            time++;
             ArrayList<Mat> imgs = new ArrayList<>();
             img = Imgcodecs.imread(
                     imgString,
@@ -55,7 +68,12 @@ public class StartingNode extends ProcessTemplate {
     }
     
     public String getImg(){
-        imgString = SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION;
+        if(SystemConfig.EXTERNAL_ORIGIN){
+            imgString = SystemConfig.EXTERNAL_ORIGIN_IMAGE + currentPrefix + (time%SystemConfig.MAX_EXTERNAL_SAMPLES+1) + SystemConfig.EXTERNAL_INPUT_EXTENSION;
+            System.out.println("IMAGE: "+imgString);
+        } else {
+            imgString = SystemConfig.FILE + "obj" + imgIndex + "__0" + SystemConfig.EXTENSION;
+        }
         return imgString;
     }
     
@@ -64,6 +82,9 @@ public class StartingNode extends ProcessTemplate {
     }
     
     public String getImgName(){
+        if(SystemConfig.EXTERNAL_ORIGIN){
+            return currentPrefix + (time%SystemConfig.MAX_EXTERNAL_SAMPLES+1);
+        }
         return "obj"+imgIndex+"__0";
     }
 
@@ -76,6 +97,7 @@ public class StartingNode extends ProcessTemplate {
             }
             System.out.println("Training_Finish");
             sendSystemStateChange(Constants.STATE_TRAINING_OFF);
+            systemState = Constants.STATE_TRAINING_OFF;
             //SystemConfig.TRAINING_MODE = false;
             time = 0;
             try {
@@ -106,12 +128,15 @@ public class StartingNode extends ProcessTemplate {
     }
 
     private void trainningCycle() {
-        for (int i = 1; i <= 11; i++) {
+        for (int i = 0; i < SystemConfig.MAX_EXTERNAL_SAMPLES; i++) {
             try {
                 Thread.sleep(250L);
-                System.out.println("TIME... " + i);
+                //System.out.println("TIME... " + i);
                 time = i;
-                if(SystemConfig.EXTERNAL_ORIGIN) manageExternalData(String.valueOf(time%11+1));
+                if(SystemConfig.EXTERNAL_ORIGIN) {
+                    currentPrefix = "Simples_";
+                    manageExternalData(currentPrefix+String.valueOf(time%SystemConfig.MAX_EXTERNAL_SAMPLES+1));
+                }
                 else{
                     this.actionPerformed(
                             Imgcodecs.imread(
@@ -172,12 +197,17 @@ public class StartingNode extends ProcessTemplate {
 
     private void manageExternalData(String currentScene) {
         ArrayList<Mat> imgs2Send = new ArrayList<>();
-        Mat data = new Mat();
-        String sceneFile = SystemConfig.EXTERNAL_INPUT_FILE+currentScene+"\\";
-        sendV2Maps(imgs2Send, data,sceneFile);
-        sendV1Maps(imgs2Send, data,sceneFile);
-        sendV4Maps(imgs2Send, data,sceneFile);
-        sendContours(imgs2Send, data,sceneFile);
+            Mat data = new Mat();
+            String sceneFile = SystemConfig.EXTERNAL_INPUT_FILE+currentScene+"\\";
+            //System.out.println("SCENeFILE: "+sceneFile);
+        try {
+            //sendV2Maps(imgs2Send, data,sceneFile);
+            //sendV1Maps(imgs2Send, data,sceneFile);
+            sendV4Maps(imgs2Send, data,sceneFile);
+            //sendContours(imgs2Send, data,sceneFile);
+        }  catch (InterruptedException ex) {
+            Logger.getLogger(StartingNode.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void sendContours(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
@@ -188,7 +218,7 @@ public class StartingNode extends ProcessTemplate {
                     Imgcodecs.IMREAD_COLOR
             );
             //System.out.println("FILE: "+currentFile);
-            //showImg(data);
+
             imgs2Send.add(data);
             byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
             send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
@@ -220,7 +250,7 @@ public class StartingNode extends ProcessTemplate {
                         Imgcodecs.IMREAD_COLOR
                 );
                 //System.out.println("FILE: "+currentFile);
-                //showImg(data);
+                //if(systemState==Constants.STATE_TRAINING_OFF)showImg(data);
                 imgs2Send.add(data);
                 byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
                 send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
@@ -228,18 +258,20 @@ public class StartingNode extends ProcessTemplate {
         }
     }
     
-    private void sendV4Maps(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
-        for(int i=0; i<3; i++){
-            String currentFile = sceneFile+SystemConfig.V4_FILE+"\\"+String.valueOf(i)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
+    private void sendV4Maps(ArrayList<Mat> imgs2Send, Mat data, String sceneFile) throws InterruptedException {
+        for(int i=0; i<4; i++){
+            String currentFile = sceneFile+SystemConfig.V4_FILE+"\\"+String.valueOf(i%2+1)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
             data = Imgcodecs.imread(
                     currentFile,
                     Imgcodecs.IMREAD_COLOR
             );
-            //System.out.println("FILE: "+currentFile);
-            //showImg(data);
+            if(systemState==Constants.STATE_TRAINING_OFF) showImg(data);
+            matrix.matrix mat2Send = Convertor.MatToMatrix(data);
             imgs2Send.add(data);
-            byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
-            send(Names.pITC_ProtoObjectPartitioning, bytesToSend);
+//            byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
+//            ArrayList<Mat> mats = DataStructure.getMats(bytesToSend);
+//            System.out.println("BYTES0: "+new String(bytesToSend));
+            sendCommon(Names.pITC_ProtoObjectPartitioning, imgs2Send);
         }
     }
 

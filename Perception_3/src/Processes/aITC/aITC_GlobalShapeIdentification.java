@@ -63,6 +63,9 @@ public class aITC_GlobalShapeIdentification extends ProcessTemplate {
         Imgproc.cvtColor(imgs.get(0), img, Imgproc.COLOR_BGR2GRAY);
         for(FeatureEntity feature: quadMemory){
             correl = Operation.featuresMatchedVal(img, feature.getMat());
+            if(correl==correl){
+                //System.out.println("CORREL: "+correl);
+            }
             if(correl > SystemConfig.TEMPLATE_MATCHING_TOLERANCE){
                 matched = true;
                 feature.increasePriority(correl);
@@ -70,7 +73,7 @@ public class aITC_GlobalShapeIdentification extends ProcessTemplate {
                 break;
             }
         }
-        if(!matched){
+        if(!matched && correl==correl){
             FeatureEntity newFE = new FeatureEntity(img);
             //showImg(img);
             outputIDs.add(newFE.getID());

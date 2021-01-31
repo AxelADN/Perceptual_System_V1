@@ -8,6 +8,7 @@ package Areas;
 import Config.AreaTemplate;
 import Config.Names;
 import Processes.pITC.*;
+import cFramework.nodes.process.ProcessConfiguration;
 
 /**
  *

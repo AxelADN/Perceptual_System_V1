@@ -5,13 +5,26 @@
  */
 package utils;
 
+import Config.ProcessTemplate;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfByte;
 import org.opencv.core.MatOfKeyPoint;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
 
 /**
  *
@@ -132,6 +145,31 @@ public class Conversion {
             str.append(obj.toString());
         });
         return str.toString();
+    }
+    
+    public static BufferedImage Mat2Img(Mat img){
+        try {
+            MatOfByte matOfByte = new MatOfByte();
+            Imgcodecs.imencode(".jpg", img, matOfByte);
+            byte[] byteArray = matOfByte.toArray();
+            InputStream in = new ByteArrayInputStream(byteArray);
+            return ImageIO.read(in);
+        } catch (IOException ex) {
+            Logger.getLogger(ProcessTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new BufferedImage(0,0,0);
+    }
+    
+    public static Mat Img2Mat(BufferedImage buffImg){
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(buffImg, "jpg", byteArrayOutputStream);
+            byteArrayOutputStream.flush();
+            return Imgcodecs.imdecode(new MatOfByte(byteArrayOutputStream.toByteArray()), Imgcodecs.IMREAD_UNCHANGED);
+        } catch (IOException ex) {
+            Logger.getLogger(Conversion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new Mat();
     }
     
 }

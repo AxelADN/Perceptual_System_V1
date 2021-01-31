@@ -59,7 +59,7 @@ public class aITC_ObjectClassification extends ProcessTemplate {
             currentTime = DataStructure.getTime(bytes);
             if(currentTime > theTime){
                 timeChanged = true;
-                System.out.println("TimeChange!");
+                //System.out.println("TimeChange!");
                 theTime= currentTime;
             }
             if(!quad16IDs.isEmpty() && !quad4IDs.isEmpty() && !quadIDs.isEmpty()){

@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +23,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import utils.Constants;
-import utils.Conversion;
 import utils.DataStructure;
 
 /**
@@ -111,6 +111,11 @@ public abstract class ProcessTemplate extends Process{
         } catch (IOException ex) {
             Logger.getLogger(ProcessTemplate.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    protected void sendCommon(long ID, ArrayList<Mat> mats){
+        SharedMemory.store(ID, mats);
+        send(ID, new byte[1]);
     }
     
 }
