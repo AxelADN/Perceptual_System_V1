@@ -69,7 +69,13 @@ public class pITC_LocalShapeIdentification extends ProcessTemplate {
         for(int i=0; i<imgs.size(); i++){
             matched = false;
             img = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
-            Imgproc.cvtColor(imgs.get(i), img, Imgproc.COLOR_BGR2GRAY);
+            Mat aux = imgs.get(i);
+            if(aux.channels() > 1){
+                Imgproc.cvtColor(aux, img, Imgproc.COLOR_BGR2GRAY);
+            } else {
+                aux.copyTo(img);
+            }
+            
             //showImg(img);
             //if(!img.empty()){
                 currentQueue = quad16memory.get(i);

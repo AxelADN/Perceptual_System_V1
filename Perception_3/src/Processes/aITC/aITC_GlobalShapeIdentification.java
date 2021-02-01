@@ -59,8 +59,12 @@ public class aITC_GlobalShapeIdentification extends ProcessTemplate {
         Mat img = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
         double correl = 0;
         boolean matched = false;
-        
-        Imgproc.cvtColor(imgs.get(0), img, Imgproc.COLOR_BGR2GRAY);
+        Mat aux = imgs.get(0);
+        if (aux.channels() > 1){
+            Imgproc.cvtColor(aux, img, Imgproc.COLOR_BGR2GRAY);
+        } else {
+            aux.copyTo(img);
+        }
         for(FeatureEntity feature: quadMemory){
             correl = Operation.featuresMatchedVal(img, feature.getMat());
             if(correl==correl){

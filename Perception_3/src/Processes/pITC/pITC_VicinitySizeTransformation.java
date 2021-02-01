@@ -69,10 +69,15 @@ public class pITC_VicinitySizeTransformation extends ProcessTemplate {
         ArrayList<Mat> outputImgs = new ArrayList<>();
         Mat quad16gray = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
         Mat quadMask;
-        Mat resultQuad16 = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
+        Mat resultQuad16 = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
         Rect quadBox = new Rect();
         for(Mat quad16: imgs){
-            Imgproc.cvtColor(quad16, quad16gray, Imgproc.COLOR_BGR2GRAY);
+            if(quad16.channels() > 1){
+                Imgproc.cvtColor(quad16, quad16gray, Imgproc.COLOR_BGR2GRAY);
+            } else {
+                quad16.copyTo(quad16gray);
+            }
+            
             quadBox = boundingBox(quad16gray);
             if(!quadBox.empty()){
                 quadMask = quad16.submat(quadBox);
@@ -81,7 +86,7 @@ public class pITC_VicinitySizeTransformation extends ProcessTemplate {
                 outputImgs.add(resultQuad16);
                 //showImg(resultQuad16);
             }else{
-                outputImgs.add(Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3));
+                outputImgs.add(Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1));
             }
         }
         //System.out.println("LIST--"+outputImgs.size());
@@ -130,8 +135,8 @@ public class pITC_VicinitySizeTransformation extends ProcessTemplate {
     }
     
     private Mat resize(Mat img, Rect origin){
-        Mat resized = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
-        Mat output = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
+        Mat resized = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
+        Mat output = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
         double box_x = (SystemConfig.quad16().width-img.cols());
         double box_y = (SystemConfig.quad16().height-img.rows());
         int new_x = 0;

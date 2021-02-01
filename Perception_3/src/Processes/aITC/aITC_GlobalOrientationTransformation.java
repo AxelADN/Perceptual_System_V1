@@ -62,8 +62,11 @@ public class aITC_GlobalOrientationTransformation extends ProcessTemplate {
         byte[][] byteMat = new byte[tx][ty];
         Point combVec = new Point();
         double orientation = 0;
-        
-        Imgproc.cvtColor(img, imgGray, Imgproc.COLOR_BGR2GRAY);
+        if (img.channels() > 1){
+            Imgproc.cvtColor(img, imgGray, Imgproc.COLOR_BGR2GRAY);
+        } else {
+            img.copyTo(imgGray);
+        }
         imgGray.get(0, 0, byteImg);
         for(int i=0; i<byteImg.length; i++){
             byteMat[i%tx][(int)Math.floor(i/tx)] = byteImg[i];

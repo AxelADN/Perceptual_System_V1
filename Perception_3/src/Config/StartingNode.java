@@ -50,7 +50,7 @@ public class StartingNode extends ProcessTemplate {
 
     public void triggerSend() {
         if(SystemConfig.EXTERNAL_ORIGIN) {
-            currentPrefix = "Simples_";
+            currentPrefix = "Complejas_";
             manageExternalData(currentPrefix+String.valueOf(time%SystemConfig.MAX_EXTERNAL_SAMPLES+1));
             time++;
         }
@@ -197,26 +197,22 @@ public class StartingNode extends ProcessTemplate {
     }
 
     private void manageExternalData(String currentScene) {
-        ArrayList<Mat> imgs2Send = new ArrayList<>();
-            Mat data = new Mat();
-            String sceneFile = SystemConfig.EXTERNAL_INPUT_FILE+currentScene+"\\";
-            //System.out.println("SCENeFILE: "+sceneFile);
-        try {
-            //sendV2Maps(imgs2Send, data,sceneFile);
-            //sendV1Maps(imgs2Send, data,sceneFile);
-            sendV4Maps(imgs2Send, data,sceneFile);
-            //sendContours(imgs2Send, data,sceneFile);
-        }  catch (InterruptedException ex) {
-            Logger.getLogger(StartingNode.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String sceneFile = SystemConfig.EXTERNAL_INPUT_FILE+currentScene+"\\";
+        //System.out.println("SCENeFILE: "+sceneFile);
+        //sendV2Maps(sceneFile);
+        //sendV1Maps(sceneFile);
+        //sendV4Maps(sceneFile);
+        sendContours(sceneFile);
     }
     
-    private void sendContours(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
+    private void sendContours(String sceneFile){
         for(int i=1; i<=2; i++){
+            ArrayList<Mat> imgs2Send = new ArrayList<>();
+            Mat data;
             String currentFile = sceneFile+SystemConfig.CONTOURS_FILE+"\\"+String.valueOf(i)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
             data = Imgcodecs.imread(
                     currentFile,
-                    Imgcodecs.IMREAD_COLOR
+                    Imgcodecs.IMREAD_GRAYSCALE
             );
             //System.out.println("FILE: "+currentFile);
 
@@ -226,12 +222,14 @@ public class StartingNode extends ProcessTemplate {
         }
     }
     
-    private void sendV1Maps(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
+    private void sendV1Maps(String sceneFile){
         for(int i=0; i<4; i++){
+            ArrayList<Mat> imgs2Send = new ArrayList<>();
+            Mat data;
             String currentFile = sceneFile+SystemConfig.V1_FILE+"\\"+String.valueOf(i)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
             data = Imgcodecs.imread(
                     currentFile,
-                    Imgcodecs.IMREAD_COLOR
+                    Imgcodecs.IMREAD_GRAYSCALE
             );
             //System.out.println("FILE: "+currentFile);
             //showImg(data);
@@ -241,14 +239,16 @@ public class StartingNode extends ProcessTemplate {
         }
     }
     
-    private void sendV2Maps(ArrayList<Mat> imgs2Send, Mat data, String sceneFile){
+    private void sendV2Maps(String sceneFile){
         for(int i=0; i<4; i++){
             for(int j=0; j<8; j++){
+                ArrayList<Mat> imgs2Send = new ArrayList<>();
+                Mat data;
                 String currentDataNum = String.valueOf(i)+"_"+String.valueOf(j);
                 String currentFile = sceneFile+SystemConfig.V2_FILE+"\\"+currentDataNum+SystemConfig.EXTERNAL_INPUT_EXTENSION;
                 data = Imgcodecs.imread(
                         currentFile,
-                        Imgcodecs.IMREAD_COLOR
+                        Imgcodecs.IMREAD_GRAYSCALE
                 );
                 //System.out.println("FILE: "+currentFile);
                 //if(systemState==Constants.STATE_TRAINING_OFF)showImg(data);
@@ -259,14 +259,16 @@ public class StartingNode extends ProcessTemplate {
         }
     }
     
-    private void sendV4Maps(ArrayList<Mat> imgs2Send, Mat data, String sceneFile) throws InterruptedException {
+    private void sendV4Maps(String sceneFile){
         for(int i=0; i<4; i++){
-            String currentFile = sceneFile+SystemConfig.V4_FILE+"\\"+String.valueOf(i%2+1)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
+            ArrayList<Mat> imgs2Send = new ArrayList<>();
+            Mat data;
+            String currentFile = sceneFile+SystemConfig.V4_FILE+"\\"+String.valueOf(i)+SystemConfig.EXTERNAL_INPUT_EXTENSION;
             data = Imgcodecs.imread(
                     currentFile,
-                    Imgcodecs.IMREAD_COLOR
+                    Imgcodecs.IMREAD_GRAYSCALE
             );
-            if(systemState==Constants.STATE_TRAINING_OFF) showImg(data);
+            //if(systemState==Constants.STATE_TRAINING_OFF) showImg(data);
             imgs2Send.add(data);
             byte[] bytesToSend = DataStructure.wrapData(imgs2Send, defaultModality, time);
             send(Names.pITC_ProtoObjectPartitioning, bytesToSend);

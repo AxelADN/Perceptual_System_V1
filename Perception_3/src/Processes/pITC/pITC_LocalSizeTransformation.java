@@ -44,7 +44,7 @@ public class pITC_LocalSizeTransformation extends ProcessTemplate {
         super.receive(l, bytes);
         if (!attendSystemServiceCall(bytes)) {
             this.thisTime = DataStructure.getTime(bytes);
-        
+
             ArrayList<Mat> toSend = imageProcessing(DataStructure.getMats(bytes));
             send(
                     Names.pITC_LocalShapeIdentification,
@@ -69,39 +69,41 @@ public class pITC_LocalSizeTransformation extends ProcessTemplate {
         ArrayList<Mat> outputImgs = new ArrayList<>();
         Mat quad16gray = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
         Mat quadMask;
-        Mat resultQuad16 = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
+        Mat resultQuad16 = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
         Rect quadBox = new Rect();
-        for(Mat quad16: imgs){
-            if(quad16.channels()>1){
+        for (Mat quad16 : imgs) {
+            if (quad16.channels() > 1) {
                 Imgproc.cvtColor(quad16, quad16gray, Imgproc.COLOR_BGR2GRAY);
-            } else{
+            } else {
                 quad16.copyTo(quad16gray);
             }
-            
+
             quadBox = boundingBox(quad16gray);
-            if(!quadBox.empty()){
+            if (!quadBox.empty()) {
                 quadMask = quad16.submat(quadBox);
-                resultQuad16 = resize(quadMask,quadBox);
+                resultQuad16 = resize(quadMask, quadBox);
                 //Imgproc.resize(quadMask, resultQuad16, SystemConfig.quad16());
                 outputImgs.add(resultQuad16);
                 //showImg(resultQuad16);
-            }else{
-                outputImgs.add(Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3));
+            } else {
+                outputImgs.add(Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1));
             }
         }
         //System.out.println("LIST--"+outputImgs.size());
         return outputImgs;
     }
-    
-    private Rect boundingBox(Mat srcGray){
+
+    private Rect boundingBox(Mat srcGray) {
         Random rng = new Random(12345);
         Mat cannyOutput = new Mat();
         Imgproc.Canny(srcGray, cannyOutput, 100, 200);
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
         Imgproc.findContours(cannyOutput, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        if(contours.size()<=0) return new Rect();
-        MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
+        if (contours.size() <= 0) {
+            return new Rect();
+        }
+        MatOfPoint2f[] contoursPoly = new MatOfPoint2f[contours.size()];
         Rect[] boundRect = new Rect[contours.size()];
         for (int i = 0; i < contours.size(); i++) {
             contoursPoly[i] = new MatOfPoint2f();
@@ -111,13 +113,13 @@ public class pITC_LocalSizeTransformation extends ProcessTemplate {
         int rectArea = 0;
         int area = 0;
         int idx = 0;
-        for(int i=0; i<boundRect.length; i++){
-            rectArea = boundRect[i].height*boundRect[i].width;
-            if(area < rectArea){
+        for (int i = 0; i < boundRect.length; i++) {
+            rectArea = boundRect[i].height * boundRect[i].width;
+            if (area < rectArea) {
                 area = rectArea;
                 idx = i;
             }
-        }        
+        }
         Mat drawing = Mat.zeros(cannyOutput.size(), CvType.CV_8UC3);
         List<MatOfPoint> contoursPolyList = new ArrayList<>(contoursPoly.length);
         for (MatOfPoint2f poly : contoursPoly) {
@@ -125,61 +127,60 @@ public class pITC_LocalSizeTransformation extends ProcessTemplate {
         }
         for (int i = 0; i < contours.size(); i++) {
             Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-            Imgproc.drawContours(drawing, contoursPolyList, i, color,-1);
+            Imgproc.drawContours(drawing, contoursPolyList, i, color, -1);
         }
-        Imgproc.rectangle(drawing, boundRect[idx].tl(), boundRect[idx].br(), new Scalar(255,255,255), 2);
-        
+        Imgproc.rectangle(drawing, boundRect[idx].tl(), boundRect[idx].br(), new Scalar(255, 255, 255), 2);
+
         //showImg(drawing);
-        
         return boundRect[idx];
     }
-    
-    private Mat resize(Mat img, Rect origin){
-        Mat resized = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
-        Mat output = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
-        double box_x = (SystemConfig.quad16().width-img.cols());
-        double box_y = (SystemConfig.quad16().height-img.rows());
+
+    private Mat resize(Mat img, Rect origin) {
+        Mat resized = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
+        Mat output = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
+        double box_x = (SystemConfig.quad16().width - img.cols());
+        double box_y = (SystemConfig.quad16().height - img.rows());
         int new_x = 0;
         int new_y = 0;
         double deltaSize = 0;
-        if(box_x >= box_y){
-            deltaSize = (box_y / img.rows())+1;
+        if (box_x >= box_y) {
+            deltaSize = (box_y / img.rows()) + 1;
             //new_y = img.rows() + box_y;
             //new_x = (int) (img.cols() + (box_x*deltaSize));
-        }else if(box_y > box_x){
-            deltaSize = (box_x / img.cols())+1;
+        } else if (box_y > box_x) {
+            deltaSize = (box_x / img.cols()) + 1;
             //new_x = img.cols() + box_x;
             //new_y = (int) (img.rows() + (box_y*deltaSize));
         }
         //System.out.println("SIZE--"+deltaSize);
         Imgproc.resize(img, resized, new Size(), deltaSize, deltaSize);
-        
-        Point newOrigin = new Point(0,0);
-        if(origin.tl().x == 0){
+
+        Point newOrigin = new Point(0, 0);
+        if (origin.tl().x == 0) {
             newOrigin.x = origin.tl().x;
-            if(origin.tl().y == 0){
+            if (origin.tl().y == 0) {
                 newOrigin.y = origin.tl().y;
                 //System.out.println("T1--"+newOrigin.x+", "+newOrigin.y);
-            }else if(origin.br().y == SystemConfig.quad16().height){
-                newOrigin.y = origin.br().y-resized.rows();
+            } else if (origin.br().y == SystemConfig.quad16().height) {
+                newOrigin.y = origin.br().y - resized.rows();
                 //System.out.println("T1BR--"+newOrigin.x+", "+newOrigin.y);
             } else {
-                newOrigin.y = SystemConfig.quad16().height/2 - resized.rows()/2;
+                newOrigin.y = SystemConfig.quad16().height / 2 - resized.rows() / 2;
                 //System.out.println("Tl??--"+newOrigin.x+", "+newOrigin.y);
             }
-        } else if(origin.tl().y == 0){
+        } else if (origin.tl().y == 0) {
             newOrigin.y = origin.tl().y;
-            if(origin.br().x == SystemConfig.quad16().width){
-                newOrigin.x = origin.br().x-resized.cols();
+            if (origin.br().x == SystemConfig.quad16().width) {
+                newOrigin.x = origin.br().x - resized.cols();
                 //System.out.println("BRTl--"+newOrigin.x+", "+newOrigin.y);
             } else {
-                newOrigin.x = SystemConfig.quad16().width/2 - resized.cols()/2;
+                newOrigin.x = SystemConfig.quad16().width / 2 - resized.cols() / 2;
                 //System.out.println("??Tl--"+newOrigin.x+", "+newOrigin.y);
             }
         }
         //System.out.println("X--"+((int)newOrigin.x+resized.cols())+" Y--"+((int)newOrigin.y+resized.rows()));
-        resized.copyTo(output.submat(new Rect((int)newOrigin.x,(int)newOrigin.y,resized.cols(),resized.rows())));
-        
+        resized.copyTo(output.submat(new Rect((int) newOrigin.x, (int) newOrigin.y, resized.cols(), resized.rows())));
+
         return output;
     }
 

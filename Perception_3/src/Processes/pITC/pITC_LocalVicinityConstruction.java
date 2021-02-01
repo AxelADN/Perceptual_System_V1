@@ -70,8 +70,8 @@ public class pITC_LocalVicinityConstruction extends ProcessTemplate {
         ArrayList<Mat> outputImgs = new ArrayList<>();
         ArrayList<Mat> resizeImgs = new ArrayList<>();
         Mat aux;
-        Mat quad4img1 = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC3);
-        Mat quad4img2 = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC3);
+        Mat quad4img1 = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC1);
+        Mat quad4img2 = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC1);
         for(int i=0; i<16; i++){
             imgs.get(i).copyTo(
                     i%4==0 || i%4==1 ?
@@ -91,8 +91,8 @@ public class pITC_LocalVicinityConstruction extends ProcessTemplate {
                 quad4img2.copyTo(aux);
                 resizeImgs.add(aux);
                 
-                quad4img1 = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC3);
-                quad4img2 = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC3);
+                quad4img1 = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC1);
+                quad4img2 = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC1);
             }
         }
         
@@ -102,7 +102,7 @@ public class pITC_LocalVicinityConstruction extends ProcessTemplate {
         
         Mat resized; 
         for(Mat resizeImg: resizeImgs){
-            resized = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
+            resized = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
             Imgproc.resize(resizeImg, resized, SystemConfig.quad16());
             aux = new Mat();
             resized.copyTo(aux);

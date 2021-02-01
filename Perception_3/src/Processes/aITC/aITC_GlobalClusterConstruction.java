@@ -68,14 +68,14 @@ public class aITC_GlobalClusterConstruction extends ProcessTemplate {
 
     private ArrayList<Mat> imageProcessing(ArrayList<Mat> imgs) {
         ArrayList<Mat> outputImgs = new ArrayList<>();
-        Mat quadImg = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC3);
+        Mat quadImg = Mat.zeros(SystemConfig.quad4(), CvType.CV_8UC1);
         for(int i=0; i<4; i++){
             imgs.get(i).copyTo(quadImg.submat(quad.get(i)));
         }
         
         //showImg(quadImg);
         
-        Mat resized = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC3);
+        Mat resized = Mat.zeros(SystemConfig.quad16(), CvType.CV_8UC1);
         Imgproc.resize(quadImg, resized, SystemConfig.quad16());
         outputImgs.add(resized);
         

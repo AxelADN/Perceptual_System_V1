@@ -72,30 +72,27 @@ public class pITC_ProtoObjectPartitioning extends ProcessTemplate {
         Mat img = imgs.get(0);
         double max = 0;
         double min = 1000;
-        //img.convertTo(img, CvType.CV_64FC3);
-        //double[] imgD = new double[(int)(img.channels()*img.total())];
-//        img.get(0, 0, imgD);
-//        for(int i=0; i<imgD.length; i++){
-//            if(imgD[i] > max){
-//                max = imgD[i];
-//            }
-//            if(imgD[i] < min){
-//                min = imgD[i];
-//            }
-//            if(imgD[i] > 0){
-//                //System.out.println("imgD: "+imgD[i]);
-//            }
-//        }
-//        for(int i=0; i<imgD.length; i++){
-//            if(imgD[i] <= min){
-//                imgD[i] += 255.0-max;
-//            }
-//        }
-//        img.put(0, 0, imgD);
-        //img.convertTo(img, CvType.CV_8UC3);
+        img.convertTo(img, CvType.CV_64FC1);
+        double[] imgD = new double[(int)(img.channels()*img.total())];
+        img.get(0, 0, imgD);
+        for(int i=0; i<imgD.length; i++){
+            if(imgD[i] > max){
+                max = imgD[i];
+            }
+            if(imgD[i] < min){
+                min = imgD[i];
+            }
+        }
+        for(int i=0; i<imgD.length; i++){
+            if(imgD[i] > min){
+                imgD[i] += 255.0-max;
+            }
+        }
+        img.put(0, 0, imgD);
+        img.convertTo(img, CvType.CV_8UC1);
         if(systemState == Constants.STATE_TRAINING_OFF) {
             System.out.println("MAX?? : "+max+"MIN¿¿ :"+min);
-            showImg(img);
+            //showImg(img);
         }
         
         for(Rect roi: quad){
