@@ -73,7 +73,7 @@ public abstract class ProcessTemplate extends Process{
     public void showImg(Mat img){
         frame = new JFrame();
         Random rand = new Random();
-        Mat receivedImg = img;
+        Mat receivedImg = img.clone();
         MatOfByte matOfByte = new MatOfByte();
         Imgcodecs.imencode(".png", receivedImg, matOfByte);
         byte[] byteArray = matOfByte.toArray();

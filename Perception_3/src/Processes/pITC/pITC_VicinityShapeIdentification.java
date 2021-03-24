@@ -86,6 +86,7 @@ public class pITC_VicinityShapeIdentification extends ProcessTemplate {
             if(!matched && correl==correl){
                 FeatureEntity newFE = new FeatureEntity(img);
                 newFE.isQuad4();
+                //showImg(img,newFE.getID());
                 outputIDs.add(newFE.getID());
                 currentQueue.add(newFE);
             }

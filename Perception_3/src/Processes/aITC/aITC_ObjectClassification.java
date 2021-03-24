@@ -116,8 +116,14 @@ public class aITC_ObjectClassification extends ProcessTemplate {
         totalIDs.addAll(quad4IDs);
         totalIDs.addAll(quad16IDs);
         
-        System.out.println("TOTAL--"+totalIDs);
-        System.out.println("SIZE--"+totalIDs.size());
+        System.out.print("{");
+        for(int i=0; i<totalIDs.size(); i++){
+            System.out.print(totalIDs.get(i));
+            if(i<totalIDs.size()-1) System.out.print(", ");
+        }
+        System.out.println("},");
+        
+        //System.out.println("SIZE--"+totalIDs.size());
         
         return totalIDs;
     }

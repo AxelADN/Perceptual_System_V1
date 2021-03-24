@@ -172,4 +172,16 @@ public class Conversion {
         return new Mat();
     }
     
+    public static double[] doubleMat2Vect(double[][] mat){
+        double[] vect = new double[mat.length*mat[0].length];
+        int index = 0;
+        for(int i=0; i<mat.length; i++){
+            for(int j=0; j<mat[i].length; j++){
+                vect[index] = mat[i][j];
+                index++;
+            }
+        }
+        return vect;
+    }
+    
 }

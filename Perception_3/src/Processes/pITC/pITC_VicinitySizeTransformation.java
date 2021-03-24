@@ -57,7 +57,7 @@ public class pITC_VicinitySizeTransformation extends ProcessTemplate {
             send(
                     Names.aITC_GlobalClusterConstruction,
                     DataStructure.wrapData(
-                            toSend,
+                            DataStructure.getMats(bytes),
                             defaultModality,
                             DataStructure.getTime(bytes)
                     )
@@ -81,8 +81,8 @@ public class pITC_VicinitySizeTransformation extends ProcessTemplate {
             quadBox = boundingBox(quad16gray);
             if(!quadBox.empty()){
                 quadMask = quad16.submat(quadBox);
-                resultQuad16 = resize(quadMask,quadBox);
-                //Imgproc.resize(quadMask, resultQuad16, SystemConfig.quad16());
+                //resultQuad16 = resize(quadMask,quadBox);
+                Imgproc.resize(quadMask, resultQuad16, SystemConfig.quad16());
                 outputImgs.add(resultQuad16);
                 //showImg(resultQuad16);
             }else{

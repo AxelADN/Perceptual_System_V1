@@ -74,6 +74,7 @@ public class aITC_GlobalShapeIdentification extends ProcessTemplate {
                 matched = true;
                 feature.increasePriority(correl);
                 outputIDs.add(feature.getID());
+                //showImg(img);
                 break;
             }
         }

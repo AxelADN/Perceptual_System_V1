@@ -15,6 +15,15 @@ import org.opencv.core.Size;
  */
 public class SystemConfig{
     
+    public static boolean CHECK_1QUAD = false;
+    public static boolean CHECK_4QUAD = false;
+    public static boolean CHECK_16QUAD = false;
+    public static final boolean CHECK_ALL = false;
+    public static final boolean SECOND_ORDER_DISS = true;
+    public static final boolean DISTANCE_CLASS_CALCULATION = false;
+    public static final boolean CORREL_CLASS_CALCULATION = false;
+    public static final boolean DISTANCE_IMG_CALCULATION = false;
+    
     public static final boolean EXTERNAL_ORIGIN = true;
     public static final String EXTERNAL_INPUT_FILE = "C:\\Users\\AxelADN-Cinv\\Documents\\GitHub\\cuayollotol\\middlewareVision\\savedMaps\\";
     public static final String EXTERNAL_ORIGIN_IMAGE = "C:\\Users\\AxelADN-Cinv\\Documents\\GitHub\\cuayollotol\\middlewareVision\\images\\";
@@ -29,11 +38,12 @@ public class SystemConfig{
     public static final int INPUT_HEIGHT  =   128;
     
     public static final double STANDAR_PRIORITY_INCREMENT = 0.001;
-    public static final double TEMPLATE_MATCHING_TOLERANCE = 1;
+    public static final double TEMPLATE_MATCHING_TOLERANCE = .8;
     
-    public static final String FILE = "C:\\Users\\AxelADN-Cinv\\Documents\\Test_Sets\\TestSet_1\\";
-    public static final String EXTENSION = ".png";
+    public static final String FILE = "C:\\Users\\AxelADN-Cinv\\Documents\\Test_Sets\\TestSet_2\\";
+    public static final String EXTENSION = ".jpg";
     public static boolean TRAINING_MODE = true;
+    public static int TRAINING_CYCLES = 2;
     public static double ZERO_PIXELS_TOLERANCE = 0.03;
     public static byte AFFECTION_VALUE_NEIGHBORHOOD = 10;
     

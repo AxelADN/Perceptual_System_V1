@@ -112,6 +112,7 @@ public class pITC_LocalVicinityConstruction extends ProcessTemplate {
         for(Mat mat: outputImgs){
             //showImg(mat);
         }
+        //showImg(outputImgs.get(0));
         
         return outputImgs;
     }
