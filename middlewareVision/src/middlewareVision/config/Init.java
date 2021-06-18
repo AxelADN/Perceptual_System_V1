@@ -2,7 +2,7 @@ package middlewareVision.config;
 
 import gui.Controls;
 import kmiddle2.nodes.service.Igniter;
-import middlewareVision.nodes.Visual.V1;
+import middlewareVision.nodes.Visual.V1.V1;
 import middlewareVision.nodes.Visual.Retina;
 import middlewareVision.nodes.Visual.V2;
 import middlewareVision.nodes.Visual.V4;
