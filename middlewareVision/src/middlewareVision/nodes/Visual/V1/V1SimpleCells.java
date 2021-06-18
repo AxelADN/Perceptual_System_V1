@@ -35,11 +35,7 @@ public class V1SimpleCells extends FrameActivity {
      */
     float sigma = 0.47f * 2f;
     float inc = (float) (Math.PI / 4);
-
-    //orientaciones con filtos de gabor par
-    public Mat[] orsPar;
-    //orientaciones con filtro de gabor impar
-    public Mat[] orsImpar;
+    
     //matrices DKL recibidas desde el LGN
     Mat DKL[];
     //mapa de saliencia, no se recibe aún
@@ -54,8 +50,6 @@ public class V1SimpleCells extends FrameActivity {
         this.ID = AreaNames.V1SimpleCells;
         this.namer = AreaNames.class;
         DKL = new Mat[3];
-        orsPar = new Mat[4];
-        orsImpar = new Mat[4];
         //initFrames(4, 16);
     }
 

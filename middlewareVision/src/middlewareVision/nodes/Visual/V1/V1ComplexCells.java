@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.V1;
 
+import VisualMemory.V1Bank;
 import spike.Location;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +33,6 @@ public class V1ComplexCells extends Activity {
      * CONSTANTES
      * *************************************************************************
      */
-    Mat ors[][];
     Mat energy[];
 
     /**
@@ -44,7 +44,6 @@ public class V1ComplexCells extends Activity {
     public V1ComplexCells() {
         this.ID = AreaNames.V1ComplexCells;
         this.namer = AreaNames.class;
-        ors = new Mat[4][2];
         energy = new Mat[4];
         //initFrames(4, 8);
     }
@@ -64,18 +63,20 @@ public class V1ComplexCells extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
 
-                SimpleCellMatrix scm = (SimpleCellMatrix) spike.getIntensity();
-                Mat evenOrs = Convertor.matrixToMat(scm.getEvenOrs());
-                Mat oddOrs = Convertor.matrixToMat(scm.getOddOrs());
-
-                Mat energy = energyProcess(evenOrs, oddOrs);
-                Mat energy2=energy.clone();
+                Mat evenOrs = V1Bank.simpleCellsBank[0].SimpleCellsEven[index];
+                Mat oddOrs = V1Bank.simpleCellsBank[0].SimpleCellsOdd[index];
+                V1Bank.complexCellsBank[0].ComplexCells[index]=energyProcess(evenOrs, oddOrs);
+                Mat energy2=V1Bank.complexCellsBank[0].ComplexCells[index].clone();
+                
                 Imgproc.resize(energy2, energy2, new Size(Config.motionWidth,Config.motionHeight), INTER_CUBIC);
-                LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index,0), Convertor.MatToMatrix(energy), 0);
+                LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, 
+                        new Location(index,0), 0, 0);
+                LongSpike sendSpike3 = new LongSpike(Modalities.VISUAL, 
+                        new Location(index,0), Convertor.MatToMatrix(V1Bank.complexCellsBank[0].ComplexCells[index]), 0);
                 LongSpike sendSpike2 = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(energy2), 0);
-                send(AreaNames.V1Visualizer, sendSpike1.getByteArray());
+                send(AreaNames.V1Visualizer, sendSpike3.getByteArray());
                 send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
-                send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
+                //send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
 
             }
 

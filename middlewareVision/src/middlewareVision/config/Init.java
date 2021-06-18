@@ -1,5 +1,6 @@
 package middlewareVision.config;
 
+import VisualMemory.InitCellMemory;
 import gui.Controls;
 import kmiddle2.nodes.service.Igniter;
 import middlewareVision.nodes.Visual.V1.V1;
@@ -47,6 +48,7 @@ public class Init extends Igniter {
         configuration.setDebug(!DEBUG);
         configuration.setTCP();
         configuration.setEntityID(ENTITY_ID);
+        InitCellMemory.initCellMemory();
         V4Memory.initV1Map();
         Controls cc=new Controls();
         cc.setVisible(true);

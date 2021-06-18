@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.V1;
 
+import VisualMemory.V1Bank;
 import gui.FrameActivity;
 import java.io.IOException;
 import spike.Location;
@@ -53,7 +54,7 @@ public class V1HyperComplex extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
-                Mat edges = Convertor.matrixToMat((matrix) spike.getIntensity());
+                Mat edges = V1Bank.complexCellsBank[0].ComplexCells[index];
                 Mat endStop;
                 //ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.5f, 1, 5, 29, 0.05, index);
                 endStop = endStopped(edges, index);

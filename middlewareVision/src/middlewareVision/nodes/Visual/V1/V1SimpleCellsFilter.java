@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.V1;
 
+import VisualMemory.V1Bank;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
@@ -55,11 +56,11 @@ public class V1SimpleCellsFilter extends Activity {
                 //assign information from LGN to the DKL array matrix
                 Mat raw = Convertor.matrixToMat((matrix) spike.getIntensity());
                 
-                Mat evenOrs = gaborFilter(raw, 0, index);
-                Mat oddOrs = gaborFilter(raw, 1, index);
+                V1Bank.simpleCellsBank[0].SimpleCellsEven[index] = gaborFilter(raw, 0, index);
+                V1Bank.simpleCellsBank[0].SimpleCellsOdd[index]  = gaborFilter(raw, 1, index);
                 
-                matrix evenMatrix=Convertor.MatToMatrix(evenOrs);
-                matrix oddMatrix=Convertor.MatToMatrix(oddOrs);
+                matrix evenMatrix=Convertor.MatToMatrix(V1Bank.simpleCellsBank[0].SimpleCellsEven[index]);
+                matrix oddMatrix=Convertor.MatToMatrix(V1Bank.simpleCellsBank[0].SimpleCellsOdd[index]);
                 
                 LongSpike sendEvenMatrix= new LongSpike(Modalities.VISUAL, new Location(index,2), evenMatrix, 0);
                 LongSpike sendOddMatrix= new LongSpike(Modalities.VISUAL, new Location(index,3), oddMatrix, 0);
@@ -67,9 +68,9 @@ public class V1SimpleCellsFilter extends Activity {
                 send(AreaNames.V1Visualizer, sendEvenMatrix.getByteArray());
                 send(AreaNames.V1Visualizer, sendOddMatrix.getByteArray());
                 
-                SimpleCellMatrix scMatrix=new SimpleCellMatrix(evenMatrix, oddMatrix);
+                //SimpleCellMatrix scMatrix=new SimpleCellMatrix(evenMatrix, oddMatrix);
                 
-                LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), scMatrix, 0);
+                LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
                 send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
             }
 

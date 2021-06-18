@@ -25,6 +25,8 @@ public class SimpleCells {
     
     public SimpleCells(int scale,int number){
         this.scale=scale;
+        SimpleCellsEven=new Mat[number];
+        SimpleCellsOdd=new Mat[number];
         for(int i=0;i<number;i++){
             SimpleCellsEven[i]=new Mat();
             SimpleCellsOdd[i]=new Mat();
