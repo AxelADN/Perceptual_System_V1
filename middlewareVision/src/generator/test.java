@@ -5,7 +5,7 @@
  */
 package generator;
 
-import middlewareVision.nodes.Visual.smallNodes.V4CellStructure;
+import middlewareVision.nodes.Visual.V4.V4CellStructure;
 import org.opencv.core.Core;
 
 /**

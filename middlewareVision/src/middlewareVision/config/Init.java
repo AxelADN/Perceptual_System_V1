@@ -4,15 +4,14 @@ import VisualMemory.InitCellMemory;
 import gui.Controls;
 import kmiddle2.nodes.service.Igniter;
 import middlewareVision.nodes.Visual.V1.V1;
-import middlewareVision.nodes.Visual.Retina;
-import middlewareVision.nodes.Visual.V2;
-import middlewareVision.nodes.Visual.V4;
+import middlewareVision.nodes.Visual.Retina.Retina;
+import middlewareVision.nodes.Visual.V2.V2;
+import middlewareVision.nodes.Visual.V4.V4;
 import org.opencv.core.Core;
 import utils.SimpleLogger;
 import utils.layoutManager;
-import middlewareVision.nodes.Visual.LGN;
-import middlewareVision.nodes.Visual.smallNodes.V4Memory;
-import org.opencv.core.Mat;
+import middlewareVision.nodes.Visual.LGN.LGN;
+import middlewareVision.nodes.Visual.V4.V4Memory;
 import utils.SpecialKernels;
 //@import
 
@@ -35,11 +34,7 @@ public class Init extends Igniter {
             V1.class.getName(),
             V2.class.getName(),         
             V4.class.getName(),
-            /*
-            V1.class.getName(),
-            V2.class.getName(),
-            ITC.class.getName(), */
-		//@addNodes
+	    //@addNodes
         };
 
         SimpleLogger.setDebug(DEBUG);

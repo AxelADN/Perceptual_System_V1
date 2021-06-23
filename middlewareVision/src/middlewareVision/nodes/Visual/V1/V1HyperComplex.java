@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
-import middlewareVision.nodes.Visual.smallNodes.V4Memory;
+import middlewareVision.nodes.Visual.V4.V4Memory;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_32F;

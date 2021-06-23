@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import matrix.matrix;
-import middlewareVision.nodes.Visual.smallNodes.V4Memory;
+import middlewareVision.nodes.Visual.V4.V4Memory;
 
 /**
  *
