@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import gui.FrameActivity;
+import gui.Visualizer;
 import kmiddle2.nodes.activities.Activity;
 import matrix.SimpleCellMatrix;
 import org.opencv.core.Core;
@@ -34,7 +35,7 @@ public class V1ComplexCells extends Activity {
      * *************************************************************************
      */
     Mat energy[];
-
+    int nFrame=5*Config.gaborOrientations;
     /**
      * *************************************************************************
      * constructor y metodos para recibir
@@ -71,11 +72,12 @@ public class V1ComplexCells extends Activity {
                 Imgproc.resize(energy2, energy2, new Size(Config.motionWidth,Config.motionHeight), INTER_CUBIC);
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, 
                         new Location(index,0), 0, 0);
-                LongSpike sendSpike3 = new LongSpike(Modalities.VISUAL, 
-                        new Location(index,0), Convertor.MatToMatrix(V1Bank.complexCellsBank[0].ComplexCells[index]), 0);
+           
                 LongSpike sendSpike2 = new LongSpike(Modalities.VISUAL, new Location(index), Convertor.MatToMatrix(energy2), 0);
-                send(AreaNames.V1Visualizer, sendSpike3.getByteArray());
+                //send(AreaNames.V1Visualizer, sendSpike3.getByteArray());
                 send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
+                
+                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0].ComplexCells[index]), "energy "+index, index+nFrame);
                 //send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
 
             }

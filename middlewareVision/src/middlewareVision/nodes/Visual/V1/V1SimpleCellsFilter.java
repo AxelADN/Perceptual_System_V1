@@ -1,6 +1,7 @@
 package middlewareVision.nodes.Visual.V1;
 
 import VisualMemory.V1Bank;
+import gui.Visualizer;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
@@ -31,6 +32,7 @@ public class V1SimpleCellsFilter extends Activity {
      * CONSTANTES
      * *************************************************************************
      */
+    int nFrame=3*Config.gaborOrientations;
     /**
      * *************************************************************************
      * CONSTRUCTOR Y METODOS PARA RECIBIR
@@ -59,6 +61,10 @@ public class V1SimpleCellsFilter extends Activity {
                 V1Bank.simpleCellsBank[0].SimpleCellsEven[index] = gaborFilter(raw, 0, index);
                 V1Bank.simpleCellsBank[0].SimpleCellsOdd[index]  = gaborFilter(raw, 1, index);
                 
+                Visualizer.setImage(Convertor.ConvertMat2Image( V1Bank.simpleCellsBank[0].SimpleCellsEven[index]), "even "+index, index+nFrame);
+                Visualizer.setImage(Convertor.ConvertMat2Image( V1Bank.simpleCellsBank[0].SimpleCellsOdd[index]), "odd "+index, index+nFrame+4);
+                
+                /*
                 matrix evenMatrix=Convertor.MatToMatrix(V1Bank.simpleCellsBank[0].SimpleCellsEven[index]);
                 matrix oddMatrix=Convertor.MatToMatrix(V1Bank.simpleCellsBank[0].SimpleCellsOdd[index]);
                 
@@ -66,7 +72,7 @@ public class V1SimpleCellsFilter extends Activity {
                 LongSpike sendOddMatrix= new LongSpike(Modalities.VISUAL, new Location(index,3), oddMatrix, 0);
                 
                 send(AreaNames.V1Visualizer, sendEvenMatrix.getByteArray());
-                send(AreaNames.V1Visualizer, sendOddMatrix.getByteArray());
+                send(AreaNames.V1Visualizer, sendOddMatrix.getByteArray());*/
                 
                 //SimpleCellMatrix scMatrix=new SimpleCellMatrix(evenMatrix, oddMatrix);
                 

@@ -2,6 +2,7 @@ package middlewareVision.config;
 
 import VisualMemory.InitCellMemory;
 import gui.Controls;
+import gui.Visualizer;
 import kmiddle2.nodes.service.Igniter;
 import middlewareVision.nodes.Visual.V1.V1;
 import middlewareVision.nodes.Visual.Retina.Retina;
@@ -47,8 +48,7 @@ public class Init extends Igniter {
         V4Memory.initV1Map();
         Controls cc=new Controls();
         cc.setVisible(true);
-
-        layoutManager.initLayout();
+        Visualizer.initVisualizer(30);
         setAreas(areaNames);
         run();
         SpecialKernels.loadKernels();

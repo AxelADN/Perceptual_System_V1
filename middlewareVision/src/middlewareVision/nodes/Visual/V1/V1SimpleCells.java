@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import gui.FrameActivity;
+import kmiddle2.nodes.activities.Activity;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_32F;
 import org.opencv.core.Mat;
@@ -23,7 +24,7 @@ import utils.numSync;
  *
  *
  */
-public class V1SimpleCells extends FrameActivity {
+public class V1SimpleCells extends Activity {
 
     /**
      * *************************************************************************

@@ -31,6 +31,7 @@ public class V1HyperComplex extends Activity {
 
     float sigma = 0.47f * 2f;
     float inc = (float) (Math.PI / 4);
+    int nFrame=6*Config.gaborOrientations;
 
     public V1HyperComplex() {
         this.ID = AreaNames.V1HyperComplex;
@@ -68,6 +69,7 @@ public class V1HyperComplex extends Activity {
                 LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index, 4), Convertor.MatToMatrix(endStop), 0);
                 send(AreaNames.V2AngularCells, sendSpike.getByteArray());
                 send(AreaNames.V4Contour, sendSpike.getByteArray());
+                
                 send(AreaNames.V1Visualizer, sendSpike.getByteArray());
 
             }

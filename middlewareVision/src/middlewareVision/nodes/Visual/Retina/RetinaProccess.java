@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import middlewareVision.config.AreaNames;
 import gui.GUIActivity;
+import gui.Visualizer;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -196,9 +197,9 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
         do the transductions
          */
         Mat transMat[] = transduction(img2);
-        frames[0].setImage(Convertor.ConvertMat2Image(transMat[0]), "LMM");
-        frames[1].setImage(Convertor.ConvertMat2Image(transMat[1]), "SMLPM");
-        frames[2].setImage(Convertor.ConvertMat2Image(transMat[2]), "LPM");
+        Visualizer.setImage(Convertor.ConvertMat2Image(transMat[0]), "LMM", 0);
+        Visualizer.setImage(Convertor.ConvertMat2Image(transMat[1]), "SMLPM", 1);
+        Visualizer.setImage(Convertor.ConvertMat2Image(transMat[2]), "LPM", 2);
 
         if (c == 0 || c == 2) {
             for (int i = 0; i < transMat.length; i++) {

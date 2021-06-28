@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.V1;
 
+import gui.Visualizer;
 import imgio.RetinalImageIO;
 import imgio.RetinalTextIO;
 import spike.Location;
@@ -61,7 +62,7 @@ public class V1DoubleOpponent extends Activity {
     MATRICES PROCESADAS DOBLE OPONENTES
     */
     Mat DKL2[];
-    
+    int indexFrame=8;
     /*
     ****************************************************************************
     Constructor y metodos para recibir
@@ -97,7 +98,7 @@ public class V1DoubleOpponent extends Activity {
                 for(int i=0;i<3;i++){
                         LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,1), Convertor.MatToMatrix(DKL2[i]), 0);
                         send(AreaNames.V4Color, sendSpike.getByteArray());
-                        send(AreaNames.V1Visualizer, sendSpike.getByteArray());
+                        Visualizer.setImage(Convertor.ConvertMat2Image(DKL2[i]), "dkl'", indexFrame+i);
                 }
             }
 

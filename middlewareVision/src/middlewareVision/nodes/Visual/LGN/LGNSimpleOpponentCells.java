@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import gui.FrameActivity;
+import gui.Visualizer;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -25,7 +26,7 @@ import utils.numSync;
  *
  *
  */
-public class LGNSimpleOpponentCells extends FrameActivity {
+public class LGNSimpleOpponentCells extends Activity {
 
     /**
      * ****************************************************************
@@ -69,6 +70,7 @@ public class LGNSimpleOpponentCells extends FrameActivity {
     
     Mat LMSCones[];
     Mat DKL[];
+    int indexFrame=4;
     /*
     ****************************************************************************
     Constructores y metodos para recibir información
@@ -83,7 +85,6 @@ public class LGNSimpleOpponentCells extends FrameActivity {
         this.namer = AreaNames.class;
         LMSCones=new Mat[3];
         DKL=new Mat[3];
-        initFrames(3,5);
     }
 
     @Override
@@ -125,7 +126,7 @@ public class LGNSimpleOpponentCells extends FrameActivity {
                 mostrar las imagenes procesadas
                 */
                 for(int i=0;i<LMSCones.length;i++){
-                    frame[i].setImage(Convertor.ConvertMat2Image(DKL[i]), "dkl");
+                    Visualizer.setImage(Convertor.ConvertMat2Image(DKL[i]), "dkl", indexFrame+i);
                     //mandar los spikes de salida a las celulas simples y doble oponentes de V1
                     LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,-1), Convertor.MatToMatrix(DKL[i]), 0);
                     send(AreaNames.V1SimpleCells, sendSpike.getByteArray());
