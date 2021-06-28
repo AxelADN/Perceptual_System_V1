@@ -7,6 +7,7 @@ package middlewareVision.nodes.Visual.V2;
 
 import spike.Location;
 import gui.FrameActivity;
+import gui.Visualizer;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ public class V2AngularCells extends FrameActivity {
     public Mat[] angleMats;
     //Mat kernels[];
     public Mat filtered[];
+    int nFrame=7*Config.gaborOrientations;
     /**
      * 2D array of each angular combination
      */
@@ -94,7 +96,7 @@ public class V2AngularCells extends FrameActivity {
                  */
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     BufferedImage img = Convertor.ConvertMat2Image(angleMats[i]);
-                    frame[i].setImage(img, "angular map V2  " + i);
+                    Visualizer.setImage(img, "angle "+i, i+nFrame);
                 }
                 /**
                  * Send a multichannel matrix with the combinations of angular activations

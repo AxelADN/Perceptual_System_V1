@@ -54,5 +54,7 @@ public class Listener implements MouseListener{
     @Override
     public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        frame.isInLabel=false;
+        frame.repaint();
     }
 }

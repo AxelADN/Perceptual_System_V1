@@ -5,12 +5,16 @@
  */
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import utils.Config;
 import utils.layoutManager;
 
@@ -32,20 +36,22 @@ public class VisualizerFrame extends javax.swing.JFrame {
      * Creates new form Visualizer
      */
     public VisualizerFrame(int nFields) {
+
         initComponents();
         layoutManager.initLayout();
-        this.setSize(Config.width * 8, Config.heigth * 4 + 50);
+        this.setSize(Config.width * 8, Config.heigth * 4 + 70);
+        this.setLocation(Config.width, 0);
         jPanel1.setPreferredSize(new Dimension(this.getSize()));
         labels = new JLabel[nFields];
-        strings=new String[nFields];
+        strings = new String[nFields];
         for (int i = 0; i < nFields; i++) {
-            strings[i]="";
+            strings[i] = "";
             labels[i] = new JLabel();
             labels[i].setHorizontalTextPosition(JLabel.CENTER);
             labels[i].setLocation(layoutManager.points.get(i));
             labels[i].setVisible(true);
             labels[i].setSize(Config.width, Config.heigth);
-            Listener listener=new Listener(strings[i],labels[i],this,i);
+            Listener listener = new Listener(strings[i], labels[i], this, i);
             labels[i].addMouseListener(listener);
             jPanel1.add(labels[i]);
         }
@@ -54,15 +60,39 @@ public class VisualizerFrame extends javax.swing.JFrame {
 
     public void setImage(BufferedImage image, String title, int index) {
         labels[index].setIcon(new ImageIcon(image));
-        strings[index]=title;
+        strings[index] = title;
         repaint();
     }
-    
-    public void methodListener(int index){
-        System.out.println("hola "+strings[index]);
-        //labels[index].setToolTipText(strings[index]);
-        //labels[index].setText(strings[index]);
+
+    public void methodListener(int index) {
+        positionx = labels[index].getX();
+        positiony = labels[index].getY();
+        text = strings[index];
+        if(labels[index].getIcon()!=null){
+            isInLabel=true;
+        }
+        else{
+            isInLabel=false;
+        }
         repaint();
+    }
+
+    int positionx = 0;
+    int positiony = 0;
+    String text = "";
+    boolean isInLabel = false;
+
+    public void paint(Graphics g) {
+        super.paint(g);
+        if (isInLabel) {
+            g.setColor(new Color(0, 50, 10));
+            g.drawRect(positionx + 7, positiony + 30, Config.width, Config.heigth);
+            g.drawRect(positionx + 7, positiony + Config.heigth + 30, Config.width, 30);
+            g.setColor(new Color(10, 10, 10, 250));
+            g.fillRect(positionx + 7, positiony + Config.heigth + 30, Config.width, 30);
+            g.setColor(Color.WHITE);
+            g.drawString(text, positionx + 10, positiony + Config.heigth + 50);
+        }
     }
 
     /**

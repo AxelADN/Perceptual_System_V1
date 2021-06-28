@@ -48,7 +48,7 @@ public class Init extends Igniter {
         V4Memory.initV1Map();
         Controls cc=new Controls();
         cc.setVisible(true);
-        Visualizer.initVisualizer(30);
+        Visualizer.initVisualizer(50);
         setAreas(areaNames);
         run();
         SpecialKernels.loadKernels();

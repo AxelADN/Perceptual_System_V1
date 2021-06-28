@@ -2,6 +2,7 @@ package middlewareVision.nodes.Visual.V1;
 
 import VisualMemory.V1Bank;
 import gui.FrameActivity;
+import gui.Visualizer;
 import java.io.IOException;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
@@ -70,7 +71,8 @@ public class V1HyperComplex extends Activity {
                 send(AreaNames.V2AngularCells, sendSpike.getByteArray());
                 send(AreaNames.V4Contour, sendSpike.getByteArray());
                 
-                send(AreaNames.V1Visualizer, sendSpike.getByteArray());
+                //send(AreaNames.V1Visualizer, sendSpike.getByteArray());
+                Visualizer.setImage(Convertor.ConvertMat2Image(endStop), "end stopped "+index, nFrame+index);
 
             }
 
