@@ -1,6 +1,7 @@
 package middlewareVision.nodes.Visual.V4;
 
 import gui.FrameActivity;
+import gui.Visualizer;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
@@ -11,6 +12,7 @@ import middlewareVision.config.AreaNames;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import spike.Modalities;
+import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
 import utils.SimpleLogger;
@@ -20,7 +22,7 @@ import utils.numSync;
  *
  *
  */
-public class V4Color extends FrameActivity {
+public class V4Color extends Activity {
 
 
     /*
@@ -32,7 +34,7 @@ public class V4Color extends FrameActivity {
         this.ID = AreaNames.V4Color;
         this.namer = AreaNames.class;
         DKL = new matrix[3];
-        initFrames(1,35);
+
     }
 
     @Override
@@ -59,7 +61,8 @@ public class V4Color extends FrameActivity {
             if (sync.isComplete()) {
                 labelMatrix labels = generateLabelMatrix(DKL);
                 
-                frame[0].setImage(Convertor.ConvertMat2Image2(matLabel), "color labels");
+                //frame[0].setImage(Convertor.ConvertMat2Image2(matLabel), "color labels");
+                Visualizer.setImage(Convertor.ConvertMat2Image2(matLabel), "color labels", 2*Config.gaborOrientations+3);
                 LongSpike labelSpike = new LongSpike(Modalities.VISUAL, new Location(0), labels, 0);
                 //LongSpike LChannelSpike = new LongSpike(Modalities.VISUAL, new Location(1), DKL[2], 0);
                 //send(AreaNames.ITC, labelSpike.getByteArray());

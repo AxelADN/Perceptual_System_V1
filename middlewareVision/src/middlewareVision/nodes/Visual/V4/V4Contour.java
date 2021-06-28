@@ -5,13 +5,16 @@
  */
 package middlewareVision.nodes.Visual.V4;
 
+import VisualMemory.V1Bank;
 import spike.Location;
 import gui.FrameActivity;
+import gui.Visualizer;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kmiddle2.nodes.activities.Activity;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import static org.opencv.core.Core.FILLED;
@@ -29,12 +32,13 @@ import utils.LongSpike;
 import utils.MatrixUtils;
 import utils.numSync;
 
-public class V4Contour extends FrameActivity {
+public class V4Contour extends Activity {
 
     public Mat[] ors;
     public Mat combinedEdges;
     public Mat contours1;
     public Mat contours2;
+    int nFrame=Config.gaborOrientations*8;
 
     /**
      * Constructor of the class
@@ -43,7 +47,6 @@ public class V4Contour extends FrameActivity {
         this.ID = AreaNames.V4Contour;
         this.namer = AreaNames.class;
         ors = new Mat[Config.gaborOrientations];
-        initFrames(3, 24+8);
     }
 
     @Override
@@ -64,7 +67,7 @@ public class V4Contour extends FrameActivity {
             if (spike.getModality() == Modalities.VISUAL) {
                 Location l = (Location) spike.getLocation();
                 int index = l.getValues()[0];
-                ors[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                ors[index] = V1Bank.hypercomplexCellsBank[0][0].HypercomplexCells[0][index];
                 /*
                 add the received index to the sync
                  */
@@ -72,7 +75,7 @@ public class V4Contour extends FrameActivity {
                 try {
                     combinedEdges = MatrixUtils.maxSum(ors);
                     BufferedImage img = Convertor.ConvertMat2Image(combinedEdges);
-                    frame[0].setImage(img, "combined");
+                    Visualizer.setImage(img, "combined", nFrame);
                 } catch (Exception ex) {
 
                 }
@@ -87,12 +90,12 @@ public class V4Contour extends FrameActivity {
                 contours1 = drawMatContours(combinedEdges, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_TC89_L1);
                 BufferedImage img2 = Convertor.ConvertMat2Image2(contours1);
                 V4Memory.contours1=new Mat();
-                frame[1].setImage(img2, "contours1");
+                Visualizer.setImage(img2, "contours 1", nFrame+1);
                 Imgproc.cvtColor(contours1, V4Memory.contours1, Imgproc.COLOR_RGB2GRAY);
                 contours2 = drawMatContours(combinedEdges, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
                 BufferedImage img3 = Convertor.ConvertMat2Image2(contours2);
                 V4Memory.contours2=new Mat();
-                frame[2].setImage(img3, "contours2");
+                Visualizer.setImage(img3, "contours 2", nFrame+2);
                 Imgproc.cvtColor(contours2, V4Memory.contours2, Imgproc.COLOR_RGB2GRAY);
                 /**
                  * si la matriz es normal en colores de 0 a 255, se puede

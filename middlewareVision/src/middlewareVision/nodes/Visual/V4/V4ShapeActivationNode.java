@@ -1,5 +1,7 @@
 package middlewareVision.nodes.Visual.V4;
 
+import gui.Visualizer;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
@@ -14,6 +16,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import spike.Modalities;
+import utils.Config;
+import utils.Convertor;
 import utils.LongSpike;
 import utils.MatrixUtils;
 import utils.SimpleLogger;
@@ -31,6 +35,7 @@ public class V4ShapeActivationNode extends Activity {
      * *************************************************************************
      */
     RFBank rfbank;
+    int nFrame=Config.gaborOrientations*9;
 
     /**
      * *************************************************************************
@@ -67,9 +72,8 @@ public class V4ShapeActivationNode extends Activity {
                 }
                 Mat activation = sumMats(matsList);
                 V4Memory.activationArray[index] = activation;
-                
-                LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
-                send(AreaNames.V4Visualizer, sendSpike1.getByteArray());
+                BufferedImage img=Convertor.ConvertMat2Image(V4Memory.activationArray[index]);
+                Visualizer.setImage(img, "shape "+index, nFrame+index);
 
                 //hacer las convoluciones para cada matriz de v2
                 //juntar las activaciones con suma de cuadrados o multiplicacion 

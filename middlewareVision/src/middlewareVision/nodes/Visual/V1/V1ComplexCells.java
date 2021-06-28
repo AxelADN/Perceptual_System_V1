@@ -64,10 +64,10 @@ public class V1ComplexCells extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
 
-                Mat evenOrs = V1Bank.simpleCellsBank[0].SimpleCellsEven[index];
-                Mat oddOrs = V1Bank.simpleCellsBank[0].SimpleCellsOdd[index];
-                V1Bank.complexCellsBank[0].ComplexCells[index]=energyProcess(evenOrs, oddOrs);
-                Mat energy2=V1Bank.complexCellsBank[0].ComplexCells[index].clone();
+                Mat evenOrs = V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index];
+                Mat oddOrs = V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index];
+                V1Bank.complexCellsBank[0][0].ComplexCells[index]=energyProcess(evenOrs, oddOrs);
+                Mat energy2=V1Bank.complexCellsBank[0][0].ComplexCells[index].clone();
                 
                 Imgproc.resize(energy2, energy2, new Size(Config.motionWidth,Config.motionHeight), INTER_CUBIC);
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, 
@@ -77,7 +77,7 @@ public class V1ComplexCells extends Activity {
                 //send(AreaNames.V1Visualizer, sendSpike3.getByteArray());
                 send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
                 
-                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0].ComplexCells[index]), "energy "+index, index+nFrame);
+                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0][0].ComplexCells[index]), "energy "+index, index+nFrame);
                 //send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
 
             }

@@ -5,6 +5,7 @@
  */
 package middlewareVision.nodes.Visual.V2;
 
+import VisualMemory.V1Bank;
 import spike.Location;
 import gui.FrameActivity;
 import gui.Visualizer;
@@ -78,7 +79,7 @@ public class V2AngularCells extends FrameActivity {
                 Location l = (Location) spike.getLocation();
                 int index = l.getValues()[0];
                 //the location index is assigned to the array index
-                ors[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                ors[index] = V1Bank.hypercomplexCellsBank[0][0].HypercomplexCells[0][index];
                 //the received indexes are added to the synchronizer
                 sync.addReceived(index);
 

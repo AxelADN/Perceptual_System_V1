@@ -8,6 +8,8 @@ package gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
@@ -31,6 +33,8 @@ public class VisualizerFrame extends javax.swing.JFrame {
     int index;
     int maxwidth = 0;
     int maxheight = 0;
+    int skip = 2 * Config.width;
+    int maxLabel = 0;
 
     /**
      * Creates new form Visualizer
@@ -39,6 +43,8 @@ public class VisualizerFrame extends javax.swing.JFrame {
 
         initComponents();
         layoutManager.initLayout();
+        previous.setLocation(previous.getWidth(), this.getHeight() - previous.getWidth());
+        next.setLocation(this.getWidth() - next.getWidth(), this.getHeight() - next.getWidth());
         this.setSize(Config.width * 8, Config.heigth * 4 + 70);
         this.setLocation(Config.width, 0);
         jPanel1.setPreferredSize(new Dimension(this.getSize()));
@@ -55,26 +61,65 @@ public class VisualizerFrame extends javax.swing.JFrame {
             labels[i].addMouseListener(listener);
             jPanel1.add(labels[i]);
         }
+        repaint();
         this.setVisible(true);
     }
 
     public void setImage(BufferedImage image, String title, int index) {
         labels[index].setIcon(new ImageIcon(image));
         strings[index] = title;
+        maxLabelIndex(index);
         repaint();
+    }
+
+    void maxLabelIndex(int index) {
+        if (index > maxLabel) {
+            maxLabel = index;
+        }
     }
 
     public void methodListener(int index) {
         positionx = labels[index].getX();
         positiony = labels[index].getY();
         text = strings[index];
-        if(labels[index].getIcon()!=null){
-            isInLabel=true;
-        }
-        else{
-            isInLabel=false;
+        if (labels[index].getIcon() != null) {
+            isInLabel = true;
+        } else {
+            isInLabel = false;
         }
         repaint();
+    }
+
+    public void next() {
+        if (labels[maxLabel].getX() >= this.getWidth()) {
+            move(1);
+        }
+    }
+
+    public void previous() {
+        if (labels[0].getX() < 0) {
+            move(-1);
+        }
+    }
+
+    public void move(int n) {
+        for (int i = 0; i < labels.length; i++) {
+            if (n == 1) {
+                labels[i].setLocation(labels[i].getX() - (skip), labels[i].getY());
+            }
+            if (n == -1) {
+                labels[i].setLocation(labels[i].getX() + (skip), labels[i].getY());
+            }
+        }
+        repaint();
+
+    }
+
+    public void copyImage(int index) {
+        Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
+        ImageIcon image = (ImageIcon) labels[index].getIcon();
+        ImageSelection dh = new ImageSelection(image.getImage());
+        cb.setContents(dh, null);
     }
 
     int positionx = 0;
@@ -93,6 +138,7 @@ public class VisualizerFrame extends javax.swing.JFrame {
             g.setColor(Color.WHITE);
             g.drawString(text, positionx + 10, positiony + Config.heigth + 50);
         }
+
     }
 
     /**
@@ -105,29 +151,58 @@ public class VisualizerFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        previous = new javax.swing.JButton();
+        next = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
 
+        previous.setBackground(new java.awt.Color(31, 48, 56));
+        previous.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        previous.setForeground(new java.awt.Color(255, 255, 255));
+        previous.setText("<");
+        previous.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.lightGray, new java.awt.Color(102, 102, 102)));
+        previous.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousActionPerformed(evt);
+            }
+        });
+
+        next.setBackground(new java.awt.Color(31, 48, 56));
+        next.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        next.setForeground(new java.awt.Color(255, 255, 255));
+        next.setText(">");
+        next.setBorder(javax.swing.BorderFactory.createEtchedBorder(java.awt.Color.lightGray, new java.awt.Color(102, 102, 102)));
+        next.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 479, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(previous)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 470, Short.MAX_VALUE)
+                .addComponent(next))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 271, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(previous)
+                    .addComponent(next)))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 177, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,8 +212,22 @@ public class VisualizerFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextActionPerformed
+        // TODO add your handling code here:
+        next();
+    }//GEN-LAST:event_nextActionPerformed
+
+    private void previousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousActionPerformed
+        // TODO add your handling code here:
+        previous();
+    }//GEN-LAST:event_previousActionPerformed
+
+    int p1;
+    int p2;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton next;
+    private javax.swing.JButton previous;
     // End of variables declaration//GEN-END:variables
 }

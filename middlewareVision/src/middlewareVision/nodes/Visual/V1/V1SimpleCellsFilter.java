@@ -58,11 +58,11 @@ public class V1SimpleCellsFilter extends Activity {
                 //assign information from LGN to the DKL array matrix
                 Mat raw = Convertor.matrixToMat((matrix) spike.getIntensity());
                 
-                V1Bank.simpleCellsBank[0].SimpleCellsEven[index] = gaborFilter(raw, 0, index);
-                V1Bank.simpleCellsBank[0].SimpleCellsOdd[index]  = gaborFilter(raw, 1, index);
+                V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index] = gaborFilter(raw, 0, index);
+                V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index]  = gaborFilter(raw, 1, index);
                 
-                Visualizer.setImage(Convertor.ConvertMat2Image( V1Bank.simpleCellsBank[0].SimpleCellsEven[index]), "even "+index, index+nFrame);
-                Visualizer.setImage(Convertor.ConvertMat2Image( V1Bank.simpleCellsBank[0].SimpleCellsOdd[index]), "odd "+index, index+nFrame+4);
+                Visualizer.setImage(Convertor.ConvertMat2Image( V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index]), "even "+index, index+nFrame);
+                Visualizer.setImage(Convertor.ConvertMat2Image( V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index]), "odd "+index, index+nFrame+4);
                 
                 /*
                 matrix evenMatrix=Convertor.MatToMatrix(V1Bank.simpleCellsBank[0].SimpleCellsEven[index]);

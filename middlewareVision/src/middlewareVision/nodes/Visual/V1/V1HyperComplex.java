@@ -56,7 +56,7 @@ public class V1HyperComplex extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
-                Mat edges = V1Bank.complexCellsBank[0].ComplexCells[index];
+                Mat edges = V1Bank.complexCellsBank[0][0].ComplexCells[index];
                 Mat endStop;
                 //ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.5f, 1, 5, 29, 0.05, index);
                 endStop = endStopped(edges, index);
@@ -66,13 +66,14 @@ public class V1HyperComplex extends Activity {
                 Imgproc.threshold(endStop, endStop, 0.4, 1, Imgproc.THRESH_TOZERO);
                 double w = Config.endstop;
                 Core.addWeighted(edges, w, endStop, 1 - w, 0, endStop);
+                V1Bank.hypercomplexCellsBank[0][0].HypercomplexCells[0][index]=endStop;
                 V4Memory.v1Map[index]=endStop;
-                LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index, 4), Convertor.MatToMatrix(endStop), 0);
+                LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index, 4), 0, 0);
                 send(AreaNames.V2AngularCells, sendSpike.getByteArray());
                 send(AreaNames.V4Contour, sendSpike.getByteArray());
                 
                 //send(AreaNames.V1Visualizer, sendSpike.getByteArray());
-                Visualizer.setImage(Convertor.ConvertMat2Image(endStop), "end stopped "+index, nFrame+index);
+                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.hypercomplexCellsBank[0][0].HypercomplexCells[0][index]), "end stopped "+index, nFrame+index);
 
             }
 

@@ -22,6 +22,14 @@ public class Visualizer {
     public static void setImage(BufferedImage image, String title, int index){
         vis.setImage(image, title, index);
     }
+    
+    public static void next(){
+         vis.next();
+    }
+    
+    public static void previous(){
+        vis.previous();
+    }
        
     
 }

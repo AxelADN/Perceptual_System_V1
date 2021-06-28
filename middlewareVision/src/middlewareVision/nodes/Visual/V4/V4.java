@@ -26,7 +26,6 @@ public class V4 extends Area{
         addProcess(V4Color.class);
         addProcess(V4ShapeCells.class);	
 	addProcess(V4ShapeActivationNode.class);	
-	addProcess(V4Visualizer.class);	
 	//@AddProcess
     }
 

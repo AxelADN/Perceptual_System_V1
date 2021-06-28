@@ -24,7 +24,6 @@ public class V1 extends Area{
 	
 	addProcess(V1SimpleCellsFilter.class);
 	
-	addProcess(V1Visualizer.class);
 	//addProcess(V1MotionCells.class);
 	//
 	
@@ -45,11 +44,8 @@ public class V1 extends Area{
 	send(AreaNames.V1SimpleCells,data);
 	send(AreaNames.V1ComplexCells,data);
 	send(AreaNames.V1DoubleOpponent,data);
-	send(AreaNames.V1HyperComplex,data);
-	
+	send(AreaNames.V1HyperComplex,data);	
 	send(AreaNames.V1SimpleCellsFilter,data);
-	
-	send(AreaNames.V1Visualizer,data);
 	//send(AreaNames.V1MotionCells,data);
 	//
 	
