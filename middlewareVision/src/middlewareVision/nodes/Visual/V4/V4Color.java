@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.V4;
 
+import VisualMemory.V1Bank;
 import gui.FrameActivity;
 import gui.Visualizer;
 import spike.Location;
@@ -54,16 +55,16 @@ public class V4Color extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
 
-                DKL[i1] = (matrix) spike.getIntensity();
+                DKL[i1] = Convertor.MatToMatrix(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[i1]);
                 sync.addReceived(i1);
             }
 
             if (sync.isComplete()) {
-                labelMatrix labels = generateLabelMatrix(DKL);
+                generateLabelMatrix(DKL);
                 
                 //frame[0].setImage(Convertor.ConvertMat2Image2(matLabel), "color labels");
                 Visualizer.setImage(Convertor.ConvertMat2Image2(matLabel), "color labels", 2*Config.gaborOrientations+3);
-                LongSpike labelSpike = new LongSpike(Modalities.VISUAL, new Location(0), labels, 0);
+                //LongSpike labelSpike = new LongSpike(Modalities.VISUAL, new Location(0), labels, 0);
                 //LongSpike LChannelSpike = new LongSpike(Modalities.VISUAL, new Location(1), DKL[2], 0);
                 //send(AreaNames.ITC, labelSpike.getByteArray());
                 //send(AreaNames.ITC, LChannelSpike.getByteArray());

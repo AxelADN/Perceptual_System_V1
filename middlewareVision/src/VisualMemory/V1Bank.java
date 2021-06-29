@@ -17,11 +17,13 @@ public class V1Bank {
     public static SimpleCells[][] simpleCellsBank;
     public static ComplexCells[][] complexCellsBank;
     public static HypercomplexCells[][] hypercomplexCellsBank;
+    public static DoubleOpponentCells[][] doubleOpponentCellsBank;
 
     public static void initializeSimpleCells(int... scales) {
         simpleCellsBank = new SimpleCells[scales.length][2];
         complexCellsBank = new ComplexCells[scales.length][2];
         hypercomplexCellsBank = new HypercomplexCells[scales.length][2];
+        doubleOpponentCellsBank = new DoubleOpponentCells[scales.length][2];
 
         for (int j = 0; j < 2; j++) {
             int i = 0;
@@ -29,6 +31,7 @@ public class V1Bank {
                 simpleCellsBank[i][j] = new SimpleCells(scale, Config.gaborOrientations);
                 complexCellsBank[i][j] = new ComplexCells(scale, Config.gaborOrientations);
                 hypercomplexCellsBank[i][j] = new HypercomplexCells(scale, 1, Config.gaborOrientations);
+                doubleOpponentCellsBank[i][j] = new DoubleOpponentCells(scale, Config.gaborOrientations);
                 i++;
             }
         }

@@ -6,6 +6,7 @@
 package middlewareVision.nodes.Visual.V2;
 
 import VisualMemory.V1Bank;
+import VisualMemory.V2Bank;
 import spike.Location;
 import gui.FrameActivity;
 import gui.Visualizer;
@@ -38,15 +39,16 @@ public class V2AngularCells extends FrameActivity {
      * Initial arrays
      */
     public Mat[] ors;
-    public Mat[] angleMats;
+    // public Mat[] angleMats;
     //Mat kernels[];
     public Mat filtered[];
-    int nFrame=7*Config.gaborOrientations;
+    int nFrame = 7 * Config.gaborOrientations;
+
     /**
      * 2D array of each angular combination
      */
-    public Mat v2map[][];
-  
+    // public Mat v2map[][];
+
     public V2AngularCells() {
         this.ID = AreaNames.V2AngularCells;
         this.namer = AreaNames.class;
@@ -55,14 +57,15 @@ public class V2AngularCells extends FrameActivity {
         initFrames(4, 20 + 8);
         //generateKernels();
     }
-    
+
     @Override
     public void init() {
         //SimpleLogger.log(this, "SMALL NODE CortexV2");
     }
-    
+
     /**
-     * this is like the door to the petri net, if you get all these indexes, it opens
+     * this is like the door to the petri net, if you get all these indexes, it
+     * opens
      */
     numSync sync = new numSync(Config.gaborOrientations);
 
@@ -91,23 +94,24 @@ public class V2AngularCells extends FrameActivity {
                 //calculates the angular activation maps
                 angularProcess();
                 //mixes activation maps with a certain aperture in a single matrix with the maximum pixel value operation
-                mergeAngles(v2map);
+                V2Bank.V2CellsBank[0][0].mergeCells();
+                // mergeAngles(v2map);
                 /*
                 the angle maps are shown in the frames of v2
                  */
                 for (int i = 0; i < Config.gaborOrientations; i++) {
-                    BufferedImage img = Convertor.ConvertMat2Image(angleMats[i]);
-                    Visualizer.setImage(img, "angle "+i, i+nFrame);
+                    BufferedImage img = Convertor.ConvertMat2Image(V2Bank.V2CellsBank[0][0].mergedAngleCells[i]);
+                    Visualizer.setImage(img, "angle " + i, i + nFrame);
                 }
                 /**
-                 * Send a multichannel matrix with the combinations of angular activations
+                 * Send a multichannel matrix with the combinations of angular
+                 * activations
                  */
-                for(int i=0;i<Config.gaborOrientations;i++){
-                    ArrayMatrix mm;
-                    mm = Convertor.MatArrayToMatrixArray(v2map[i]);
-                    LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i), mm, 0);
-                    send(AreaNames.V4ShapeCells, sendSpike.getByteArray());
+                for (int i = 0; i < Config.gaborOrientations; i++) {
+                    LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
+                    send(AreaNames.V4ShapeActivationNode, sendSpike.getByteArray());
                 }
+                
             }
 
         } catch (Exception ex) {
@@ -129,13 +133,13 @@ public class V2AngularCells extends FrameActivity {
      *
      * @param mat
      */
+    /*
     public void mergeAngles(Mat[][] mat) {
         angleMats = new Mat[Config.gaborOrientations];
         for (int i = 0; i < mat.length; i++) {
             angleMats[i] = MatrixUtils.maxSum(mat[i]);
         }
-    }
-    
+    }*/
     /**
      * Increment value
      */
@@ -144,8 +148,6 @@ public class V2AngularCells extends FrameActivity {
      * Value of the width of Gabor function
      */
     float sigma = 0.47f * 2f;
-
-
 
     /**
      * Generate the filtered matrix by applying a convolution
@@ -173,11 +175,11 @@ public class V2AngularCells extends FrameActivity {
      * multiply the matrixes for generating the activation map
      */
     public void angularActivation() {
-        v2map = new Mat[Config.gaborOrientations][Config.gaborOrientations * 2];
+        //v2map = new Mat[Config.gaborOrientations][Config.gaborOrientations * 2];
         String c = "";
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4 * 2; j++) {
-                v2map[i][j] = new Mat();
+                V2Bank.V2CellsBank[0][0].angleCells[i][j] = new Mat();
                 Mat vlvr = new Mat();
                 Mat vlpvr = new Mat();
                 Mat num = new Mat();
@@ -193,9 +195,9 @@ public class V2AngularCells extends FrameActivity {
                 Core.add(den, vlpvr, den);
                 Core.add(den, dl3_2, den);
                 Core.divide(num, den, h);
-                Core.multiply(vlvr, h, v2map[i][j]);
+                Core.multiply(vlvr, h, V2Bank.V2CellsBank[0][0].angleCells[i][j]);
                 //Core.multiply(filtered[j], filtered[(i + j + 1) % 8], v2map[i][j]);
-                Imgproc.threshold(v2map[i][j], v2map[i][j], 0, 1, Imgproc.THRESH_TOZERO);
+                Imgproc.threshold(V2Bank.V2CellsBank[0][0].angleCells[i][j], V2Bank.V2CellsBank[0][0].angleCells[i][j], 0, 1, Imgproc.THRESH_TOZERO);
             }
             c = c + "\n";
         }

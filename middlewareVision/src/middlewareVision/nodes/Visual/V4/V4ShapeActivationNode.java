@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.V4;
 
+import VisualMemory.V2Bank;
 import gui.Visualizer;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class V4ShapeActivationNode extends Activity {
      * *************************************************************************
      */
     RFBank rfbank;
-    int nFrame=Config.gaborOrientations*9;
+    int nFrame = Config.gaborOrientations * 9;
 
     /**
      * *************************************************************************
@@ -67,13 +68,13 @@ public class V4ShapeActivationNode extends Activity {
                 rfbank = V4CellStructure.V4Bank.get(index);
                 ArrayList matsList = new ArrayList();
                 for (RFlist list : rfbank.RFCellBank) {
-                    Mat activationMat = activationShape(filterMats(list));
+                    Mat activationMat = activationShape(filterMats(list, 0, 0));
                     matsList.add(activationMat);
                 }
                 Mat activation = sumMats(matsList);
                 V4Memory.activationArray[index] = activation;
-                BufferedImage img=Convertor.ConvertMat2Image(V4Memory.activationArray[index]);
-                Visualizer.setImage(img, "shape "+index, nFrame+index);
+                BufferedImage img = Convertor.ConvertMat2Image(V4Memory.activationArray[index]);
+                Visualizer.setImage(img, "shape " + index, nFrame + index);
 
                 //hacer las convoluciones para cada matriz de v2
                 //juntar las activaciones con suma de cuadrados o multiplicacion 
@@ -95,13 +96,13 @@ public class V4ShapeActivationNode extends Activity {
      * @param list
      * @return
      */
-    ArrayList<Mat> filterMats(RFlist list) {
+    ArrayList<Mat> filterMats(RFlist list, int scale, int eye) {
         ArrayList<Mat> listMat = new ArrayList();
-        if (V4Memory.v2Map.length > 0) {
+        if (V2Bank.V2CellsBank[scale][eye].angleCells.length > 0) {
             for (indexMat imat : list.RFs) {
                 Mat filteredMat = new Mat();
                 try {
-                    Imgproc.filter2D(V4Memory.v2Map[imat.index[0]][imat.index[1]], filteredMat, CV_32F, imat.getMat());
+                    Imgproc.filter2D(V2Bank.V2CellsBank[scale][eye].angleCells[imat.index[0]][imat.index[1]], filteredMat, CV_32F, imat.getMat());
                     Imgproc.threshold(filteredMat, filteredMat, 0, 1, Imgproc.THRESH_TOZERO);
                 } catch (Exception e) {
                     System.out.println("no existe la matriz" + imat.index[0] + "     " + imat.index[1] + "  .....  " + e);

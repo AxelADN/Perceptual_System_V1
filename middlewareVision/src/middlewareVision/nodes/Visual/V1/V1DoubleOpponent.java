@@ -1,5 +1,7 @@
 package middlewareVision.nodes.Visual.V1;
 
+import VisualMemory.LGNBank;
+import VisualMemory.V1Bank;
 import gui.Visualizer;
 import imgio.RetinalImageIO;
 import imgio.RetinalTextIO;
@@ -57,11 +59,10 @@ public class V1DoubleOpponent extends Activity {
     /*
     MATRICES DEL LGN
     */
-    Mat DKL1[];
     /*
     MATRICES PROCESADAS DOBLE OPONENTES
     */
-    Mat DKL2[];
+    //Mat DKL2[];
     int indexFrame=8;
     /*
     ****************************************************************************
@@ -71,8 +72,6 @@ public class V1DoubleOpponent extends Activity {
     public V1DoubleOpponent() {
         this.ID = AreaNames.V1DoubleOpponent;
         this.namer = AreaNames.class;
-        DKL1=new Mat[3];
-        DKL2=new Mat[3];
     }
 
     @Override
@@ -90,15 +89,15 @@ public class V1DoubleOpponent extends Activity {
             int i1 = l.getValues()[0];
             
             if (spike.getModality() == Modalities.VISUAL) {
-                DKL1[i1]=Convertor.matrixToMat((matrix) spike.getIntensity());
                 sync.addReceived(i1);
             }
             if (sync.isComplete()) {
-                transduction(DKL1);
+                transduction(LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells,0,0);
                 for(int i=0;i<3;i++){
-                        LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,1), Convertor.MatToMatrix(DKL2[i]), 0);
+                        LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,1), 0, 0);
                         send(AreaNames.V4Color, sendSpike.getByteArray());
-                        Visualizer.setImage(Convertor.ConvertMat2Image(DKL2[i]), "dkl'", indexFrame+i);
+                        send(AreaNames.V1SimpleCells, sendSpike.getByteArray());
+                        Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[i]), "dkl'", indexFrame+i);
                 }
             }
 
@@ -117,10 +116,10 @@ public class V1DoubleOpponent extends Activity {
      *
      * @param DKL
      */
-    public void transduction(Mat[] DKL) {
-        DKL2[0]=LMM(DKL);
-        DKL2[1]=SMLPM(DKL);
-        DKL2[2]=DKL1[2];
+    public void transduction(Mat[] DKL,int scale,int eye) {
+        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[0]=LMM(DKL);
+        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[1]=SMLPM(DKL);
+        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[2]=LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].clone();
     }
 
     /**

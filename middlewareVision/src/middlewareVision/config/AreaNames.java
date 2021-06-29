@@ -27,8 +27,7 @@ public class AreaNames {
         /****************************************************************************/
         public static int V4Color = IDHelper.generateID("V4", 2, 0);	
 	public static int V4Contour = IDHelper.generateID("V4", 1, 0);
-        public static int V4ShapeCells = IDHelper.generateID("V4", 3 , 0);
-        public static int V4ShapeActivationNode = IDHelper.generateID("V4", 4 , 0);
+        public static int V4ShapeActivationNode = IDHelper.generateID("V4", 3 , 0);
         /****************************************************************************/
         public static int Retina =          IDHelper.generateID("Retina", 0, 0);
         /****************************************************************************/
@@ -39,6 +38,9 @@ public class AreaNames {
         /****************************************************************************/
 	public static int LGNProcess = IDHelper.generateID("LGN", 1, 0);
 				
+	
+	public static int TestAttention = IDHelper.generateID("TestAttention", 0, 0);
+	public static int AProccess = IDHelper.generateID("TestAttention", 1 , 0);
 	
 	//@addNodes
         //no quitar el comentario de add Nodes

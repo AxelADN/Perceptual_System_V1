@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.LGN;
 
+import VisualMemory.LGNBank;
 import imgio.RetinalImageIO;
 import imgio.RetinalTextIO;
 import spike.Location;
@@ -75,8 +76,8 @@ public class LGNSimpleOpponentCells extends Activity {
     ****************************************************************************
     Constructores y metodos para recibir información
     ****************************************************************************
-    */
-    
+     */
+
     /**
      * Constructor
      */
@@ -95,12 +96,14 @@ public class LGNSimpleOpponentCells extends Activity {
     /*
     sincronizador
     recibe 3 matrices
-    */
+     */
     numSync sync = new numSync(3);
+
     /**
      * metodo para recibir
+     *
      * @param nodeID
-     * @param data 
+     * @param data
      */
     @Override
     public void receive(int nodeID, byte[] data) {
@@ -108,31 +111,31 @@ public class LGNSimpleOpponentCells extends Activity {
             //spike que recibe
             LongSpike spike = new LongSpike(data);
             //si es de la modalidad visual entonces acepta
-            if(spike.getModality()==Modalities.VISUAL){
-                 //obtiene el indice de la locación
+            if (spike.getModality() == Modalities.VISUAL) {
+                //obtiene el indice de la locación
                 Location l = (Location) spike.getLocation();
                 //obtiene el primer valor del arreglo
                 int index = l.getValues()[0];
                 //convierte el objeto matrix serializable en una matriz de opencv y la asigna al arreglo LMNCones
-                LMSCones[index] = Convertor.matrixToMat((matrix)spike.getIntensity());
+                LMSCones[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
                 //los indices recibidos se agregan al sincronizador
                 sync.addReceived(index);
             }
             //Si se completa el sincronizador
-            if(sync.isComplete()){
+            if (sync.isComplete()) {
                 //mandar a hacer la transduccion
-                DKL=transduction(LMSCones);
+                LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells = transduction(LMSCones, 0, 0);
                 /*
                 mostrar las imagenes procesadas
-                */
-                for(int i=0;i<LMSCones.length;i++){
-                    Visualizer.setImage(Convertor.ConvertMat2Image(DKL[i]), "dkl", indexFrame+i);
+                 */
+                for (int i = 0; i < LMSCones.length; i++) {
+                    Visualizer.setImage(Convertor.ConvertMat2Image(LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[i]), "dkl "+i, indexFrame + i);
                     //mandar los spikes de salida a las celulas simples y doble oponentes de V1
-                    LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,-1), Convertor.MatToMatrix(DKL[i]), 0);
-                    send(AreaNames.V1SimpleCells, sendSpike.getByteArray());
+                    LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i, -1), 0, 0);
+                    //send(AreaNames.V1SimpleCells, sendSpike.getByteArray());
                     send(AreaNames.V1DoubleOpponent, sendSpike.getByteArray());
                 }
-                
+
             }
 
         } catch (Exception ex) {
@@ -140,16 +143,11 @@ public class LGNSimpleOpponentCells extends Activity {
         }
     }
 
-    
-    
-    
     /**
      * ************************************************************************
      * METODOS
      * ************************************************************************
      */
-    
-    
     /**
      * Este método no se usa porque no se escribe nada en archivos
      *
@@ -157,8 +155,8 @@ public class LGNSimpleOpponentCells extends Activity {
      * @param path
      * @return
      */
-    public Mat[] transduction(Mat[] LMSCones, String path) {
-        Mat[] DKL = transduction(LMSCones);
+    public Mat[] transduction(Mat[] LMSCones, String path, int scale, int eye) {
+        Mat[] DKL = transduction(LMSCones, scale, eye);
 
         RetinalImageIO.lmmWriter(DKL[0], path + DIRECTORY + LMM_FILE_NAME + IMAGE_EXTENSION);
         RetinalTextIO.writeMatrixImage(DKL[0], path + DIRECTORY + LMM_FILE_NAME + TEXT_EXTENSION);
@@ -173,12 +171,13 @@ public class LGNSimpleOpponentCells extends Activity {
     }
 
     /**
-     * Hacer la transducción que le corresponde a los conos que vienen de la retina
+     * Hacer la transducción que le corresponde a los conos que vienen de la
+     * retina
      *
      * @param LMSCones
      * @return
      */
-    public Mat[] transduction(Mat[] LMSCones) {
+    public Mat[] transduction(Mat[] LMSCones, int scale, int eye) {
 
         Mat[] DKL = {new Mat(), new Mat(), new Mat()};
 
@@ -236,8 +235,9 @@ public class LGNSimpleOpponentCells extends Activity {
 
     /**
      * LPM
+     *
      * @param LMS
-     * @param dst 
+     * @param dst
      */
     private void LPM(Mat[] LMS, Mat dst) {
         Core.addWeighted(LMS[0], this.LPM_ALPHA, LMS[1], this.LPM_BETA, 0, dst);

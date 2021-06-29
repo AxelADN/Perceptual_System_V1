@@ -12,7 +12,9 @@ package VisualMemory;
 public class InitCellMemory {
     
     public static void initCellMemory(){
+        LGNBank.initializeSimpleCells(1);
         V1Bank.initializeSimpleCells(1);
+        V2Bank.initializeV2Cells(1);
     }
     
 }

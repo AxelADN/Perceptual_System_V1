@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.V1;
 
+import VisualMemory.LGNBank;
 import spike.Location;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,8 +38,6 @@ public class V1SimpleCells extends Activity {
     float sigma = 0.47f * 2f;
     float inc = (float) (Math.PI / 4);
     
-    //matrices DKL recibidas desde el LGN
-    Mat DKL[];
     //mapa de saliencia, no se recibe aún
     public Mat saliencyMap;
     //no se para que sirve esto
@@ -50,7 +49,6 @@ public class V1SimpleCells extends Activity {
     public V1SimpleCells() {
         this.ID = AreaNames.V1SimpleCells;
         this.namer = AreaNames.class;
-        DKL = new Mat[3];
         //initFrames(4, 16);
     }
 
@@ -77,7 +75,6 @@ public class V1SimpleCells extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
-                DKL[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
                 //add the index to the sync
                 sync.addReceived(index);
             }
@@ -90,7 +87,7 @@ public class V1SimpleCells extends Activity {
                     /*create a long spike for sending the imagesm the image is converted to bytes
                         The location variable is useful to send the index of the orientation matrix
                      */
-                    LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), Convertor.MatToMatrix(DKL[idx]), 0);
+                    LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
                     send(AreaNames.V1SimpleCellsFilter, sendSpike1.getByteArray());
                 }
 

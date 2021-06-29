@@ -13,17 +13,17 @@ import org.opencv.core.Core;
  * @author HumanoideFilms
  */
 public class test {
-    
-    public static void main(String [] args){
+
+    public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         V4CellStructure.loadKernels("RFV4");
         V4CellStructure.printList();
     }
-    
-    public static int label(double d){
-        int divisions=3;
-        double div=1/(double)divisions;
-        return (int) (d/div);
+
+    public static int label(double d) {
+        int divisions = 3;
+        double div = 1 / (double) divisions;
+        return (int) (d / div);
     }
-    
+
 }

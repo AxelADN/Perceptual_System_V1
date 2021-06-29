@@ -24,7 +24,6 @@ public class V4 extends Area{
         this.namer = AreaNames.class;
         addProcess(V4Contour.class);
         addProcess(V4Color.class);
-        addProcess(V4ShapeCells.class);	
 	addProcess(V4ShapeActivationNode.class);	
 	//@AddProcess
     }
@@ -41,7 +40,6 @@ public class V4 extends Area{
         //SimpleLogger.log(this,"V2 BIG NODE:"+new String(data));
         send(AreaNames.V4Color,data);	
 	send(AreaNames.V4Contour,data);
-        send(AreaNames.V4ShapeCells,data);	
 	send(AreaNames.V4ShapeActivationNode,data);	
 	//send(AreaNames.V4Visualizer,data);	
 	//@SendProcess
