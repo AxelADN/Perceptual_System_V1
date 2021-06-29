@@ -81,7 +81,7 @@ public class V4ShapeActivationNode extends Activity {
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(V4ShapeActivationNode.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(V4ShapeActivationNode.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -52,10 +52,10 @@ public class V1SimpleCellsFilter extends Activity {
         try {
             LongSpike spike = new LongSpike(data);
             Location l = (Location) spike.getLocation();
-            int index = l.getValues()[0];
+
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
-
+                int index = l.getValues()[0];
                 V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index] = gaborFilter(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[2], 0, index);
                 V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index] = gaborFilter(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[2], 1, index);
 
@@ -70,8 +70,8 @@ public class V1SimpleCellsFilter extends Activity {
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
                     send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
-                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsEven[i]), "even " + index, index + nFrame+i);
-                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[i]), "even " + index, index + nFrame+i+4);
+                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsEven[i]), "even " + i, nFrame + i);
+                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[i]), "even " + i, nFrame + i + 4);
                 }
             }
 

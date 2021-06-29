@@ -40,7 +40,7 @@ public class AreaNames {
 				
 	
 	public static int TestAttention = IDHelper.generateID("TestAttention", 0, 0);
-	public static int AProccess = IDHelper.generateID("TestAttention", 1 , 0);
+	public static int FeedbackProccess = IDHelper.generateID("TestAttention", 1 , 0);
 	
 	//@addNodes
         //no quitar el comentario de add Nodes

@@ -15,7 +15,7 @@ public class TestAttention extends Area{
     public TestAttention() {
         this.ID = AreaNames.TestAttention;
         this.namer = AreaNames.class;
-        addProcess(AProccess.class);
+        addProcess(FeedbackProccess.class);
 	
 //@AddProcess
     }
@@ -27,7 +27,7 @@ public class TestAttention extends Area{
 
     @Override
     public void receive(int nodeID, byte[] data) {
-        send(AreaNames.AProccess,data);
+        send(AreaNames.FeedbackProccess,data);
 	
 //@SendProcess
     }

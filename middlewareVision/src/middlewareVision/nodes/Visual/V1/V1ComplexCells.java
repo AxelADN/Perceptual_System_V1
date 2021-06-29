@@ -60,12 +60,12 @@ public class V1ComplexCells extends Activity {
             LongSpike spike = new LongSpike(data);
 
             Location l = (Location) spike.getLocation();
-            int index = l.getValues()[0];
+            
 
             if (spike.getModality() == Modalities.VISUAL) {
-
-                Mat evenOrs = V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index];
-                Mat oddOrs = V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index];
+                int index = l.getValues()[0];
+                Mat evenOrs = V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index].clone();
+                Mat oddOrs = V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index].clone();
                 V1Bank.complexCellsBank[0][0].ComplexCells[index]=energyProcess(evenOrs, oddOrs);
                 Mat energy2=V1Bank.complexCellsBank[0][0].ComplexCells[index].clone();
                 
@@ -80,6 +80,14 @@ public class V1ComplexCells extends Activity {
                 Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0][0].ComplexCells[index]), "energy "+index, index+nFrame);
                 //send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
 
+            }
+            
+            if(spike.getModality()==Modalities.ATTENTION){
+                for (int i = 0; i < Config.gaborOrientations; i++) {
+                    LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
+                    send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
+                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0][0].ComplexCells[i]), "energy "+i, i+nFrame);
+                }
             }
 
         } catch (Exception ex) {

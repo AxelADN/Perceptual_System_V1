@@ -48,7 +48,6 @@ public class V2AngularCells extends FrameActivity {
      * 2D array of each angular combination
      */
     // public Mat v2map[][];
-
     public V2AngularCells() {
         this.ID = AreaNames.V2AngularCells;
         this.namer = AreaNames.class;
@@ -86,32 +85,45 @@ public class V2AngularCells extends FrameActivity {
                 //the received indexes are added to the synchronizer
                 sync.addReceived(index);
 
-            }
-            /*
-            if all the timing indexes were received, then it will do the process described
-             */
-            if (sync.isComplete()) {
-                //calculates the angular activation maps
-                angularProcess();
-                //mixes activation maps with a certain aperture in a single matrix with the maximum pixel value operation
-                V2Bank.V2CellsBank[0][0].mergeCells();
-                // mergeAngles(v2map);
                 /*
-                the angle maps are shown in the frames of v2
+            if all the timing indexes were received, then it will do the process described
                  */
+                if (sync.isComplete()) {
+                    //calculates the angular activation maps
+                    angularProcess();
+                    //mixes activation maps with a certain aperture in a single matrix with the maximum pixel value operation
+                    V2Bank.V2CellsBank[0][0].mergeCells();
+                    // mergeAngles(v2map);
+                    /*
+                the angle maps are shown in the frames of v2
+                     */
+                    for (int i = 0; i < Config.gaborOrientations; i++) {
+                        BufferedImage img = Convertor.ConvertMat2Image(V2Bank.V2CellsBank[0][0].mergedAngleCells[i]);
+                        Visualizer.setImage(img, "angle " + i, i + nFrame);
+                    }
+                    /**
+                     * Send a multichannel matrix with the combinations of
+                     * angular activations
+                     */
+                    for (int i = 0; i < Config.gaborOrientations; i++) {
+                        LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
+                        send(AreaNames.V4ShapeActivationNode, sendSpike.getByteArray());
+                    }
+
+                }
+
+            }
+
+            if (spike.getModality() == Modalities.ATTENTION) {
+                V2Bank.V2CellsBank[0][0].mergeCells();
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     BufferedImage img = Convertor.ConvertMat2Image(V2Bank.V2CellsBank[0][0].mergedAngleCells[i]);
                     Visualizer.setImage(img, "angle " + i, i + nFrame);
                 }
-                /**
-                 * Send a multichannel matrix with the combinations of angular
-                 * activations
-                 */
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
                     send(AreaNames.V4ShapeActivationNode, sendSpike.getByteArray());
                 }
-                
             }
 
         } catch (Exception ex) {
