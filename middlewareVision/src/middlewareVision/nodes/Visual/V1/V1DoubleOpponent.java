@@ -92,12 +92,16 @@ public class V1DoubleOpponent extends Activity {
                 sync.addReceived(i1);
             }
             if (sync.isComplete()) {
-                transduction(LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells,0,0);
+                Mat DKL[]={LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[0].mat,
+                    LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[1].mat,
+                    LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].mat
+                };
+                transduction(DKL,0,0);
                 for(int i=0;i<3;i++){
                         LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,1), 0, 0);
                         send(AreaNames.V4Color, sendSpike.getByteArray());
                         send(AreaNames.V1SimpleCells, sendSpike.getByteArray());
-                        Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[i]), "dkl'", indexFrame+i);
+                        Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[i].mat), "dkl'", indexFrame+i);
                 }
             }
 
@@ -117,9 +121,9 @@ public class V1DoubleOpponent extends Activity {
      * @param DKL
      */
     public void transduction(Mat[] DKL,int scale,int eye) {
-        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[0]=LMM(DKL);
-        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[1]=SMLPM(DKL);
-        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[2]=LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].clone();
+        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[0].mat=LMM(DKL);
+        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[1].mat=SMLPM(DKL);
+        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[2].mat=LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].mat.clone();
     }
 
     /**

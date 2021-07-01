@@ -67,7 +67,7 @@ public class V4Contour extends Activity {
             if (spike.getModality() == Modalities.VISUAL) {
                 Location l = (Location) spike.getLocation();
                 int index = l.getValues()[0];
-                ors[index] = V1Bank.hypercomplexCellsBank[0][0].HypercomplexCells[0][index];
+                ors[index] = V1Bank.hypercomplexCellsBank[0][0].HypercomplexCells[0][index].mat;
                 /*
                 add the received index to the sync
                  */

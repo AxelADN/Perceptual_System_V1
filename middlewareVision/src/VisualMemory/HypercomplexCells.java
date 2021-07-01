@@ -5,7 +5,6 @@
  */
 package VisualMemory;
 
-import org.opencv.core.Mat;
 import utils.Config;
 
 /**
@@ -16,18 +15,28 @@ public class HypercomplexCells {
     
     public int scale;
     //[Number of different Filters][Gabor orientations]
-    public Mat HypercomplexCells[][];
+    public Cell HypercomplexCells[][];
 
-    public HypercomplexCells(int scale, Mat[][] HypercomplexCells) {
+    public HypercomplexCells(int scale, Cell[][] HypercomplexCells) {
         this.scale = scale;
         this.HypercomplexCells = HypercomplexCells;
     }
     
     public HypercomplexCells(int scale, int numFilters,int number){
-        HypercomplexCells=new Mat[numFilters][number];
+        HypercomplexCells=new Cell[numFilters][number];
         for(int i=0;i<numFilters;i++){
             for(int j=0;j<number;j++){
-                HypercomplexCells[i][j]=new Mat();
+                HypercomplexCells[i][j]=new Cell();
+            }
+        }
+    }
+    
+    public HypercomplexCells(int scale, int numFilters,int number, int n1, int n2){
+        HypercomplexCells=new Cell[numFilters][number];
+        for(int i=0;i<numFilters;i++){
+            for(int j=0;j<number;j++){
+                HypercomplexCells[i][j]=new Cell();
+                HypercomplexCells[i][j].setPrevious(V1Bank.complexCellsBank[n1][n2].ComplexCells[j]);
             }
         }
     }

@@ -5,7 +5,6 @@
  */
 package VisualMemory;
 
-import org.opencv.core.Mat;
 
 /**
  *
@@ -14,18 +13,18 @@ import org.opencv.core.Mat;
 public class SimpleOpponentCells {
     
     public int scale;
-    public Mat[] SimpleOpponentCells;
+    public Cell[] SimpleOpponentCells;
 
-    public SimpleOpponentCells(int scale, Mat[] SimpleOpponentCells) {
+    public SimpleOpponentCells(int scale, Cell[] SimpleOpponentCells) {
         this.scale = scale;
         this.SimpleOpponentCells = SimpleOpponentCells;
     }
     
     public SimpleOpponentCells(int scale,int number){
         this.scale=scale;
-        SimpleOpponentCells=new Mat[number];
+        SimpleOpponentCells=new Cell[number];
         for(int i=0;i<number;i++){
-            SimpleOpponentCells[i]=new Mat();
+            SimpleOpponentCells[i]=new Cell();
         }
     }
 }

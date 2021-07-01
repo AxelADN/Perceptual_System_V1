@@ -102,7 +102,7 @@ public class V4ShapeActivationNode extends Activity {
             for (indexMat imat : list.RFs) {
                 Mat filteredMat = new Mat();
                 try {
-                    Imgproc.filter2D(V2Bank.V2CellsBank[scale][eye].angleCells[imat.index[0]][imat.index[1]], filteredMat, CV_32F, imat.getMat());
+                    Imgproc.filter2D(V2Bank.V2CellsBank[scale][eye].angleCells[imat.index[0]][imat.index[1]].mat, filteredMat, CV_32F, imat.getMat());
                     Imgproc.threshold(filteredMat, filteredMat, 0, 1, Imgproc.THRESH_TOZERO);
                 } catch (Exception e) {
                     System.out.println("no existe la matriz" + imat.index[0] + "     " + imat.index[1] + "  .....  " + e);

@@ -29,8 +29,8 @@ public class V1Bank {
             int i = 0;
             for (int scale : scales) {
                 simpleCellsBank[i][j] = new SimpleCells(scale, Config.gaborOrientations);
-                complexCellsBank[i][j] = new ComplexCells(scale, Config.gaborOrientations);
-                hypercomplexCellsBank[i][j] = new HypercomplexCells(scale, 1, Config.gaborOrientations);
+                complexCellsBank[i][j] = new ComplexCells(scale, Config.gaborOrientations, i, j);
+                hypercomplexCellsBank[i][j] = new HypercomplexCells(scale, 1, Config.gaborOrientations, i, j);
                 doubleOpponentCellsBank[i][j] = new DoubleOpponentCells(scale, Config.gaborOrientations);
                 i++;
             }

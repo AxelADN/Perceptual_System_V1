@@ -124,12 +124,15 @@ public class LGNSimpleOpponentCells extends Activity {
             //Si se completa el sincronizador
             if (sync.isComplete()) {
                 //mandar a hacer la transduccion
-                LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells = transduction(LMSCones, 0, 0);
+                Mat DKL[]=transduction(LMSCones, 0, 0);
+                LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[0].mat=DKL[0];
+                LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[1].mat=DKL[1];
+                LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].mat=DKL[2];
                 /*
                 mostrar las imagenes procesadas
                  */
                 for (int i = 0; i < LMSCones.length; i++) {
-                    Visualizer.setImage(Convertor.ConvertMat2Image(LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[i]), "dkl "+i, indexFrame + i);
+                    Visualizer.setImage(Convertor.ConvertMat2Image(LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[i].mat), "dkl "+i, indexFrame + i);
                     //mandar los spikes de salida a las celulas simples y doble oponentes de V1
                     LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i, -1), 0, 0);
                     //send(AreaNames.V1SimpleCells, sendSpike.getByteArray());

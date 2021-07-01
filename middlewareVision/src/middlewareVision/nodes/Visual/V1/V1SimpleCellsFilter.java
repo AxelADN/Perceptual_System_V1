@@ -56,11 +56,11 @@ public class V1SimpleCellsFilter extends Activity {
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
                 int index = l.getValues()[0];
-                V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index] = gaborFilter(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[2], 0, index);
-                V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index] = gaborFilter(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[2], 1, index);
+                V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index].mat = gaborFilter(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[2].mat, 0, index);
+                V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index].mat = gaborFilter(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[2].mat, 1, index);
 
-                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index]), "even " + index, index + nFrame);
-                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index]), "odd " + index, index + nFrame + 4);
+                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsEven[index].mat), "even " + index, index + nFrame);
+                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[index].mat), "odd " + index, index + nFrame + 4);
 
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
                 send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
@@ -70,8 +70,8 @@ public class V1SimpleCellsFilter extends Activity {
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
                     send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
-                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsEven[i]), "even " + i, nFrame + i);
-                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[i]), "even " + i, nFrame + i + 4);
+                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsEven[i].mat), "even " + i, nFrame + i);
+                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[i].mat), "even " + i, nFrame + i + 4);
                 }
             }
 

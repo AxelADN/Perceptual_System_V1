@@ -14,10 +14,10 @@ import org.opencv.core.Mat;
 public class SimpleCells {
 
     public int scale;
-    public Mat[] SimpleCellsEven;
-    public Mat[] SimpleCellsOdd;
+    public Cell[] SimpleCellsEven;
+    public Cell[] SimpleCellsOdd;
 
-    public SimpleCells(int scale, Mat[] SimpleCellsEven, Mat[] SimpleCellsOdd) {
+    public SimpleCells(int scale, Cell[] SimpleCellsEven, Cell[] SimpleCellsOdd) {
         this.scale = scale;
         this.SimpleCellsEven = SimpleCellsEven;
         this.SimpleCellsOdd = SimpleCellsOdd;
@@ -25,11 +25,11 @@ public class SimpleCells {
     
     public SimpleCells(int scale,int number){
         this.scale=scale;
-        SimpleCellsEven=new Mat[number];
-        SimpleCellsOdd=new Mat[number];
+        SimpleCellsEven=new Cell[number];
+        SimpleCellsOdd=new Cell[number];
         for(int i=0;i<number;i++){
-            SimpleCellsEven[i]=new Mat();
-            SimpleCellsOdd[i]=new Mat();
+            SimpleCellsEven[i]=new Cell();
+            SimpleCellsOdd[i]=new Cell();
         }
     }
     

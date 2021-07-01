@@ -5,6 +5,8 @@
  */
 package VisualMemory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import org.opencv.core.Mat;
 
 /**
@@ -12,21 +14,32 @@ import org.opencv.core.Mat;
  * @author Laptop
  */
 public class ComplexCells {
-    
-    public int scale;
-    public Mat[] ComplexCells;
 
-    public ComplexCells(int scale, Mat[] complexCells) {
+    public int scale;
+    public Cell[] ComplexCells;
+
+
+    public ComplexCells(int scale, Cell[] complexCells) {
         this.scale = scale;
         this.ComplexCells = complexCells;
     }
-    
-    public ComplexCells(int scale,int number){
-        this.scale=scale;
-        ComplexCells=new Mat[number];
-        for(int i=0;i<number;i++){
-            ComplexCells[i]=new Mat();
+
+    public ComplexCells(int scale, int number) {
+        this.scale = scale;
+        ComplexCells = new Cell[number];
+        for (int i = 0; i < number; i++) {
+            ComplexCells[i] = new Cell();
         }
     }
     
+    public ComplexCells(int scale, int number, int n1, int n2) {
+        this.scale = scale;
+        ComplexCells = new Cell[number];
+        for (int i = 0; i < number; i++) {
+            ComplexCells[i] = new Cell();
+            ComplexCells[i].setPrevious(V1Bank.simpleCellsBank[n1][n2].SimpleCellsEven[i],V1Bank.simpleCellsBank[n1][n2].SimpleCellsOdd[i]);
+        }
+    }
+
+
 }

@@ -5,31 +5,45 @@
  */
 package gui;
 
+import VisualMemory.LGNBank;
+import VisualMemory.V1Bank;
 import java.awt.image.BufferedImage;
+import utils.Convertor;
 
 /**
  *
  * @author Laptop
  */
 public class Visualizer {
-    
+
     static VisualizerFrame vis;
-    
-    public static void initVisualizer(int n){
-        vis=new VisualizerFrame(n);
+
+    public static void initVisualizer(int n) {
+        vis = new VisualizerFrame(n);
     }
-    
-    public static void setImage(BufferedImage image, String title, int index){
+
+    public static void setImage(BufferedImage image, String title, int index) {
         vis.setImage(image, title, index);
     }
-    
-    public static void next(){
-         vis.next();
+
+    public static void next() {
+        vis.next();
     }
-    
-    public static void previous(){
+
+    public static void previous() {
         vis.previous();
     }
-       
-    
+
+    public static void update() {
+        for (int i = 0; i < 4; i++) {
+            if (i < 3) {
+                vis.setImage(Convertor.ConvertMat2Image(LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[i].mat), "dkl", 4 + i);
+            }
+            vis.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsEven[i].mat), "even", 12 + i);
+            vis.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0].SimpleCellsOdd[i].mat), "odd", 12 + 4 + i);
+            vis.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0][0].ComplexCells[i].mat), "complex", 12 + 4 + 4 + i);
+            vis.setImage(Convertor.ConvertMat2Image(V1Bank.hypercomplexCellsBank[0][0].HypercomplexCells[0][i].mat), "hyper", 12 + 4 + 4 + 4+ i);
+        }
+    }
+
 }

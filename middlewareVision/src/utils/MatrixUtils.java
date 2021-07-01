@@ -5,6 +5,7 @@
  */
 package utils;
 
+import VisualMemory.Cell;
 import java.util.ArrayList;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -30,6 +31,24 @@ public class MatrixUtils {
             for (int y = 0; y < mat[0].width(); y++) {
                 for (int i = 0; i < mat.length; i++) {
                     values.add(mat[i].get(x, y)[0]);
+                }
+                result.put(x, y, maximun(values));
+                values.clear();
+
+            }
+        }
+        return result;
+    }
+    
+    public static Mat maxSum(Cell... mat) {
+
+        Mat result = Mat.zeros(mat[0].mat.height(), mat[0].mat.width(), CvType.CV_32FC1);
+        ArrayList<Double> values = new ArrayList<>();
+
+        for (int x = 0; x < mat[0].mat.height(); x++) {
+            for (int y = 0; y < mat[0].mat.width(); y++) {
+                for (int i = 0; i < mat.length; i++) {
+                    values.add(mat[i].mat.get(x, y)[0]);
                 }
                 result.put(x, y, maximun(values));
                 values.clear();
