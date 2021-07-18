@@ -33,6 +33,8 @@ public class Config {
     public static double bright=0;
     public static double contr=1;
     public static double endstop=0.1;
+    public static final int freqs=1;
+    public static final int freqsV2=1;
     
     /**
      * Paths for the image showed in the GUI

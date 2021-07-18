@@ -31,12 +31,12 @@ public class HypercomplexCells {
         }
     }
     
-    public HypercomplexCells(int scale, int numFilters,int number, int n1, int n2){
+    public HypercomplexCells(int scale, int numFilters,int number, int n1, int n2, int nf){
         HypercomplexCells=new Cell[numFilters][number];
         for(int i=0;i<numFilters;i++){
             for(int j=0;j<number;j++){
                 HypercomplexCells[i][j]=new Cell();
-                HypercomplexCells[i][j].setPrevious(V1Bank.complexCellsBank[n1][n2].ComplexCells[j]);
+                HypercomplexCells[i][j].setPrevious(V1Bank.complexCellsBank[n1][nf][n2].ComplexCells[j]);
             }
         }
     }

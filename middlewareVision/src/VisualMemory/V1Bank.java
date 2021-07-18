@@ -13,26 +13,28 @@ import utils.Config;
  */
 public class V1Bank {
 
-    //[scale][eye]
-    public static SimpleCells[][] simpleCellsBank;
-    public static ComplexCells[][] complexCellsBank;
-    public static HypercomplexCells[][] hypercomplexCellsBank;
-    public static DoubleOpponentCells[][] doubleOpponentCellsBank;
+    //[scale][frequency][eye]
+    public static SimpleCells[][][] simpleCellsBank;
+    public static ComplexCells[][][] complexCellsBank;
+    public static HypercomplexCells[][][] hypercomplexCellsBank;
+    public static DoubleOpponentCells[][][] doubleOpponentCellsBank;
 
     public static void initializeSimpleCells(int... scales) {
-        simpleCellsBank = new SimpleCells[scales.length][2];
-        complexCellsBank = new ComplexCells[scales.length][2];
-        hypercomplexCellsBank = new HypercomplexCells[scales.length][2];
-        doubleOpponentCellsBank = new DoubleOpponentCells[scales.length][2];
+        simpleCellsBank = new SimpleCells[scales.length][Config.freqs][2];
+        complexCellsBank = new ComplexCells[scales.length][Config.freqs][2];
+        hypercomplexCellsBank = new HypercomplexCells[scales.length][Config.freqs][2];
+        doubleOpponentCellsBank = new DoubleOpponentCells[scales.length][Config.freqs][2];
 
         for (int j = 0; j < 2; j++) {
-            int i = 0;
-            for (int scale : scales) {
-                simpleCellsBank[i][j] = new SimpleCells(scale, Config.gaborOrientations);
-                complexCellsBank[i][j] = new ComplexCells(scale, Config.gaborOrientations, i, j);
-                hypercomplexCellsBank[i][j] = new HypercomplexCells(scale, 1, Config.gaborOrientations, i, j);
-                doubleOpponentCellsBank[i][j] = new DoubleOpponentCells(scale, Config.gaborOrientations);
-                i++;
+            for (int f = 0; f < Config.freqs; f++) {
+                int i = 0;
+                for (int scale : scales) {
+                    simpleCellsBank[i][f][j] = new SimpleCells(scale, Config.gaborOrientations);
+                    complexCellsBank[i][f][j] = new ComplexCells(scale, Config.gaborOrientations, i, j, f);
+                    hypercomplexCellsBank[i][f][j] = new HypercomplexCells(scale, 1, Config.gaborOrientations, i, j, f);
+                    doubleOpponentCellsBank[i][0][j] = new DoubleOpponentCells(scale, Config.gaborOrientations);
+                    i++;
+                }
             }
         }
     }

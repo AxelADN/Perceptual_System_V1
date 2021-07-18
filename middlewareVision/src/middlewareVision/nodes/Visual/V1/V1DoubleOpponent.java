@@ -101,7 +101,7 @@ public class V1DoubleOpponent extends Activity {
                         LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,1), 0, 0);
                         send(AreaNames.V4Color, sendSpike.getByteArray());
                         send(AreaNames.V1SimpleCells, sendSpike.getByteArray());
-                        Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.doubleOpponentCellsBank[0][0].DoubleOpponentCells[i].mat), "dkl'", indexFrame+i);
+                        Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.doubleOpponentCellsBank[0][0][0].DoubleOpponentCells[i].mat), "dkl'", indexFrame+i);
                 }
             }
 
@@ -121,9 +121,9 @@ public class V1DoubleOpponent extends Activity {
      * @param DKL
      */
     public void transduction(Mat[] DKL,int scale,int eye) {
-        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[0].mat=LMM(DKL);
-        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[1].mat=SMLPM(DKL);
-        V1Bank.doubleOpponentCellsBank[scale][eye].DoubleOpponentCells[2].mat=LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].mat.clone();
+        V1Bank.doubleOpponentCellsBank[scale][0][eye].DoubleOpponentCells[0].mat=LMM(DKL);
+        V1Bank.doubleOpponentCellsBank[scale][0][eye].DoubleOpponentCells[1].mat=SMLPM(DKL);
+        V1Bank.doubleOpponentCellsBank[scale][0][eye].DoubleOpponentCells[2].mat=LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].mat.clone();
     }
 
     /**
