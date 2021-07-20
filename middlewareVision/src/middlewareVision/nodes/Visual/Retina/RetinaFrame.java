@@ -32,7 +32,7 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
     int index;
     String folder;
 
-    Timer timer = new Timer(2000, new ActionListener() {
+    Timer timer = new Timer(30, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             try {
                 // Aquí el código que queramos ejecutar.
@@ -51,12 +51,13 @@ public class RetinaFrame extends ActivityFrame<RetinaProccess> {
         initComponents();
         this.index = index;
         this.setLocation(layoutManager.points.get(index));
+        this.setSize(Config.width, Config.heigth+30);
         if (Config.option == Config.CLICK) {
             folder = "images";
         }
         if (Config.option == Config.RENDER) {
             folder = "render";
-            //timer.start();
+            timer.start();
         }
     }
 

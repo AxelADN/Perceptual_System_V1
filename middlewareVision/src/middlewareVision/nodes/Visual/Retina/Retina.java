@@ -19,6 +19,8 @@ public class Retina extends Area {
         this.ID = AreaNames.Retina;
         this.namer = AreaNames.class;
         addProcess(RetinaProccess.class);
+        addProcess(BasicMotion.class);
+        //@AddProcess
     }
 
     @Override
@@ -30,5 +32,7 @@ public class Retina extends Area {
     @Override
     public void receive(int nodeID, byte[] data) {
         send(AreaNames.RetinaProccess, data);
+        send(AreaNames.BasicMotion, data);
+        //@SendProcess
     }
 }

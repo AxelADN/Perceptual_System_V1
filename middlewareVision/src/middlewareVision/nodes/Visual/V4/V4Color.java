@@ -55,7 +55,7 @@ public class V4Color extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
 
-                DKL[i1] = Convertor.MatToMatrix(V1Bank.doubleOpponentCellsBank[0][0][0].DoubleOpponentCells[i1].mat);
+                DKL[i1] = Convertor.MatToMatrix(V1Bank.DOC.get(0,0,0).Cells[i1].mat);
                 sync.addReceived(i1);
             }
 
@@ -63,7 +63,7 @@ public class V4Color extends Activity {
                 generateLabelMatrix(DKL);
                 
                 //frame[0].setImage(Convertor.ConvertMat2Image2(matLabel), "color labels");
-                Visualizer.setImage(Convertor.ConvertMat2Image2(matLabel), "color labels", 2*Config.gaborOrientations+3);
+                Visualizer.setImage(Convertor.Mat2Img2(matLabel), "color labels", 2*Config.gaborOrientations+3);
                 //LongSpike labelSpike = new LongSpike(Modalities.VISUAL, new Location(0), labels, 0);
                 //LongSpike LChannelSpike = new LongSpike(Modalities.VISUAL, new Location(1), DKL[2], 0);
                 //send(AreaNames.ITC, labelSpike.getByteArray());

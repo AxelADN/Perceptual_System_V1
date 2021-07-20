@@ -19,6 +19,7 @@ import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
 import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
+import utils.Functions;
 import utils.LongSpike;
 import utils.SimpleLogger;
 import utils.numSync;
@@ -64,10 +65,10 @@ public class V1ComplexCells extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
                 int index = l.getValues()[0];
-                Mat evenOrs = V1Bank.simpleCellsBank[0][0][0].SimpleCellsEven[index].mat.clone();
-                Mat oddOrs = V1Bank.simpleCellsBank[0][0][0].SimpleCellsOdd[index].mat.clone();
-                V1Bank.complexCellsBank[0][0][0].ComplexCells[index].mat=energyProcess(evenOrs, oddOrs);
-                Mat energy2=V1Bank.complexCellsBank[0][0][0].ComplexCells[index].mat.clone();
+                Mat evenOrs = V1Bank.SC.get(0,0,0).Even[index].mat.clone();
+                Mat oddOrs = V1Bank.SC.get(0,0,0).Odd[index].mat.clone();
+                V1Bank.CC.get(0,0,0).Cells[index].mat=Functions.energyProcess(evenOrs, oddOrs);
+                Mat energy2=V1Bank.CC.get(0,0,0).Cells[index].mat.clone();
                 
                 Imgproc.resize(energy2, energy2, new Size(Config.motionWidth,Config.motionHeight), INTER_CUBIC);
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, 
@@ -77,7 +78,7 @@ public class V1ComplexCells extends Activity {
                 //send(AreaNames.V1Visualizer, sendSpike3.getByteArray());
                 send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
                 
-                Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0][0][0].ComplexCells[index].mat), "energy "+index, index+nFrame);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC.get(0,0,0).Cells[index].mat), "energy "+index, index+nFrame);
                 //send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
 
             }
@@ -86,7 +87,7 @@ public class V1ComplexCells extends Activity {
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
                     send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
-                    Visualizer.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0][0][0].ComplexCells[i].mat), "energy "+i, i+nFrame);
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC.get(0,0,0).Cells[i].mat), "energy "+i, i+nFrame);
                 }
             }
 
@@ -95,28 +96,5 @@ public class V1ComplexCells extends Activity {
         }
     }
 
-    /**
-     * ************************************************************************
-     * METODOS
-     * ************************************************************************
-     */
-    public Mat energyProcess(Mat mat1, Mat mat2) {
-        Mat r1, r2;
-
-        Mat energy = Mat.zeros(mat1.rows(), mat1.cols(), CvType.CV_32FC1);
-        r1 = mat1;
-        r2 = mat2;
-
-        Core.pow(r1, 2, r1);
-        Core.pow(r2, 2, r2);
-
-        Core.add(r1, r2, r1);
-
-        Core.sqrt(r1, energy);
-
-        Imgproc.threshold(energy, energy, 0, 1, Imgproc.THRESH_TOZERO);
-
-        return energy;
-
-    }
+ 
 }

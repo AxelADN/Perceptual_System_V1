@@ -129,7 +129,7 @@ public class FileUtils {
         String newDir = path + "\\\\V1ImageMaps";
         createDir(newDir);
         for (int i = 0; i < V4Memory.getV1Map().length; i++) {
-            BufferedImage bi = Convertor.ConvertMat2Image(V4Memory.getV1Map()[i]);
+            BufferedImage bi = Convertor.Mat2Img(V4Memory.getV1Map()[i]);
             File outputfile = new File(newDir + "\\" + i + ".jpg");
             try {
                 ImageIO.write(bi, "jpg", outputfile);
@@ -164,7 +164,7 @@ public class FileUtils {
         createDir(newDir);
         for (int i = 0; i < V4Memory.getV2Map().length; i++) {
             for (int j = 0; j < V4Memory.getV2Map()[0].length; j++) {
-                BufferedImage bi = Convertor.ConvertMat2Image(V4Memory.getV2Map()[i][j]);
+                BufferedImage bi = Convertor.Mat2Img(V4Memory.getV2Map()[i][j]);
                 File outputfile = new File(newDir + "\\" + i + "_" + j + ".jpg");
                 try {
                     ImageIO.write(bi, "jpg", outputfile);
@@ -187,9 +187,9 @@ public class FileUtils {
     public static void saveContoursImages(String path) {
         String newDir = path + "\\\\ContoursImages";
         createDir(newDir);
-        BufferedImage bi1 = Convertor.ConvertMat2Image2(V4Memory.getContours1());
+        BufferedImage bi1 = Convertor.Mat2Img2(V4Memory.getContours1());
         File outputfile1 = new File(newDir + "\\" + "1.jpg");
-        BufferedImage bi2 = Convertor.ConvertMat2Image2(V4Memory.getContours2());
+        BufferedImage bi2 = Convertor.Mat2Img2(V4Memory.getContours2());
         File outputfile2 = new File(newDir + "\\" + "2.jpg");
 
         try {
@@ -226,7 +226,7 @@ public class FileUtils {
         String newDir = path + "\\\\V4ImageMaps";
         createDir(newDir);
         for (int i = 0; i < V4Memory.getActivationArray().length; i++) {
-            BufferedImage bi = Convertor.ConvertMat2Image(V4Memory.getActivationArray()[i]);
+            BufferedImage bi = Convertor.Mat2Img(V4Memory.getActivationArray()[i]);
             File outputfile = new File(newDir + "\\" + i + ".jpg");
             try {
                 ImageIO.write(bi, "jpg", outputfile);

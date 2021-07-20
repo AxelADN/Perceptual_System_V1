@@ -67,14 +67,14 @@ public class V4Contour extends Activity {
             if (spike.getModality() == Modalities.VISUAL) {
                 Location l = (Location) spike.getLocation();
                 int index = l.getValues()[0];
-                ors[index] = V1Bank.hypercomplexCellsBank[0][0][0].HypercomplexCells[0][index].mat;
+                ors[index] = V1Bank.HCC.get(0,0,0).Cells[0][index].mat;
                 /*
                 add the received index to the sync
                  */
                 sync.addReceived(index);
                 try {
                     combinedEdges = MatrixUtils.maxSum(ors);
-                    BufferedImage img = Convertor.ConvertMat2Image(combinedEdges);
+                    BufferedImage img = Convertor.Mat2Img(combinedEdges);
                     Visualizer.setImage(img, "combined", nFrame);
                 } catch (Exception ex) {
 
@@ -88,12 +88,12 @@ public class V4Contour extends Activity {
             if (sync.isComplete()) {
 
                 contours1 = drawMatContours(combinedEdges, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_TC89_L1);
-                BufferedImage img2 = Convertor.ConvertMat2Image2(contours1);
+                BufferedImage img2 = Convertor.Mat2Img2(contours1);
                 V4Memory.contours1=new Mat();
                 Visualizer.setImage(img2, "contours 1", nFrame+1);
                 Imgproc.cvtColor(contours1, V4Memory.contours1, Imgproc.COLOR_RGB2GRAY);
                 contours2 = drawMatContours(combinedEdges, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-                BufferedImage img3 = Convertor.ConvertMat2Image2(contours2);
+                BufferedImage img3 = Convertor.Mat2Img2(contours2);
                 V4Memory.contours2=new Mat();
                 Visualizer.setImage(img3, "contours 2", nFrame+2);
                 Imgproc.cvtColor(contours2, V4Memory.contours2, Imgproc.COLOR_RGB2GRAY);

@@ -8,13 +8,17 @@ package utils;
 import generator.RF;
 import java.io.File;
 import java.util.ArrayList;
+import matrix.matrix;
 import middlewareVision.nodes.Visual.V4.V4CellStructure;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_8U;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import static org.opencv.imgproc.Imgproc.getGaborKernel;
 
 /**
@@ -33,15 +37,13 @@ public class SpecialKernels {
     public static ArrayList<PairFilter> endStoppedFilters;
     static ArrayList<RF> RFs;
     public static Mat v2Kernels[];
-    
-    
-    
-    /***************************************************************************
+
+    /**
+     * *************************************************************************
      * LOAD THE KERNELS HERE
      * *************************************************************************
      */
-    
-    public static void loadKernels(){
+    public static void loadKernels() {
         initRFlist();
         loadEndStoppedFilters();
         getdiag45(Config.diagonalSize);
@@ -52,7 +54,8 @@ public class SpecialKernels {
 
     /**
      * Diagonal matrix 45 degrees
-     * @return 
+     *
+     * @return
      */
     public static Mat getdiag45(int size) {
         diag45 = Mat.zeros(new Size(size, size), CvType.CV_32FC1);
@@ -69,7 +72,8 @@ public class SpecialKernels {
 
     /**
      * Diagonal matrix 135 degrees
-     * @return 
+     *
+     * @return
      */
     public static Mat getdiag135(int size) {
         diag135 = Mat.zeros(new Size(size, size), CvType.CV_32FC1);
@@ -93,6 +97,7 @@ public class SpecialKernels {
 
     /**
      * Make a Gaussian filter from a Receptive Field class object
+     *
      * @param rf
      * @return a MAT of the filter
      */
@@ -101,35 +106,35 @@ public class SpecialKernels {
     }
 
     /**
-     *  V2 Ilusory filters
+     * V2 Ilusory filters
      */
     public static void loadIlusoryFilters() {
         ilusoryFilters = new ArrayList();
         String path = "RFV2";
         String file = "ilusory1";
         loadList(path + "/" + file + ".txt");
-        for(int i=0;i<Config.gaborOrientations;i++){
-            double angle=(180/Config.gaborOrientations)*i;
+        for (int i = 0; i < Config.gaborOrientations; i++) {
+            double angle = (180 / Config.gaborOrientations) * i;
             System.out.println(angle);
-            double rangle=Math.toRadians(angle);
-            RF rf1=RFs.get(0);
-            RF rf2=RFs.get(1);
-            double amp=Math.pow(rf1.getPx(), 2)+Math.pow(rf1.getPy(), 2);
-            amp=Math.sqrt(amp);
-            rf1.setPx((int)(amp*Math.sin(rangle)));
-            rf1.setPy((int)(amp*Math.cos(rangle)));
+            double rangle = Math.toRadians(angle);
+            RF rf1 = RFs.get(0);
+            RF rf2 = RFs.get(1);
+            double amp = Math.pow(rf1.getPx(), 2) + Math.pow(rf1.getPy(), 2);
+            amp = Math.sqrt(amp);
+            rf1.setPx((int) (amp * Math.sin(rangle)));
+            rf1.setPy((int) (amp * Math.cos(rangle)));
             rf1.setAngle(angle);
-            rf2.setPx((int)(-amp*Math.sin(rangle)));
-            rf2.setPy((int)(-amp*Math.cos(rangle)));
+            rf2.setPx((int) (-amp * Math.sin(rangle)));
+            rf2.setPy((int) (-amp * Math.cos(rangle)));
             rf2.setAngle(angle);
             PairFilter pair = new PairFilter(getFilterFromRF(rf1), getFilterFromRF(rf2));
             ilusoryFilters.add(pair);
         }
-        
+
         clearList();
 
     }
-    
+
     /**
      * Load the endStoppedFilters
      */
@@ -138,44 +143,44 @@ public class SpecialKernels {
         String path = "RFV1";
         String file = "endStop";
         loadList(path + "/" + file + ".txt");
-        for(int i=0;i<Config.gaborOrientations;i++){
-            double angle=(180/Config.gaborOrientations)*i;
-            double rangle=Math.toRadians(angle);
-            RF rf1=RFs.get(0);
-            RF rf2=RFs.get(1);
-            double amp=Math.pow(rf1.getPx(), 2)+Math.pow(rf1.getPy(), 2);
-            amp=Math.sqrt(amp);
-            rf1.setPx((int)(amp*Math.sin(rangle)));
-            rf1.setPy((int)(amp*Math.cos(rangle)));
+        for (int i = 0; i < Config.gaborOrientations; i++) {
+            double angle = (180 / Config.gaborOrientations) * i;
+            double rangle = Math.toRadians(angle);
+            RF rf1 = RFs.get(0);
+            RF rf2 = RFs.get(1);
+            double amp = Math.pow(rf1.getPx(), 2) + Math.pow(rf1.getPy(), 2);
+            amp = Math.sqrt(amp);
+            rf1.setPx((int) (amp * Math.sin(rangle)));
+            rf1.setPy((int) (amp * Math.cos(rangle)));
             rf1.setAngle(angle);
-            rf2.setPx((int)(-amp*Math.sin(rangle)));
-            rf2.setPy((int)(-amp*Math.cos(rangle)));
+            rf2.setPx((int) (-amp * Math.sin(rangle)));
+            rf2.setPy((int) (-amp * Math.cos(rangle)));
             rf2.setAngle(angle);
             PairFilter pair = new PairFilter(getFilterFromRF(rf1), getFilterFromRF(rf2));
             endStoppedFilters.add(pair);
-        }       
+        }
         clearList();
     }
-    
+
     /**
      * Load the kernels that will be used in V2 for the angular activation
      */
-    public static void loadV2Kernels(){
-        v2Kernels=new Mat[Config.gaborOrientations*2];
+    public static void loadV2Kernels() {
+        v2Kernels = new Mat[Config.gaborOrientations * 2];
         String path = "RFV2";
         String file = "angular";
         loadList(path + "/" + file + ".txt");
-        for(int i=0;i<Config.gaborOrientations*2;i++){
-            double angle=(180/Config.gaborOrientations)*i;
-            double rangle=Math.toRadians(angle);
-            RF rf1=RFs.get(0);
-            double amp=Math.pow(rf1.getPx(), 2)+Math.pow(rf1.getPy(), 2);
-            amp=Math.sqrt(amp);
-            rf1.setPx((int)(amp*Math.sin(rangle)));
-            rf1.setPy((int)(amp*Math.cos(rangle)));
+        for (int i = 0; i < Config.gaborOrientations * 2; i++) {
+            double angle = (180 / Config.gaborOrientations) * i;
+            double rangle = Math.toRadians(angle);
+            RF rf1 = RFs.get(0);
+            double amp = Math.pow(rf1.getPx(), 2) + Math.pow(rf1.getPy(), 2);
+            amp = Math.sqrt(amp);
+            rf1.setPx((int) (amp * Math.sin(rangle)));
+            rf1.setPy((int) (amp * Math.cos(rangle)));
             rf1.setAngle(angle);
-            v2Kernels[i]=getFilterFromRF(rf1);
-        } 
+            v2Kernels[i] = getFilterFromRF(rf1);
+        }
     }
 
     static void clearList() {
@@ -203,6 +208,7 @@ public class SpecialKernels {
 
     /**
      * Generate double opponent Kernel for color processing
+     *
      * @param s
      * @param sigma1
      * @param sigma2
@@ -211,7 +217,7 @@ public class SpecialKernels {
      * @param gamma1
      * @param gamma2
      * @param dX
-     * @return 
+     * @return
      */
     public static Mat getDoubleOpponentKernel(Size s, double sigma1, double sigma2, double height1, double height2, double gamma1, double gamma2, double dX) {
         Mat m = new Mat(s, CvType.CV_32FC1);
@@ -241,7 +247,8 @@ public class SpecialKernels {
     }
 
     /**
-     * Get double opponent kernel 
+     * Get double opponent kernel
+     *
      * @param s
      * @param sigmaX1
      * @param sigmaY1
@@ -250,7 +257,7 @@ public class SpecialKernels {
      * @param height1
      * @param height2
      * @param dX
-     * @return 
+     * @return
      */
     public static Mat getOtherDoubleOpponentKernel(Size s, double sigmaX1, double sigmaY1, double sigmaX2, double sigmaY2, double height1, double height2, double dX) {
         Mat m = new Mat(s, CvType.CV_32FC1);
@@ -311,11 +318,12 @@ public class SpecialKernels {
 
     /**
      * Get a simplified Gaussian filter
+     *
      * @param s
      * @param sigmaX
      * @param sigmaY
      * @param alpha
-     * @return 
+     * @return
      */
     public static Mat getGauss(Size s, double sigmaX, double sigmaY, double alpha) {
         Mat m = new Mat(s, CvType.CV_32FC1);
@@ -396,4 +404,29 @@ public class SpecialKernels {
     public static Mat get135Gabor(int kernelSize) {
         return getGabor(kernelSize, inc * 3);
     }
+
+    public static Mat displaceKernel(Mat kernel, double angle, int dis) {
+        //https://docs.opencv.org/3.4/d4/d61/tutorial_warp_affine.html
+        Point[] srcTri = new Point[3];
+        srcTri[0] = new Point(0, 0);
+        srcTri[1] = new Point(kernel.cols() -1, 0);
+        srcTri[2] = new Point(0, kernel.rows() -1);
+        
+        angle=Math.toRadians(angle);
+        double dx=dis*Math.cos(angle);
+        double dy=dis*Math.sin(angle);
+        
+        Point[] dstTri = new Point[3];
+        dstTri[0] = new Point(dx, dy);
+        dstTri[1] = new Point(kernel.cols() - 1+dx, dy);
+        dstTri[2] = new Point(dx, kernel.rows() - 1+dy);
+
+        Mat warpMat = Imgproc.getAffineTransform(new MatOfPoint2f(srcTri), new MatOfPoint2f(dstTri));
+
+        Mat warpDst = Mat.zeros(kernel.rows(), kernel.cols(), kernel.type());
+        Imgproc.warpAffine(kernel, warpDst, warpMat, warpDst.size());
+        
+        return warpDst;
+    }
+
 }

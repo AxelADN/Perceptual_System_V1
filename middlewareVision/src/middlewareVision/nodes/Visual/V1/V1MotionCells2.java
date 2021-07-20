@@ -133,7 +133,7 @@ public class V1MotionCells2 extends FrameActivity {
         }
         mat2 = matLabel.clone();
         Imgproc.resize(mat2, mat2, new Size(Config.width, Config.heigth));
-        frame[index].setImage(Convertor.ConvertMat2Image2(mat2), "motion labels");
+        frame[index].setImage(Convertor.Mat2Img2(mat2), "motion labels");
         
     }
     

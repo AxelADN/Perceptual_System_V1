@@ -86,7 +86,7 @@ public class ClickFrame<T extends ClickFrameActivity> extends javax.swing.JFrame
         mat.convertTo(mat, CvType.CV_32FC3);
         //Normalization
         Core.divide(mat, Scalar.all(255), mat);
-        setImage(Convertor.ConvertMat2Image(mat), "saliency filter");
+        setImage(Convertor.Mat2Img(mat), "saliency filter");
         process.clickAction();
         return img;
     }

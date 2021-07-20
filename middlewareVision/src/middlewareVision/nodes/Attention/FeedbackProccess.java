@@ -56,12 +56,12 @@ public class FeedbackProccess extends Activity {
     int numEyes = 1;
 
     public void addToV1SimpleCells(Mat filter, double value, double c, Mat addFilter) {
-        for (int n1 = 0; n1 < V1Bank.simpleCellsBank.length; n1++) {
+        for (int n1 = 0; n1 < V1Bank.SC.dimensions()[0]; n1++) {
             for (int n2 = 0; n2 < numEyes; n2++) {
                 for (int f = 0; f < Config.freqs; f++) {
                     for (int i = 0; i < Config.gaborOrientations; i++) {
-                        feedbackFunction(filter, V1Bank.simpleCellsBank[n1][f][n2].SimpleCellsOdd[i].mat, V1Bank.simpleCellsBank[n1][f][n2].SimpleCellsOdd[i].mat, value, c, addFilter);
-                        feedbackFunction(filter, V1Bank.simpleCellsBank[n1][f][n2].SimpleCellsEven[i].mat, V1Bank.simpleCellsBank[n1][f][n2].SimpleCellsEven[i].mat, value, c, addFilter);
+                        feedbackFunction(filter, V1Bank.SC.get(n1,f,n2).Odd[i].mat, V1Bank.SC.get(n1,f,n2).Odd[i].mat, value, c, addFilter);
+                        feedbackFunction(filter, V1Bank.SC.get(n1,f,n2).Even[i].mat, V1Bank.SC.get(n1,f,n2).Even[i].mat, value, c, addFilter);
                     }
                 }
             }
@@ -75,11 +75,11 @@ public class FeedbackProccess extends Activity {
     }
 
     public void addToV1SimpleCellsOrientation(Mat filter, double value, double c, Mat addFilter, int i) {
-        for (int n1 = 0; n1 < V1Bank.simpleCellsBank.length; n1++) {
+        for (int n1 = 0; n1 < V1Bank.SC.dimensions()[0]; n1++) {
             for (int f = 0; f < Config.freqs; f++) {
                 for (int n2 = 0; n2 < numEyes; n2++) {
-                    feedbackFunction(filter, V1Bank.simpleCellsBank[n1][f][n2].SimpleCellsOdd[i].mat, V1Bank.simpleCellsBank[n1][f][n2].SimpleCellsOdd[i].mat, value, c, addFilter);
-                    feedbackFunction(filter, V1Bank.simpleCellsBank[n1][f][n2].SimpleCellsEven[i].mat, V1Bank.simpleCellsBank[n1][f][n2].SimpleCellsEven[i].mat, value, c, addFilter);
+                    feedbackFunction(filter, V1Bank.SC.get(n1,f,n2).Odd[i].mat, V1Bank.SC.get(n1,f,n2).Odd[i].mat, value, c, addFilter);
+                    feedbackFunction(filter, V1Bank.SC.get(n1,f,n2).Even[i].mat, V1Bank.SC.get(n1,f,n2).Even[i].mat, value, c, addFilter);
                 }
             }
         }
@@ -92,11 +92,11 @@ public class FeedbackProccess extends Activity {
     }
 
     public void addToV1ComplexCells(Mat filter, double value, double c, Mat addFilter) {
-        for (int n1 = 0; n1 < V1Bank.complexCellsBank.length; n1++) {
+        for (int n1 = 0; n1 < V1Bank.CC.dimensions()[0]; n1++) {
             for (int f = 0; f < Config.freqs; f++) {
                 for (int n2 = 0; n2 < numEyes; n2++) {
                     for (int i = 0; i < Config.gaborOrientations; i++) {
-                        Cell dst = V1Bank.complexCellsBank[n1][f][n2].ComplexCells[i];
+                        Cell dst = V1Bank.CC.get(n1,f,n2).Cells[i];
                         rFeedback(filter, dst, dst.mat, value, c, addFilter);
                     }
                 }
@@ -112,10 +112,10 @@ public class FeedbackProccess extends Activity {
     }
 
     public void addToV1ComplexCellsOrientation(Mat filter, double value, double c, Mat addFilter, int i) {
-        for (int n1 = 0; n1 < V1Bank.complexCellsBank.length; n1++) {
+        for (int n1 = 0; n1 < V1Bank.CC.dimensions()[0]; n1++) {
             for (int f = 0; f < Config.freqs; f++) {
                 for (int n2 = 0; n2 < numEyes; n2++) {
-                    Cell dst = V1Bank.complexCellsBank[n1][f][n2].ComplexCells[i];
+                    Cell dst = V1Bank.CC.get(n1,f,n2).Cells[i];
                     rFeedback(filter, dst, dst.mat, value, c, addFilter);
                 }
             }
@@ -130,12 +130,12 @@ public class FeedbackProccess extends Activity {
     }
 
     public void addToV1HyperComplexCells(Mat filter, double value, double c, Mat addFilter) {
-        for (int n1 = 0; n1 < V1Bank.hypercomplexCellsBank.length; n1++) {
+        for (int n1 = 0; n1 < V1Bank.HCC.dimensions()[0]; n1++) {
             for (int f = 0; f < Config.freqs; f++) {
                 for (int n2 = 0; n2 < numEyes; n2++) {
                     for (int i = 0; i < Config.gaborOrientations; i++) {
-                        for (int z = 0; z < V1Bank.hypercomplexCellsBank[n1][f][n2].HypercomplexCells.length; z++) {
-                            Cell dst = V1Bank.hypercomplexCellsBank[n1][f][n2].HypercomplexCells[z][i];
+                        for (int z = 0; z < V1Bank.HCC.get(n1,f,n2).Cells.length; z++) {
+                            Cell dst = V1Bank.HCC.get(n1,f,n2).Cells[z][i];
                             rFeedback(filter, dst, dst.mat, value, c, addFilter);
 
                         }
@@ -153,12 +153,12 @@ public class FeedbackProccess extends Activity {
     }
 
     public void addToV1HyperComplexCellsOrientation(Mat filter, double value, double c, Mat addFilter, int i) {
-        for (int n1 = 0; n1 < V1Bank.hypercomplexCellsBank.length; n1++) {
+        for (int n1 = 0; n1 < V1Bank.HCC.dimensions()[0]; n1++) {
             for (int f = 0; f < Config.freqs; f++) {
                 for (int n2 = 0; n2 < numEyes; n2++) {
 
-                    for (int z = 0; z < V1Bank.hypercomplexCellsBank[n1][f][n2].HypercomplexCells.length; z++) {
-                        Cell dst = V1Bank.hypercomplexCellsBank[n1][f][n2].HypercomplexCells[z][i];
+                    for (int z = 0; z < V1Bank.HCC.get(n1,f,n2).Cells.length; z++) {
+                        Cell dst = V1Bank.HCC.get(n1,f,n2).Cells[z][i];
                         rFeedback(filter, dst, dst.mat, value, c, addFilter);
                     }
 
@@ -175,12 +175,12 @@ public class FeedbackProccess extends Activity {
     }
 
     public void addToV2(Mat filter, double value, double c, Mat addFilter) {
-        for (int n1 = 0; n1 < V2Bank.V2CellsBank.length; n1++) {
+        for (int n1 = 0; n1 < V2Bank.AC.dimensions()[0]; n1++) {
             for (int f = 0; f < Config.freqsV2; f++) {
                 for (int n2 = 0; n2 < numEyes; n2++) {
-                    for (int i = 0; i < V2Bank.V2CellsBank[0][0][0].angleCells.length; i++) {
-                        for (int z = 0; z < V2Bank.V2CellsBank[0][0][0].angleCells[0].length; z++) {
-                            Cell dst = V2Bank.V2CellsBank[n1][f][n2].angleCells[i][z];
+                    for (int i = 0; i < V2Bank.AC.get(0,0,0).Cells.length; i++) {
+                        for (int z = 0; z < V2Bank.AC.get(0,0,0).Cells[0].length; z++) {
+                            Cell dst = V2Bank.AC.get(n1,f,n2).Cells[i][z];
                             rFeedback(filter, dst, dst.mat, value, c, addFilter);
                         }
                     }
@@ -197,12 +197,12 @@ public class FeedbackProccess extends Activity {
     }
 
     public void addToV2Angle(Mat filter, double value, double c, Mat addFilter, int i) {
-        for (int n1 = 0; n1 < V2Bank.V2CellsBank.length; n1++) {
+        for (int n1 = 0; n1 < V2Bank.AC.dimensions()[0]; n1++) {
             for (int f = 0; f < Config.freqsV2; f++) {
                 for (int n2 = 0; n2 < numEyes; n2++) {
                     //for (int i = 0; i < V2Bank.V2CellsBank[0][0].angleCells.length; i++) {
-                    for (int z = 0; z < V2Bank.V2CellsBank[0][0][0].angleCells[0].length; z++) {
-                        Cell dst = V2Bank.V2CellsBank[n1][f][n2].angleCells[i][z];
+                    for (int z = 0; z < V2Bank.AC.get(0,0,0).Cells[0].length; z++) {
+                        Cell dst = V2Bank.AC.get(n1,f,n2).Cells[i][z];
                         rFeedback(filter, dst, dst.mat, value, c, addFilter);
 
                     }

@@ -24,6 +24,7 @@ import org.opencv.imgproc.Imgproc;
 import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
+import utils.Functions;
 import utils.LongSpike;
 import utils.MatrixUtils;
 import utils.SpecialKernels;
@@ -81,7 +82,7 @@ public class V2AngularCells extends FrameActivity {
                 Location l = (Location) spike.getLocation();
                 int index = l.getValues()[0];
                 //the location index is assigned to the array index
-                ors[index] = V1Bank.hypercomplexCellsBank[0][0][0].HypercomplexCells[0][index].mat;
+                ors[index] = V1Bank.HCC.get(0,0,0).Cells[0][index].mat;
                 //the received indexes are added to the synchronizer
                 sync.addReceived(index);
 
@@ -92,13 +93,13 @@ public class V2AngularCells extends FrameActivity {
                     //calculates the angular activation maps
                     angularProcess();
                     //mixes activation maps with a certain aperture in a single matrix with the maximum pixel value operation
-                    V2Bank.V2CellsBank[0][0][0].mergeCells();
+                    V2Bank.AC.get(0,0,0).mergeCells();
                     // mergeAngles(v2map);
                     /*
                 the angle maps are shown in the frames of v2
                      */
                     for (int i = 0; i < Config.gaborOrientations; i++) {
-                        BufferedImage img = Convertor.ConvertMat2Image(V2Bank.V2CellsBank[0][0][0].mergedAngleCells[i]);
+                        BufferedImage img = Convertor.Mat2Img(V2Bank.AC.get(0,0,0).mergedAC[i]);
                         Visualizer.setImage(img, "angle " + i, i + nFrame);
                     }
                     /**
@@ -115,9 +116,9 @@ public class V2AngularCells extends FrameActivity {
             }
 
             if (spike.getModality() == Modalities.ATTENTION) {
-                V2Bank.V2CellsBank[0][0][0].mergeCells();
+                V2Bank.AC.get(0,0,0).mergeCells();
                 for (int i = 0; i < Config.gaborOrientations; i++) {
-                    BufferedImage img = Convertor.ConvertMat2Image(V2Bank.V2CellsBank[0][0][0].mergedAngleCells[i]);
+                    BufferedImage img = Convertor.Mat2Img(V2Bank.AC.get(0,0,0).mergedAC[i]);
                     Visualizer.setImage(img, "angle " + i, i + nFrame);
                 }
                 for (int i = 0; i < Config.gaborOrientations; i++) {
@@ -139,19 +140,6 @@ public class V2AngularCells extends FrameActivity {
         filterMatrix(ors);
         angularActivation();
     }
-
-    /**
-     * merge the angular maps to reduce information to send
-     *
-     * @param mat
-     */
-    /*
-    public void mergeAngles(Mat[][] mat) {
-        angleMats = new Mat[Config.gaborOrientations];
-        for (int i = 0; i < mat.length; i++) {
-            angleMats[i] = MatrixUtils.maxSum(mat[i]);
-        }
-    }*/
     /**
      * Increment value
      */
@@ -187,34 +175,13 @@ public class V2AngularCells extends FrameActivity {
      * multiply the matrixes for generating the activation map
      */
     public void angularActivation() {
-        //v2map = new Mat[Config.gaborOrientations][Config.gaborOrientations * 2];
-        String c = "";
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4 * 2; j++) {
-                V2Bank.V2CellsBank[0][0][0].angleCells[i][j].mat = new Mat();
-                Mat vlvr = new Mat();
-                Mat vlpvr = new Mat();
-                Mat num = new Mat();
-                Mat den = new Mat();
-                Mat h = new Mat();
-                Scalar dl3 = new Scalar((double) 1 / l3);
-                Scalar d2l3 = new Scalar((double) 2 / l3);
-                Scalar dl3_2 = new Scalar((double) 1 / (l3 * l3));
-                Core.multiply(filtered[j], filtered[(i + j + 1) % 8], vlvr);
-                Core.add(filtered[j], filtered[(i + j + 1) % 8], vlpvr);
-                V2Bank.V2CellsBank[0][0][0].angleCells[i][j].setPrevious(
-                        V1Bank.hypercomplexCellsBank[0][0][0].HypercomplexCells[0][j%4],
-                        V1Bank.hypercomplexCellsBank[0][0][0].HypercomplexCells[0][((i + j + 1) % 8)%4]);
-                Core.add(vlpvr, d2l3, num);
-                Core.multiply(vlpvr, dl3, den);
-                Core.add(den, vlpvr, den);
-                Core.add(den, dl3_2, den);
-                Core.divide(num, den, h);
-                Core.multiply(vlvr, h, V2Bank.V2CellsBank[0][0][0].angleCells[i][j].mat);
-                //Core.multiply(filtered[j], filtered[(i + j + 1) % 8], v2map[i][j]);
-                Imgproc.threshold(V2Bank.V2CellsBank[0][0][0].angleCells[i][j].mat, V2Bank.V2CellsBank[0][0][0].angleCells[i][j].mat, 0, 1, Imgproc.THRESH_TOZERO);
+        for (int i = 0; i < Config.gaborOrientations; i++) {
+            for (int j = 0; j < Config.gaborOrientations * 2; j++) {
+                V2Bank.AC.get(0,0,0).Cells[i][j].mat=Functions.V2Activation(filtered[j], filtered[(i + j + 1) % (Config.gaborOrientations*2)], l3);
+                V2Bank.AC.get(0,0,0).Cells[i][j].setPrevious(
+                        V1Bank.HCC.get(0,0,0).Cells[0][j%Config.gaborOrientations],
+                        V1Bank.HCC.get(0,0,0).Cells[0][((i + j + 1) % (Config.gaborOrientations*2))%4]);
             }
-            c = c + "\n";
         }
     }
 

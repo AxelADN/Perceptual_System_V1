@@ -16,28 +16,36 @@ import org.opencv.core.Mat;
 public class ComplexCells {
 
     public int scale;
-    public Cell[] ComplexCells;
+    public Cell[] Cells;
 
 
     public ComplexCells(int scale, Cell[] complexCells) {
         this.scale = scale;
-        this.ComplexCells = complexCells;
+        this.Cells = complexCells;
     }
 
     public ComplexCells(int scale, int number) {
         this.scale = scale;
-        ComplexCells = new Cell[number];
+        Cells = new Cell[number];
         for (int i = 0; i < number; i++) {
-            ComplexCells[i] = new Cell();
+            Cells[i] = new Cell();
+        }
+    }
+    
+    public ComplexCells(int number) {
+        this.scale = -1;
+        Cells = new Cell[number];
+        for (int i = 0; i < number; i++) {
+            Cells[i] = new Cell();
         }
     }
     
     public ComplexCells(int scale, int number, int n1, int n2, int nf) {
         this.scale = scale;
-        ComplexCells = new Cell[number];
+        Cells = new Cell[number];
         for (int i = 0; i < number; i++) {
-            ComplexCells[i] = new Cell();
-            ComplexCells[i].setPrevious(V1Bank.simpleCellsBank[n1][nf][n2].SimpleCellsEven[i],V1Bank.simpleCellsBank[n1][nf][n2].SimpleCellsOdd[i]);
+            Cells[i] = new Cell();
+            Cells[i].setPrevious(V1Bank.SC.get(n1,nf,n2).Even[i],V1Bank.SC.get(n1,nf,n2).Odd[i]);
         }
     }
 

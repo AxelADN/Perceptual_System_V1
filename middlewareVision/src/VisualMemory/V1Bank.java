@@ -14,29 +14,22 @@ import utils.Config;
 public class V1Bank {
 
     //[scale][frequency][eye]
-    public static SimpleCells[][][] simpleCellsBank;
-    public static ComplexCells[][][] complexCellsBank;
-    public static HypercomplexCells[][][] hypercomplexCellsBank;
-    public static DoubleOpponentCells[][][] doubleOpponentCellsBank;
+    public static NArrayObject<SimpleCells> SC;
+    public static NArrayObject<ComplexCells> CC;
+    public static NArrayObject<HypercomplexCells> HCC;
+    public static NArrayObject<DoubleOpponentCells> DOC;
+    
 
     public static void initializeSimpleCells(int... scales) {
-        simpleCellsBank = new SimpleCells[scales.length][Config.freqs][2];
-        complexCellsBank = new ComplexCells[scales.length][Config.freqs][2];
-        hypercomplexCellsBank = new HypercomplexCells[scales.length][Config.freqs][2];
-        doubleOpponentCellsBank = new DoubleOpponentCells[scales.length][Config.freqs][2];
-
-        for (int j = 0; j < 2; j++) {
-            for (int f = 0; f < Config.freqs; f++) {
-                int i = 0;
-                for (int scale : scales) {
-                    simpleCellsBank[i][f][j] = new SimpleCells(scale, Config.gaborOrientations);
-                    complexCellsBank[i][f][j] = new ComplexCells(scale, Config.gaborOrientations, i, j, f);
-                    hypercomplexCellsBank[i][f][j] = new HypercomplexCells(scale, 1, Config.gaborOrientations, i, j, f);
-                    doubleOpponentCellsBank[i][0][j] = new DoubleOpponentCells(scale, Config.gaborOrientations);
-                    i++;
-                }
-            }
-        }
+        SC = new NArrayObject(scales.length,Config.freqs,2);
+        CC = new NArrayObject(scales.length,Config.freqs,2);
+        HCC = new NArrayObject(scales.length,Config.freqs,2);
+        DOC = new NArrayObject(scales.length,Config.freqs,2);
+        
+        SC.fill(new SimpleCells(0, Config.gaborOrientations));
+        CC.fill(new ComplexCells(0, Config.gaborOrientations));
+        HCC.fill(new HypercomplexCells(0, Config.gaborOrientations));
+        DOC.fill(new DoubleOpponentCells(0, Config.gaborOrientations));
     }
 
 }

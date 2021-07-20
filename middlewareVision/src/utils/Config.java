@@ -18,8 +18,8 @@ public class Config {
     public static final String NAME = "b15";
     public static final String EXT = ".jpg";
     public static final String PATH = "./imagenes/" + NAME + "/";
-    public static boolean cam = true;
-    public static boolean staticImage = true;
+    public static boolean cam = false;
+    public static boolean staticImage = false;
     public static int device = 0;
     public static int tresh=100;
     public static int blur=1;
@@ -52,6 +52,6 @@ public class Config {
     public static final int CLICK=2;
     public static final int RENDER=3;
     
-    public static final int option=CLICK;
+    public static final int option=RENDER;
 
 }

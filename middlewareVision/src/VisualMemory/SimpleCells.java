@@ -14,22 +14,32 @@ import org.opencv.core.Mat;
 public class SimpleCells {
 
     public int scale;
-    public Cell[] SimpleCellsEven;
-    public Cell[] SimpleCellsOdd;
+    public Cell[] Even;
+    public Cell[] Odd;
 
     public SimpleCells(int scale, Cell[] SimpleCellsEven, Cell[] SimpleCellsOdd) {
         this.scale = scale;
-        this.SimpleCellsEven = SimpleCellsEven;
-        this.SimpleCellsOdd = SimpleCellsOdd;
+        this.Even = SimpleCellsEven;
+        this.Odd = SimpleCellsOdd;
     }
     
     public SimpleCells(int scale,int number){
         this.scale=scale;
-        SimpleCellsEven=new Cell[number];
-        SimpleCellsOdd=new Cell[number];
+        Even=new Cell[number];
+        Odd=new Cell[number];
         for(int i=0;i<number;i++){
-            SimpleCellsEven[i]=new Cell();
-            SimpleCellsOdd[i]=new Cell();
+            Even[i]=new Cell();
+            Odd[i]=new Cell();
+        }
+    }
+    
+    public SimpleCells(int number){
+        this.scale=0;
+        Even=new Cell[number];
+        Odd=new Cell[number];
+        for(int i=0;i<number;i++){
+            Even[i]=new Cell();
+            Odd[i]=new Cell();
         }
     }
     

@@ -13,19 +13,11 @@ import utils.Config;
  */
 public class V2Bank {
 
-    public static V2AngleCells V2CellsBank[][][];
+    public static NArrayObject<V2AngleCells> AC;
 
     public static void initializeV2Cells(int... scales) {
-        V2CellsBank = new V2AngleCells[scales.length][Config.freqsV2][2];
-        for (int j = 0; j < 2; j++) {
-            for (int f = 0; f < Config.freqsV2; f++) {
-                int i = 0;
-                for (int scale : scales) {
-                    V2CellsBank[i][f][j] = new V2AngleCells(scale, Config.gaborOrientations, 2 * Config.gaborOrientations);
-                    i++;
-                }
-            }
-        }
+        AC = new NArrayObject(scales.length,Config.freqs,2);
+        AC.fill(new V2AngleCells(0,Config.gaborOrientations, 2 * Config.gaborOrientations));
     }
 
 }

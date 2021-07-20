@@ -20,7 +20,7 @@ public class V1 extends Area{
 	addProcess(V1SimpleCells.class);
 	addProcess(V1ComplexCells.class);
 	addProcess(V1DoubleOpponent.class);
-	addProcess(V1HyperComplex.class);
+	//addProcess(V1HyperComplex.class);
 	
 	addProcess(V1SimpleCellsFilter.class);
 	

@@ -15,13 +15,13 @@ import utils.MatrixUtils;
 public class V2AngleCells {
     
     public int scale;
-    public Cell[][] angleCells;
-    public Mat[] mergedAngleCells;
+    public Cell[][] Cells;
+    public Mat[] mergedAC;
 
     public V2AngleCells(int scale, Cell[][] angleCells, Mat[] mergedAngleCells) {
         this.scale = scale;
-        this.angleCells = angleCells;
-        this.mergedAngleCells = mergedAngleCells;
+        this.Cells = angleCells;
+        this.mergedAC = mergedAngleCells;
     }
     
     /**
@@ -32,31 +32,31 @@ public class V2AngleCells {
      */
     public V2AngleCells(int scale,int n1,int n2){
         this.scale=scale;
-        angleCells=new Cell[n1][n2];
-        mergedAngleCells=new Mat[n1];
+        Cells=new Cell[n1][n2];
+        mergedAC=new Mat[n1];
         for(int i=0;i<n1;i++){
-            mergedAngleCells[i]=new Mat();
+            mergedAC[i]=new Mat();
             for(int j=0;j<n2;j++){
-                angleCells[i][j]=new Cell();
+                Cells[i][j]=new Cell();
             }
         }
     }
     
     public V2AngleCells(int scale,int n1,int n2, int i1, int i2){
         this.scale=scale;
-        angleCells=new Cell[n1][n2];
-        mergedAngleCells=new Mat[n1];
+        Cells=new Cell[n1][n2];
+        mergedAC=new Mat[n1];
         for(int i=0;i<n1;i++){
-            mergedAngleCells[i]=new Mat();
+            mergedAC[i]=new Mat();
             for(int j=0;j<n2;j++){
-                angleCells[i][j]=new Cell();
+                Cells[i][j]=new Cell();
             }
         }
     }
     
     public void mergeCells(){
-        for (int i = 0; i < mergedAngleCells.length; i++) {
-            mergedAngleCells[i] = MatrixUtils.maxSum(angleCells[i]);
+        for (int i = 0; i < mergedAC.length; i++) {
+            mergedAC[i] = MatrixUtils.maxSum(Cells[i]);
         }
     }
 }

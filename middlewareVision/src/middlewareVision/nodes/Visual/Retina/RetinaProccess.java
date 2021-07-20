@@ -110,7 +110,7 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
         this.namer = AreaNames.class;
 
         frame = new RetinaFrame(this, 0);
-        frame.setSize(Config.width, Config.heigth);
+        //frame.setSize(Config.width, Config.heigth+50);
 
         initFrames(3, 1);
         Controls.setRet(this);
@@ -159,7 +159,7 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
                 videoDevice.read(src);
                 cvtColor(src, src, COLOR_BGR2GRAY);
                 Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
-                frame.setImage(Convertor.ConvertMat2Image2(src));
+                frame.setImage(Convertor.Mat2Img2(src));
 
                 LongSpike spike = new LongSpike(Modalities.VISUAL, ID, Convertor.matToBytes(src), 0);
                 send(AreaNames.V1, spike.getByteArray());
@@ -189,7 +189,7 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
         src.convertTo(src, -1, Config.contr, Config.bright);
         //cvtColor(src, src, COLOR_BGR2GRAY);
         Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
-        BufferedImage img2 = Convertor.ConvertMat2Image2(src);
+        BufferedImage img2 = Convertor.Mat2Img2(src);
 
         frame.setImage(img2);
 
@@ -197,14 +197,15 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
         do the transductions
          */
         Mat transMat[] = transduction(img2);
-        Visualizer.setImage(Convertor.ConvertMat2Image(transMat[0]), "LMM", 0);
-        Visualizer.setImage(Convertor.ConvertMat2Image(transMat[1]), "SMLPM", 1);
-        Visualizer.setImage(Convertor.ConvertMat2Image(transMat[2]), "LPM", 2);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[0]), "LMM", 0);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[1]), "SMLPM", 1);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[2]), "LPM", 2);
 
         if (c == 0 || c == 2) {
             for (int i = 0; i < transMat.length; i++) {
                 LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i, 1), Convertor.MatToMatrix(transMat[i]), 0);
                 send(AreaNames.LGN, spike.getByteArray());
+                send(AreaNames.BasicMotion,spike.getByteArray());
             }
         }
 

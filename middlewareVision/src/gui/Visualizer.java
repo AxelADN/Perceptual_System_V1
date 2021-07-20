@@ -37,12 +37,12 @@ public class Visualizer {
     public static void update() {
         for (int i = 0; i < 4; i++) {
             if (i < 3) {
-                vis.setImage(Convertor.ConvertMat2Image(LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[i].mat), "dkl", 4 + i);
+                vis.setImage(Convertor.Mat2Img(LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[i].mat), "dkl", 4 + i);
             }
-            vis.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0][0].SimpleCellsEven[i].mat), "even", 12 + i);
-            vis.setImage(Convertor.ConvertMat2Image(V1Bank.simpleCellsBank[0][0][0].SimpleCellsOdd[i].mat), "odd", 12 + 4 + i);
-            vis.setImage(Convertor.ConvertMat2Image(V1Bank.complexCellsBank[0][0][0].ComplexCells[i].mat), "complex", 12 + 4 + 4 + i);
-            vis.setImage(Convertor.ConvertMat2Image(V1Bank.hypercomplexCellsBank[0][0][0].HypercomplexCells[0][i].mat), "hyper", 12 + 4 + 4 + 4+ i);
+            vis.setImage(Convertor.Mat2Img(V1Bank.SC.get(0,0,0).Even[i].mat), "even", 12 + i);
+            vis.setImage(Convertor.Mat2Img(V1Bank.SC.get(0,0,0).Odd[i].mat), "odd", 12 + 4 + i);
+            vis.setImage(Convertor.Mat2Img(V1Bank.CC.get(0,0,0).Cells[i].mat), "complex", 12 + 4 + 4 + i);
+            vis.setImage(Convertor.Mat2Img(V1Bank.HCC.get(0,0,0).Cells[0][i].mat), "hyper", 12 + 4 + 4 + 4+ i);
         }
     }
 
