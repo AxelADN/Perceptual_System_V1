@@ -44,6 +44,8 @@ public class AreaNames {
 	
 	public static int BasicMotion = IDHelper.generateID("Retina", 2 , 0);
 	
+	public static int ReichardtMotion = IDHelper.generateID("V1", 8 , 0);
+	
 	//@addNodes
         //no quitar el comentario de add Nodes
 }

@@ -80,6 +80,8 @@ public class V1ComplexCells extends Activity {
                 
                 Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][0][0].Cells[index].mat), "energy "+index, index+nFrame);
                 //send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
+                LongSpike spikeMotion= new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
+                send(AreaNames.ReichardtMotion,spikeMotion.getByteArray());
 
             }
             

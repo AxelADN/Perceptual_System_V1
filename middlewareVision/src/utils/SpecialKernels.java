@@ -28,7 +28,7 @@ import static org.opencv.imgproc.Imgproc.getGaborKernel;
  */
 public class SpecialKernels {
 
-    static float sigma = 0.47f * 2f;
+    static float sigma = 0.47f * 3f;
     static float inc = (float) (Math.PI / Config.gaborOrientations);
     public static Mat diag45;
     public static Mat diag135;
@@ -54,15 +54,22 @@ public class SpecialKernels {
         loadV2Kernels();
         V4CellStructure.loadV4Structure();
     }
-    
+    static float a1=3f;
+    static float a2=0.5f;
     public static void loadGaborFilters(){
         GaborKernels=new Mat[3][Config.gaborOrientations];
         for(int i=0;i<Config.gaborOrientations;i++){
             float angle = i * inc;
-            GaborKernels[0][i]=getGaborKernel(new Size(20, 20), sigma, angle, 3f, 0.5f, 0, CvType.CV_32F);
-            GaborKernels[1][i]=getGaborKernel(new Size(20, 20), sigma, angle, 3f, 0.5f, 1, CvType.CV_32F);
-            GaborKernels[1][i]=displaceKernel(getGaborKernel(new Size(20, 20), sigma, angle, 3f, 0.5f, 0, CvType.CV_32F),angle,10);
-            //GaborKernelsOdd1[i]=getGaborKernel(new Size(20, 20), sigma, angle, 3f, 0.5f, 1, CvType.CV_32F);
+            GaborKernels[0][i]=getGaborKernel(new Size(20, 20), sigma, angle, a1, a2, 0, CvType.CV_32F);
+            GaborKernels[1][i]=getGaborKernel(new Size(20, 20), sigma, angle, a1, a2, 1, CvType.CV_32F);
+            GaborKernels[2][i]=displaceKernel(getGaborKernel(new Size(50, 50), sigma, angle, a1, a2, 0, CvType.CV_32F),angle,0);
+        }
+    }
+    
+    public static void modifyDispGabor(int disp){
+        for(int i=0;i<Config.gaborOrientations;i++){
+            float angle = i * inc;
+            GaborKernels[2][i]=displaceKernel(getGaborKernel(new Size(50, 50), sigma, angle, a1, a2, 0, CvType.CV_32F),angle,disp);
         }
     }
 
@@ -426,7 +433,7 @@ public class SpecialKernels {
         srcTri[1] = new Point(kernel.cols() -1, 0);
         srcTri[2] = new Point(0, kernel.rows() -1);
         
-        angle=Math.toRadians(angle);
+        //angle=Math.toRadians(angle);
         double dx=dis*Math.cos(angle);
         double dy=dis*Math.sin(angle);
         
