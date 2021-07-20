@@ -30,28 +30,12 @@ public class Functions {
      * @param inc increment
      * @return
      */
-    public static Mat gaborFilter(Mat img, double phi, int part, float sigma, float inc) {
-        Mat ors;
-        //Imgproc.blur(img, img, new Size(Config.blur, Config.blur));
-        ors = new Mat();
-        Mat kernel = new Mat();
-        //size of the kernel
-        int kernelSize = 20;
-        //angle of the orientation
-        float angle = part * inc;
-        //initializate the ors and gab array matrix with zeros
-        ors = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
+    public static Mat gaborFilter(Mat img, int part, int parity) {
         Mat gab = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
-        //convert the matrix img to float matrix
         img.convertTo(img, CV_32F);
-        //generate the gabor filter
-        kernel = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, 3f, 0.5f, phi, CvType.CV_32F);
-        //perform the convolution on the image IMG with the filter GAB
-        Imgproc.filter2D(img, gab, CV_32F, kernel);
-        //apply a threshold from the value 0.2 to 1
+        Imgproc.filter2D(img, gab, CV_32F, SpecialKernels.GaborKernels[parity][part]);
         Imgproc.threshold(gab, gab, 0, 1, Imgproc.THRESH_TOZERO);
-        ors = gab;
-        return ors;
+        return gab;
     }
 
     /**
@@ -81,14 +65,14 @@ public class Functions {
     }
 
     /**
-     * 
+     *
      * @param src1
      * @param src2
      * @param l3
-     * @return 
+     * @return
      */
     public static Mat V2Activation(Mat src1, Mat src2, double l3) {
-        Mat dst=new Mat();
+        Mat dst = new Mat();
         Mat vlvr = new Mat();
         Mat vlpvr = new Mat();
         Mat num = new Mat();

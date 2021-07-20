@@ -42,6 +42,19 @@ public class V2AngleCells {
         }
     }
     
+    public V2AngleCells(int n1,int n2){
+        Cells=new Cell[n1][n2];
+        mergedAC=new Mat[n1];
+        for(int i=0;i<n1;i++){
+            mergedAC[i]=new Mat();
+            for(int j=0;j<n2;j++){
+                Cells[i][j]=new Cell();
+            }
+        }
+    }
+    
+    
+    
     public V2AngleCells(int scale,int n1,int n2, int i1, int i2){
         this.scale=scale;
         Cells=new Cell[n1][n2];

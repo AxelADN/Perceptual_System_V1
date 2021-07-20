@@ -5,6 +5,7 @@
  */
 package VisualMemory;
 
+import NArray.NArrayObject;
 import utils.Config;
 
 /**
@@ -13,18 +14,19 @@ import utils.Config;
  */
 public class LGNBank {
 
-    public static SimpleOpponentCells[][] simpleOpponentCellsBank;
+    public static SimpleOpponentCells[][][] SOC;
 
-    public static void initializeSimpleCells(int... scales) {
-        simpleOpponentCellsBank = new SimpleOpponentCells[scales.length][2];
+    public static void initializeCells(int... dimensions) {
 
-        for (int j = 0; j < 2; j++) {
-            int i = 0;
-            for (int scale : scales) {
-                simpleOpponentCellsBank[i][j] = new SimpleOpponentCells(scale, Config.gaborOrientations);
-                i++;
+        SOC = new SimpleOpponentCells[dimensions[0]][dimensions[1]][dimensions[2]];
+        for (int i1 = 0; i1 < dimensions[0]; i1++) {
+            for (int i2 = 0; i2 < dimensions[1]; i2++) {
+                for (int i3 = 0; i3 < dimensions[2]; i3++) {
+                    SOC[i1][i2][i3] = new SimpleOpponentCells(0, 3);
+                }
             }
         }
+
     }
 
 }

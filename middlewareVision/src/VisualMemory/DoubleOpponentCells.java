@@ -28,4 +28,11 @@ public class DoubleOpponentCells {
         }
     }
     
+    public DoubleOpponentCells(int number){
+        Cells=new Cell[number];
+        for(int i=0;i<number;i++){
+            Cells[i]=new Cell();
+        }
+    }
+    
 }

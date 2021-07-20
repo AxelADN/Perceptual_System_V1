@@ -65,10 +65,10 @@ public class V1ComplexCells extends Activity {
 
             if (spike.getModality() == Modalities.VISUAL) {
                 int index = l.getValues()[0];
-                Mat evenOrs = V1Bank.SC.get(0,0,0).Even[index].mat.clone();
-                Mat oddOrs = V1Bank.SC.get(0,0,0).Odd[index].mat.clone();
-                V1Bank.CC.get(0,0,0).Cells[index].mat=Functions.energyProcess(evenOrs, oddOrs);
-                Mat energy2=V1Bank.CC.get(0,0,0).Cells[index].mat.clone();
+                Mat evenOrs = V1Bank.SC[0][0][0].Even[index].mat.clone();
+                Mat oddOrs = V1Bank.SC[0][0][0].Odd[index].mat.clone();
+                V1Bank.CC[0][0][0].Cells[index].mat=Functions.energyProcess(evenOrs, oddOrs);
+                Mat energy2=V1Bank.CC[0][0][0].Cells[index].mat.clone();
                 
                 Imgproc.resize(energy2, energy2, new Size(Config.motionWidth,Config.motionHeight), INTER_CUBIC);
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, 
@@ -78,7 +78,7 @@ public class V1ComplexCells extends Activity {
                 //send(AreaNames.V1Visualizer, sendSpike3.getByteArray());
                 send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
                 
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC.get(0,0,0).Cells[index].mat), "energy "+index, index+nFrame);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][0][0].Cells[index].mat), "energy "+index, index+nFrame);
                 //send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
 
             }
@@ -87,7 +87,7 @@ public class V1ComplexCells extends Activity {
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
                     send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
-                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC.get(0,0,0).Cells[i].mat), "energy "+i, i+nFrame);
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][0][0].Cells[i].mat), "energy "+i, i+nFrame);
                 }
             }
 

@@ -1,5 +1,6 @@
 package middlewareVision.nodes.Visual.V1;
 
+import VisualMemory.Cell;
 import VisualMemory.V1Bank;
 import gui.Visualizer;
 import spike.Location;
@@ -57,12 +58,21 @@ public class V1SimpleCellsFilter extends Activity {
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
                 int index = l.getValues()[0];
-                V1Bank.SC.get(0,0,0).Even[index].mat = Functions.gaborFilter(V1Bank.DOC.get(0,0,0).Cells[2].mat, 0, index, sigma, inc);
-                V1Bank.SC.get(0,0,0).Odd[index].mat = Functions.gaborFilter(V1Bank.DOC.get(0,0,0).Cells[2].mat, 1, index, sigma, inc);
-                //V1Bank.SC.get(0,0,0).Even[index].mat=Functions.gaborFilter(V1Bank.DOC.get(0,0,0).Cells[2].mat, 0, index, sigma, inc);
+                V1Bank.SC[0][0][0].Even[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[2].mat, index, 0);
+                V1Bank.SC[0][0][0].Odd[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[2].mat, index, 1);
+                V1Bank.SC[0][1][0].Even[index].mat = V1Bank.DOC[0][0][0].Cells[1].mat;
+               // V1Bank.SC
+                //V1Bank.SC.get(0,1,0).scale=50;
+ 
+               V1Bank.SC[0][0][0].Even[index].id=index;
+               //V1Bank.SC.get(0,1,0).Even[index].id=index+10;
+               System.out.println(V1Bank.SC[0][0][0].scale+"   asd  "+V1Bank.SC[0][1][0].scale);
+               // V1Bank.SC.set(Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[1].mat, index, 2), 0,1,0);
+                //V1Bank.SC[0][0][0].Even[index].mat=Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[2].mat, 0, index, sigma, inc);
 
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC.get(0,0,0).Even[index].mat), "even " + index, index + nFrame);
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC.get(0,0,0).Odd[index].mat), "odd " + index, index + nFrame + 4);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Even[index].mat), "even " + index, index + nFrame);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Odd[index].mat), "odd " + index, index + nFrame + 4);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][1][0].Even[index].mat), "asdf " + index, index + nFrame + 4+4+4+4);
 
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
                 send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
@@ -72,8 +82,8 @@ public class V1SimpleCellsFilter extends Activity {
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
                     send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
-                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC.get(0,0,0).Even[i].mat), "even " + i, nFrame + i);
-                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC.get(0,0,0).Odd[i].mat), "even " + i, nFrame + i + 4);
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Even[i].mat), "even " + i, nFrame + i);
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Odd[i].mat), "even " + i, nFrame + i + 4);
                 }
             }
 

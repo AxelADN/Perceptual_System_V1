@@ -5,6 +5,7 @@
  */
 package utils;
 
+import NArray.NArrayObject;
 import generator.RF;
 import java.io.File;
 import java.util.ArrayList;
@@ -28,9 +29,10 @@ import static org.opencv.imgproc.Imgproc.getGaborKernel;
 public class SpecialKernels {
 
     static float sigma = 0.47f * 2f;
-    static float inc = (float) (Math.PI / 4);
+    static float inc = (float) (Math.PI / Config.gaborOrientations);
     public static Mat diag45;
     public static Mat diag135;
+    public static Mat[][] GaborKernels;
     static double valueMinus = -0.15;
     static double valueMax = 0.3;
     public static ArrayList<PairFilter> ilusoryFilters;
@@ -45,11 +47,23 @@ public class SpecialKernels {
      */
     public static void loadKernels() {
         initRFlist();
+        loadGaborFilters();
         loadEndStoppedFilters();
         getdiag45(Config.diagonalSize);
         getdiag135(Config.diagonalSize);
         loadV2Kernels();
         V4CellStructure.loadV4Structure();
+    }
+    
+    public static void loadGaborFilters(){
+        GaborKernels=new Mat[3][Config.gaborOrientations];
+        for(int i=0;i<Config.gaborOrientations;i++){
+            float angle = i * inc;
+            GaborKernels[0][i]=getGaborKernel(new Size(20, 20), sigma, angle, 3f, 0.5f, 0, CvType.CV_32F);
+            GaborKernels[1][i]=getGaborKernel(new Size(20, 20), sigma, angle, 3f, 0.5f, 1, CvType.CV_32F);
+            GaborKernels[1][i]=displaceKernel(getGaborKernel(new Size(20, 20), sigma, angle, 3f, 0.5f, 0, CvType.CV_32F),angle,10);
+            //GaborKernelsOdd1[i]=getGaborKernel(new Size(20, 20), sigma, angle, 3f, 0.5f, 1, CvType.CV_32F);
+        }
     }
 
     /**

@@ -5,6 +5,7 @@
  */
 package VisualMemory;
 
+import NArray.NArrayObject;
 import utils.Config;
 
 /**
@@ -14,22 +15,28 @@ import utils.Config;
 public class V1Bank {
 
     //[scale][frequency][eye]
-    public static NArrayObject<SimpleCells> SC;
-    public static NArrayObject<ComplexCells> CC;
-    public static NArrayObject<HypercomplexCells> HCC;
-    public static NArrayObject<DoubleOpponentCells> DOC;
-    
+    public static SimpleCells[][][] SC;
+    public static ComplexCells[][][] CC;
+    public static HypercomplexCells[][][] HCC;
+    public static DoubleOpponentCells[][][] DOC;
 
-    public static void initializeSimpleCells(int... scales) {
-        SC = new NArrayObject(scales.length,Config.freqs,2);
-        CC = new NArrayObject(scales.length,Config.freqs,2);
-        HCC = new NArrayObject(scales.length,Config.freqs,2);
-        DOC = new NArrayObject(scales.length,Config.freqs,2);
-        
-        SC.fill(new SimpleCells(0, Config.gaborOrientations));
-        CC.fill(new ComplexCells(0, Config.gaborOrientations));
-        HCC.fill(new HypercomplexCells(0, Config.gaborOrientations));
-        DOC.fill(new DoubleOpponentCells(0, Config.gaborOrientations));
+    public static void initializeCells(int... dimensions) {
+        SC = new SimpleCells[dimensions[0]][dimensions[1]][dimensions[2]];
+        CC = new ComplexCells[dimensions[0]][dimensions[1]][dimensions[2]];
+        HCC = new HypercomplexCells[dimensions[0]][dimensions[1]][dimensions[2]];
+        DOC = new DoubleOpponentCells[dimensions[0]][dimensions[1]][dimensions[2]];
+
+        for (int i1 = 0; i1 < dimensions[0]; i1++) {
+            for (int i2 = 0; i2 < dimensions[1]; i2++) {
+                for (int i3 = 0; i3 < dimensions[2]; i3++) {
+                    SC[i1][i2][i3]=new SimpleCells(Config.gaborOrientations);
+                    CC[i1][i2][i3]=new ComplexCells(Config.gaborOrientations);
+                    HCC[i1][i2][i3]=new HypercomplexCells(1,Config.gaborOrientations);
+                    DOC[i1][i2][i3]=new DoubleOpponentCells(Config.gaborOrientations);
+                }
+            }
+        }
+
     }
 
 }

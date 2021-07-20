@@ -13,18 +13,18 @@ package VisualMemory;
 public class SimpleOpponentCells {
     
     public int scale;
-    public Cell[] SimpleOpponentCells;
+    public Cell[] Cells;
 
     public SimpleOpponentCells(int scale, Cell[] SimpleOpponentCells) {
         this.scale = scale;
-        this.SimpleOpponentCells = SimpleOpponentCells;
+        this.Cells = SimpleOpponentCells;
     }
     
     public SimpleOpponentCells(int scale,int number){
         this.scale=scale;
-        SimpleOpponentCells=new Cell[number];
+        Cells=new Cell[number];
         for(int i=0;i<number;i++){
-            SimpleOpponentCells[i]=new Cell();
+            Cells[i]=new Cell();
         }
     }
 }

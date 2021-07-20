@@ -92,16 +92,16 @@ public class V1DoubleOpponent extends Activity {
                 sync.addReceived(i1);
             }
             if (sync.isComplete()) {
-                Mat DKL[]={LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[0].mat,
-                    LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[1].mat,
-                    LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].mat
+                Mat DKL[]={LGNBank.SOC[0][0][0].Cells[0].mat,
+                    LGNBank.SOC[0][0][0].Cells[1].mat,
+                    LGNBank.SOC[0][0][0].Cells[2].mat
                 };
                 transduction(DKL,0,0);
                 for(int i=0;i<3;i++){
                         LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,1), 0, 0);
                         send(AreaNames.V4Color, sendSpike.getByteArray());
                         send(AreaNames.V1SimpleCells, sendSpike.getByteArray());
-                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.DOC.get(0,0,0).Cells[i].mat), "dkl'", indexFrame+i);
+                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.DOC[0][0][0].Cells[i].mat), "dkl'", indexFrame+i);
                 }
             }
 
@@ -121,9 +121,9 @@ public class V1DoubleOpponent extends Activity {
      * @param DKL
      */
     public void transduction(Mat[] DKL,int scale,int eye) {
-        V1Bank.DOC.get(scale,0,eye).Cells[0].mat=LMM(DKL);
-        V1Bank.DOC.get(scale,0,eye).Cells[1].mat=SMLPM(DKL);
-        V1Bank.DOC.get(scale,0,eye).Cells[2].mat=LGNBank.simpleOpponentCellsBank[0][0].SimpleOpponentCells[2].mat.clone();
+        V1Bank.DOC[scale][0][eye].Cells[0].mat=LMM(DKL);
+        V1Bank.DOC[scale][0][eye].Cells[1].mat=SMLPM(DKL);
+        V1Bank.DOC[scale][0][eye].Cells[2].mat=LGNBank.SOC[0][0][0].Cells[2].mat.clone();
     }
 
     /**

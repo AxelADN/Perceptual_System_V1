@@ -45,7 +45,7 @@ public class HypercomplexCells {
         for(int i=0;i<numFilters;i++){
             for(int j=0;j<number;j++){
                 Cells[i][j]=new Cell();
-                Cells[i][j].setPrevious(V1Bank.CC.get(n1,nf,n2).Cells[j]);
+                Cells[i][j].setPrevious(V1Bank.CC[n1][nf][n2].Cells[j]);
             }
         }
     }

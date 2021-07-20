@@ -5,7 +5,10 @@
  */
 package VisualMemory;
 
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import utils.Config;
 
 /**
  *
@@ -16,6 +19,7 @@ public class Cell {
     public Mat mat;
     public Cell[] previous;
     public Cell[] next;
+    public int id;
 
     public Cell(Mat mat, Cell[] previous, Cell[] next) {
         this.mat = mat;
@@ -24,7 +28,11 @@ public class Cell {
     }
 
     public Cell() {
-        mat = new Mat();
+        mat = Mat.zeros(new Size(Config.width, Config.heigth), CvType.CV_32FC1);
+    }
+    
+    public Cell(Mat mat){
+        this.mat=mat;
     }
 
     public void setNext(Cell[] next) {

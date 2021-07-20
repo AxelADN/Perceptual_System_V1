@@ -45,7 +45,7 @@ public class ComplexCells {
         Cells = new Cell[number];
         for (int i = 0; i < number; i++) {
             Cells[i] = new Cell();
-            Cells[i].setPrevious(V1Bank.SC.get(n1,nf,n2).Even[i],V1Bank.SC.get(n1,nf,n2).Odd[i]);
+            Cells[i].setPrevious(V1Bank.SC[n1][nf][n2].Even[i],V1Bank.SC[n1][nf][n2].Odd[i]);
         }
     }
 
