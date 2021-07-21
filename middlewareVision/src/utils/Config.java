@@ -35,6 +35,7 @@ public class Config {
     public static double endstop=0.1;
     public static final int freqs=1;
     public static final int freqsV2=1;
+    public static int displace=0;
     
     /**
      * Paths for the image showed in the GUI

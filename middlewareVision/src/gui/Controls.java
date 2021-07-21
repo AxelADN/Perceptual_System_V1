@@ -287,6 +287,7 @@ public class Controls extends javax.swing.JFrame {
     private void jSlider4MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider4MouseDragged
         // TODO add your handling code here:
         SpecialKernels.modifyDispGabor(jSlider4.getValue());
+        Config.displace=jSlider4.getValue();
     }//GEN-LAST:event_jSlider4MouseDragged
 
     private void jSlider4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider4MouseClicked

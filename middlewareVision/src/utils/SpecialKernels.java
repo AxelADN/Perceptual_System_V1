@@ -28,7 +28,7 @@ import static org.opencv.imgproc.Imgproc.getGaborKernel;
  */
 public class SpecialKernels {
 
-    static float sigma = 0.47f * 3f;
+    static float sigma = 0.47f * 2.5f;
     static float inc = (float) (Math.PI / Config.gaborOrientations);
     public static Mat diag45;
     public static Mat diag135;
@@ -54,7 +54,7 @@ public class SpecialKernels {
         loadV2Kernels();
         V4CellStructure.loadV4Structure();
     }
-    static float a1=3f;
+    static float a1=5f;
     static float a2=0.5f;
     public static void loadGaborFilters(){
         GaborKernels=new Mat[3][Config.gaborOrientations];
@@ -62,7 +62,7 @@ public class SpecialKernels {
             float angle = i * inc;
             GaborKernels[0][i]=getGaborKernel(new Size(20, 20), sigma, angle, a1, a2, 0, CvType.CV_32F);
             GaborKernels[1][i]=getGaborKernel(new Size(20, 20), sigma, angle, a1, a2, 1, CvType.CV_32F);
-            GaborKernels[2][i]=displaceKernel(getGaborKernel(new Size(50, 50), sigma, angle, a1, a2, 0, CvType.CV_32F),angle,0);
+           
         }
     }
     

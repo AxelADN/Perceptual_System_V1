@@ -17,7 +17,9 @@ import utils.Config;
 import utils.Convertor;
 import utils.Functions;
 import utils.LongSpike;
+import utils.MatrixUtils;
 import utils.SimpleLogger;
+import static utils.SpecialKernels.displaceKernel;
 import utils.numSync;
 
 /**
@@ -29,22 +31,26 @@ public class ReichardtMotion extends Activity {
     public ReichardtMotion() {
         this.ID = AreaNames.ReichardtMotion;
         this.namer = AreaNames.class;
-        M1 = new Mat[Config.gaborOrientations];
-        M2 = new Mat[Config.gaborOrientations];
+        M = new Mat[Config.gaborOrientations][nFrames];
         for (int i = 0; i < Config.gaborOrientations; i++) {
-            M1[i] = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
-            M2[i] = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
+            for (int f = 0; f < nFrames; f++) {
+                M[i][f] = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
+            }
         }
+        dif = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
     }
 
-    Mat[] M2;
-    Mat[] M1;
+    Mat[][] M;
+    int Δd = 1;
+    int nFrames = 3;
+    Mat dif;
     //numSync sync=new numSync(4);
 
     @Override
     public void init() {
         SimpleLogger.log(this, "SMALL NODE ReichardtMotion");
     }
+    numSync sync = new numSync(4);
 
     @Override
     public void receive(int nodeID, byte[] data) {
@@ -54,20 +60,13 @@ public class ReichardtMotion extends Activity {
             if (spike.getModality() == Modalities.VISUAL) {
                 //obtiene el primer valor del arreglo
                 int index = l.getValues()[0];
-                M2[index] = M1[index];
-                M1[index] = V1Bank.SC[0][1][0].Even[index].mat.clone();
-                Mat or = V1Bank.SC[0][0][0].Even[index].mat.clone();
-                //Imgproc.blur(M2[index], M2[index], new Size(3, 3));
-                //Imgproc.blur(or, or, new Size(3, 3));
-                //Core.pow(or, 2, or);
-                //Core.pow(M2[index], 2, M2[index]);
-                Mat mul = new Mat();
-               // mul=Functions.energyProcess(or, M2[index]);
-                Core.multiply(or, M2[index], mul);
+                sync.addReceived(index);
                 
-                //Core.pow(mul, 2, mul);
-                //Imgproc.threshold(mul, mul, 0.1, 1, Imgproc.THRESH_BINARY);
-                Visualizer.setImage(Convertor.Mat2Img(mul), "basic motion 2", 28+index);
+                for (int i = 1; i < nFrames; i++) {
+                    M[index][i] = displaceKernel(M[index][i - 1], index * (float) (Math.PI / Config.gaborOrientations), Config.displace);
+                }
+                M[index][0] = V1Bank.SC[0][0][0].Even[index].mat.clone();
+                Visualizer.setImage(Convertor.Mat2Img(MatrixUtils.multiply(M[index])), "basic motion 2", 28 + index);
             }
 
         } catch (Exception ex) {

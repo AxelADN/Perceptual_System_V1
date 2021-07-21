@@ -7,8 +7,10 @@ package utils;
 
 import VisualMemory.Cell;
 import java.util.ArrayList;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 
 /**
  *
@@ -72,6 +74,16 @@ public class MatrixUtils {
             }
         }
         return max;
+    }
+    
+    public static Mat multiply(Mat [] mat){
+        Mat mul=Mat.zeros(mat[0].width(), mat[0].height(), CvType.CV_32FC1);
+        Core.add(mul, new Scalar(1), mul);
+        Core.multiply(mul, mat[0], mul);
+        for(int i=1;i<mat.length;i++){
+            Core.multiply(mul, mat[i], mul);
+        }
+        return mul;
     }
 
 }
