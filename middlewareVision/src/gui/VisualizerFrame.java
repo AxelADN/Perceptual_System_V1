@@ -40,13 +40,15 @@ public class VisualizerFrame extends javax.swing.JFrame {
      * Creates new form Visualizer
      */
     public VisualizerFrame(int nFields) {
-
+        loadNimbus();
         initComponents();
         layoutManager.initLayout();
         previous.setLocation(previous.getWidth(), this.getHeight() - previous.getWidth());
         next.setLocation(this.getWidth() - next.getWidth(), this.getHeight() - next.getWidth());
-        this.setSize(Config.width * 8, Config.heigth * 4 + 70);
-        this.setLocation(Config.width, 0);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setSize((int)(screenSize.width*0.75), screenSize.height-30);
+        //this.setSize(Config.width * 8, Config.heigth * 4 + 70);
+        this.setLocation((int)(screenSize.width*0.24), 0);
         jPanel1.setPreferredSize(new Dimension(this.getSize()));
         labels = new JLabel[nFields];
         strings = new String[nFields];
@@ -63,6 +65,25 @@ public class VisualizerFrame extends javax.swing.JFrame {
         }
         repaint();
         this.setVisible(true);
+    }
+    
+    void loadNimbus() {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(GUITest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(GUITest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(GUITest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(GUITest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }
 
     public void setImage(BufferedImage image, String title, int index) {

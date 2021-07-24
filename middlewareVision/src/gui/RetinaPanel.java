@@ -28,6 +28,7 @@ import javax.swing.Timer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import middlewareVision.nodes.Visual.Retina.RetinaProccess;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -69,7 +70,10 @@ public class RetinaPanel extends javax.swing.JPanel {
     /**
      * Creates new form RetinaPanel
      */
-    public RetinaPanel() {
+    RetinaProccess rp;
+
+    public RetinaPanel(RetinaProccess rp2) {
+        rp = rp2;
         initComponents();
 
         if (Config.option == Config.CLICK) {
@@ -84,9 +88,10 @@ public class RetinaPanel extends javax.swing.JPanel {
         //jPanel1.setLayout(null);
 
         jTree1.setForeground(new java.awt.Color(204, 204, 255));
-        createImage(1);
+
         updateTree();
         renderTree();
+        createImage(1);
     }
 
     void renderTree() {
@@ -144,6 +149,9 @@ public class RetinaPanel extends javax.swing.JPanel {
 
     public void setImage(BufferedImage image) {
         jLabel1.setIcon(new ImageIcon(image));
+
+        rp.setImage(image);
+
         if (stereo) {
             jLabel2.setIcon(new ImageIcon(image));
         }
@@ -295,7 +303,7 @@ public class RetinaPanel extends javax.swing.JPanel {
         BoxLayout layout2 = new BoxLayout(jPanel1, BoxLayout.X_AXIS);
         jLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
         jPanel1.setSize(Config.width * 2, Config.heigth);
-        jPanel1.setBackground(new Color(10,10,10));
+        jPanel1.setBackground(new Color(10, 10, 10));
         jPanel1.setLayout(layout2);
         jPanel1.add(jLabel1);
         jPanel1.add(jLabel2);
@@ -376,7 +384,7 @@ public class RetinaPanel extends javax.swing.JPanel {
         count = timeline.getValue();
         createImage(0);
     }
-    boolean play = false;
+    public boolean play = false;
 
     // Variables declaration - do not modify                     
     private javax.swing.JButton jButton2;

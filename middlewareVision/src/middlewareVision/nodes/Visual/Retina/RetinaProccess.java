@@ -7,6 +7,7 @@ package middlewareVision.nodes.Visual.Retina;
 
 import gui.Controls;
 import gui.Frame;
+import gui.GUI;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.IOException;
@@ -14,6 +15,9 @@ import java.util.LinkedList;
 import middlewareVision.config.AreaNames;
 import gui.GUIActivity;
 import gui.Visualizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import kmiddle2.nodes.activities.Activity;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -33,7 +37,7 @@ import utils.LongSpike;
  *
  * @author Luis Humanoide D Madrigal
  */
-public class RetinaProccess extends GUIActivity<RetinaFrame> {
+public class RetinaProccess extends Activity {
 
     /**
      * *************************************************************************
@@ -104,18 +108,31 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
      * CONSTRUCTOR Y METODOS PARA RECIBIR
      * *************************************************************************
      */
+    GUI gui;
+
     public RetinaProccess() {
 
         this.ID = AreaNames.RetinaProccess;
         this.namer = AreaNames.class;
 
-        frame = new RetinaFrame(this, 0);
         //frame.setSize(Config.width, Config.heigth+50);
-
         initFrames(3, 1);
         Controls.setRet(this);
-        startFrame();
+        gui = new GUI(this);
+        gui.setVisible(true);
+        thread.start();
     }
+
+    Thread thread = new Thread() {
+        public void run() {
+            gui.ret.createImage(0);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    };
 
     @Override
     public void receive(int nodeID, byte[] data) {
@@ -129,16 +146,7 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
     @Override
     public void init() {
         //SimpleLogger.log(this, "SOY LA RETINA");
-        if (Config.option == Config.CAMERA) {
-            capture();
-        }
-        if (Config.option == Config.CLICK) {
-            try {
-                setImage(0);
-            } catch (IOException ex) {
-                //Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+
     }
 
     /**
@@ -146,31 +154,6 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
      * METODOS
      * ************************************************************************
      */
-    private void capture() {
-        VideoCapture videoDevice = new VideoCapture();
-        Mat src = new Mat();
-
-        int c = 0;
-
-        try {
-            videoDevice.open(0);
-            while (true) {
-
-                videoDevice.read(src);
-                cvtColor(src, src, COLOR_BGR2GRAY);
-                Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
-                frame.setImage(Convertor.Mat2Img2(src));
-
-                LongSpike spike = new LongSpike(Modalities.VISUAL, ID, Convertor.matToBytes(src), 0);
-                send(AreaNames.V1, spike.getByteArray());
-
-                Thread.sleep(500);
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
     public Mat src;
     BufferedImage img;
 
@@ -179,34 +162,23 @@ public class RetinaProccess extends GUIActivity<RetinaFrame> {
      *
      * @throws IOException
      */
-    public void setImage(int c) throws IOException {
-        // BufferedImage img=null;
-        if (c == 0) {
-            img = frame.createImage();
-        }
-        src = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
-        src = Convertor.bufferedImageToMat(img);
-        src.convertTo(src, -1, Config.contr, Config.bright);
-        //cvtColor(src, src, COLOR_BGR2GRAY);
-        Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
-        BufferedImage img2 = Convertor.Mat2Img2(src);
+    public void setImage(BufferedImage img2) {
 
-        frame.setImage(img2);
-
-        /*
-        do the transductions
-         */
         Mat transMat[] = transduction(img2);
         Visualizer.setImage(Convertor.Mat2Img(transMat[0]), "LMM", 0);
         Visualizer.setImage(Convertor.Mat2Img(transMat[1]), "SMLPM", 1);
         Visualizer.setImage(Convertor.Mat2Img(transMat[2]), "LPM", 2);
 
-        if (c == 0 || c == 2) {
-            for (int i = 0; i < transMat.length; i++) {
-                LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i, 1), Convertor.MatToMatrix(transMat[i]), 0);
+        for (int i = 0; i < 3; i++) {
+            LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i, 1), Convertor.MatToMatrix(transMat[i]), 0);
+            try {
                 send(AreaNames.LGN, spike.getByteArray());
-                send(AreaNames.BasicMotion,spike.getByteArray());
+                send(AreaNames.BasicMotion, spike.getByteArray());
+            } catch (IOException ex) {
+                System.out.println(ex);
+                Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         }
 
     }

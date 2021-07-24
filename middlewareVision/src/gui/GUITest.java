@@ -27,7 +27,7 @@ public class GUITest extends javax.swing.JFrame {
         this.setSize(screenSize.width/4, screenSize.height-30);
         JPanel jp1=new JPanel();
         JPanel jp2=new JPanel();
-        ret=new RetinaPanel();       
+        ret=new RetinaPanel(null);       
         ret.setVisible(true);
         TabbedPanel.setBounds(0,0,200,200);  
         TabbedPanel.add("panel1",ret);
@@ -65,6 +65,7 @@ public class GUITest extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

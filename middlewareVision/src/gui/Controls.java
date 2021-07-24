@@ -9,7 +9,6 @@ import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import middlewareVision.nodes.Visual.Retina.RetinaFrame;
 import middlewareVision.nodes.Visual.Retina.RetinaProccess;
 import utils.Config;
 import utils.Convertor;
@@ -27,7 +26,6 @@ public class Controls extends javax.swing.JFrame {
      */
     static String name;
     static String nameSave;
-    RetinaFrame frame;
     static String folder = "savedMaps";
     static RetinaProccess ret;
 
@@ -46,9 +44,6 @@ public class Controls extends javax.swing.JFrame {
         nameLabel.setText(name);
     }
 
-    public void setRetinaFrame(RetinaFrame frame) {
-        this.frame = frame;
-    }
 
     public static RetinaProccess getRet() {
         return ret;
@@ -233,55 +228,26 @@ public class Controls extends javax.swing.JFrame {
 
     private void jSlider1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider1MouseDragged
         // TODO add your handling code here:
-        double value = (double) (jSlider1.getValue() - 50)*2;
-        Config.bright = value;
-        try {
-            ret.setImage(1);
-        } catch (IOException ex) {
-            Logger.getLogger(Controls.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
 
     }//GEN-LAST:event_jSlider1MouseDragged
 
     private void jSlider2MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider2MouseDragged
         // TODO add your handling code here:
-        double value = (double) (jSlider2.getValue()) / 20;
-        Config.contr = value;
-        try {
-            ret.setImage(1);
-        } catch (IOException ex) {
-            Logger.getLogger(Controls.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }//GEN-LAST:event_jSlider2MouseDragged
 
     private void jSlider1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider1MouseReleased
-        try {
-            // TODO add your handling code here:
-            ret.setImage(2);
-        } catch (IOException ex) {
-            Logger.getLogger(Controls.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }//GEN-LAST:event_jSlider1MouseReleased
 
     private void jSlider2MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider2MouseReleased
-        try {
-            // TODO add your handling code here:
-            ret.setImage(2);
-        } catch (IOException ex) {
-            Logger.getLogger(Controls.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }//GEN-LAST:event_jSlider2MouseReleased
 
     private void jSlider3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider3MouseReleased
         // TODO add your handling code here:
-        double value=(double) (jSlider3.getValue()) / 100;
-        Config.endstop=value;
-        try {
-            // TODO add your handling code here:
-            ret.setImage(2);
-        } catch (IOException ex) {
-            Logger.getLogger(Controls.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
     }//GEN-LAST:event_jSlider3MouseReleased
 
     private void jSlider4MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider4MouseDragged
