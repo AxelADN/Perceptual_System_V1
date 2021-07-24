@@ -14,21 +14,20 @@ import org.opencv.core.Core;
  *
  * @author Laptop
  */
-public class GUI extends javax.swing.JFrame {
+public class GUITest extends javax.swing.JFrame {
 
     /**
      * Creates new form GUI
      */
     RetinaPanel ret;
-    public GUI() {
+    public GUITest() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         initComponents();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(screenSize.width/4, screenSize.height-30);
         JPanel jp1=new JPanel();
         JPanel jp2=new JPanel();
-        ret=new RetinaPanel();
-        
+        ret=new RetinaPanel();       
         ret.setVisible(true);
         TabbedPanel.setBounds(0,0,200,200);  
         TabbedPanel.add("panel1",ret);
@@ -80,20 +79,21 @@ public class GUI extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUITest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUITest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUITest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUITest.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GUI().setVisible(true);
+                new GUITest().setVisible(true);
             }
         });
     }
