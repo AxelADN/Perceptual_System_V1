@@ -10,11 +10,14 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -23,11 +26,14 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import mapOpener.AmapViewer;
 import middlewareVision.nodes.Visual.Retina.RetinaProccess;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -52,6 +58,7 @@ public class RetinaPanel extends javax.swing.JPanel {
     boolean stereo = false;
     private DefaultMutableTreeNode root;
     private DefaultTreeModel treeModel;
+
     Timer timer = new Timer(10, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             // Aquí el código que queramos ejecutar.
@@ -62,8 +69,6 @@ public class RetinaPanel extends javax.swing.JPanel {
                     c = 0;
                 }
             }
-            //Logger.getLogger(RetinaFrame.class.getName()).log(Level.SEVERE, null, ex);
-
         }
     });
 
@@ -71,6 +76,7 @@ public class RetinaPanel extends javax.swing.JPanel {
      * Creates new form RetinaPanel
      */
     RetinaProccess rp;
+    String filename = "";
 
     public RetinaPanel(RetinaProccess rp2) {
         rp = rp2;
@@ -88,10 +94,65 @@ public class RetinaPanel extends javax.swing.JPanel {
         //jPanel1.setLayout(null);
 
         jTree1.setForeground(new java.awt.Color(204, 204, 255));
-
+        modifyLabel();
         updateTree();
         renderTree();
         createImage(1);
+    }
+
+    public void modifyLabel() {
+        TransferHandler th = new TransferHandler() {
+
+            @Override
+            public boolean canImport(JComponent comp, DataFlavor[] transferFlavors) {
+                return true;
+            }
+
+            @Override
+            public boolean importData(JComponent comp, Transferable t) {
+                try {
+                    List<File> files = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+                    if (files.size() == 1) {
+                        File f = files.get(0);
+                        setImage(getImage(f));
+                        filename = f.toString();
+
+                    }
+                } catch (Exception e) {
+                }
+                return true;
+            }
+
+        };
+        jLabel1.setTransferHandler(th);
+    }
+
+    boolean timelineEnabled = true;
+
+    void enableTimeline(boolean flag) {
+        timeline.setEnabled(flag);
+        jButton2.setEnabled(flag);
+        playButton.setEnabled(flag);
+        jButton3.setEnabled(flag);
+        timelineEnabled = flag;
+    }
+
+    public BufferedImage getImage(File f) {
+        BufferedImage img2 = null;
+        try {
+            BufferedImage m;
+            m = ImageIO.read(f);
+            Mat src = utils.Convertor.bufferedImageToMat(m);
+            Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
+            img2 = utils.Convertor.Mat2Img2(src);
+            enableTimeline(false);
+            play=false;
+            playButton.setText("▶");
+            
+        } catch (IOException ex) {
+            Logger.getLogger(AmapViewer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return img2;
     }
 
     void renderTree() {
@@ -329,11 +390,13 @@ public class RetinaPanel extends javax.swing.JPanel {
         this.add(Box.createRigidArea(new Dimension(15, 30)));
         jLabel3.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(jLabel3);
+        this.add(Box.createRigidArea(new Dimension(15, 10)));
         this.add(jSlider1);
 
         this.add(Box.createRigidArea(new Dimension(15, 30)));
         jLabel4.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(jLabel4);
+        this.add(Box.createRigidArea(new Dimension(15, 10)));
         JPanel pTree = new JPanel();
         jTree1.setAlignmentX(Component.LEFT_ALIGNMENT);
         pTree.add(jTree1);
@@ -377,12 +440,15 @@ public class RetinaPanel extends javax.swing.JPanel {
         folder = evt.getPath().getLastPathComponent().toString();
         count = -1;
         createImage(1);
+        enableTimeline(true);
     }
 
     private void timelineMouseDragged(java.awt.event.MouseEvent evt) {
         // TODO add your handling code here:
-        count = timeline.getValue();
-        createImage(0);
+        if (timelineEnabled) {
+            count = timeline.getValue();
+            createImage(0);
+        }
     }
     public boolean play = false;
 

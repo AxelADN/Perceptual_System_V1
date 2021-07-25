@@ -8,14 +8,22 @@ package mapOpener;
 import generator.visualizerTest;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 import matrix.matrix;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+import utils.Config;
 import utils.FileUtils;
 import static utils.FileUtils.ReadObjectFromFile;
 
@@ -33,8 +41,8 @@ public class AmapViewer extends javax.swing.JFrame {
         modifyLabel();
         visualizerTest vis = new visualizerTest();
     }
-    
-    String filename="";
+
+    String filename = "";
 
     public void modifyLabel() {
         TransferHandler th = new TransferHandler() {
@@ -51,7 +59,7 @@ public class AmapViewer extends javax.swing.JFrame {
                     if (files.size() == 1) {
                         File f = files.get(0);
                         showImage(f);
-                        filename=f.toString();
+                        filename = f.toString();
 
                     }
                 } catch (Exception e) {
@@ -62,11 +70,18 @@ public class AmapViewer extends javax.swing.JFrame {
         };
         jLabel1.setTransferHandler(th);
     }
-    
-    public void showImage(File f){
-        matrix m=(matrix)FileUtils.ReadObjectFromFile(f.toString());
-        Mat mat=Convertor.matrixToMat(m);
-        jLabel1.setIcon(new ImageIcon(Convertor.ConvertMat2Image(mat), "image"));
+
+    public void showImage(File f) {
+        BufferedImage m;
+        try {
+            m = ImageIO.read(f);
+            Mat src=utils.Convertor.bufferedImageToMat(m);
+            Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
+            BufferedImage img2 = utils.Convertor.Mat2Img2(src);
+            jLabel1.setIcon(new ImageIcon(img2, "image"));
+        } catch (IOException ex) {
+            Logger.getLogger(AmapViewer.class.getName()).log(Level.SEVERE, null, ex);
+        }       
     }
 
     /**
