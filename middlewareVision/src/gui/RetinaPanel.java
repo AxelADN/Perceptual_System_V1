@@ -14,6 +14,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,8 +28,11 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.Timer;
 import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -146,9 +151,9 @@ public class RetinaPanel extends javax.swing.JPanel {
             Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
             img2 = utils.Convertor.Mat2Img2(src);
             enableTimeline(false);
-            play=false;
+            play = false;
             playButton.setText("▶");
-            
+
         } catch (IOException ex) {
             Logger.getLogger(AmapViewer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -210,12 +215,10 @@ public class RetinaPanel extends javax.swing.JPanel {
 
     public void setImage(BufferedImage image) {
         jLabel1.setIcon(new ImageIcon(image));
-
-        rp.setImage(image);
-
         if (stereo) {
             jLabel2.setIcon(new ImageIcon(image));
         }
+        rp.setImage(image);      
         repaint();
     }
     public Mat src;
@@ -235,12 +238,11 @@ public class RetinaPanel extends javax.swing.JPanel {
             src = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
             src = Convertor.bufferedImageToMat(img);
             src.convertTo(src, -1, Config.contr, Config.bright);
-            //cvtColor(src, src, COLOR_BGR2GRAY);
             Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
             BufferedImage img2 = Convertor.Mat2Img2(src);
             setImage(img2);
         } catch (Exception ex) {
-            //Logger.getLogger(RetinaPanel.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RetinaPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -274,7 +276,7 @@ public class RetinaPanel extends javax.swing.JPanel {
             timeline.setValue((count) % size);
 
         }
-//        Controls.setImageName(imageName + "");
+        
         return imageName;
     }
 
@@ -309,14 +311,14 @@ public class RetinaPanel extends javax.swing.JPanel {
             }
         });
 
-        jButton2.setText(">");
+        jButton2.setText("→");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
 
-        jButton3.setText("<");
+        jButton3.setText("←");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -352,7 +354,7 @@ public class RetinaPanel extends javax.swing.JPanel {
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Image folders");
 
-        timeline.setBackground(new java.awt.Color(23, 23, 23));
+        timeline.setBackground(new java.awt.Color(20, 20, 20));
         timeline.setValue(0);
         timeline.setMinimum(0);
         timeline.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -360,55 +362,88 @@ public class RetinaPanel extends javax.swing.JPanel {
                 timelineMouseDragged(evt);
             }
         });
+        timeline.setBackground(new Color(102, 153, 153));
+        jButton2.setBackground(new Color(102, 153, 153));
+        jButton3.setBackground(jButton2.getBackground());
+        playButton.setBackground(new Color(153, 204, 255));
+
         BoxLayout layout1 = new BoxLayout(this, BoxLayout.Y_AXIS);
-        BoxLayout layout2 = new BoxLayout(jPanel1, BoxLayout.X_AXIS);
+
         jLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
-        jPanel1.setSize(Config.width * 2, Config.heigth);
-        jPanel1.setBackground(new Color(10, 10, 10));
-        jPanel1.setLayout(layout2);
+
+        jPanel1.setBackground(new Color(20, 20, 20));
+        jPanel1.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         jPanel1.add(jLabel1);
         jPanel1.add(jLabel2);
         this.setLayout(layout1);
         this.add(jPanel1);
         this.add(timeline);
-        Container bPanel = new Container();
-        BoxLayout layout3 = new BoxLayout(bPanel, BoxLayout.X_AXIS);
+        JPanel bPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        bPanel.setBackground(new Color(40, 40, 40));
+        
         jButton3.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         jButton2.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        bPanel.setLayout(layout3);
         bPanel.add(jButton3);
-        bPanel.add(Box.createRigidArea(new Dimension(15, 0)));
+        bPanel.add(Box.createRigidArea(new Dimension(30, 0)));
         bPanel.add(playButton);
-        bPanel.add(Box.createRigidArea(new Dimension(15, 0)));
+        bPanel.add(Box.createRigidArea(new Dimension(30, 0)));
         bPanel.add(jButton2);
 
         this.add(bPanel);
+        check3d = new JCheckBox("Stereo", false);
+        check3d.setForeground(Color.white);
+        check3d.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        check3d.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                itemChanged();
+            }
+        });
+        
+        this.add(Box.createRigidArea(new Dimension(15, 15)));
+        this.add(check3d);
         this.add(Box.createRigidArea(new Dimension(15, 30)));
         jLabel3.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         this.add(jLabel3);
         this.add(Box.createRigidArea(new Dimension(15, 10)));
         this.add(jSlider1);
 
         this.add(Box.createRigidArea(new Dimension(15, 30)));
         jLabel4.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.add(jLabel4);
         this.add(Box.createRigidArea(new Dimension(15, 10)));
         JPanel pTree = new JPanel();
         jTree1.setAlignmentX(Component.LEFT_ALIGNMENT);
         pTree.add(jTree1);
         pTree.add(Box.createRigidArea(new Dimension(15, 30)));
-        jTree1.setBackground(new Color(150, 150, 150));
+        jTree1.setBackground(new Color(120, 120, 120));
+        JScrollPane scroll = new JScrollPane(jTree1);
         pTree.setBackground(jTree1.getBackground());
-
-        this.add(pTree);
-        this.add(Box.createRigidArea(new Dimension(15, 200)));
+        controls=new ControlsPanel();
+        tabbed=new JTabbedPane();
+        tabbed.add("Folders",scroll);
+        tabbed.add("Controls",controls);
+        this.add(tabbed);
+        this.add(Box.createRigidArea(new Dimension(15, 50)));
 
     }// </editor-fold>                        
 
+    /**
+     * if stereo3d check change
+     */
+    public void itemChanged(){
+        if(check3d.isSelected()){
+            stereo=true;          
+        }
+        else{
+             stereo=false;
+             jLabel2.setIcon(null);
+        }
+        createImage(0);
+    }
+    
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
         if (play) {
@@ -452,6 +487,7 @@ public class RetinaPanel extends javax.swing.JPanel {
     }
     public boolean play = false;
 
+    ControlsPanel controls;
     // Variables declaration - do not modify                     
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -461,9 +497,11 @@ public class RetinaPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    JCheckBox check3d;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JTree jTree1;
     private javax.swing.JButton playButton;
     private javax.swing.JSlider timeline;
+    JTabbedPane tabbed;
     // End of variables declaration                   
 }

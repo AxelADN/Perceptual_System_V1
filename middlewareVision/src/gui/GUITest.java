@@ -20,6 +20,7 @@ public class GUITest extends javax.swing.JFrame {
      * Creates new form GUI
      */
     RetinaPanel ret;
+    ControlsPanel controls;
     public GUITest() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         initComponents();
@@ -27,11 +28,13 @@ public class GUITest extends javax.swing.JFrame {
         this.setSize(screenSize.width/4, screenSize.height-30);
         JPanel jp1=new JPanel();
         JPanel jp2=new JPanel();
-        ret=new RetinaPanel(null);       
+        ret=new RetinaPanel(null);
+        controls=new ControlsPanel();
         ret.setVisible(true);
+        controls.setVisible(true);
         TabbedPanel.setBounds(0,0,200,200);  
-        TabbedPanel.add("panel1",ret);
-        TabbedPanel.add("panel2",jp2);
+        TabbedPanel.add("Image ",ret);
+        TabbedPanel.add("Controls ",controls);
         
     }
 

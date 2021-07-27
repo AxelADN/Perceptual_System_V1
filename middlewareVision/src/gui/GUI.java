@@ -21,7 +21,7 @@ public class GUI extends javax.swing.JFrame {
      * Creates new form GUI
      */
     public RetinaPanel ret;
-
+    ControlsPanel controls;
     public GUI(RetinaProccess rp) {
         //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         loadNimbus();
@@ -31,10 +31,12 @@ public class GUI extends javax.swing.JFrame {
         JPanel jp1 = new JPanel();
         JPanel jp2 = new JPanel();
         ret = new RetinaPanel(rp);
+        controls=new ControlsPanel();
         ret.setVisible(true);
+        controls.setVisible(true);
         TabbedPanel.setBounds(0, 0, 200, 200);
-        TabbedPanel.add("panel1", ret);
-        TabbedPanel.add("panel2", jp2);
+        TabbedPanel.add("Image", ret);
+        //TabbedPanel.add("panel2", controls);
 
     }
 

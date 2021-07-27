@@ -48,8 +48,8 @@ public class Init extends Igniter {
         configuration.setEntityID(ENTITY_ID);
         InitCellMemory.initCellMemory();
         V4Memory.initV1Map();
-        Controls cc=new Controls();
-        cc.setVisible(true);
+        //Controls cc=new Controls();
+        //cc.setVisible(true);
         Visualizer.initVisualizer(50);
         setAreas(areaNames);
         run();

@@ -117,7 +117,7 @@ public class RetinaProccess extends Activity {
 
         //frame.setSize(Config.width, Config.heigth+50);
         initFrames(3, 1);
-        Controls.setRet(this);
+//        Controls.setRet(this);
         gui = new GUI(this);
         gui.setVisible(true);
         thread.start();
@@ -175,8 +175,8 @@ public class RetinaProccess extends Activity {
                 send(AreaNames.LGN, spike.getByteArray());
                 send(AreaNames.BasicMotion, spike.getByteArray());
             } catch (IOException ex) {
-                System.out.println(ex);
-                Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
+                //System.out.println(ex);
+                //Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
