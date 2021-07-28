@@ -40,13 +40,14 @@ public class Config {
     /**
      * Paths for the image showed in the GUI
      */
+    /*
     public static String lastPath = FileUtils.readFile(new File("lastPath.du"));
     public static String lastImage = FileUtils.readFile(new File("lastImage.du"));
 
     public static void refreshPath() {
         lastPath = FileUtils.readFile(new File("lastPath.du"));
         lastImage = FileUtils.readFile(new File("lastImage.du"));
-    }
+    }*/
     
     /*----------------MODE----------------------*/
     public static final int CAMERA=1;

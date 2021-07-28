@@ -7,7 +7,6 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.datatransfer.DataFlavor;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -257,9 +255,6 @@ public class RetinaPanel extends javax.swing.JPanel {
         if (files != null && files.length > 0) {
             int size = files.length;
             if (move == 1) {
-                /*if (count >= size - 1) {
-                    count = -1;
-                }*/
                 count++;
                 imageName = files[(count) % size];
             }
@@ -274,7 +269,6 @@ public class RetinaPanel extends javax.swing.JPanel {
                 imageName = files[(count) % size];
             }
             timeline.setValue((count) % size);
-
         }
         
         return imageName;
@@ -487,8 +481,7 @@ public class RetinaPanel extends javax.swing.JPanel {
     }
     public boolean play = false;
 
-    ControlsPanel controls;
-    // Variables declaration - do not modify                     
+    ControlsPanel controls;                
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
@@ -503,5 +496,5 @@ public class RetinaPanel extends javax.swing.JPanel {
     private javax.swing.JButton playButton;
     private javax.swing.JSlider timeline;
     JTabbedPane tabbed;
-    // End of variables declaration                   
+    
 }

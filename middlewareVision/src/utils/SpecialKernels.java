@@ -136,7 +136,6 @@ public class SpecialKernels {
         loadList(path + "/" + file + ".txt");
         for (int i = 0; i < Config.gaborOrientations; i++) {
             double angle = (180 / Config.gaborOrientations) * i;
-            System.out.println(angle);
             double rangle = Math.toRadians(angle);
             RF rf1 = RFs.get(0);
             RF rf2 = RFs.get(1);
@@ -211,7 +210,6 @@ public class SpecialKernels {
     static void loadList(String path) {
         clearList();
         String stList = FileUtils.readFile(new File(path));
-        System.out.println(stList);
         String lines[] = stList.split("\\n");
         for (String st : lines) {
             String values[] = st.split(" ");

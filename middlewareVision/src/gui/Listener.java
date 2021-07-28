@@ -30,9 +30,6 @@ public class Listener implements MouseListener{
 
     @Override
     public void mouseEntered(MouseEvent arg0) {
-        // to do .........................
-        //System.out.println(message);
-        //label.setVisible(false);
         frame.methodListener(index);
     }
 

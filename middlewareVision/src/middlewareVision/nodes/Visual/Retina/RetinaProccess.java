@@ -122,9 +122,10 @@ public class RetinaProccess extends Activity {
         gui.setVisible(true);
         thread.start();
     }
-
+    boolean ready = false;
     Thread thread = new Thread() {
         public void run() {
+            ready = true;
             gui.ret.createImage(0);
             try {
                 Thread.sleep(1000);
@@ -168,17 +169,17 @@ public class RetinaProccess extends Activity {
         Visualizer.setImage(Convertor.Mat2Img(transMat[0]), "LMM", 0);
         Visualizer.setImage(Convertor.Mat2Img(transMat[1]), "SMLPM", 1);
         Visualizer.setImage(Convertor.Mat2Img(transMat[2]), "LPM", 2);
+        if (ready) {
+            for (int i = 0; i < 3; i++) {
+                LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i, 1), Convertor.MatToMatrix(transMat[i]), 0);
+                try {
+                    send(AreaNames.LGN, spike.getByteArray());
+                    send(AreaNames.BasicMotion, spike.getByteArray());
+                } catch (IOException ex) {
+                    Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
-        for (int i = 0; i < 3; i++) {
-            LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i, 1), Convertor.MatToMatrix(transMat[i]), 0);
-            try {
-                send(AreaNames.LGN, spike.getByteArray());
-                send(AreaNames.BasicMotion, spike.getByteArray());
-            } catch (IOException ex) {
-                //System.out.println(ex);
-                //Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
 
     }
