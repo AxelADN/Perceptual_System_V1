@@ -33,7 +33,7 @@ public class Convertor {
      * @param mat
      * @return 
      */
-    public static BufferedImage ConvertMat2Image2(Mat mat) {
+    public static BufferedImage Mat2Img2(Mat mat) {
         MatOfByte bytes = new MatOfByte();
         Imgcodecs.imencode(".jpg", mat, bytes);
         byte[] byteArray = bytes.toArray();
@@ -160,7 +160,7 @@ public class Convertor {
      * @param mat
      * @return
      */
-    public static BufferedImage ConvertMat2Image(Mat mat1) {
+    public static BufferedImage Mat2Img(Mat mat1) {
         Mat mat=mat1.clone();
         MatOfByte bytes = new MatOfByte();
         Scalar alpha = new Scalar(255);
