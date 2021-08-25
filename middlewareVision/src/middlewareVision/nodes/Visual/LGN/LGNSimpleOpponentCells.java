@@ -129,7 +129,7 @@ public class LGNSimpleOpponentCells extends Activity {
                 mostrar las imagenes procesadas
                  */
                 for (int i = 0; i < LMSCones.length; i++) {
-                    Visualizer.setImage(Convertor.Mat2Img(LGNBank.SOC[0][0][0].Cells[i].mat), "dkl "+i, indexFrame + i);
+                    Visualizer.setImage(Convertor.Mat2Img(LGNBank.SOC[0][0][0].Cells[i].mat), "dkl "+i, indexFrame*2 + i);
                     //mandar los spikes de salida a las celulas simples y doble oponentes de V1
                     LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i, -1), 0, 0);
                     //send(AreaNames.V1SimpleCells, sendSpike.getByteArray());

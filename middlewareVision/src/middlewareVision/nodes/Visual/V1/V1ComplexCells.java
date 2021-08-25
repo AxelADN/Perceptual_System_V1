@@ -78,7 +78,7 @@ public class V1ComplexCells extends Activity {
                 //send(AreaNames.V1Visualizer, sendSpike3.getByteArray());
                 send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
                 
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][0][0].Cells[index].mat), "energy "+index, index+nFrame);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][0][0].Cells[index].mat), "energy "+index, index+nFrame*2);
                 //send(AreaNames.V1MotionCells,sendSpike2.getByteArray());
                 LongSpike spikeMotion= new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
                 send(AreaNames.ReichardtMotion,spikeMotion.getByteArray());
@@ -89,7 +89,7 @@ public class V1ComplexCells extends Activity {
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
                     send(AreaNames.V1HyperComplex, sendSpike1.getByteArray());
-                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][0][0].Cells[i].mat), "energy "+i, i+nFrame);
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][0][0].Cells[i].mat), "energy "+i, i+nFrame*2);
                 }
             }
 

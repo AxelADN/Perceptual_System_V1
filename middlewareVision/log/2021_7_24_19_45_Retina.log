@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE rootElement>
+<log>
+<record><time><hour>19</hour><minute>45</minute><second>49</second><milisecond>387</milisecond></time><data><ERROR>java.lang.reflect.InvocationTargetException</ERROR></data></record>
+</log>

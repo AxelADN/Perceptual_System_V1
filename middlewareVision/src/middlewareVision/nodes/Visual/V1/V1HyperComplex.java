@@ -81,7 +81,7 @@ public class V1HyperComplex extends Activity {
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
                     send(AreaNames.V2AngularCells, sendSpike1.getByteArray());
                     send(AreaNames.V4Contour, sendSpike1.getByteArray());
-                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][0][0].Cells[0][index].mat), "end stopped " + index, nFrame + index);
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][0][0].Cells[0][index].mat), "end stopped " + index, nFrame*2 + index);
                 }
             }
 

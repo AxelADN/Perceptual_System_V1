@@ -163,12 +163,21 @@ public class RetinaProccess extends Activity {
      *
      * @throws IOException
      */
-    public void setImage(BufferedImage img2) {
+    public void setImage(BufferedImage img, BufferedImage img2) {
 
-        Mat transMat[] = transduction(img2);
-        Visualizer.setImage(Convertor.Mat2Img(transMat[0]), "LMM", 0);
-        Visualizer.setImage(Convertor.Mat2Img(transMat[1]), "SMLPM", 1);
-        Visualizer.setImage(Convertor.Mat2Img(transMat[2]), "LPM", 2);
+        Mat transMat[] = transduction(img);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[0]), "LMM L", 0);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[1]), "SMLPM L", 1);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[2]), "LPM L", 2);
+
+        Mat transMat2[] = transduction(img2);
+        Visualizer.setImage(Convertor.Mat2Img(transMat2[0]), "LMM R", 4);
+        Visualizer.setImage(Convertor.Mat2Img(transMat2[1]), "SMLPM R", 5);
+        Visualizer.setImage(Convertor.Mat2Img(transMat2[2]), "LPM R", 6);
+        Mat diffMat = new Mat();
+        Core.subtract(transMat[2], transMat2[2], diffMat);
+        Visualizer.setImage(Convertor.Mat2Img(diffMat), "stereo diff", 7);
+
         if (ready) {
             for (int i = 0; i < 3; i++) {
                 LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i, 1), Convertor.MatToMatrix(transMat[i]), 0);

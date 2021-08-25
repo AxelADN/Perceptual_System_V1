@@ -61,8 +61,8 @@ public class V1SimpleCellsFilter extends Activity {
                 V1Bank.SC[0][0][0].Even[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[2].mat, index, 0);
                 V1Bank.SC[0][0][0].Odd[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[2].mat, index, 1);           
 
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Even[index].mat), "even " + index, index + nFrame);
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Odd[index].mat), "odd " + index, index + nFrame + 4);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Even[index].mat), "even " + index, index + nFrame*2);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Odd[index].mat), "odd " + index, index + nFrame*2 + 4*2);
 
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
                 send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());

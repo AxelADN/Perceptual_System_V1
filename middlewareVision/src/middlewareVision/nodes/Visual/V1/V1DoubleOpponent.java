@@ -101,7 +101,7 @@ public class V1DoubleOpponent extends Activity {
                         LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i,1), 0, 0);
                         send(AreaNames.V4Color, sendSpike.getByteArray());
                         send(AreaNames.V1SimpleCells, sendSpike.getByteArray());
-                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.DOC[0][0][0].Cells[i].mat), "dkl'", indexFrame+i);
+                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.DOC[0][0][0].Cells[i].mat), "dkl'", indexFrame*2+i);
                 }
             }
 

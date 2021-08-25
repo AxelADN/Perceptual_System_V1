@@ -38,8 +38,10 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import mapOpener.AmapViewer;
 import middlewareVision.nodes.Visual.Retina.RetinaProccess;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import utils.Config;
@@ -55,6 +57,8 @@ public class RetinaPanel extends javax.swing.JPanel {
     int index;
     String folder;
     String route = "images/";
+    String rightKeyword = "Stream Right_";
+    String leftKeyword = "Stream Left_";
     BufferedImage img;
     int rate = 3;
     int c = 0;
@@ -117,7 +121,7 @@ public class RetinaPanel extends javax.swing.JPanel {
                     List<File> files = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
                     if (files.size() == 1) {
                         File f = files.get(0);
-                        setImage(getImage(f));
+                        setImage(getImage(f), null);
                         filename = f.toString();
 
                     }
@@ -211,15 +215,22 @@ public class RetinaPanel extends javax.swing.JPanel {
         this.index = index;
     }
 
-    public void setImage(BufferedImage image) {
+    public void setImage(BufferedImage image, BufferedImage image2) {
+        Mat black;
+        black = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
+        Core.add(black, new Scalar(0), black);
+        BufferedImage blackImage = Convertor.Mat2Img(black.clone());
         jLabel1.setIcon(new ImageIcon(image));
         if (stereo) {
-            jLabel2.setIcon(new ImageIcon(image));
+            jLabel2.setIcon(new ImageIcon(image2));
+            rp.setImage(image, image2);
         }
-        rp.setImage(image);      
+        if (!stereo) {
+            rp.setImage(image, blackImage);
+        }
+        //rp.setImage(image, image2);
         repaint();
     }
-    public Mat src;
 
     /**
      * put the image on the retina
@@ -228,29 +239,46 @@ public class RetinaPanel extends javax.swing.JPanel {
      * @throws IOException
      */
     public void createImage(int move) {
-        String path = getImageName(folder, move);
-        File file = new File(path);
-        BufferedImage img;
+        Mat srcL;
+        Mat srcR;
+        String pathL = getImageName(folder, move);
+        String pathR = pathL.replace(leftKeyword, rightKeyword);
+        File fileL = new File(pathL);
+        File fileR = new File(pathR);
+        BufferedImage imgL;
+        BufferedImage imgR;
         try {
-            img = ImageIO.read(file);
-            src = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
-            src = Convertor.bufferedImageToMat(img);
-            src.convertTo(src, -1, Config.contr, Config.bright);
-            Imgproc.resize(src, src, new Size(Config.width, Config.heigth));
-            BufferedImage img2 = Convertor.Mat2Img2(src);
-            setImage(img2);
+            imgL = ImageIO.read(fileL);
+            imgR = ImageIO.read(fileR);
+            srcL = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
+            srcR = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
+            srcL = Convertor.bufferedImageToMat(imgL);
+            srcR = Convertor.bufferedImageToMat(imgR);
+            srcL.convertTo(srcL, -1, Config.contr, Config.bright);
+            srcR.convertTo(srcR, -1, Config.contr, Config.bright);
+            Imgproc.resize(srcL, srcL, new Size(Config.width, Config.heigth));
+            Imgproc.resize(srcR, srcR, new Size(Config.width, Config.heigth));
+            BufferedImage img2L = Convertor.Mat2Img2(srcL);
+            BufferedImage img2R = Convertor.Mat2Img2(srcR);
+            setImage(img2L, img2R);
         } catch (Exception ex) {
             Logger.getLogger(RetinaPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     int count = -1;
+    String lastFolder = "";
+    String[] files2;
+    String files[];
 
     String getImageName(String folder, int move) {
-
         String path = folder + "/";
         String imageName = "";
-        String[] files = FileUtils.getFiles(path);
+        if (!folder.equals(lastFolder)) {
+            files2 = FileUtils.getFiles(path);
+            files = leftImages(files2);
+        }
+        lastFolder = folder;
         timeline.setMaximum(files.length - 1);
         if (files != null && files.length > 0) {
             int size = files.length;
@@ -270,8 +298,39 @@ public class RetinaPanel extends javax.swing.JPanel {
             }
             timeline.setValue((count) % size);
         }
-        
+
         return imageName;
+    }
+
+    String[] leftImages(String[] list) {
+        String newList[];
+        boolean isStereo = false;
+        for (String name : list) {
+            if (name.contains(leftKeyword)) {
+                isStereo = true;
+                stereo = true;
+                check3d.setSelected(true);
+                break;
+            }
+        }
+        if (isStereo) {
+            int j = 0;
+            newList = new String[list.length / 2];
+            for (int i = 0; i < list.length; i++) {
+                if (list[i].contains(leftKeyword)) {
+                    newList[j] = list[i];
+                    j++;
+                }
+            }
+            return newList;
+        }
+        if (!isStereo) {
+            stereo = false;
+            check3d.setSelected(false);
+            jLabel2.setIcon(null);
+            return newList = list;
+        }
+        return null;
     }
 
     /**
@@ -374,7 +433,7 @@ public class RetinaPanel extends javax.swing.JPanel {
         this.add(timeline);
         JPanel bPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         bPanel.setBackground(new Color(40, 40, 40));
-        
+
         jButton3.setAlignmentX(Component.CENTER_ALIGNMENT);
         jButton2.setAlignmentX(Component.CENTER_ALIGNMENT);
         playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -389,13 +448,13 @@ public class RetinaPanel extends javax.swing.JPanel {
         check3d = new JCheckBox("Stereo", false);
         check3d.setForeground(Color.white);
         check3d.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
         check3d.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 itemChanged();
             }
         });
-        
+
         this.add(Box.createRigidArea(new Dimension(15, 15)));
         this.add(check3d);
         this.add(Box.createRigidArea(new Dimension(15, 30)));
@@ -415,10 +474,10 @@ public class RetinaPanel extends javax.swing.JPanel {
         jTree1.setBackground(new Color(120, 120, 120));
         JScrollPane scroll = new JScrollPane(jTree1);
         pTree.setBackground(jTree1.getBackground());
-        controls=new ControlsPanel();
-        tabbed=new JTabbedPane();
-        tabbed.add("Folders",scroll);
-        tabbed.add("Controls",controls);
+        controls = new ControlsPanel();
+        tabbed = new JTabbedPane();
+        tabbed.add("Folders", scroll);
+        tabbed.add("Controls", controls);
         this.add(tabbed);
         this.add(Box.createRigidArea(new Dimension(15, 50)));
 
@@ -427,17 +486,16 @@ public class RetinaPanel extends javax.swing.JPanel {
     /**
      * if stereo3d check change
      */
-    public void itemChanged(){
-        if(check3d.isSelected()){
-            stereo=true;          
-        }
-        else{
-             stereo=false;
-             jLabel2.setIcon(null);
+    public void itemChanged() {
+        if (check3d.isSelected()) {
+            stereo = true;
+        } else {
+            stereo = false;
+            jLabel2.setIcon(null);
         }
         createImage(0);
     }
-    
+
     private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
         if (play) {
@@ -481,7 +539,7 @@ public class RetinaPanel extends javax.swing.JPanel {
     }
     public boolean play = false;
 
-    ControlsPanel controls;                
+    ControlsPanel controls;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
@@ -496,5 +554,5 @@ public class RetinaPanel extends javax.swing.JPanel {
     private javax.swing.JButton playButton;
     private javax.swing.JSlider timeline;
     JTabbedPane tabbed;
-    
+
 }
