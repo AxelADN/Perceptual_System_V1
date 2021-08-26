@@ -65,24 +65,27 @@ public class LGNSimpleOpponentCells extends Activity {
      * Fin de constantes
      * ************************************************************************
      */
-    
-    Mat LMSCones[];
-    Mat DKL[];
-    int indexFrame=4;
+    Mat LMSConesL[];
+    Mat LMSConesR[];
+    Mat DKL_L[];
+    Mat DKL_R[];
+    int indexFrame = 4;
+
     /*
     ****************************************************************************
     Constructores y metodos para recibir información
     ****************************************************************************
      */
-
     /**
      * Constructor
      */
     public LGNSimpleOpponentCells() {
         this.ID = AreaNames.LGNProcess;
         this.namer = AreaNames.class;
-        LMSCones=new Mat[3];
-        DKL=new Mat[3];
+        LMSConesL = new Mat[3];
+        LMSConesR = new Mat[3];
+        DKL_L = new Mat[3];
+        DKL_R = new Mat[3];
     }
 
     @Override
@@ -94,7 +97,7 @@ public class LGNSimpleOpponentCells extends Activity {
     sincronizador
     recibe 3 matrices
      */
-    numSync sync = new numSync(3);
+    numSync sync = new numSync(6);
 
     /**
      * metodo para recibir
@@ -114,22 +117,33 @@ public class LGNSimpleOpponentCells extends Activity {
                 //obtiene el primer valor del arreglo
                 int index = l.getValues()[0];
                 //convierte el objeto matrix serializable en una matriz de opencv y la asigna al arreglo LMNCones
-                LMSCones[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                if (index < 3) {
+                    LMSConesL[index] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                }
+                if (index >= 3) {
+                    LMSConesR[index - 3] = Convertor.matrixToMat((matrix) spike.getIntensity());
+                }
                 //los indices recibidos se agregan al sincronizador
                 sync.addReceived(index);
             }
             //Si se completa el sincronizador
             if (sync.isComplete()) {
                 //mandar a hacer la transduccion
-                Mat DKL[]=transduction(LMSCones, 0, 0);
-                LGNBank.SOC[0][0][0].Cells[0].mat=DKL[0];
-                LGNBank.SOC[0][0][0].Cells[1].mat=DKL[1];
-                LGNBank.SOC[0][0][0].Cells[2].mat=DKL[2];
+                Mat DKL_L[] = transduction(LMSConesL, 0, 0);
+                LGNBank.SOC[0][0][0].Cells[0].mat = DKL_L[0];
+                LGNBank.SOC[0][0][0].Cells[1].mat = DKL_L[1];
+                LGNBank.SOC[0][0][0].Cells[2].mat = DKL_L[2];
+                
+                Mat DKL_R[] = transduction(LMSConesR, 0, 0);
+                LGNBank.SOC[0][0][1].Cells[0].mat = DKL_R[0];
+                LGNBank.SOC[0][0][1].Cells[1].mat = DKL_R[1];
+                LGNBank.SOC[0][0][1].Cells[2].mat = DKL_R[2];
                 /*
                 mostrar las imagenes procesadas
                  */
-                for (int i = 0; i < LMSCones.length; i++) {
-                    Visualizer.setImage(Convertor.Mat2Img(LGNBank.SOC[0][0][0].Cells[i].mat), "dkl "+i, indexFrame*2 + i);
+                for (int i = 0; i < LMSConesL.length; i++) {
+                    Visualizer.setImage(Convertor.Mat2Img(LGNBank.SOC[0][0][0].Cells[i].mat), "dkl L" + i, 2, i);
+                    Visualizer.setImage(Convertor.Mat2Img(LGNBank.SOC[0][0][1].Cells[i].mat), "dkl R" + i, 3, i);
                     //mandar los spikes de salida a las celulas simples y doble oponentes de V1
                     LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(i, -1), 0, 0);
                     //send(AreaNames.V1SimpleCells, sendSpike.getByteArray());

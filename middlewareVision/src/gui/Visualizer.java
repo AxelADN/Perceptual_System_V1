@@ -8,6 +8,7 @@ package gui;
 import VisualMemory.LGNBank;
 import VisualMemory.V1Bank;
 import java.awt.image.BufferedImage;
+import utils.Config;
 import utils.Convertor;
 
 /**
@@ -24,6 +25,10 @@ public class Visualizer {
 
     public static void setImage(BufferedImage image, String title, int index) {
         vis.setImage(image, title, index);
+    }
+    
+    public static void setImage(BufferedImage image, String title, int col, int row) {
+        vis.setImage(image, title, col*Config.h+row);
     }
 
     public static void next() {

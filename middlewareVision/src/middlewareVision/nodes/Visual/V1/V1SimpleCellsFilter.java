@@ -58,11 +58,18 @@ public class V1SimpleCellsFilter extends Activity {
             if (spike.getModality() == Modalities.VISUAL) {
                 //assign information from LGN to the DKL array matrix
                 int index = l.getValues()[0];
+                //left eye
                 V1Bank.SC[0][0][0].Even[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[2].mat, index, 0);
-                V1Bank.SC[0][0][0].Odd[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[2].mat, index, 1);           
+                V1Bank.SC[0][0][0].Odd[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][0].Cells[2].mat, index, 1); 
+                //right eye
+                V1Bank.SC[0][0][1].Even[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][1].Cells[2].mat, index, 0);
+                V1Bank.SC[0][0][1].Odd[index].mat = Functions.gaborFilter(V1Bank.DOC[0][0][1].Cells[2].mat, index, 1); 
 
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Even[index].mat), "even " + index, index + nFrame*2);
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Odd[index].mat), "odd " + index, index + nFrame*2 + 4*2);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Even[index].mat), "even L" + index, 6, index);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Odd[index].mat), "odd L" + index, 8, index);
+                
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][1].Even[index].mat), "even R" + index, 7, index);
+                Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][1].Odd[index].mat), "odd R" + index, 9, index);
 
                 LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
                 send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());

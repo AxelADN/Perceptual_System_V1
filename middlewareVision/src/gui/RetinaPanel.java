@@ -57,9 +57,10 @@ public class RetinaPanel extends javax.swing.JPanel {
     int index;
     String folder;
     String route = "images/";
-    String rightKeyword = "Stream Right_";
-    String leftKeyword = "Stream Left_";
+    String rightKeyword = "Right";
+    String leftKeyword = "Left";
     BufferedImage img;
+    BufferedImage blackImage;
     int rate = 3;
     int c = 0;
     boolean stereo = false;
@@ -86,7 +87,9 @@ public class RetinaPanel extends javax.swing.JPanel {
     String filename = "";
 
     public RetinaPanel(RetinaProccess rp2) {
+        blackImage=blackImage();
         rp = rp2;
+        
         initComponents();
 
         if (Config.option == Config.CLICK) {
@@ -215,11 +218,27 @@ public class RetinaPanel extends javax.swing.JPanel {
         this.index = index;
     }
 
+    BufferedImage blackImage() {
+        Mat mat;
+        String path = "black.jpg";
+        File file = new File(path);
+        BufferedImage black;
+        BufferedImage img2;
+        try {
+            black = ImageIO.read(file);
+            mat = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
+            mat = Convertor.bufferedImageToMat(black);
+            Imgproc.resize(mat, mat, new Size(Config.width, Config.heigth));
+            img2 = Convertor.Mat2Img2(mat);
+            return img2;
+
+        } catch (Exception ex) {
+            Logger.getLogger(RetinaPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public void setImage(BufferedImage image, BufferedImage image2) {
-        Mat black;
-        black = Mat.zeros(Config.width, Config.heigth, CvType.CV_32FC1);
-        Core.add(black, new Scalar(0), black);
-        BufferedImage blackImage = Convertor.Mat2Img(black.clone());
         jLabel1.setIcon(new ImageIcon(image));
         if (stereo) {
             jLabel2.setIcon(new ImageIcon(image2));
@@ -229,7 +248,7 @@ public class RetinaPanel extends javax.swing.JPanel {
             rp.setImage(image, blackImage);
         }
         //rp.setImage(image, image2);
-        repaint();
+        //repaint();
     }
 
     /**
@@ -262,7 +281,7 @@ public class RetinaPanel extends javax.swing.JPanel {
             BufferedImage img2R = Convertor.Mat2Img2(srcR);
             setImage(img2L, img2R);
         } catch (Exception ex) {
-            Logger.getLogger(RetinaPanel.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(RetinaPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

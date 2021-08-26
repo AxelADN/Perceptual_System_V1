@@ -24,8 +24,8 @@ public class Config {
     public static int tresh=100;
     public static int blur=1;
     public static int gaborOrientations = 4;
-    public static int width=150;
-    public static int heigth=150;
+    public static int width=200;
+    public static int heigth=200;
     public static int motionWidth=70;
     public static int motionHeight=70;
     public static boolean ilusoryEnabled = true;
@@ -36,6 +36,9 @@ public class Config {
     public static final int freqs=1;
     public static final int freqsV2=1;
     public static int displace=0;
+    
+    public static int h=4;
+    public static int v=100;
     
     /**
      * Paths for the image showed in the GUI

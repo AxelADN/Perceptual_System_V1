@@ -8,6 +8,7 @@ package gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseEvent;
@@ -46,9 +47,9 @@ public class VisualizerFrame extends javax.swing.JFrame {
         previous.setLocation(previous.getWidth(), this.getHeight() - previous.getWidth());
         next.setLocation(this.getWidth() - next.getWidth(), this.getHeight() - next.getWidth());
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize((int)(screenSize.width*0.75), screenSize.height-30);
+        this.setSize((int) (screenSize.width * 0.75), screenSize.height - 30);
         //this.setSize(Config.width * 8, Config.heigth * 4 + 70);
-        this.setLocation((int)(screenSize.width*0.24), 0);
+        this.setLocation((int) (screenSize.width * 0.24), 0);
         jPanel1.setPreferredSize(new Dimension(this.getSize()));
         labels = new JLabel[nFields];
         strings = new String[nFields];
@@ -66,7 +67,7 @@ public class VisualizerFrame extends javax.swing.JFrame {
         repaint();
         this.setVisible(true);
     }
-    
+
     void loadNimbus() {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -105,10 +106,11 @@ public class VisualizerFrame extends javax.swing.JFrame {
         text = strings[index];
         if (labels[index].getIcon() != null) {
             isInLabel = true;
+            repaint();
         } else {
             isInLabel = false;
         }
-        repaint();
+        //repaint();
     }
 
     public void next() {
@@ -132,7 +134,7 @@ public class VisualizerFrame extends javax.swing.JFrame {
                 labels[i].setLocation(labels[i].getX() + (skip), labels[i].getY());
             }
         }
-        repaint();
+        //repaint();
 
     }
 
@@ -160,6 +162,24 @@ public class VisualizerFrame extends javax.swing.JFrame {
             g.drawString(text, positionx + 10, positiony + Config.heigth + 50);
         }
 
+    }
+
+    public void update(Graphics g) {
+        Graphics offgc;
+        Image offscreen = null;
+        Dimension d = size();
+
+        // create the offscreen buffer and associated Graphics
+        offscreen = createImage(d.width, d.height);
+        offgc = offscreen.getGraphics();
+        // clear the exposed area
+        offgc.setColor(getBackground());
+        offgc.fillRect(0, 0, d.width, d.height);
+        offgc.setColor(getForeground());
+        // do normal redraw
+        paint(offgc);
+        // transfer offscreen to window
+        g.drawImage(offscreen, 0, 0, this);
     }
 
     /**

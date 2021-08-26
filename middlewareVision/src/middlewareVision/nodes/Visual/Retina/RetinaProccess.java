@@ -18,8 +18,11 @@ import gui.Visualizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kmiddle2.nodes.activities.Activity;
+import org.opencv.calib3d.StereoBM;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
+import static org.opencv.core.CvType.CV_8U;
+import static org.opencv.core.CvType.CV_8UC1;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -166,23 +169,33 @@ public class RetinaProccess extends Activity {
     public void setImage(BufferedImage img, BufferedImage img2) {
 
         Mat transMat[] = transduction(img);
-        Visualizer.setImage(Convertor.Mat2Img(transMat[0]), "LMM L", 0);
-        Visualizer.setImage(Convertor.Mat2Img(transMat[1]), "SMLPM L", 1);
-        Visualizer.setImage(Convertor.Mat2Img(transMat[2]), "LPM L", 2);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[0]), "LMM L", 0,0);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[1]), "SMLPM L", 0,1);
+        Visualizer.setImage(Convertor.Mat2Img(transMat[2]), "LPM L", 0,2);
 
         Mat transMat2[] = transduction(img2);
-        Visualizer.setImage(Convertor.Mat2Img(transMat2[0]), "LMM R", 4);
-        Visualizer.setImage(Convertor.Mat2Img(transMat2[1]), "SMLPM R", 5);
-        Visualizer.setImage(Convertor.Mat2Img(transMat2[2]), "LPM R", 6);
+        Visualizer.setImage(Convertor.Mat2Img(transMat2[0]), "LMM R", 1,0);
+        Visualizer.setImage(Convertor.Mat2Img(transMat2[1]), "SMLPM R", 1,1);
+        Visualizer.setImage(Convertor.Mat2Img(transMat2[2]), "LPM R", 1,2);
+        
+        Mat m1=transMat[2].clone();
+        Mat m2=transMat2[2].clone();
+        m1.convertTo(m1, CV_8UC1);
+        m2.convertTo(m2, CV_8UC1);
         Mat diffMat = new Mat();
-        Core.subtract(transMat[2], transMat2[2], diffMat);
-        Visualizer.setImage(Convertor.Mat2Img(diffMat), "stereo diff", 7);
+        //Core.mul(transMat[2], transMat2[2], diffMat);
+        StereoBM stereo=StereoBM.create(16);
+        stereo.compute(m1, m2, diffMat);
+        //diffMat.convertTo(diffMat, Imgproc.COLOR_GRAY2BGR);
+        Visualizer.setImage(Convertor.Mat2Img2(diffMat), "stereo diff", 1,3);
 
         if (ready) {
             for (int i = 0; i < 3; i++) {
                 LongSpike spike = new LongSpike(Modalities.VISUAL, new Location(i, 1), Convertor.MatToMatrix(transMat[i]), 0);
+                LongSpike spike2 = new LongSpike(Modalities.VISUAL, new Location(i+3, 1), Convertor.MatToMatrix(transMat2[i]), 0);
                 try {
                     send(AreaNames.LGN, spike.getByteArray());
+                    send(AreaNames.LGN, spike2.getByteArray());
                     send(AreaNames.BasicMotion, spike.getByteArray());
                 } catch (IOException ex) {
                     Logger.getLogger(RetinaProccess.class.getName()).log(Level.SEVERE, null, ex);
