@@ -33,6 +33,8 @@ public class SpecialKernels {
     public static Mat diag45;
     public static Mat diag135;
     public static Mat[][] GaborKernels;
+    //[scale index]-[frequency index]-[parity index]-[orientation index]
+    public static Mat[][][][] GaborKernels2;
     static double valueMinus = -0.15;
     static double valueMax = 0.3;
     public static ArrayList<PairFilter> ilusoryFilters;
@@ -446,6 +448,13 @@ public class SpecialKernels {
         Imgproc.warpAffine(kernel, warpDst, warpMat, warpDst.size());
         
         return warpDst;
+    }
+    
+    public static Mat rotateKernel(Mat kernel, double angle){
+        Mat rotationMat=Imgproc.getRotationMatrix2D(new Point(kernel.width()/2,kernel.height()/2), angle, 1);
+        Mat rKernel=new Mat();
+        Imgproc.warpAffine(kernel, rKernel, rotationMat, kernel.size());
+        return rKernel;
     }
 
 }

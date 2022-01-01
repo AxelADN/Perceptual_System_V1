@@ -14,7 +14,7 @@ import utils.Config;
  */
 public class V1Bank {
 
-    //[scale][frequency][eye]
+    //[extra][for different frequencies or scales][eye]
     public static SimpleCells[][][] SC;
     public static ComplexCells[][][] CC;
     public static HypercomplexCells[][][] HCC;
@@ -36,6 +36,7 @@ public class V1Bank {
                 }
             }
         }
+        //needed to load the file with the filters
 
     }
 

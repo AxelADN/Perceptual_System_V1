@@ -95,7 +95,7 @@ public class RFgenerator extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel1.setBackground(new java.awt.Color(51, 51, 51));
 
         jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -172,6 +172,12 @@ public class RFgenerator extends javax.swing.JFrame {
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
+            }
+        });
+
+        size.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sizeActionPerformed(evt);
             }
         });
 
@@ -444,6 +450,10 @@ public class RFgenerator extends javax.swing.JFrame {
         RFlist.folder = jComboBox1.getSelectedItem().toString();
         updateTree();
     }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    private void sizeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sizeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sizeActionPerformed
 
     public void fillList() {
         clearTable();

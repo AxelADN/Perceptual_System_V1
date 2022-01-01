@@ -91,14 +91,8 @@ public class RetinaPanel extends javax.swing.JPanel {
         rp = rp2;
         
         initComponents();
-
-        if (Config.option == Config.CLICK) {
-            folder = "images";
-        }
-        if (Config.option == Config.RENDER) {
-            folder = "render";
-            timer.start();
-        }
+        folder = "images";
+        timer.start();
         root = new DefaultMutableTreeNode("", true);
         jLabel1.setSize(Config.width, Config.heigth);
         //jPanel1.setLayout(null);

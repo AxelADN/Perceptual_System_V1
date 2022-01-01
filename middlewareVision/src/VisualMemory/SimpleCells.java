@@ -14,13 +14,20 @@ import org.opencv.core.Mat;
 public class SimpleCells {
 
     public int scale;
+    public double frequency;
     public Cell[] Even;
     public Cell[] Odd;
+    //[parity even or odd][orientation]
+    public Mat filters[][];
 
     public SimpleCells(int scale, Cell[] SimpleCellsEven, Cell[] SimpleCellsOdd) {
         this.scale = scale;
         this.Even = SimpleCellsEven;
         this.Odd = SimpleCellsOdd;
+    }
+    
+    public void loadFilters(){
+        //read the file with the filters
     }
     
     public SimpleCells(int scale,int number){
