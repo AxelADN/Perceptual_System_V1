@@ -29,7 +29,7 @@ import static org.opencv.imgproc.Imgproc.getGaborKernel;
 public class SpecialKernels {
 
     static float sigma = 0.47f * 2.5f;
-    static float inc = (float) (Math.PI / Config.gaborOrientations);
+    public static float inc = (float) (Math.PI / Config.gaborOrientations);
     public static Mat diag45;
     public static Mat diag135;
     public static Mat[][] GaborKernels;
@@ -62,9 +62,10 @@ public class SpecialKernels {
         GaborKernels=new Mat[3][Config.gaborOrientations];
         for(int i=0;i<Config.gaborOrientations;i++){
             float angle = i * inc;
-            GaborKernels[0][i]=getGaborKernel(new Size(20, 20), sigma, angle, a1, a2, 0, CvType.CV_32F);
-            GaborKernels[1][i]=getGaborKernel(new Size(20, 20), sigma, angle, a1, a2, 1, CvType.CV_32F);
-           
+            GaborKernels[0][i]=getGaborKernel(new Size(20, 20), sigma, 0, a1, a2, 0, CvType.CV_32F);
+            GaborKernels[0][i]=rotateKernelRadians(GaborKernels[0][i],angle);
+            GaborKernels[1][i]=getGaborKernel(new Size(20, 20), sigma, 0, a1, a2, 1, CvType.CV_32F);
+            GaborKernels[1][i]=rotateKernelRadians(GaborKernels[1][i],angle);         
         }
     }
     
@@ -455,6 +456,10 @@ public class SpecialKernels {
         Mat rKernel=new Mat();
         Imgproc.warpAffine(kernel, rKernel, rotationMat, kernel.size());
         return rKernel;
+    }
+    
+    public static Mat rotateKernelRadians(Mat kernel, double angle){
+        return rotateKernel(kernel,Math.toDegrees(angle));
     }
 
 }

@@ -6,6 +6,8 @@
 package VisualMemory;
 
 import org.opencv.core.Mat;
+import utils.Config;
+import utils.Functions;
 
 /**
  *
@@ -18,37 +20,46 @@ public class SimpleCells {
     public Cell[] Even;
     public Cell[] Odd;
     //[parity even or odd][orientation]
-    public Mat filters[][];
+    public Mat evenFilter[];
+    public Mat oddFilter[];
 
     public SimpleCells(int scale, Cell[] SimpleCellsEven, Cell[] SimpleCellsOdd) {
         this.scale = scale;
         this.Even = SimpleCellsEven;
         this.Odd = SimpleCellsOdd;
+        evenFilter = new Mat[Config.gaborOrientations];
+        oddFilter = new Mat[Config.gaborOrientations];
     }
-    
-    public void loadFilters(){
-        //read the file with the filters
-    }
-    
-    public SimpleCells(int scale,int number){
-        this.scale=scale;
-        Even=new Cell[number];
-        Odd=new Cell[number];
-        for(int i=0;i<number;i++){
-            Even[i]=new Cell();
-            Odd[i]=new Cell();
+
+    public void convolve(Mat src) {
+        for (int i = 0; i < Config.gaborOrientations; i++) {
+            Even[i].mat = Functions.filter(src, evenFilter[i]);
+            Odd[i].mat = Functions.filter(src, oddFilter[i]);
         }
     }
-    
-    public SimpleCells(int number){
-        this.scale=0;
-        Even=new Cell[number];
-        Odd=new Cell[number];
-        for(int i=0;i<number;i++){
-            Even[i]=new Cell();
-            Odd[i]=new Cell();
+
+    public SimpleCells(int scale, int number) {
+        this.scale = scale;
+        Even = new Cell[number];
+        Odd = new Cell[number];
+        evenFilter = new Mat[Config.gaborOrientations];
+        oddFilter = new Mat[Config.gaborOrientations];
+        for (int i = 0; i < number; i++) {
+            Even[i] = new Cell();
+            Odd[i] = new Cell();
         }
     }
-    
-    
+
+    public SimpleCells(int number) {
+        this.scale = 0;
+        Even = new Cell[number];
+        Odd = new Cell[number];
+        evenFilter = new Mat[Config.gaborOrientations];
+        oddFilter = new Mat[Config.gaborOrientations];
+        for (int i = 0; i < number; i++) {
+            Even[i] = new Cell();
+            Odd[i] = new Cell();
+        }
+    }
+
 }

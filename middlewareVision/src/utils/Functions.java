@@ -37,6 +37,14 @@ public class Functions {
         Imgproc.threshold(gab, gab, 0, 1, Imgproc.THRESH_TOZERO);
         return gab;
     }
+    
+    public static Mat filter(Mat img, Mat filter){
+        Mat filt = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
+        img.convertTo(img, CV_32F);
+        Imgproc.filter2D(img, filt, CV_32F, filter);
+        Imgproc.threshold(filt, filt, 0, 1, Imgproc.THRESH_TOZERO);
+        return filt;
+    }
 
     /**
      * Energy process
