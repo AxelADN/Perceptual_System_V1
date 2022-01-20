@@ -8,6 +8,8 @@ package gui;
 import VisualMemory.LGNBank;
 import VisualMemory.V1Bank;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 import utils.Config;
 import utils.Convertor;
 
@@ -18,9 +20,21 @@ import utils.Convertor;
 public class Visualizer {
 
     static VisualizerFrame vis;
+    public static HashMap<String,Integer> limits;
+    
 
     public static void initVisualizer(int n) {
         vis = new VisualizerFrame(n);
+        limits=new HashMap<String,Integer>();
+        limits.put("init", 0);
+    }
+    
+    public static void addLimit(String name,int value){
+        limits.put(name, value);
+    }
+    
+    public static int getRow(String name){
+        return limits.get(name);
     }
 
     public static void setImage(BufferedImage image, String title, int index) {

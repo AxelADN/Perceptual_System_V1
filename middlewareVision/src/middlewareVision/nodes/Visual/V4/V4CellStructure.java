@@ -5,7 +5,7 @@
  */
 package middlewareVision.nodes.Visual.V4;
 
-import generator.RF;
+import MiniPrograms.RF;
 import java.io.File;
 import java.util.ArrayList;
 import org.opencv.core.Mat;

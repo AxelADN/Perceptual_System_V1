@@ -62,7 +62,7 @@ public class V1ComplexCells extends Activity {
 
             Location l = (Location) spike.getLocation();
             
-
+            /*
             if (spike.getModality() == Modalities.VISUAL) {
                 int index = l.getValues()[0];
                 Mat evenOrs_L = V1Bank.SC[0][0][0].Even[index].mat.clone();
@@ -90,8 +90,27 @@ public class V1ComplexCells extends Activity {
                 LongSpike spikeMotion= new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
                 send(AreaNames.ReichardtMotion,spikeMotion.getByteArray());
 
+            }*/
+            if (spike.getModality() == Modalities.VISUAL) {
+                V1Bank.energyProcessCC();
+                for (int k = 0; k < Config.gaborBanks; k++) {
+                    for (int i = 0; i < Config.gaborOrientations; i++) {
+                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][k][0].Cells[i].mat), "Complex L" + k+" "+i, Visualizer.getRow("SCsup")+2*k, i);
+                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][k][1].Cells[i].mat), "Complex R" + k+" "+i, Visualizer.getRow("SCsup")+2*k+1, i);
+                        if (i == Config.gaborOrientations - 1) {
+                            Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.CC[0][k][0].Cells)), "Combined Complex L" + k+" ", Visualizer.getRow("SCsup")+2*k, i+2);
+                            Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.CC[0][k][1].Cells)), "Combined Complex R" + k+" ", Visualizer.getRow("SCsup")+2*k+1, i+2);
+                        }
+                 
+                    }
+                    
+                }
+                Visualizer.addLimit("CC", Visualizer.getRow("SCsup")+2*(Config.gaborBanks-1)+1);
+                
+                LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(0), 0, 0);
+                send(AreaNames.V1HyperComplex, sendSpike.getByteArray());
+                
             }
-            
             if(spike.getModality()==Modalities.ATTENTION){
                 for (int i = 0; i < Config.gaborOrientations; i++) {
                     LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);

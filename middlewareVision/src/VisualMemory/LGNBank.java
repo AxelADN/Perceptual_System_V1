@@ -4,10 +4,6 @@
  * and open the template in the editor.
  */
 package VisualMemory;
-
-import NArray.NArrayObject;
-import utils.Config;
-
 /**
  *
  * @author Laptop

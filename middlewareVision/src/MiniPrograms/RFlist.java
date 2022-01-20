@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package generator;
+package MiniPrograms;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,11 +15,11 @@ import utils.FileUtils;
  */
 public class RFlist {
 
-    static ArrayList<RF> RFs;
-    static ArrayList<RF> RFs2;
-    static ArrayList<String> folders;
-    static int scale = 4;
-    static String folder;
+    public static ArrayList<RF> RFs;
+    public static ArrayList<RF> RFs2;
+    public static ArrayList<String> folders;
+    public static int scale = 4;
+    public static String folder;
 
     static String[] initFolderList() {
         String folders[] = FileUtils.readFile(new File("FolderRFS.txt")).split("\\n");

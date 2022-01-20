@@ -1,12 +1,14 @@
 package middlewareVision.nodes.Visual.V1;
 
 import VisualMemory.LGNBank;
+import VisualMemory.V1Bank;
 import spike.Location;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import gui.FrameActivity;
+import gui.Visualizer;
 import kmiddle2.nodes.activities.Activity;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_32F;
@@ -17,6 +19,7 @@ import static org.opencv.imgproc.Imgproc.getGaborKernel;
 import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
+import utils.Functions;
 import utils.LongSpike;
 import utils.SimpleLogger;
 import utils.numSync;
@@ -32,12 +35,8 @@ public class V1SimpleCells extends Activity {
      * init variables
      * *************************************************************************
      */
-    /**
-     * Value of the width of Gabor function
-     */
-    float sigma = 0.47f * 2f;
-    float inc = (float) (Math.PI / 4);
-    
+    int nFrame = 3 * Config.gaborOrientations;
+
     //mapa de saliencia, no se recibe aún
     public Mat saliencyMap;
     //no se para que sirve esto
@@ -49,7 +48,6 @@ public class V1SimpleCells extends Activity {
     public V1SimpleCells() {
         this.ID = AreaNames.V1SimpleCells;
         this.namer = AreaNames.class;
-        //initFrames(4, 16);
     }
 
     @Override
@@ -80,17 +78,39 @@ public class V1SimpleCells extends Activity {
             }
 
             if (sync.isComplete()) {
-                //the process will be performed with only one matrix of the DKL array, variable idx is the index of the array
-                int idx = 2;
                 //edge border detection is performed, with phi angle = 0
-                for (int i = 0; i < Config.gaborOrientations; i++) {
-                    /*create a long spike for sending the imagesm the image is converted to bytes
-                        The location variable is useful to send the index of the orientation matrix
-                     */
-                    LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
-                    send(AreaNames.V1SimpleCellsFilter, sendSpike1.getByteArray());
-                }
+                V1Bank.convolveSimpleCells(V1Bank.DOC[0][0][0].Cells[2].mat, V1Bank.DOC[0][0][1].Cells[2].mat);
+                for (int k = 0; k < Config.gaborBanks; k++) {
+                    for (int i = 0; i < Config.gaborOrientations; i++) {
+                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][k][0].Even[i].mat), "even L bank" + k + " " + i, 4 * k + 6, i);
+                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][k][0].Odd[i].mat), "odd L bank" + k + " " + i, 4 * k + 8, i);
 
+                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][k][1].Even[i].mat), "even R bank" + k + " " + i, 4 * k + 7, i);
+                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][k][1].Odd[i].mat), "odd R bank" + k + " " + i, 4 * k + 9, i);
+
+                        if (i == Config.gaborOrientations - 1) {
+                            Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.SC[0][k][0].Even)), "Combined even L bank" + k + " " + i, 4 * k + 6, Config.gaborOrientations+1);
+                            Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.SC[0][k][0].Odd)), "Combined odd L bank" + k + " " + i, 4 * k + 8, Config.gaborOrientations+1);
+
+                            Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.SC[0][k][1].Even)), "Combined even R bank" + k + " " + i, 4 * k + 7, Config.gaborOrientations+1);
+                            Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.SC[0][k][1].Odd)), "Combined odd R bank" + k + " " + i, 4 * k + 9, Config.gaborOrientations+1);
+                        }
+                    }
+                }
+                Visualizer.addLimit("SCinf", 6);
+                Visualizer.addLimit("SCsup", 4 * (Config.gaborBanks - 1) + 10);
+
+                LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(0), 0, 0);
+                send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
+            }
+
+            if (spike.getModality() == Modalities.ATTENTION) {
+                for (int i = 0; i < Config.gaborOrientations; i++) {
+                    LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(i), 0, 0);
+                    send(AreaNames.V1ComplexCells, sendSpike1.getByteArray());
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Even[i].mat), "even " + i, nFrame + i);
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][0][0].Odd[i].mat), "even " + i, nFrame + i + 4);
+                }
             }
 
         } catch (Exception ex) {

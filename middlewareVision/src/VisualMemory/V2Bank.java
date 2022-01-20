@@ -5,7 +5,6 @@
  */
 package VisualMemory;
 
-import NArray.NArrayObject;
 import utils.Config;
 
 /**

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package generator;
+package MiniPrograms;
 
 /**
  *
@@ -11,14 +11,14 @@ package generator;
  */
 public class RF {
 
-    double rx;
-    double ry;
-    int px;
-    int py;
-    double intensity;
-    double angle;
-    String combination;
-    int size;
+    public double rx;
+    public double ry;
+    public int px;
+    public int py;
+    public double intensity;
+    public double angle;
+    public String combination;
+    public int size;
 
     public RF(double rx, double ry, int px, int py, double intensity, double angle, String combination, int size) {
         this.rx = rx;

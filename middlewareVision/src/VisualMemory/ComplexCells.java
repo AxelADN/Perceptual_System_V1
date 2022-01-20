@@ -8,6 +8,7 @@ package VisualMemory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.opencv.core.Mat;
+import utils.Functions;
 
 /**
  *
@@ -17,6 +18,7 @@ public class ComplexCells {
 
     public int scale;
     public Cell[] Cells;
+    public SimpleCells simpleCells;
 
 
     public ComplexCells(int scale, Cell[] complexCells) {
@@ -37,6 +39,17 @@ public class ComplexCells {
         Cells = new Cell[number];
         for (int i = 0; i < number; i++) {
             Cells[i] = new Cell();
+        }
+    }
+    
+    public void setSimpleCells(SimpleCells cells){
+        simpleCells=cells;
+    }
+    
+    public void energyProcess(){
+        int x=Cells.length;
+        for(int i=0;i<x;i++){
+            Cells[i].mat=Functions.energyProcess(simpleCells.Even[i].mat, simpleCells.Odd[i].mat);
         }
     }
     

@@ -8,6 +8,7 @@ package VisualMemory;
 import org.opencv.core.Mat;
 import utils.Config;
 import utils.Functions;
+import utils.filters.GaborFilter;
 
 /**
  *
@@ -22,6 +23,8 @@ public class SimpleCells {
     //[parity even or odd][orientation]
     public Mat evenFilter[];
     public Mat oddFilter[];
+    public GaborFilter geven;
+    public GaborFilter godd;
 
     public SimpleCells(int scale, Cell[] SimpleCellsEven, Cell[] SimpleCellsOdd) {
         this.scale = scale;
@@ -31,6 +34,10 @@ public class SimpleCells {
         oddFilter = new Mat[Config.gaborOrientations];
     }
 
+    /**
+     * Perform the process of filtering with Gabor Filters
+     * @param src 
+     */
     public void convolve(Mat src) {
         for (int i = 0; i < Config.gaborOrientations; i++) {
             Even[i].mat = Functions.filter(src, evenFilter[i]);

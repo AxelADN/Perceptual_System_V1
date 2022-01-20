@@ -20,6 +20,7 @@ import org.opencv.imgproc.Imgproc;
 import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
+import utils.Functions;
 import utils.LongSpike;
 import utils.SimpleLogger;
 import utils.SpecialKernels;
@@ -48,15 +49,45 @@ public class V1HyperComplex extends Activity {
     public void receive(int nodeID, byte[] data) {
         try {
             LongSpike spike = new LongSpike(data);
-            /*
-            extract the variable needed for the sync
-             */
-            Location l = (Location) spike.getLocation();
-
             if (spike.getModality() == Modalities.VISUAL) {
-                int index = l.getValues()[0];
-                //assign information from LGN to the DKL array matrix
-                Mat edges = V1Bank.CC[0][0][0].Cells[index].mat;
+                V1Bank.convolveHCC();
+                for (int j = 0; j < Config.gaborBanks; j++) {
+                    for (int k = 0; k < Config.HCfilters; k++) {
+                        for (int i = 0; i < Config.gaborOrientations; i++) {
+                            Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][j][0].Cells[k][i].mat),
+                                    "end stopped L " + i + " bank " + j + " HC Filter " + k, Visualizer.getRow("CC") + 1 + 2 * k + 2 * j * Config.gaborBanks, i);
+                            Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][j][1].Cells[k][i].mat),
+                                    "end stopped R " + i + " bank " + j + " HC Filter " + k, Visualizer.getRow("CC") + 2 + 2 * k + 2 * j * Config.gaborBanks, i);
+
+                            if (i == Config.gaborOrientations - 1) {
+                                Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.HCC[0][j][0].Cells[k])),
+                                        "end stopped L " + i + " bank " + j + " HC Filter " + k, Visualizer.getRow("CC") + 1 + 2 * k + 2 * j * Config.gaborBanks, i + 2);
+                                Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.HCC[0][j][1].Cells[k])),
+                                        "end stopped R " + i + " bank " + j + " HC Filter " + k, Visualizer.getRow("CC") + 2 + 2 * k + 2 * j * Config.gaborBanks, i + 2);
+                            }
+                        }
+
+                    }
+                }
+                //Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][0][0].filters[0]), "hcc filter", 3, 3);
+            }
+            if (spike.getModality() == Modalities.ATTENTION) {
+                for (int index = 0; index < Config.gaborOrientations; index++) {
+                    LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
+                    send(AreaNames.V2AngularCells, sendSpike1.getByteArray());
+                    send(AreaNames.V4Contour, sendSpike1.getByteArray());
+                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][0][0].Cells[0][index].mat), "end stopped " + index, nFrame * 2 + index);
+                }
+            }
+
+        } catch (Exception ex) {
+
+        }
+    }
+
+    /*
+    public void oldcode(){
+        Mat edges = V1Bank.CC[0][0][0].Cells[index].mat;
                 Mat endStop;
                 //ilusoryEdges = elongatedGaborFilter(edges, sigma * 0.5f, 1, 5, 29, 0.05, index);
                 endStop = endStopped(edges, index);
@@ -69,52 +100,5 @@ public class V1HyperComplex extends Activity {
                 V1Bank.HCC[0][0][0].Cells[0][index].mat = endStop;
                 V4Memory.v1Map[index] = endStop;
                 LongSpike sendSpike = new LongSpike(Modalities.VISUAL, new Location(index, 4), 0, 0);
-                send(AreaNames.V2AngularCells, sendSpike.getByteArray());
-                send(AreaNames.V4Contour, sendSpike.getByteArray());
-
-                //send(AreaNames.V1Visualizer, sendSpike.getByteArray());
-                Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][0][0].Cells[0][index].mat), "end stopped " + index, nFrame + index);
-
-            }
-            if (spike.getModality() == Modalities.ATTENTION) {
-                for (int index = 0; index < Config.gaborOrientations; index++) {
-                    LongSpike sendSpike1 = new LongSpike(Modalities.VISUAL, new Location(index), 0, 0);
-                    send(AreaNames.V2AngularCells, sendSpike1.getByteArray());
-                    send(AreaNames.V4Contour, sendSpike1.getByteArray());
-                    Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][0][0].Cells[0][index].mat), "end stopped " + index, nFrame*2 + index);
-                }
-            }
-
-        } catch (Exception ex) {
-
-        }
-    }
-
-    public Mat endStopped(Mat img, int index) {
-        Mat ors = new Mat();
-        Mat kernel1 = new Mat();
-        Mat kernel2 = new Mat();
-        kernel1 = SpecialKernels.endStoppedFilters.get(index).getFilter1();
-        kernel2 = SpecialKernels.endStoppedFilters.get(index).getFilter2();
-        Mat gab = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
-        //angle of the orientation
-        float angle = index * inc;
-        //initializate the ors and gab array matrix with zeros
-        ors = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
-        Mat filtered1 = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
-        Mat filtered2 = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
-        //generate the gabor filter
-        //kernel = getGaborKernel(new Size(kernelSize, kernelSize), sigma, angle, lenght, aspectRatio, psi, CvType.CV_32F);
-        // Imgproc.getga
-        //perform the convolution on the image IMG with the filter GAB
-        Imgproc.filter2D(img, filtered1, CV_32F, kernel1);
-        Imgproc.filter2D(img, filtered2, CV_32F, kernel2);
-
-        Core.multiply(filtered1, filtered2, gab);
-        //apply a threshold from the value 0.2 to 1
-        Imgproc.threshold(gab, gab, 0, 1, Imgproc.THRESH_TOZERO);
-        ors = gab;
-        return ors;
-    }
-
+    }*/
 }

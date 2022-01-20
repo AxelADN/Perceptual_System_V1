@@ -5,6 +5,7 @@
  */
 package utils;
 
+import VisualMemory.Cell;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_32F;
@@ -57,8 +58,8 @@ public class Functions {
         Mat r1, r2;
 
         Mat energy = Mat.zeros(mat1.rows(), mat1.cols(), CvType.CV_32FC1);
-        r1 = mat1;
-        r2 = mat2;
+        r1 = mat1.clone();
+        r2 = mat2.clone();
 
         Core.pow(r1, 2, r1);
         Core.pow(r2, 2, r2);
@@ -99,6 +100,10 @@ public class Functions {
         Core.multiply(vlvr, h, dst);
         Imgproc.threshold(dst, dst, 0, 1, Imgproc.THRESH_TOZERO);
         return dst;
+    }
+    
+    public static Mat maxSum(Cell ...cells){
+        return MatrixUtils.maxSum(cells);
     }
 
 }

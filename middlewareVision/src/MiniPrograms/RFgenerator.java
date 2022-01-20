@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package generator;
+package MiniPrograms;
 
+import generator.VisPanel;
+import generator.visualizerTest;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;

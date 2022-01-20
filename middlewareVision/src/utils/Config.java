@@ -22,6 +22,7 @@ public class Config {
     public static int tresh=100;
     public static int blur=1;
     public static int gaborOrientations = 4;
+    public static int HCfilters=1;
     public static int width=200;
     public static int heigth=200;
     public static int motionWidth=70;
@@ -34,8 +35,9 @@ public class Config {
     public static final int freqs=1;
     public static final int freqsV2=1;
     public static int displace=0;
+    public static int gaborBanks=0;
     
-    public static int h=4;
+    public static int h=16;
     public static int v=100;
     
     /**

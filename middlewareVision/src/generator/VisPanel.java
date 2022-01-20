@@ -5,6 +5,8 @@
  */
 package generator;
 
+import MiniPrograms.RFlist;
+import MiniPrograms.RF;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;

@@ -20,16 +20,14 @@ public class V1 extends Area{
 	addProcess(V1SimpleCells.class);
 	addProcess(V1ComplexCells.class);
 	addProcess(V1DoubleOpponent.class);
-	//addProcess(V1HyperComplex.class);
-	
-	addProcess(V1SimpleCellsFilter.class);
+	addProcess(V1HyperComplex.class);
 	
 	//addProcess(V1MotionCells.class);
 	//
 	
 	//addProcess(V1MotionCells2.class);
 	
-	addProcess(ReichardtMotion.class);
+	//addProcess(ReichardtMotion.class);
 	
 	//@AddProcess
     }
@@ -53,7 +51,7 @@ public class V1 extends Area{
 	
 	//send(AreaNames.V1MotionCells2,data);
 	
-	send(AreaNames.ReichardtMotion,data);
+	//send(AreaNames.ReichardtMotion,data);
 	
 	//@SendProcess
     }
