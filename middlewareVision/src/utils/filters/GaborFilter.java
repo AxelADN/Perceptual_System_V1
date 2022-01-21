@@ -31,6 +31,19 @@ public class GaborFilter {
         this.theta = theta;
     }
     
+    public GaborFilter(){
+        
+    }
+    
+    public void setParameters(int ksize, double sigma, double lambda, double gamma, double psi, double theta){
+        kernelSize=ksize;
+        this.sigma = sigma;
+        this.lambda = lambda;
+        this.gamma = gamma;
+        this.psi = psi;
+        this.theta = theta;
+    }
+    
     public Mat makeFilter(){
         return Imgproc.getGaborKernel(new Size(kernelSize, kernelSize), sigma, theta, lambda, gamma, psi, CvType.CV_32F);
     }

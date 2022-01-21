@@ -5,7 +5,6 @@
  */
 package utils;
 
-
 import MiniPrograms.RF;
 import java.io.File;
 import java.util.ArrayList;
@@ -54,23 +53,24 @@ public class SpecialKernels {
         loadV2Kernels();
         V4CellStructure.loadV4Structure();
     }
-    static float a1=5f;
-    static float a2=0.5f;
-    public static void loadGaborFilters(){
-        GaborKernels=new Mat[3][Config.gaborOrientations];
-        for(int i=0;i<Config.gaborOrientations;i++){
+    static float a1 = 5f;
+    static float a2 = 0.5f;
+
+    public static void loadGaborFilters() {
+        GaborKernels = new Mat[3][Config.gaborOrientations];
+        for (int i = 0; i < Config.gaborOrientations; i++) {
             float angle = i * inc;
-            GaborKernels[0][i]=getGaborKernel(new Size(20, 20), sigma, 0, a1, a2, 0, CvType.CV_32F);
-            GaborKernels[0][i]=rotateKernelRadians(GaborKernels[0][i],angle);
-            GaborKernels[1][i]=getGaborKernel(new Size(20, 20), sigma, 0, a1, a2, 1, CvType.CV_32F);
-            GaborKernels[1][i]=rotateKernelRadians(GaborKernels[1][i],angle);         
+            GaborKernels[0][i] = getGaborKernel(new Size(20, 20), sigma, 0, a1, a2, 0, CvType.CV_32F);
+            GaborKernels[0][i] = rotateKernelRadians(GaborKernels[0][i], angle);
+            GaborKernels[1][i] = getGaborKernel(new Size(20, 20), sigma, 0, a1, a2, 1, CvType.CV_32F);
+            GaborKernels[1][i] = rotateKernelRadians(GaborKernels[1][i], angle);
         }
     }
-    
-    public static void modifyDispGabor(int disp){
-        for(int i=0;i<Config.gaborOrientations;i++){
+
+    public static void modifyDispGabor(int disp) {
+        for (int i = 0; i < Config.gaborOrientations; i++) {
             float angle = i * inc;
-            GaborKernels[2][i]=displaceKernel(getGaborKernel(new Size(50, 50), sigma, angle, a1, a2, 0, CvType.CV_32F),angle,disp);
+            GaborKernels[2][i] = displaceKernel(getGaborKernel(new Size(50, 50), sigma, angle, a1, a2, 0, CvType.CV_32F), angle, disp);
         }
     }
 
@@ -429,35 +429,46 @@ public class SpecialKernels {
         //https://docs.opencv.org/3.4/d4/d61/tutorial_warp_affine.html
         Point[] srcTri = new Point[3];
         srcTri[0] = new Point(0, 0);
-        srcTri[1] = new Point(kernel.cols() -1, 0);
-        srcTri[2] = new Point(0, kernel.rows() -1);
-        
+        srcTri[1] = new Point(kernel.cols() - 1, 0);
+        srcTri[2] = new Point(0, kernel.rows() - 1);
+
         //angle=Math.toRadians(angle);
-        double dx=dis*Math.cos(angle);
-        double dy=dis*Math.sin(angle);
-        
+        double dx = dis * Math.cos(angle);
+        double dy = dis * Math.sin(angle);
+
         Point[] dstTri = new Point[3];
         dstTri[0] = new Point(dx, dy);
-        dstTri[1] = new Point(kernel.cols() - 1+dx, dy);
-        dstTri[2] = new Point(dx, kernel.rows() - 1+dy);
+        dstTri[1] = new Point(kernel.cols() - 1 + dx, dy);
+        dstTri[2] = new Point(dx, kernel.rows() - 1 + dy);
 
         Mat warpMat = Imgproc.getAffineTransform(new MatOfPoint2f(srcTri), new MatOfPoint2f(dstTri));
 
         Mat warpDst = Mat.zeros(kernel.rows(), kernel.cols(), kernel.type());
         Imgproc.warpAffine(kernel, warpDst, warpMat, warpDst.size());
-        
+
         return warpDst;
     }
-    
-    public static Mat rotateKernel(Mat kernel, double angle){
-        Mat rotationMat=Imgproc.getRotationMatrix2D(new Point(kernel.width()/2,kernel.height()/2), angle, 1);
-        Mat rKernel=new Mat();
+
+    public static Mat rotateKernel(Mat kernel, double angle) {
+        Mat rotationMat = Imgproc.getRotationMatrix2D(new Point(kernel.width() / 2, kernel.height() / 2), angle, 1);
+        Mat rKernel = new Mat();
         Imgproc.warpAffine(kernel, rKernel, rotationMat, kernel.size());
         return rKernel;
     }
-    
-    public static Mat rotateKernelRadians(Mat kernel, double angle){
-        return rotateKernel(kernel,Math.toDegrees(angle));
+
+    public static Mat rotateKernel(Mat kernel, int rx, int ry, double angle) {
+        Mat rotationMat = Imgproc.getRotationMatrix2D(new Point(kernel.width() / 2 + rx, kernel.height() / 2 + ry), angle, 1);
+        Mat rKernel = new Mat();
+        Imgproc.warpAffine(kernel, rKernel, rotationMat, kernel.size());
+        return rKernel;
+    }
+
+    public static Mat rotateKernelRadians(Mat kernel, double angle) {
+        return rotateKernel(kernel, Math.toDegrees(angle));
+    }
+
+    public static Mat rotateKernelRadians(Mat kernel, int rx, int ry, double angle) {
+        return rotateKernel(kernel, rx, ry, Math.toDegrees(angle));
     }
 
 }

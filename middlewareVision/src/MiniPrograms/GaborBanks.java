@@ -368,7 +368,6 @@ public class GaborBanks extends javax.swing.JFrame {
             
         }
 
-// Y si el dato se puede conseguir como String java, lo sacamos por pantalla
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
