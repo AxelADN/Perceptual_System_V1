@@ -52,4 +52,5 @@ public class GaborFilter {
         return " ksize: "+kernelSize+" sigma:"+sigma+" lambda:"+lambda+" gamma:"+gamma+" psi:"+psi+" theta"+theta;
     }
     
+    
 }

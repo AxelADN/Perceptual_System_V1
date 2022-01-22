@@ -5,17 +5,25 @@
  */
 package MiniPrograms;
 
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import mapOpener.Convertor;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import utils.FileUtils;
 import utils.MatrixUtils;
 import utils.Scalr;
 import utils.SpecialKernels;
@@ -35,34 +43,41 @@ public class CurvatureRF extends javax.swing.JFrame {
     Mat concaveFilters[];
     Mat convexFilters[];
     Mat composedFilter;
-    int numberFilters=5;
+    int numberFilters;
     BufferedImage fimg;
+    String folder = "RFV2/Curvature/";
+
     /**
      * Creates new form NewJFrame
      */
     public CurvatureRF() {
         initComponents();
         loadFields();
-        concaveFilters=new Mat[numberFilters];
-        convexFilters=new Mat[numberFilters];
-        for(int i=0;i<numberFilters;i++){
-            concaveFilters[i]=new Mat();
-            convexFilters[i]=new Mat();
-        }
-        mainGabor=new GaborFilter();
+        loadFieldList();
+        mainGabor = new GaborFilter();
     }
-    
-    void loadFields(){
-        fields=new JTextField[9];
-        fields[0]=sizef;
-        fields[1]=sigmaf;
-        fields[2]=lambdaf;
-        fields[3]=gammaf;
-        fields[4]=psif;
-        fields[5]=thetaf;        
-        fields[6]=radiusf;
-        fields[7]=anglef;       
-        fields[8]=rotf;
+
+    void loadFieldList() {
+        DefaultListModel model = new DefaultListModel();
+        String fileNames[] = FileUtils.getFiles(folder);
+        for (String fileName : fileNames) {
+            model.addElement(fileName.substring(folder.length(), fileName.length()).replaceAll(".txt", ""));
+        }
+        jList1.setModel(model);
+    }
+
+    void loadFields() {
+        fields = new JTextField[10];
+        fields[0] = sizef;
+        fields[1] = sigmaf;
+        fields[2] = lambdaf;
+        fields[3] = gammaf;
+        fields[4] = psif;
+        fields[5] = thetaf;
+        fields[6] = radiusf;
+        fields[7] = anglef;
+        fields[8] = rotf;
+        fields[9] = nfiltersf;
     }
 
     /**
@@ -98,7 +113,7 @@ public class CurvatureRF extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
         jLabel12 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        namef = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
@@ -107,6 +122,10 @@ public class CurvatureRF extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
         jLabel15 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        nfiltersf = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -115,7 +134,7 @@ public class CurvatureRF extends javax.swing.JFrame {
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, -1, -1));
 
         jLabel2.setText("kernel rotation");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 40, -1, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 40, -1, -1));
 
         jLabel3.setText("sigma");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, -1, -1));
@@ -135,19 +154,94 @@ public class CurvatureRF extends javax.swing.JFrame {
         jLabel8.setText("radius");
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 40, -1, -1));
 
-        rotf.setText("0");
-        getContentPane().add(rotf, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 60, 60, -1));
+        rotf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                rotfKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                rotfKeyReleased(evt);
+            }
+        });
+        getContentPane().add(rotf, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 60, 80, -1));
+
+        sizef.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                sizefKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                sizefKeyReleased(evt);
+            }
+        });
         getContentPane().add(sizef, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 50, -1));
+
+        sigmaf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                sigmafKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                sigmafKeyReleased(evt);
+            }
+        });
         getContentPane().add(sigmaf, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 60, 50, -1));
+
+        lambdaf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                lambdafKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                lambdafKeyReleased(evt);
+            }
+        });
         getContentPane().add(lambdaf, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 60, 50, -1));
+
+        gammaf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                gammafKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                gammafKeyReleased(evt);
+            }
+        });
         getContentPane().add(gammaf, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 60, 50, -1));
+
+        psif.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                psifKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                psifKeyReleased(evt);
+            }
+        });
         getContentPane().add(psif, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 60, 50, -1));
+
+        thetaf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                thetafKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                thetafKeyReleased(evt);
+            }
+        });
         getContentPane().add(thetaf, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 60, 50, -1));
 
-        radiusf.setText("30");
+        radiusf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                radiusfKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                radiusfKeyReleased(evt);
+            }
+        });
         getContentPane().add(radiusf, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 60, 50, -1));
 
-        anglef.setText("0.9");
+        anglef.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                anglefKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                anglefKeyReleased(evt);
+            }
+        });
         getContentPane().add(anglef, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, 60, -1));
 
         jLabel9.setText("angle disp");
@@ -165,12 +259,12 @@ public class CurvatureRF extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 60, 80, -1));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 60, 80, -1));
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
+            }
         });
         jScrollPane1.setViewportView(jList1);
 
@@ -178,9 +272,14 @@ public class CurvatureRF extends javax.swing.JFrame {
 
         jLabel12.setText("Name:");
         getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 100, -1, -1));
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 100, 100, -1));
+        getContentPane().add(namef, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 100, 100, -1));
 
         jButton2.setText("Save");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 100, -1, -1));
 
         jButton3.setText("Paste");
@@ -189,26 +288,56 @@ public class CurvatureRF extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 100, 80, -1));
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 100, 80, -1));
 
         jLabel13.setText("Filter image:");
         getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 140, -1, -1));
 
         filterImage.setText("[]");
         getContentPane().add(filterImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 160, -1, -1));
-        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 620, -1));
-        getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 630, 10));
-        getContentPane().add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 130, 510, -1));
+        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 710, 10));
+        getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 720, 10));
+        getContentPane().add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 130, 600, 10));
 
         jLabel15.setText("Files");
         getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 100, -1, -1));
+
+        jLabel14.setText("n filters");
+        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 40, -1, -1));
+
+        nfiltersf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nfiltersfKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nfiltersfKeyReleased(evt);
+            }
+        });
+        getContentPane().add(nfiltersf, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 60, 70, -1));
+
+        jButton4.setText("Delete");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 390, 100, -1));
+
+        jButton5.setText("Open Folder");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 100, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     /**
      * Paste values from the Gabor Filter Visualizer
-     * @param evt 
+     *
+     * @param evt
      */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
@@ -222,9 +351,9 @@ public class CurvatureRF extends javax.swing.JFrame {
                 String texto = (String) t.getTransferData(dataFlavorStringJava);
                 if (texto.contains("♦♣♠")) {
                     String values[] = texto.split(" ");
-                    for(int i=0;i<6;i++){
-                       fields[i].setText(values[i+1]); 
-                    }                                       
+                    for (int i = 0; i < 6; i++) {
+                        fields[i].setText(values[i + 1]);
+                    }
                 }
             }
         } catch (Exception ex) {
@@ -234,43 +363,247 @@ public class CurvatureRF extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        mainGabor.setParameters(toInt(fields[0].getText()), toDouble(fields[1].getText()), 
-                toDouble(fields[2].getText()), toDouble(fields[3].getText()), toDouble(fields[4].getText()), 
-                toDouble(fields[5].getText()));
-        radius=toInt(fields[6].getText());
-        angleDisp=toDouble(fields[7].getText());
-        kernelRotation=toDouble(fields[8].getText());
-        makeFilters();
+        generateFilters();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    void makeFilters(){
-        Mat mainFilter=mainGabor.makeFilter();
-        concaveFilters[0]=mainFilter.clone();
-        convexFilters[0]=mainFilter.clone();
-        composedFilter=Mat.zeros(concaveFilters[0].height(), concaveFilters[0].width(), CvType.CV_32FC1);
-        for(int i=1;i<numberFilters;i++){
-            if(i%2==0){
-                concaveFilters[i]=SpecialKernels.rotateKernelRadians(mainFilter, radius, 0, angleDisp*(i/3+1));
-                convexFilters[i]=SpecialKernels.rotateKernelRadians(mainFilter, -radius, 0, angleDisp*(i/3+1));
+    void generateFilters() {
+        mainGabor.setParameters(toInt(fields[0].getText()), toDouble(fields[1].getText()),
+                toDouble(fields[2].getText()), toDouble(fields[3].getText()), toDouble(fields[4].getText()),
+                toDouble(fields[5].getText()));
+        radius = toInt(fields[6].getText());
+        angleDisp = toDouble(fields[7].getText());
+        kernelRotation = toDouble(fields[8].getText());
+        numberFilters = toInt(fields[9].getText().trim());
+        makeFilters();
+    }
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        saveFile(namef.getText());
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        // TODO add your handling code here:
+        String content = FileUtils.readFile(new File(folder + jList1.getSelectedValue() + ".txt"));
+        String values[] = content.split(" ");
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setText(values[i].trim());
+        }
+        namef.setText(jList1.getSelectedValue());
+        generateFilters();
+    }//GEN-LAST:event_jList1MouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        FileUtils.deleteFile(folder + jList1.getSelectedValue() + ".txt");
+        loadFieldList();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        try {
+            // TODO add your handling code here:
+            Desktop.getDesktop().open(new File(folder));
+        } catch (IOException ex) {
+            Logger.getLogger(CurvatureRF.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void sizefKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sizefKeyPressed
+        // TODO add your handling code here:
+        incDecInt(sizef, evt, 1);
+    }//GEN-LAST:event_sizefKeyPressed
+
+    void incDec(JTextField field, KeyEvent evt, double inc) {
+        //df.setRoundingMode(RoundingMode.DOWN);
+        double value;
+        try {
+            if (evt.getKeyCode() == KeyEvent.VK_UP) {
+                value = Double.parseDouble(field.getText());
+                value = value + inc;
+                field.setText(String.format("%.3f", value));
+                generateFilters();
             }
-            else{
-                concaveFilters[i]=SpecialKernels.rotateKernelRadians(mainFilter, radius, 0, -angleDisp*(i/3+1));
-                convexFilters[i]=SpecialKernels.rotateKernelRadians(mainFilter, -radius, 0, -angleDisp*(i/3+1));
+            if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+                value = Double.parseDouble(field.getText());
+                value = value - inc;
+                field.setText(String.format("%.3f", value));
+                generateFilters();
             }
+        } catch (Exception ex) {
+
+        }
+    }
+
+    void incDecInt(JTextField field, KeyEvent evt, int inc) {
+        //df.setRoundingMode(RoundingMode.DOWN);
+        int value;
+        try {
+            if (evt.getKeyCode() == KeyEvent.VK_UP) {
+                value = Integer.parseInt(field.getText());
+                value = value + inc;
+                field.setText("" + value);
+                generateFilters();
+            }
+            if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+                value = Integer.parseInt(field.getText());
+                value = value - inc;
+                field.setText("" + value);
+                generateFilters();
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+    private void sigmafKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sigmafKeyPressed
+        // TODO add your handling code here:
+        incDec((JTextField) evt.getComponent(), evt, 0.1);
+    }//GEN-LAST:event_sigmafKeyPressed
+
+    private void lambdafKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lambdafKeyPressed
+        // TODO add your handling code here:
+        incDec((JTextField) evt.getComponent(), evt, 0.1);
+    }//GEN-LAST:event_lambdafKeyPressed
+
+    private void psifKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_psifKeyPressed
+        // TODO add your handling code here:
+        incDec((JTextField) evt.getComponent(), evt, 0.1);
+    }//GEN-LAST:event_psifKeyPressed
+
+    private void thetafKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_thetafKeyPressed
+        // TODO add your handling code here:
+        incDec((JTextField) evt.getComponent(), evt, 0.1);
+    }//GEN-LAST:event_thetafKeyPressed
+
+    private void radiusfKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_radiusfKeyPressed
+        // TODO add your handling code here:
+        incDecInt((JTextField) evt.getComponent(), evt, 1);
+    }//GEN-LAST:event_radiusfKeyPressed
+
+    private void anglefKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_anglefKeyPressed
+        // TODO add your handling code here:
+        incDec((JTextField) evt.getComponent(), evt, 0.01);
+    }//GEN-LAST:event_anglefKeyPressed
+
+    private void rotfKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rotfKeyPressed
+        // TODO add your handling code here:
+        incDec((JTextField) evt.getComponent(), evt, 0.1);
+    }//GEN-LAST:event_rotfKeyPressed
+
+    private void nfiltersfKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nfiltersfKeyPressed
+        // TODO add your handling code here:
+        incDecInt((JTextField) evt.getComponent(), evt, 1);
+    }//GEN-LAST:event_nfiltersfKeyPressed
+
+    private void sizefKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sizefKeyReleased
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_sizefKeyReleased
+
+    private void sigmafKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sigmafKeyReleased
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_sigmafKeyReleased
+
+    private void lambdafKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lambdafKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lambdafKeyReleased
+
+    private void gammafKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_gammafKeyPressed
+        // TODO add your handling code here:
+        incDec((JTextField) evt.getComponent(), evt, 0.1);
+    }//GEN-LAST:event_gammafKeyPressed
+
+    private void gammafKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_gammafKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_gammafKeyReleased
+
+    private void psifKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_psifKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_psifKeyReleased
+
+    private void thetafKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_thetafKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_thetafKeyReleased
+
+    private void radiusfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_radiusfKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_radiusfKeyReleased
+
+    private void anglefKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_anglefKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_anglefKeyReleased
+
+    private void rotfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_rotfKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rotfKeyReleased
+
+    private void nfiltersfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nfiltersfKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nfiltersfKeyReleased
+
+    void saveFile(String name) {
+        String ac = "";
+        for (int i = 0; i < fields.length; i++) {
+            if (i < fields.length - 1) {
+                ac = ac + fields[i].getText() + " ";
+            } else {
+                ac = ac + fields[i].getText();
+            }
+        }
+        FileUtils.write(folder + name, ac, "txt");
+        loadFieldList();
+        jList1.setSelectedIndex(indexOf(namef.getText()));
+    }
+
+    int indexOf(String string) {
+        int index = 0;
+        for (int i = 0; i < jList1.getModel().getSize(); i++) {
+            if (jList1.getModel().getElementAt(i).equals(string)) {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    void makeFilters() {
+        concaveFilters = new Mat[numberFilters];
+        convexFilters = new Mat[numberFilters];
+        for (int i = 0; i < numberFilters; i++) {
+            concaveFilters[i] = new Mat();
+            convexFilters[i] = new Mat();
+        }
+        Mat mainFilter = mainGabor.makeFilter();
+        concaveFilters[0] = mainFilter.clone();
+        convexFilters[0] = mainFilter.clone();
+        composedFilter = Mat.zeros(concaveFilters[0].height(), concaveFilters[0].width(), CvType.CV_32FC1);
+        for (int i = 1; i < numberFilters; i++) {
+            if (i % 2 == 0) {
+                concaveFilters[i] = SpecialKernels.rotateKernelRadians(mainFilter, radius, 0, angleDisp * (i / 3 + 1));
+                convexFilters[i] = SpecialKernels.rotateKernelRadians(mainFilter, -radius, 0, angleDisp * (i / 3 + 1));
+            } else {
+                concaveFilters[i] = SpecialKernels.rotateKernelRadians(mainFilter, radius, 0, -angleDisp * (i / 3 + 1));
+                convexFilters[i] = SpecialKernels.rotateKernelRadians(mainFilter, -radius, 0, -angleDisp * (i / 3 + 1));
+            }
+        }
+        for (int i = 0; i < numberFilters; i++) {
+
+            concaveFilters[i] = SpecialKernels.rotateKernelRadians(concaveFilters[i], kernelRotation);
+            convexFilters[i] = SpecialKernels.rotateKernelRadians(convexFilters[i], kernelRotation);
+
         }
         makeComposedFilter();
         loadImageFilters();
     }
-    
-    void makeComposedFilter(){
-        for(int i=0;i<numberFilters;i++){
+
+    void makeComposedFilter() {
+        for (int i = 0; i < numberFilters; i++) {
             Core.add(composedFilter, concaveFilters[i], composedFilter);
         }
-        for(int i=1;i<numberFilters;i++){
+        for (int i = 1; i < numberFilters; i++) {
             Core.add(composedFilter, convexFilters[i], composedFilter);
         }
     }
-    
+
     void loadImageFilters() {
         fimg = Convertor.ConvertMat2FilterImage(composedFilter);
         //fimg = Scalr.resize(fimg, Integer.parseInt(kernelSize.getText()) * zoom);
@@ -278,6 +611,7 @@ public class CurvatureRF extends javax.swing.JFrame {
         filterImage.setIcon(new ImageIcon(fimg));
         //saveValues();
     }
+
     /**
      * @param args the command line arguments
      */
@@ -336,11 +670,14 @@ public class CurvatureRF extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -355,8 +692,9 @@ public class CurvatureRF extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField lambdaf;
+    private javax.swing.JTextField namef;
+    private javax.swing.JTextField nfiltersf;
     private javax.swing.JTextField psif;
     private javax.swing.JTextField radiusf;
     private javax.swing.JTextField rotf;
