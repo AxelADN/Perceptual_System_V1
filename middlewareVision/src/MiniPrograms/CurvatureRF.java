@@ -26,6 +26,7 @@ import static org.opencv.core.CvType.CV_32F;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import utils.Convertor;
 import utils.FileUtils;
 import utils.Functions;
@@ -49,12 +50,12 @@ public class CurvatureRF extends javax.swing.JFrame {
     Mat convexFilters[];
     Mat composedFilter;
     int numberFilters;
+    double mulFactor = 1;
     BufferedImage fimg;
     String folder = "RFV2/Curvature/";
     String originalImageFile = "Circles.JPG";
     BufferedImage imageFile;
     BufferedImage filteredImage;
-    Mat concaveResult;
 
     /**
      * Creates new form NewJFrame
@@ -83,7 +84,7 @@ public class CurvatureRF extends javax.swing.JFrame {
     }
 
     void loadFields() {
-        fields = new JTextField[10];
+        fields = new JTextField[11];
         fields[0] = sizef;
         fields[1] = sigmaf;
         fields[2] = lambdaf;
@@ -94,6 +95,7 @@ public class CurvatureRF extends javax.swing.JFrame {
         fields[7] = anglef;
         fields[8] = rotf;
         fields[9] = nfiltersf;
+        fields[10] = mulf;
     }
 
     /**
@@ -146,6 +148,8 @@ public class CurvatureRF extends javax.swing.JFrame {
         originalImage = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         convolvedImage = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        mulf = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -363,6 +367,20 @@ public class CurvatureRF extends javax.swing.JFrame {
         convolvedImage.setText("[]");
         getContentPane().add(convolvedImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 160, -1, -1));
 
+        jLabel18.setText("mul factor");
+        getContentPane().add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 40, -1, -1));
+
+        mulf.setText("1");
+        mulf.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                mulfKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                mulfKeyReleased(evt);
+            }
+        });
+        getContentPane().add(mulf, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 60, 50, -1));
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -407,6 +425,7 @@ public class CurvatureRF extends javax.swing.JFrame {
         angleDisp = toDouble(fields[7].getText());
         kernelRotation = toDouble(fields[8].getText());
         numberFilters = toInt(fields[9].getText().trim());
+        mulFactor = toDouble(fields[10].getText().trim());
         makeFilters();
     }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -582,22 +601,52 @@ public class CurvatureRF extends javax.swing.JFrame {
         convolution();
     }//GEN-LAST:event_nfiltersfKeyReleased
 
-    void convolution() {
+    private void mulfKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mulfKeyPressed
+        // TODO add your handling code here:
+        incDec((JTextField) evt.getComponent(), evt, 0.01);
+    }//GEN-LAST:event_mulfKeyPressed
+
+    private void mulfKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_mulfKeyReleased
+        // TODO add your handling code here:
+        convolution();
+    }//GEN-LAST:event_mulfKeyReleased
+
+    Mat filterProcess(double angle) {
         Mat concaveFiltered[];
-        concaveFiltered=new Mat[numberFilters];
-        Mat src=Convertor.bufferedImageToMat(imageFile);
-        src.convertTo(src, CvType.CV_8UC1);
-        concaveResult=new Mat();
-        concaveResult=Mat.zeros(src.rows(), src.cols(), Functions.filter(src,concaveFilters[0]).type()); 
+        Mat convexFiltered[];
+        concaveFiltered = new Mat[numberFilters];
+        convexFiltered = new Mat[numberFilters];
+        Mat src = Convertor.bufferedImageToMat(imageFile);
+        Mat concaveResult = Mat.zeros(src.rows(), src.cols(), 21);
+        Mat convexResult = Mat.zeros(src.rows(), src.cols(), 21);
         Core.divide(src, Scalar.all(255), src);
         Core.add(concaveResult, Scalar.all(1), concaveResult);
-        for(int i=0;i<numberFilters;i++){
-            concaveFiltered[i]=Functions.filter(src,concaveFilters[i]);
-            Core.multiply(concaveFiltered[i], Scalar.all(0.5), concaveFiltered[i]);
-            concaveResult=concaveResult.mul(concaveFiltered[i]);
+        Core.add(convexResult, Scalar.all(1), convexResult);
+        for (int i = 0; i < numberFilters; i++) {
+            concaveFiltered[i] = Functions.filter(src, SpecialKernels.rotateKernelRadians(concaveFilters[i], angle));
+            //convexFiltered[i] = Functions.filter(src, SpecialKernels.rotateKernelRadians(convexFilters[i], angle));
+            Core.multiply(concaveFiltered[i], Scalar.all(mulFactor), concaveFiltered[i]);
+            //Core.multiply(convexFiltered[i], Scalar.all(mulFactor), convexFiltered[i]);
+            concaveResult = concaveResult.mul(concaveFiltered[i]);
+            //convexResult = convexResult.mul(convexFiltered[i]);
         }
+        //Core.subtract(concaveResult, convexResult, concaveResult);
+        return concaveResult;
+        //convolvedImage.setText("");
+        //convolvedImage.setIcon(new ImageIcon(Convertor.Mat2Img(concaveResult)));
+    }
+
+    void convolution() {
+        int n=18;
+        Mat results[]=new Mat[n];
+        float inc = (float) (2*Math.PI / n);
+        for(int i=0;i<n;i++){
+            results[i]=filterProcess(inc*i);
+        }
+        Mat result=MatrixUtils.maxSum(results);
+        Imgproc.GaussianBlur(result, result, new Size(20,20), 10);
         convolvedImage.setText("");
-        convolvedImage.setIcon(new ImageIcon(Convertor.Mat2Img(concaveResult)));
+        convolvedImage.setIcon(new ImageIcon(Convertor.Mat2Img(result)));
     }
 
     void saveFile(String name) {
@@ -645,12 +694,12 @@ public class CurvatureRF extends javax.swing.JFrame {
                 convexFilters[i] = SpecialKernels.rotateKernelRadians(mainFilter, -radius, 0, -angleDisp * (i / 3 + 1));
             }
         }
-        for (int i = 0; i < numberFilters; i++) {
+        /*for (int i = 0; i < numberFilters; i++) {
 
             concaveFilters[i] = SpecialKernels.rotateKernelRadians(concaveFilters[i], kernelRotation);
             convexFilters[i] = SpecialKernels.rotateKernelRadians(convexFilters[i], kernelRotation);
 
-        }
+        }*/
         makeComposedFilter();
         loadImageFilters();
     }
@@ -669,7 +718,6 @@ public class CurvatureRF extends javax.swing.JFrame {
         //fimg = Scalr.resize(fimg, Integer.parseInt(kernelSize.getText()) * zoom);
         filterImage.setText("");
         filterImage.setIcon(new ImageIcon(fimg));
-        //saveValues();
     }
 
     /**
@@ -742,6 +790,7 @@ public class CurvatureRF extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -756,6 +805,7 @@ public class CurvatureRF extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTextField lambdaf;
+    private javax.swing.JTextField mulf;
     private javax.swing.JTextField namef;
     private javax.swing.JTextField nfiltersf;
     private javax.swing.JLabel originalImage;
