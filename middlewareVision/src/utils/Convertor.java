@@ -163,8 +163,8 @@ public class Convertor {
     public static BufferedImage Mat2Img(Mat mat1) {
         Mat mat=mat1.clone();
         MatOfByte bytes = new MatOfByte();
-        Scalar alpha = new Scalar(255);
-        Core.multiply(mat, alpha, mat);
+       // Scalar alpha = new Scalar(255);
+        Core.multiply(mat, Scalar.all(255), mat);
         Imgcodecs.imencode(".jpg", mat, bytes);
         byte[] byteArray = bytes.toArray();
         BufferedImage image = null;

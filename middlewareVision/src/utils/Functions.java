@@ -9,6 +9,7 @@ import VisualMemory.Cell;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_32F;
+import static org.opencv.core.CvType.CV_32FC1;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -41,8 +42,8 @@ public class Functions {
     
     public static Mat filter(Mat img, Mat filter){
         Mat filt = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
-        img.convertTo(img, CV_32F);
-        Imgproc.filter2D(img, filt, CV_32F, filter);
+        img.convertTo(img.clone(), CV_32FC1);
+        Imgproc.filter2D(img, filt, CV_32FC1, filter);
         Imgproc.threshold(filt, filt, 0, 1, Imgproc.THRESH_TOZERO);
         return filt;
     }
