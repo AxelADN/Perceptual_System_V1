@@ -644,7 +644,6 @@ public class CurvatureRF extends javax.swing.JFrame {
             results[i]=filterProcess(inc*i);
         }
         Mat result=MatrixUtils.maxSum(results);
-        Imgproc.GaussianBlur(result, result, new Size(20,20), 10);
         convolvedImage.setText("");
         convolvedImage.setIcon(new ImageIcon(Convertor.Mat2Img(result)));
     }

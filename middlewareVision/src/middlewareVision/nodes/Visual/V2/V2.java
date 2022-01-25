@@ -21,6 +21,8 @@ public class V2 extends Area{
         addProcess(V2AngularCells.class);
         addProcess(V2IlusoryCells.class);
 	
+	addProcess(V2CurvatureCells.class);
+	
 	//@AddProcess
     }
 
@@ -34,6 +36,8 @@ public class V2 extends Area{
     public void receive(int nodeID, byte[] data) {
         send(AreaNames.V2AngularCells, data);
         send(AreaNames.V2IlusoryCells, data);
+	
+	send(AreaNames.V2CurvatureCells,data);
 	
 	//@SendProcess
     }

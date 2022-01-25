@@ -46,6 +46,8 @@ public class AreaNames {
 	
 	public static int ReichardtMotion = IDHelper.generateID("V1", 8 , 0);
 	
+	public static int V2CurvatureCells = IDHelper.generateID("V2", 3 , 0);
+	
 	//@addNodes
         //no quitar el comentario de add Nodes
 }

@@ -20,6 +20,7 @@ public class Cell {
     public Cell[] previous;
     public Cell[] next;
     public int id;
+    public Mat filter;
 
     public Cell(Mat mat, Cell[] previous, Cell[] next) {
         this.mat = mat;
@@ -33,6 +34,10 @@ public class Cell {
     
     public Cell(Mat mat){
         this.mat=mat;
+    }
+    
+    public void setFilter(Mat filter){
+        this.filter=filter;
     }
 
     public void setNext(Cell[] next) {
