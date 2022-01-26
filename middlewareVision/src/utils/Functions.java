@@ -15,6 +15,7 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import static org.opencv.imgproc.Imgproc.getGaborKernel;
+import utils.filters.CurvatureFilter;
 
 /**
  *
@@ -39,8 +40,8 @@ public class Functions {
         Imgproc.threshold(gab, gab, 0, 1, Imgproc.THRESH_TOZERO);
         return gab;
     }
-    
-    public static Mat filter(Mat img, Mat filter){
+
+    public static Mat filter(Mat img, Mat filter) {
         Mat filt = Mat.zeros(img.rows(), img.cols(), CvType.CV_32FC1);
         img.convertTo(img.clone(), CV_32FC1);
         Imgproc.filter2D(img, filt, CV_32FC1, filter);
@@ -88,23 +89,74 @@ public class Functions {
         Mat num = new Mat();
         Mat den = new Mat();
         Mat h = new Mat();
+        
         Scalar dl3 = new Scalar((double) 1 / l3);
         Scalar d2l3 = new Scalar((double) 2 / l3);
         Scalar dl3_2 = new Scalar((double) 1 / (l3 * l3));
+        
         Core.multiply(src1, src2, vlvr);
+        
         Core.add(src1, src2, vlpvr);
         Core.add(vlpvr, d2l3, num);
+        
         Core.multiply(vlpvr, dl3, den);
+        
         Core.add(den, vlpvr, den);
         Core.add(den, dl3_2, den);
+        
         Core.divide(num, den, h);
+        
         Core.multiply(vlvr, h, dst);
+        
         Imgproc.threshold(dst, dst, 0, 1, Imgproc.THRESH_TOZERO);
+        
         return dst;
     }
-    
-    public static Mat maxSum(Cell ...cells){
+
+    public static Mat maxSum(Cell... cells) {
         return MatrixUtils.maxSum(cells);
+    }
+
+    
+    /**
+     * Perform the curvature filtering
+     * @param src the original image to filter
+     * @param cFilter the curvature filter class
+     * @param convex if it's neccesary to substract the convex result
+     * @return the activation matrix corresponding to an specific curvature in an specific orientation
+     */
+    public static Mat curvatureFiltering(Mat src, CurvatureFilter cFilter, boolean convex) {
+        
+        Mat concaveFiltered[];
+        Mat convexFiltered[];
+        
+        concaveFiltered = new Mat[cFilter.n];
+        convexFiltered = new Mat[cFilter.n];
+        
+        Mat concaveResult = Mat.zeros(src.rows(), src.cols(), 21);
+        Mat convexResult = Mat.zeros(src.rows(), src.cols(), 21);
+        
+        Core.divide(src, Scalar.all(255), src);
+        
+        Core.add(concaveResult, Scalar.all(1), concaveResult);
+        Core.add(convexResult, Scalar.all(1), convexResult);
+        
+        for (int i = 0; i < cFilter.n; i++) {
+            concaveFiltered[i] = Functions.filter(src, SpecialKernels.rotateKernelRadians(cFilter.concaveFilters[i], cFilter.angle));
+            Core.multiply(concaveFiltered[i], Scalar.all(cFilter.mul), concaveFiltered[i]);
+            concaveResult = concaveResult.mul(concaveFiltered[i]);
+            
+            if (convex) {
+                Core.multiply(convexFiltered[i], Scalar.all(cFilter.mul), convexFiltered[i]);
+                convexFiltered[i] = Functions.filter(src, SpecialKernels.rotateKernelRadians(cFilter.convexFilters[i], cFilter.angle));
+                convexResult = convexResult.mul(convexFiltered[i]);
+            }
+        }
+        
+        if (convex) {
+            Core.subtract(concaveResult, convexResult, concaveResult);
+        }
+        return concaveResult;
     }
 
 }
