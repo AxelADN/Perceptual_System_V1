@@ -7,8 +7,6 @@ package VisualMemory;
 
 import utils.Config;
 import utils.FileUtils;
-import utils.filters.CurvatureFilter;
-import utils.filters.GaborFilter;
 
 /**
  *
@@ -16,31 +14,25 @@ import utils.filters.GaborFilter;
  */
 public class V2Bank {
 
-    public static V2AngleCells[][][] AC;
-    public static V2CurvatureCells[][][] CurvC;
+    public static AngleCells[][][] AC;
+    public static CurvatureCells[][][] CurvC;
 
     public static void initializeCells(int... dimensions) {
 
-        AC = new V2AngleCells[dimensions[0]][dimensions[1]][dimensions[2]];
+        AC = new AngleCells[dimensions[0]][dimensions[1]][dimensions[2]];
+        CurvC = new CurvatureCells[dimensions[0]][dimensions[1]][dimensions[2]];
+        String folder = "RFV2/Curvature/";
+        String fileNames[] = FileUtils.getFiles(folder);
+        int numCurvatures = fileNames.length;
         for (int i1 = 0; i1 < dimensions[0]; i1++) {
             for (int i2 = 0; i2 < dimensions[1]; i2++) {
                 for (int i3 = 0; i3 < dimensions[2]; i3++) {
-                    AC[i1][i2][i3] = new V2AngleCells(Config.gaborOrientations, 2 * Config.gaborOrientations);
+                    AC[i1][i2][i3] = new AngleCells(Config.gaborOrientations, 2 * Config.gaborOrientations);
+                    CurvC[i1][i2][i3] = new CurvatureCells(numCurvatures, 10);
+                    CurvC[i1][i2][i3].generateFiltersByFolder(folder);
                 }
             }
         }
 
     }
-
-    public static void loadCurvatureFiles() {
-        String folder = "RFV2/Curvature/";
-        String fileNames[] = FileUtils.getFiles(folder);
-        CurvatureFilter[] filters;
-        for (int i = 0; i < fileNames.length; i++) {
-
-        }
-    }
-
 }
-
-

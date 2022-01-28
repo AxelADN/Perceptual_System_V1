@@ -133,10 +133,8 @@ public class Functions {
         concaveFiltered = new Mat[cFilter.n];
         convexFiltered = new Mat[cFilter.n];
         
-        Mat concaveResult = Mat.zeros(src.rows(), src.cols(), 21);
-        Mat convexResult = Mat.zeros(src.rows(), src.cols(), 21);
-        
-        Core.divide(src, Scalar.all(255), src);
+        Mat concaveResult = Mat.zeros(src.rows(), src.cols(), src.type());
+        Mat convexResult = Mat.zeros(src.rows(), src.cols(), src.type());
         
         Core.add(concaveResult, Scalar.all(1), concaveResult);
         Core.add(convexResult, Scalar.all(1), convexResult);
@@ -147,8 +145,8 @@ public class Functions {
             concaveResult = concaveResult.mul(concaveFiltered[i]);
             
             if (convex) {
-                Core.multiply(convexFiltered[i], Scalar.all(cFilter.mul), convexFiltered[i]);
                 convexFiltered[i] = Functions.filter(src, SpecialKernels.rotateKernelRadians(cFilter.convexFilters[i], cFilter.angle));
+                Core.multiply(convexFiltered[i], Scalar.all(cFilter.mul), convexFiltered[i]);
                 convexResult = convexResult.mul(convexFiltered[i]);
             }
         }

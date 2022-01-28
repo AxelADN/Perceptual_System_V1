@@ -1,29 +1,18 @@
 package middlewareVision.nodes.Visual.V1;
 
 import VisualMemory.V1Bank;
-import gui.FrameActivity;
+import static VisualMemory.V1Bank.CC;
+import static VisualMemory.V1Bank.HCC;
 import gui.Visualizer;
-import java.io.IOException;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import matrix.matrix;
 import middlewareVision.config.AreaNames;
-import middlewareVision.nodes.Visual.V4.V4Memory;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import static org.opencv.core.CvType.CV_32F;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
 import utils.Functions;
 import utils.LongSpike;
 import utils.SimpleLogger;
-import utils.SpecialKernels;
 
 /**
  *
@@ -50,26 +39,28 @@ public class V1HyperComplex extends Activity {
         try {
             LongSpike spike = new LongSpike(data);
             if (spike.getModality() == Modalities.VISUAL) {
-                V1Bank.convolveHCC();
+                convolveHCC();
                 for (int j = 0; j < Config.gaborBanks; j++) {
                     for (int k = 0; k < Config.HCfilters; k++) {
                         for (int i = 0; i < Config.gaborOrientations; i++) {
-                            Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][j][0].Cells[k][i].mat),
+                            Visualizer.setImage(V1Bank.HCC[0][j][0].Cells[k][i].mat,
                                     "end stopped L " + i + " bank " + j + " HC Filter " + k, Visualizer.getRow("CC") + 1 + 2 * k + 2 * j * Config.gaborBanks, i);
-                            Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][j][1].Cells[k][i].mat),
+                            Visualizer.setImage(V1Bank.HCC[0][j][1].Cells[k][i].mat,
                                     "end stopped R " + i + " bank " + j + " HC Filter " + k, Visualizer.getRow("CC") + 2 + 2 * k + 2 * j * Config.gaborBanks, i);
 
                             if (i == Config.gaborOrientations - 1) {
-                                Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.HCC[0][j][0].Cells[k])),
+                                Visualizer.setImage(Functions.maxSum(V1Bank.HCC[0][j][0].Cells[k]),
                                         "end stopped L " + i + " bank " + j + " HC Filter " + k, Visualizer.getRow("CC") + 1 + 2 * k + 2 * j * Config.gaborBanks, i + 2);
-                                Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.HCC[0][j][1].Cells[k])),
+                                Visualizer.setImage(Functions.maxSum(V1Bank.HCC[0][j][1].Cells[k]),
                                         "end stopped R " + i + " bank " + j + " HC Filter " + k, Visualizer.getRow("CC") + 2 + 2 * k + 2 * j * Config.gaborBanks, i + 2);
                             }
                         }
 
                     }
                 }
-                //Visualizer.setImage(Convertor.Mat2Img(V1Bank.HCC[0][0][0].filters[0]), "hcc filter", 3, 3);
+                Visualizer.addLimit("HC", Visualizer.getRow("CC") + 2 + 2 * (Config.HCfilters - 1) + 2 * (Config.gaborBanks - 1) * Config.gaborBanks);
+                LongSpike sendSpike = new LongSpike(Modalities.VISUAL, 0, 0, 0);
+                send(AreaNames.V2CurvatureCells, sendSpike.getByteArray());
             }
             if (spike.getModality() == Modalities.ATTENTION) {
                 for (int index = 0; index < Config.gaborOrientations; index++) {
@@ -82,6 +73,22 @@ public class V1HyperComplex extends Activity {
 
         } catch (Exception ex) {
 
+        }
+    }
+
+    /**
+     * Make the convolution that result in the activation of HyperComplex Cells
+     */
+    void convolveHCC() {
+        int i0 = HCC.length;
+        int i1 = HCC[0].length;
+        int i2 = HCC[0][0].length;
+        for (int x0 = 0; x0 < i0; x0++) {
+            for (int x1 = 0; x1 < i1; x1++) {
+                for (int x2 = 0; x2 < i2; x2++) {
+                    HCC[x0][x1][x2].convolve(CC[x0][x1][x2].Cells);
+                }
+            }
         }
     }
 

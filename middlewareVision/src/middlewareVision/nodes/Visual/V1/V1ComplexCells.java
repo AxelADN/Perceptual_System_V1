@@ -1,28 +1,20 @@
 package middlewareVision.nodes.Visual.V1;
 
 import VisualMemory.V1Bank;
+import static VisualMemory.V1Bank.CC;
 import spike.Location;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import matrix.matrix;
 import middlewareVision.config.AreaNames;
-import gui.FrameActivity;
 import gui.Visualizer;
 import kmiddle2.nodes.activities.Activity;
-import matrix.SimpleCellMatrix;
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
-import static org.opencv.imgproc.Imgproc.INTER_CUBIC;
 import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
 import utils.Functions;
 import utils.LongSpike;
 import utils.SimpleLogger;
-import utils.numSync;
 
 /**
  *
@@ -92,14 +84,16 @@ public class V1ComplexCells extends Activity {
 
             }*/
             if (spike.getModality() == Modalities.VISUAL) {
-                V1Bank.energyProcessCC();
+                energyProcessCC();
                 for (int k = 0; k < Config.gaborBanks; k++) {
                     for (int i = 0; i < Config.gaborOrientations; i++) {
-                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][k][0].Cells[i].mat), "Complex L" + k+" "+i, Visualizer.getRow("SCsup")+2*k, i);
-                        Visualizer.setImage(Convertor.Mat2Img(V1Bank.CC[0][k][1].Cells[i].mat), "Complex R" + k+" "+i, Visualizer.getRow("SCsup")+2*k+1, i);
+                        Visualizer.setImage(V1Bank.CC[0][k][0].Cells[i].mat, "Complex L" + k+" "+i, Visualizer.getRow("SCsup")+2*k, i);
+                        Visualizer.setImage(V1Bank.CC[0][k][1].Cells[i].mat, "Complex R" + k+" "+i, Visualizer.getRow("SCsup")+2*k+1, i);
                         if (i == Config.gaborOrientations - 1) {
-                            Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.CC[0][k][0].Cells)), "Combined Complex L" + k+" ", Visualizer.getRow("SCsup")+2*k, i+2);
-                            Visualizer.setImage(Convertor.Mat2Img(Functions.maxSum(V1Bank.CC[0][k][1].Cells)), "Combined Complex R" + k+" ", Visualizer.getRow("SCsup")+2*k+1, i+2);
+                            V1Bank.CC[0][k][0].sumCell.mat=Functions.maxSum(V1Bank.CC[0][k][0].Cells);
+                            V1Bank.CC[0][k][1].sumCell.mat=Functions.maxSum(V1Bank.CC[0][k][1].Cells);
+                            Visualizer.setImage(V1Bank.CC[0][k][0].sumCell.mat, "Combined Complex L" + k+" ", Visualizer.getRow("SCsup")+2*k, i+2);
+                            Visualizer.setImage(V1Bank.CC[0][k][1].sumCell.mat, "Combined Complex R" + k+" ", Visualizer.getRow("SCsup")+2*k+1, i+2);
                         }
                  
                     }
@@ -121,6 +115,19 @@ public class V1ComplexCells extends Activity {
 
         } catch (Exception ex) {
             Logger.getLogger(V1ComplexCells.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    void energyProcessCC() {
+        int i0 = CC.length;
+        int i1 = CC[0].length;
+        int i2 = CC[0][0].length;
+        for (int x0 = 0; x0 < i0; x0++) {
+            for (int x1 = 0; x1 < i1; x1++) {
+                for (int x2 = 0; x2 < i2; x2++) {
+                    CC[x0][x1][x2].energyProcess();
+                }
+            }
         }
     }
 

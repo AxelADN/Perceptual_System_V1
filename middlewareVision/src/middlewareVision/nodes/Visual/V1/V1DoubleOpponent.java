@@ -9,7 +9,6 @@ import spike.Location;
 import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import matrix.matrix;
 import middlewareVision.config.AreaNames;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;

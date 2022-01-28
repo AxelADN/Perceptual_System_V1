@@ -110,37 +110,6 @@ public class V1Bank {
     }
 
     /**
-     * make and generate the responsed of all simple cells
-     * @param input
-     */
-    public static void convolveSimpleCells(Mat inputL, Mat inputR) {
-        int i0 = SC.length;
-        int i1 = SC[0].length;
-        for (int x0 = 0; x0 < i0; x0++) {
-            for (int x1 = 0; x1 < i1; x1++) {
-                SC[x0][x1][0].convolve(inputL);
-                SC[x0][x1][1].convolve(inputR);
-            }
-        }
-    }
-
-    /**
-     * Perform the energy summation process for every complex cell
-     */
-    public static void energyProcessCC() {
-        int i0 = CC.length;
-        int i1 = CC[0].length;
-        int i2 = CC[0][0].length;
-        for (int x0 = 0; x0 < i0; x0++) {
-            for (int x1 = 0; x1 < i1; x1++) {
-                for (int x2 = 0; x2 < i2; x2++) {
-                    CC[x0][x1][x2].energyProcess();
-                }
-            }
-        }
-    }
-
-    /**
      * Load the Gauss filters that emulates the end stop-filters from the hypercomplex cells
      * and load into the HCC class
      * @param files 
@@ -164,21 +133,6 @@ public class V1Bank {
         }
     }
     
-    /**
-     * Make the convolution that result in the activation of HyperComplex Cells
-     */
-    public static void convolveHCC(){
-        int i0 = HCC.length;
-        int i1 = HCC[0].length;
-        int i2 = HCC[0][0].length;
-        for (int x0 = 0; x0 < i0; x0++) {
-                for (int x1 = 0; x1 < i1; x1++) {
-                    for (int x2 = 0; x2 < i2; x2++) {
-                        HCC[x0][x1][x2].convolve(CC[x0][x1][x2].Cells);
-                    }
-                }
-            }
-    }
 
     /**
      * Obtain the composite filter from a file

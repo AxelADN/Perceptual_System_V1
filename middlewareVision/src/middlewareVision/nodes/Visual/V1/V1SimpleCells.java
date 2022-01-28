@@ -1,21 +1,14 @@
 package middlewareVision.nodes.Visual.V1;
 
-import VisualMemory.LGNBank;
 import VisualMemory.V1Bank;
+import static VisualMemory.V1Bank.SC;
 import spike.Location;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import matrix.matrix;
 import middlewareVision.config.AreaNames;
-import gui.FrameActivity;
 import gui.Visualizer;
 import kmiddle2.nodes.activities.Activity;
-import org.opencv.core.CvType;
-import static org.opencv.core.CvType.CV_32F;
 import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
-import static org.opencv.imgproc.Imgproc.getGaborKernel;
 import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
@@ -79,7 +72,7 @@ public class V1SimpleCells extends Activity {
 
             if (sync.isComplete()) {
                 //edge border detection is performed, with phi angle = 0
-                V1Bank.convolveSimpleCells(V1Bank.DOC[0][0][0].Cells[2].mat, V1Bank.DOC[0][0][1].Cells[2].mat);
+                convolveSimpleCells(V1Bank.DOC[0][0][0].Cells[2].mat, V1Bank.DOC[0][0][1].Cells[2].mat);
                 for (int k = 0; k < Config.gaborBanks; k++) {
                     for (int i = 0; i < Config.gaborOrientations; i++) {
                         Visualizer.setImage(Convertor.Mat2Img(V1Bank.SC[0][k][0].Even[i].mat), "even L bank" + k + " " + i, 4 * k + 6, i);
@@ -115,6 +108,21 @@ public class V1SimpleCells extends Activity {
 
         } catch (Exception ex) {
             Logger.getLogger(V1SimpleCells.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /**
+     * make and generate the responsed of all simple cells
+     * @param input
+     */
+    void convolveSimpleCells(Mat inputL, Mat inputR) {
+        int i0 = SC.length;
+        int i1 = SC[0].length;
+        for (int x0 = 0; x0 < i0; x0++) {
+            for (int x1 = 0; x1 < i1; x1++) {
+                SC[x0][x1][0].convolve(inputL);
+                SC[x0][x1][1].convolve(inputR);
+            }
         }
     }
 

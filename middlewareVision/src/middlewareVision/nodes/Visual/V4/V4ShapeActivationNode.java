@@ -6,9 +6,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import matrix.ArrayMatrix;
 import middlewareVision.config.AreaNames;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -22,7 +19,6 @@ import utils.Convertor;
 import utils.LongSpike;
 import utils.MatrixUtils;
 import utils.SimpleLogger;
-import utils.SpecialKernels;
 
 /**
  *

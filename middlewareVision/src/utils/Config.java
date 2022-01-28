@@ -23,8 +23,8 @@ public class Config {
     public static int blur=1;
     public static int gaborOrientations = 4;
     public static int HCfilters=1;
-    public static int width=200;
-    public static int heigth=200;
+    public static int width=100;
+    public static int heigth=100;
     public static int motionWidth=70;
     public static int motionHeight=70;
     public static boolean ilusoryEnabled = true;

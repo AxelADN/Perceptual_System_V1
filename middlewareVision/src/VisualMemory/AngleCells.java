@@ -12,13 +12,13 @@ import utils.MatrixUtils;
  *
  * @author Laptop
  */
-public class V2AngleCells {
+public class AngleCells {
     
     public int scale;
     public Cell[][] Cells;
     public Mat[] mergedAC;
 
-    public V2AngleCells(int scale, Cell[][] angleCells, Mat[] mergedAngleCells) {
+    public AngleCells(int scale, Cell[][] angleCells, Mat[] mergedAngleCells) {
         this.scale = scale;
         this.Cells = angleCells;
         this.mergedAC = mergedAngleCells;
@@ -30,7 +30,7 @@ public class V2AngleCells {
      * @param n1 number of Gabor Orientations (recommended)
      * @param n2 
      */
-    public V2AngleCells(int scale,int n1,int n2){
+    public AngleCells(int scale,int n1,int n2){
         this.scale=scale;
         Cells=new Cell[n1][n2];
         mergedAC=new Mat[n1];
@@ -42,7 +42,7 @@ public class V2AngleCells {
         }
     }
     
-    public V2AngleCells(int n1,int n2){
+    public AngleCells(int n1,int n2){
         Cells=new Cell[n1][n2];
         mergedAC=new Mat[n1];
         for(int i=0;i<n1;i++){
@@ -55,7 +55,7 @@ public class V2AngleCells {
     
     
     
-    public V2AngleCells(int scale,int n1,int n2, int i1, int i2){
+    public AngleCells(int scale,int n1,int n2, int i1, int i2){
         this.scale=scale;
         Cells=new Cell[n1][n2];
         mergedAC=new Mat[n1];

@@ -13,20 +13,15 @@ import gui.Visualizer;
 import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import matrix.ArrayMatrix;
-import matrix.matrix;
 import middlewareVision.config.AreaNames;
-import org.opencv.core.Core;
 import static org.opencv.core.CvType.CV_32F;
 import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import spike.Modalities;
 import utils.Config;
 import utils.Convertor;
 import utils.Functions;
 import utils.LongSpike;
-import utils.MatrixUtils;
 import utils.SpecialKernels;
 import utils.numSync;
 
@@ -177,10 +172,10 @@ public class V2AngularCells extends FrameActivity {
     public void angularActivation() {
         for (int i = 0; i < Config.gaborOrientations; i++) {
             for (int j = 0; j < Config.gaborOrientations * 2; j++) {
-                V2Bank.AC[0][0][0].Cells[i][j].mat=Functions.V2Activation(filtered[j], filtered[(i + j + 1) % (Config.gaborOrientations*2)], l3);
+                V2Bank.AC[0][0][0].Cells[i][j].mat = Functions.V2Activation(filtered[j], filtered[(i + j + 1) % (Config.gaborOrientations * 2)], l3);
                 V2Bank.AC[0][0][0].Cells[i][j].setPrevious(
-                        V1Bank.HCC[0][0][0].Cells[0][j%Config.gaborOrientations],
-                        V1Bank.HCC[0][0][0].Cells[0][((i + j + 1) % (Config.gaborOrientations*2))%4]);
+                        V1Bank.HCC[0][0][0].Cells[0][j % Config.gaborOrientations],
+                        V1Bank.HCC[0][0][0].Cells[0][((i + j + 1) % (Config.gaborOrientations * 2)) % 4]);
             }
         }
     }

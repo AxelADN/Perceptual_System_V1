@@ -5,12 +5,10 @@
  */
 package VisualMemory;
 
-import org.opencv.core.Core;
+import java.io.File;
 import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-import utils.Convertor;
+import utils.FileUtils;
 import utils.Functions;
-import utils.SpecialKernels;
 import utils.filters.CurvatureFilter;
 
 /**
@@ -18,7 +16,7 @@ import utils.filters.CurvatureFilter;
  *
  * @author Laptop
  */
-public class V2CurvatureCells {
+public class CurvatureCells {
 
     public Cell[][] cells;
     public Cell[] composedCells;
@@ -27,7 +25,7 @@ public class V2CurvatureCells {
     int nCurvatures;
     float inc;
 
-    public V2CurvatureCells(Cell[][] cells, Cell[] composedCells, CurvatureFilter[][] filters, int nAngleDivisions, int nCurvatures) {
+    public CurvatureCells(Cell[][] cells, Cell[] composedCells, CurvatureFilter[][] filters, int nAngleDivisions, int nCurvatures) {
         this.cells = cells;
         this.composedCells = composedCells;
         this.filters = filters;
@@ -35,18 +33,45 @@ public class V2CurvatureCells {
         this.nCurvatures = nCurvatures;
     }
 
-    public V2CurvatureCells(int nCurvatures, int nAngleDivisions) {
+    public CurvatureCells(int nCurvatures, int nAngleDivisions) {
         this.nAngleDivisions = nAngleDivisions;
         this.nCurvatures = nCurvatures;
         cells = new Cell[nCurvatures][nAngleDivisions];
         composedCells = new Cell[nCurvatures];
         filters = new CurvatureFilter[nCurvatures][nAngleDivisions];
-        inc = (float) (2*Math.PI / nAngleDivisions);
+        inc = (float) (2 * Math.PI / nAngleDivisions);
+        loadCells();
     }
 
-    public void generateCurvatureFilters(String fileContent, int cIndex) {
+    private void generateCurvatureFiltersByFile(String fileContent, int cIndex) {
         for (int i = 0; i < nAngleDivisions; i++) {
-            filters[cIndex][i] = new CurvatureFilter(fileContent, inc*i);
+            filters[cIndex][i] = new CurvatureFilter(fileContent, inc * i);
+        }
+    }
+    
+    private void loadCells(){
+        for(int i=0;i<nCurvatures;i++){
+            for(int j=0;j<nAngleDivisions;j++){
+                cells[i][j]=new Cell();
+            }
+            composedCells[i]=new Cell();
+        }
+    }
+
+    public void generateFiltersByFolder(String folder) {
+        String fileNames[] = FileUtils.getFiles(folder);
+        for (int i = 0; i < fileNames.length; i++) {
+            String content = FileUtils.readFile(new File(fileNames[i]));
+            generateCurvatureFiltersByFile(content, i);
+        }
+    }
+    
+    public void filterCurvatureCells(Mat src){
+        for(int i=0;i<nCurvatures;i++){
+            for(int j=0;j<nAngleDivisions;j++){
+                cells[i][j].mat=Functions.curvatureFiltering(src, filters[i][j], true);
+            }
+            composedCells[i].mat=Functions.maxSum(cells[i]);
         }
     }
 

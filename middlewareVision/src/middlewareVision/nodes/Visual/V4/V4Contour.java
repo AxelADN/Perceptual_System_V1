@@ -101,8 +101,6 @@ public class V4Contour extends Activity {
                  * si la matriz es normal en colores de 0 a 255, se puede
                  * convertir directo a bytes sin pasar por la imagen
                  */
-               // LongSpike sendSpike = new LongSpike(Modalities.VISUAL, 0, Convertor.matToBytes(contours1), 0);
-               // send(AreaNames.ITC, sendSpike.getByteArray());
 
             }
 

@@ -1,6 +1,5 @@
 package middlewareVision.nodes.Visual.V2;
 
-import gui.FrameActivity;
 import spike.Location;
 import kmiddle2.nodes.activities.Activity;
 import java.util.logging.Level;
@@ -12,17 +11,12 @@ import org.opencv.core.CvType;
 import static org.opencv.core.CvType.CV_32F;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import static org.opencv.imgproc.Imgproc.getGaborKernel;
 import spike.Modalities;
-import utils.Config;
 import utils.Convertor;
 import utils.LongSpike;
-import utils.MatrixUtils;
 import utils.SimpleLogger;
 import utils.SpecialKernels;
-import utils.numSync;
 
 /**
  * Author: Elon Musk
