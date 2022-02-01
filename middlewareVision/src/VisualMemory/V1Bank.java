@@ -52,7 +52,6 @@ public class V1Bank {
         for (int i1 = 0; i1 < dimensions[0]; i1++) {
             for (int i2 = 0; i2 < dimensions[1]; i2++) {
                 for (int i3 = 0; i3 < dimensions[2]; i3++) {
-
                     DOC[i1][i2][i3] = new DoubleOpponentCells(Config.gaborOrientations);
                 }
             }
