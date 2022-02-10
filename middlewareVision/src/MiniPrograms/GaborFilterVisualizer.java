@@ -217,7 +217,7 @@ public class GaborFilterVisualizer extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 420, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, -1, -1));
 
         filterImage.setText("[]");
         jPanel1.add(filterImage, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
@@ -244,7 +244,7 @@ public class GaborFilterVisualizer extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 420, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 420, 80, -1));
 
         jLabel9.setText("Original Image");
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, -1, -1));
@@ -264,7 +264,7 @@ public class GaborFilterVisualizer extends javax.swing.JFrame {
                 jButton3ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 420, -1, -1));
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 420, -1, -1));
 
         jLabel11.setText("Use UP and DOWN arrows to increase or decrease values");
         jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 296, 383, -1));
@@ -288,7 +288,7 @@ public class GaborFilterVisualizer extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 420, -1, -1));
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 420, -1, -1));
 
         jButton5.setText("Paste");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -296,7 +296,7 @@ public class GaborFilterVisualizer extends javax.swing.JFrame {
                 jButton5ActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 420, -1, -1));
+        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 420, -1, -1));
 
         jLabel13.setText("Filter sum:");
         jPanel1.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(351, 389, -1, -1));
@@ -498,6 +498,10 @@ public class GaborFilterVisualizer extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        paste();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    void paste(){
         Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
         Transferable t = cb.getContents(this);
 
@@ -523,8 +527,7 @@ public class GaborFilterVisualizer extends javax.swing.JFrame {
         } catch (Exception ex) {
             
         }
-    }//GEN-LAST:event_jButton5ActionPerformed
-
+    }
     void loadImageFilter() {
         fimg = Convertor.ConvertMat2FilterImage(gaborFilter);
         fimg = Scalr.resize(fimg, Integer.parseInt(kernelSize.getText()) * zoom);
