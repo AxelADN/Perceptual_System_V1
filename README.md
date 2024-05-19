@@ -1,2 +1,2 @@
-# cuayollotol
-Software implementation for the cognitive architecture cuayollotl
+# Cuayollotl (Perception System)
+Software implementation for the cognitive perceptual architecture cuayollotl
